@@ -34,7 +34,6 @@ alias dependency_multiatest /proj/lteli/Design/bin/dependency_multiatest/depende
 alias btx /home/eraosca/btx/btx
 setenv LESS '-M -I -R'
 
-module add git
 module add kdiff3
 
 
@@ -48,6 +47,7 @@ alias ls 'ls --color=auto'
 alias l. 'ls -d .* --color=auto'
 alias h history
 alias hc 'history | less +G'
+alias ma 'vim ~/.cshrc.user'
 
 alias mkdir 'mkdir -pv'
 # alias findin 'find . -maxdepth 1 -iname $1 -ls '
@@ -121,6 +121,7 @@ module add python
 ##################################
 # Git 
 ##################################
+module add git
 source  /proj/lterbsSwdi/ltegit_admin_jenkins/aliases/.gitaliases
 alias cdgit 'pushd $MY_GIT_TOP/'
 alias repo 'cd /repo/eyonduu/; cd lrat'
@@ -132,8 +133,10 @@ alias gs 'git status'
 alias ga 'git add'
 alias gb 'git branch'
 alias gc 'git commit'
+alias gcm 'git commit -m'
 alias gd 'git diff'
 alias go 'git checkout'
+alias gl 'git log'
 alias gfp 'git fetch -p'
 #pretty git one line git log
 alias gh 'git log --pretty=tformat:"%h %ad | %s%d [%an]" --graph --date=short'
