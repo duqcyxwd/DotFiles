@@ -1,0 +1,177 @@
+alias ltesetup 'ExecProjName -g lteli -v \!* lte rbs/1.0'
+#alias ccbranch /proj/lterbsSwdi/ccbranch/bin/ccbranch
+#
+
+alias mkview /proj/lteli/Design/bin/mkview 
+alias rmview 'ct rmview -tag'
+alias lsview 'ct lsview |grep elizhma'
+alias setview 'ct setview'
+alias lsco 'ct lsco -cview -all'
+alias ctci 'ct ci -nc'
+alias ctco 'ct co -nc'
+alias ccstream '/proj/lterbsSwdi/ccstream/latest/ccstream.sh rac'
+
+alias omf 'cd /vobs/erbs/omf'
+alias ueh 'cd /vobs/erbs/ueh'
+alias rnh 'cd /vobs/erbs/rnh'
+
+alias nedit /app/nedit/5.5/bin/nedit
+alias firefox /app/firefox/latest/firefox
+
+alias sshyoulab 'ssh youlabvnc02.seln.ete.ericsson.se'
+alias sftpyoulab 'sftp youlabvnc02.seln.ete.ericsson.se'
+
+module add rdesktop      
+module add cscope      
+
+alias viewer  /vobs/lte_testtools/sw/ltetracetools/bin/viewer
+alias ltng-decoder /vobs/lte_testtools/sw/ltng/bin/ltng-decoder
+alias lteflowfox /home/eedwwhi/decoder/lteflowfox.pl  
+
+alias swu_dependencies /proj/lteli/Design/bin/swu_dependencies/swu_dependencies 
+alias dependency_multiatest /proj/lteli/Design/bin/dependency_multiatest/dependency_multiatest
+
+alias btx /home/eraosca/btx/btx
+setenv LESS '-M -I -R'
+
+module add git
+module add kdiff3
+
+
+###################################
+# General shell stuff
+###################################
+
+alias ll '\ls -alX --color=auto'
+alias la 'ls -a --color=auto'
+alias ls 'ls --color=auto'
+alias l. 'ls -d .* --color=auto'
+alias h history
+alias hc 'history | less +G'
+
+alias mkdir 'mkdir -pv'
+# alias findin 'find . -maxdepth 1 -iname $1 -ls '
+
+
+# alias .     'pwd'
+alias ..    'cd ..'
+alias ../    'cd ..'
+alias ../.. 'cd ../..'
+alias ../../ 'cd ../..'
+alias ../../.. 'cd ../../..'
+alias ../../../ 'cd ../../..'
+alias .4 'cd ../../../../'
+alias .5 'cd ../../../../..'
+
+
+alias duf 'du . --max-depth=1 -h'
+
+###################################
+# Shell Setting
+setenv PAGER less
+###################################
+
+setenv LESS "--ignore-case --LONG-PROMPT --squeeze-blank-lines --HILITE-UNREAD --search-skip-screen --RAW-CONTROL-CHARS"
+bindkey "^R" i-search-back
+
+###################################
+# MCT
+###################################
+alias good-node-check '/proj/lterbsLablogOT/eyonduu/Sample_Script/good_node_check'
+alias gnc good-node-check
+alias fnc 'mct-node-status | grep dul20 | grep Lock -v | sort -k 3 | cut -c1-160 | less'
+alias fncl 'mct-node-status | grep Lock -v -m 10 | sort -k 3 | cut -c1-160'
+
+alias mct-node-status '/proj/ltemct/bin/mct-node-status'
+alias mct-node-lock '/proj/ltemct/bin/mct-node-lock'
+alias mns '/proj/ltemct/bin/mct-node-status'
+alias mnu '/proj/ltemct/bin/mct-node-unlock'
+alias mnl '/proj/ltemct/bin/mct-node-lock'
+alias mnlm 'yes | mct-node-lock $1 9h'
+
+alias tln '/home/eyonduu/Desktop/mct-lock/bin/dailytest/tglock_new'
+# /home/eyonduu/Desktop/mct-lock/bin/dailytest
+
+
+###################################
+# Stand alone
+###################################
+alias st 'pushd /proj/ltegte/release/'
+
+###################################
+# MoShell      
+###################################
+alias mosh /app/moshell/latest/moshell/moshell
+
+##################################
+# About alias itself
+##################################
+alias protoset 'source /proj/lterbsLablogOT/eyonduu/Common_Script_For_MCT/setGitRepoEnv'
+alias rs 'source ~/.cshrc.user'
+alias ca 'less ~/.cshrc.user +G'
+alias ac ca
+alias ae 'gvim ~/.cshrc.user'
+
+###################################
+# bbTraceParser        
+###################################
+module add gnuplot 
+module add python 
+
+##################################
+# Git 
+##################################
+source  /proj/lterbsSwdi/ltegit_admin_jenkins/aliases/.gitaliases
+alias cdgit 'pushd $MY_GIT_TOP/'
+alias repo 'cd /repo/eyonduu/; cd lrat'
+alias cr 'cd /tmp/repo/; rm -rf eyonduu'
+alias gita 'less /proj/lterbsSwdi/ltegit_admin_jenkins/aliases/.gitaliases'
+
+#git shortcuts
+alias gs 'git status'
+alias ga 'git add'
+alias gb 'git branch'
+alias gc 'git commit'
+alias gd 'git diff'
+alias go 'git checkout'
+alias gfp 'git fetch -p'
+#pretty git one line git log
+alias gh 'git log --pretty=tformat:"%h %ad | %s%d [%an]" --graph --date=short'
+#show only the file names changed in commit
+alias gsf 'git show --pretty="format:" --name-only'
+#run gitk
+alias gk 'gitk --all&'
+#show all git aliases
+alias gas 'alias|grep git'
+#clean all but the stuff the stuff that we would like preserved like .ccache, xmls catalog etc
+#clean -dxf will wipe everything requiring user to source gitenv again
+alias gclean 'pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
+
+
+##################################
+# CL find track info such as recommended UPs, baselines for UPs, etc
+# getTrackInfo -h
+# getTrackInfo 21.6
+# getTrackInfo 21.6  -db  -up CXP102051/21-R7FU  -lm  lteRbsCellLm.ppc
+#
+##################################
+if ( -e /opt/tools/bin/toolsinit ) then
+  eval `/opt/tools/bin/toolsinit`
+  eval `toolsetup getTrackInfo latest`
+endif
+
+
+
+##################################
+# Script for tags
+##################################
+
+
+alias tag_all "tag_upc; tag_up; tag_upc_test; tag_elib; tag_bbmc; tag_bbi"
+
+alias tag_upc 'find /repo/eyonduu/lrat/vobs/erbs/upc -type f -follow -name "*.[c|h]" | grep -v "/test/" > ~/tags/upc.files; find /repo/eyonduu/lrat/vobs/erbs/upc -follow -name "*.sig" | grep -v "/test/" >> ~/tags/upc.files; cscope -bq -i ~/tags/upc.files -f ~/tags/upc.cscope; '
+alias tag_upc_test 'find /repo/eyonduu/lrat/vobs/erbs/upc -type f -follow -name "*.[c|h]" | grep "/test/" > ~/tags/upc.files; find /repo/eyonduu/lrat/vobs/erbs/upc -follow -name "*.sig" | grep "/test/" >> ~/tags/upc_test.files; cscope -bq -i ~/tags/upc_test.files -f ~/tags/upc_test.cscope; '
+alias tag_up 'find /repo/eyonduu/lrat/vobs/erbs/up -type f -follow -name "*.[c|h]" | grep -v "/test/" > ~/tags/up.files; find /repo/eyonduu/lrat/vobs/erbs/up -follow -name "*.sig" | grep -v "/test/" >> ~/tags/up.files; cscope -bq -i ~/tags/up.files -f ~/tags/up.cscope'
+alias tag_elib 'find /repo/eyonduu/lrat/vobs/erbs/elib -type f -follow -name "*.[c|h]" | grep -v "/test/" > ~/tags/elib.files; find /repo/eyonduu/lrat/vobs/erbs/elib -follow -name "*.sig" | grep -v "/test/" >> ~/tags/elib.files; cscope -bq -i ~/tags/elib.files -f ~/tags/elib.cscope; '
+alias tag_bbmc 'find /repo/eyonduu/lrat/vobs/erbs/bbmc -type f -follow -name "*.[c|h]" | grep -v "/test/" > ~/tags/bbmc.files; find /repo/eyonduu/lrat/vobs/erbs/bbmc -follow -name "*.sig" | grep -v "/test/" >> ~/tags/bbmc.files; cscope -bq -i ~/tags/bbmc.files -f ~/tags/bbmc.cscope; '
+alias tag_bbi 'find /repo/eyonduu/lrat/vobs/crbs/bbi -type f -follow -name "*.[c|h]" | grep -v "/test/" > ~/tags/bbi.files; find /repo/eyonduu/lrat/vobs/erbs/bbi -follow -name "*.sig" | grep -v "/test/" >> ~/tags/bbi.files; cscope -bq -i ~/tags/bbi.files -f ~/tags/bbi.cscope; '
