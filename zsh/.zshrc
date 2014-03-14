@@ -14,6 +14,9 @@ alias rs="source ~/.zshrc"
 alias mz="vim ~/.zshrc"
 
 
+# Dir alias
+alias csubl='cd /Users/duyongqinchuan/Library/Application\ Support/Sublime\ Text\ 3/Packages/User'
+alias czsh='cd ~/.oh-my-zsh'
 
 #Common alias
 # alias ll='ls -la'
