@@ -211,15 +211,19 @@ alias ls='ls --color=auto'
 alias l.='ls -d .* --color=auto'
 alias h=history
 alias hc='history | less +G'
-alias ma='vim ~/.bashrc'
+alias ma='pushd ~ && subl .bashrc && popd'
 
+alias .='pwd'
+alias ..='cd ..'
 
 ###################################
 # general CD
 ###################################
 alias cpy='cd /cygdrive/c/Local\ Code/Python/trace\ receiver_scott'
 alias cdl='cd /cygdrive/c/Local\ Code/Python/Log_trace'
-alias rp='cdl && py app.py'
+alias pul='pushd /cygdrive/c/Local\ Code/Python/Log_trace'
+
+alias rp='pul && py app.py && popd'
 
 ##################################
 # About alias itself
