@@ -219,12 +219,13 @@ alias ..='cd ..'
 ###################################
 # general CD
 ###################################
-alias cpy='cd /cygdrive/c/Local\ Code/Python/trace\ receiver_scott'
+alias cpy='cd /cygdrive/c/Local\ Code/rtlogtool/frontend'
 alias cdl='cd /cygdrive/c/Local\ Code/Python/Log_trace'
 alias pul='pushd /cygdrive/c/Local\ Code/Python/Log_trace'
-
-alias rp='pul && py app.py && popd'
-
+alias rp='cd /cygdrive/c/Local\ Code/rtlogtool/frontend && py app.py'
+alias ckr='cd /cygdrive/x/rtlogtool/'
+alias csub='cd /cygdrive/c/My\ Program/Sublime\ Text\ Build\ 3059\ x64/Data/Packages/User'
+alias cn='cd /cygdrive/c/Users/eyonduu/Documents/TXT\ notes/Notes'
 ##################################
 # About alias itself
 ##################################
@@ -238,7 +239,10 @@ alias ae='gvim ~/.bashrc'
 ##################################
 # About Git
 ##################################
-git config --global color.ui true
+git config --global color.ui always
+git config --global color.status always
+git config --global color.diff always
+
 alias gs='git status'
 alias gs='git status'
 alias ga='git add'
@@ -259,3 +263,11 @@ alias gk='gitk --all&'
 alias gas='alias|grep git'
 #clean all but the stuff the stuff that we would like preserved like .ccache, xmls catalog etc
 #clean -dxf will wipe everything requiring user to source gitenv again
+
+alias LESS='-M -I -R'
+
+##################################
+# My Gvim Setting
+##################################
+alias mvim='/cygdrive/c/GVimPortable/App/vim/vim71/gvim.exe'
+
