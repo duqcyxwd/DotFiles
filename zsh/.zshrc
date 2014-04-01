@@ -22,15 +22,6 @@ alias czsh='cd ~/.oh-my-zsh'
 # alias ll='ls -la'
 # Git sliases
 git config --global color.ui true
-alias gs='git status'
-alias gs='git status'
-alias ga='git add'
-alias gb='git branch'
-alias gc='git commit'
-alias gcm='git commit -m'
-alias gd='git diff'
-alias go='git checkout'
-alias gl='git log'
 alias gfp='git fetch -p'
 #pretty git one line git log
 alias gh='git log --pretty=tformat:"%h %ad | %s%d [%an]" --graph --date=short'
