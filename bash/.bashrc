@@ -216,6 +216,8 @@ alias ma='pushd ~ && subl .bashrc && popd'
 alias .='pwd'
 alias ..='cd ..'
 
+alias cpwd='pwd | clip'
+
 ###################################
 # general CD
 ###################################
@@ -225,7 +227,7 @@ alias pul='pushd /cygdrive/c/Local\ Code/Python/Log_trace'
 alias rp='cd /cygdrive/c/Local\ Code/rtlogtool/frontend && py app.py'
 alias ckr='cd /cygdrive/x/rtlogtool/'
 alias csub='cd /cygdrive/c/My\ Program/Sublime\ Text\ Build\ 3059\ x64/Data/Packages/User'
-alias cn='cd /cygdrive/c/Users/eyonduu/Documents/TXT\ notes/Notes'
+alias cn='cd /cygdrive/c/Users/eyonduu/Documents/TXT_notes/Notes'
 ##################################
 # About alias itself
 ##################################
@@ -242,6 +244,8 @@ alias ae='gvim ~/.bashrc'
 git config --global color.ui always
 git config --global color.status always
 git config --global color.diff always
+
+alias gdvim='git difftool --tool=vimdiff --no-prompt'
 
 alias gs='git status'
 alias gs='git status'
