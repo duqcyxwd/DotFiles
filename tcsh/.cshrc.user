@@ -1,6 +1,5 @@
 alias ltesetup 'ExecProjName -g lteli -v \!* lte rbs/1.0'
 #alias ccbranch /proj/lterbsSwdi/ccbranch/bin/ccbranch
-#
 
 alias mkview /proj/lteli/Design/bin/mkview 
 alias rmview 'ct rmview -tag'
@@ -36,6 +35,7 @@ setenv LESS '-M -I -R'
 
 module add kdiff3
 
+alias ccc /home/eyonduu/My_Script_and_Tool/colorgcc.pl 
 
 ###################################
 # General shell stuff
@@ -52,7 +52,6 @@ alias ma 'vim ~/.cshrc.user'
 alias mkdir 'mkdir -pv'
 # alias findin 'find . -maxdepth 1 -iname $1 -ls '
 
-
 # alias .     'pwd'
 alias ..    'cd ..'
 alias ../    'cd ..'
@@ -63,8 +62,14 @@ alias ../../../ 'cd ../../..'
 alias .4 'cd ../../../../'
 alias .5 'cd ../../../../..'
 
-
 alias duf 'du . --max-depth=1 -h'
+
+###################################
+# general CD
+###################################
+
+alias cdl 'cd /home/eyonduu/pcap_parse/Log_trace_Ki'
+alias rp 'cdl && ./pcap_parse test.pcap'
 
 ###################################
 # Shell Setting
