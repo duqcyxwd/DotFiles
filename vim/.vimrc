@@ -10,6 +10,8 @@
 " Section: Key mappings {{{1
 "--------------------------------------------------------------------------
 
+<C-c> "*y " Copy to system clipbord
+
 " useful macros I use the most
 nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
 nmap \A :set formatoptions+=a<CR>:echo "autowrap enabled"<CR>
@@ -141,7 +143,34 @@ function ToggleHex()
   let &modifiable=l:oldmodifiable
 endfunction
 
+" Secition: Markdown function {{{1
+"-------------------------------------------------------------------------
+function! MarkdownLevel()
+    if getline(v:lnum) =~ '^# .*$'
+        return ">1"
+    endif
+    if getline(v:lnum) =~ '^## .*$'
+        return ">2"
+    endif
+    if getline(v:lnum) =~ '^### .*$'
+        return ">3"
+    endif
+    if getline(v:lnum) =~ '^#### .*$'
+        return ">4"
+    endif
+    if getline(v:lnum) =~ '^##### .*$'
+        return ">5"
+    endif
+    if getline(v:lnum) =~ '^###### .*$'
+        return ">6"
+    endif
+    return "=" 
+endfunction
+au BufEnter *.md setlocal foldexpr=MarkdownLevel()  
+au BufEnter *.md setlocal foldmethod=expr   
 
+" Section: Vundle {{{1
+" ------------------------------------------------------------------------
 " Section: Hacks {{{1
 "--------------------------------------------------------------------------
 
@@ -161,6 +190,11 @@ map Q <silent>
 map q: <silent>
 map K <silent>
 "map q <silent>
+
+" Why not use the space or return keys to toggle folds?
+nnoremap <space> za
+nnoremap <CR> za
+vnoremap <space> zf
 
 " Make the cursor stay on the same line when window switching {{{2
 
@@ -185,6 +219,9 @@ cno $c e <C-\>eCurrentFileDir()<CR>
 function! CurrentFileDir()
    return "e " . expand("%:p:h") . "/"
 endfunction
+
+" Emacs-like bindings in command line
+cno sov so ~/.vimrc
 
 " Section: Vim options {{{1
 "--------------------------------------------------------------------------
@@ -314,8 +351,12 @@ endif
 
 " A new Vim package system
 runtime bundle/vim-pathogen/autoload/pathogen.vim
+" runtime C:/cygwin64/home/eyonduu/.vim/bundle/vim-pathogen/autoload/pathogen.vim
+runtime pathogen.vim
 call pathogen#infect()
 call pathogen#helptags()
+
+" set rpt+=C:\\cygwin64\\home\\eyonduu\\.vim\\bundle\\vim-pathogen/vimfiles
 
 " for any plugins that use this, make their keymappings use comma
 let mapleader = ","
