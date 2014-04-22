@@ -10,40 +10,41 @@
 " Section: Key mappings {{{1
 "--------------------------------------------------------------------------
 
-<C-c> "*y " Copy to system clipbord
+" Copy to system clipbord
+map <C-c> *y
 
 " useful macros I use the most
-nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
-nmap \A :set formatoptions+=a<CR>:echo "autowrap enabled"<CR>
-nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
-nmap \c :TlistToggle<CR>
-nmap \d :%!perltidy<CR>
-nmap \e :NERDTreeToggle<CR>
-nmap \g :Gstatus<CR>
-nmap \l :setlocal number!<CR>:setlocal number?<CR>
-nmap \o :set paste!<CR>:set paste?<CR>
-nmap \q :nohlsearch<CR>
-nmap \s :setlocal invspell<CR>
-nmap \t :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>
-nmap \T :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>
-nmap \u :setlocal list!<CR>:setlocal list?<CR>
-nmap \w :setlocal wrap!<CR>:setlocal wrap?<CR>
-nmap \x :w<CR>:%! xmllint --format - <CR>
-nmap \Y :vertical resize 40<CR>:wincmd l<CR>
-nmap \y :exec "vertical resize " . (80 + (&number * &numberwidth))<CR>:wincmd l<CR>
-nmap \z :w<CR>:!<Up><CR>
+nmap \a :set formatoptions-=a:echo "autowrap disabled"
+nmap \A :set formatoptions+=a:echo "autowrap enabled"
+nmap \b :set nocin tw=80:set formatoptions+=a
+nmap \c :TlistToggle
+nmap \d :%!perltidy
+nmap \e :NERDTreeToggle
+nmap \g :Gstatus
+nmap \l :setlocal number!:setlocal number?
+nmap \o :set paste!:set paste?
+nmap \q :nohlsearch
+nmap \s :setlocal invspell
+nmap \t :set expandtab tabstop=4 shiftwidth=4 softtabstop=4
+nmap \T :set expandtab tabstop=2 shiftwidth=2 softtabstop=2
+nmap \u :setlocal list!:setlocal list?
+nmap \w :setlocal wrap!:setlocal wrap?
+nmap \x :w:%! xmllint --format - 
+nmap \Y :vertical resize 40:wincmd l
+nmap \y :exec "vertical resize " . (80 + (&number * &numberwidth)):wincmd l
+nmap \z :w:!<Up>
 
 " You don't know what you're missing if you don't use this.
-nmap <C-e> :e#<CR>
+nmap <C-e> :e#
 
 " Move between open buffers.
-map <C-n> :bnext<CR>
-map <C-p> :bprev<CR>
+map <C-n> :bnext
+map <C-p> :bprev
 
 " Let's try buffkill-vim using my favorite Emacs binding...
-nmap <Esc>k :BD<CR>
-nmap <M-k> :BD<CR>
-nmap <D-k> :BD<CR>
+nmap <Esc>k :BD
+nmap <M-k> :BD
+nmap <D-k> :BD
 
 " Emacs-like bindings in normal mode
 nmap <C-x>0 <C-w>c
@@ -90,12 +91,12 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 
 " Search for the word under the cursor in the current directory
-nmap <C-k> :Ag "\b<cword>\b" <CR>
+nmap <C-k> :Ag "\b<cword>\b" 
 
 " Alt-p pipes the current buffer to the current filetype as a command
 " (good for perl, python, ruby, shell, gnuplot...)
-nmap <M-p>  :call RunUsingCurrentFiletype()<CR>
-nmap <Esc>p :call RunUsingCurrentFiletype()<CR>
+nmap <M-p>  :call RunUsingCurrentFiletype()
+nmap <Esc>p :call RunUsingCurrentFiletype()
 function! RunUsingCurrentFiletype()
     execute 'write'
     execute '! clear; '.&filetype.' <% '
@@ -103,10 +104,10 @@ endfunction
 
 " Hex mode from http://vim.wikia.com/wiki/Improved_hex_editing
 " ex command for toggling hex mode - define mapping if desired
-command -bar Hexmode call ToggleHex()
+command! -bar Hexmode call ToggleHex()
 
 " helper function to toggle hex mode
-function ToggleHex()
+function! ToggleHex()
   " hex mode should be considered a read-only operation
   " save values for modified and read-only for restoration later,
   " and clear the read-only flag for now
@@ -187,14 +188,9 @@ map k gk
 " having Ex mode start or showing me the command history
 " is a complete pain in the ass if i mistype
 map Q <silent>
-map q: <silent>
+" map q: <silent>
 map K <silent>
 "map q <silent>
-
-" Why not use the space or return keys to toggle folds?
-nnoremap <space> za
-nnoremap <CR> za
-vnoremap <space> zf
 
 " Make the cursor stay on the same line when window switching {{{2
 
@@ -207,15 +203,15 @@ function! KeepCurrentLine(motion)
     endif
 endfunction
 
-nnoremap <C-w>h :call KeepCurrentLine('h')<CR>
-nnoremap <C-w>l :call KeepCurrentLine('l')<CR>
+nnoremap <C-w>h :call KeepCurrentLine('h')
+nnoremap <C-w>l :call KeepCurrentLine('l')
 
 " Section: Abbrevations {{{1
 "--------------------------------------------------------------------------
 
 " Vim command line: $c
 " URL: http://www.vim.org/tips/tip.php?tip_id=1055
-cno $c e <C-\>eCurrentFileDir()<CR>
+cno $c e <C-\>eCurrentFileDir()
 function! CurrentFileDir()
    return "e " . expand("%:p:h") . "/"
 endfunction
@@ -413,7 +409,7 @@ let g:ctrlp_custom_ignore = '\v\~$|\.(o|swp|pyc|wav|mp3|ogg|blend)$|(^|[/\\])\.(
 let g:ctrlp_working_path_mode = 0
 let g:ctrlp_dotfiles = 0
 let g:ctrlp_switch_buffer = 0
-nmap ; :CtrlPBuffer<CR>
+nmap ; :CtrlPBuffer
 
 " Powerline
 if has('gui_running')
@@ -528,5 +524,5 @@ highlight link markdownListMarker Todo
 " Section: Load ~/.vimlocal {{{1"{{{
 "--------------------------------------------------------------------------
 
-" now load specifics to this machine
+" now load specifics to this machine 
 "source ~/.vimlocal"}}}
