@@ -10,6 +10,9 @@
 " Section: Key mappings {{{1
 "--------------------------------------------------------------------------
 
+" Copy to system clipbord
+map <C-c> *y
+
 " useful macros I use the most
 nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
 nmap \A :set formatoptions+=a<CR>:echo "autowrap enabled"<CR>
@@ -40,7 +43,6 @@ map <C-p> :bprev<CR>
 
 " Let's try buffkill-vim using my favorite Emacs binding...
 nmap <Esc>k :BD<CR>
-nmap <M-k> :BD<CR>
 nmap <D-k> :BD<CR>
 
 " Emacs-like bindings in normal mode
@@ -88,12 +90,12 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 
 " Search for the word under the cursor in the current directory
-nmap <C-k> :Ag "\b<cword>\b" <CR>
+nmap <C-k> :Ag "\b<cword>\b"
 
 " Alt-p pipes the current buffer to the current filetype as a command
 " (good for perl, python, ruby, shell, gnuplot...)
-nmap <M-p>  :call RunUsingCurrentFiletype()<CR>
-nmap <Esc>p :call RunUsingCurrentFiletype()<CR>
+nmap <M-p>  :call RunUsingCurrentFiletype()
+nmap <Esc>p :call RunUsingCurrentFiletype()
 function! RunUsingCurrentFiletype()
     execute 'write'
     execute '! clear; '.&filetype.' <% '
@@ -101,10 +103,10 @@ endfunction
 
 " Hex mode from http://vim.wikia.com/wiki/Improved_hex_editing
 " ex command for toggling hex mode - define mapping if desired
-command -bar Hexmode call ToggleHex()
+command! -bar Hexmode call ToggleHex()
 
 " helper function to toggle hex mode
-function ToggleHex()
+function! ToggleHex()
   " hex mode should be considered a read-only operation
   " save values for modified and read-only for restoration later,
   " and clear the read-only flag for now
@@ -141,7 +143,34 @@ function ToggleHex()
   let &modifiable=l:oldmodifiable
 endfunction
 
+" Secition: Markdown function {{{1
+"-------------------------------------------------------------------------
+function! MarkdownLevel()
+    if getline(v:lnum) =~ '^# .*$'
+        return ">1"
+    endif
+    if getline(v:lnum) =~ '^## .*$'
+        return ">2"
+    endif
+    if getline(v:lnum) =~ '^### .*$'
+        return ">3"
+    endif
+    if getline(v:lnum) =~ '^#### .*$'
+        return ">4"
+    endif
+    if getline(v:lnum) =~ '^##### .*$'
+        return ">5"
+    endif
+    if getline(v:lnum) =~ '^###### .*$'
+        return ">6"
+    endif
+    return "=" 
+endfunction
+au BufEnter *.md setlocal foldexpr=MarkdownLevel()  
+au BufEnter *.md setlocal foldmethod=expr   
 
+" Section: Vundle {{{1
+" ------------------------------------------------------------------------
 " Section: Hacks {{{1
 "--------------------------------------------------------------------------
 
@@ -158,7 +187,7 @@ map k gk
 " having Ex mode start or showing me the command history
 " is a complete pain in the ass if i mistype
 map Q <silent>
-map q: <silent>
+" map q: <silent>
 map K <silent>
 "map q <silent>
 
@@ -185,6 +214,9 @@ cno $c e <C-\>eCurrentFileDir()<CR>
 function! CurrentFileDir()
    return "e " . expand("%:p:h") . "/"
 endfunction
+
+" Emacs-like bindings in command line
+cno sov so ~/.vimrc
 
 " Section: Vim options {{{1
 "--------------------------------------------------------------------------
@@ -314,8 +346,12 @@ endif
 
 " A new Vim package system
 runtime bundle/vim-pathogen/autoload/pathogen.vim
+" runtime C:/cygwin64/home/eyonduu/.vim/bundle/vim-pathogen/autoload/pathogen.vim
+runtime pathogen.vim
 call pathogen#infect()
 call pathogen#helptags()
+
+" set rpt+=C:\\cygwin64\\home\\eyonduu\\.vim\\bundle\\vim-pathogen/vimfiles
 
 " for any plugins that use this, make their keymappings use comma
 let mapleader = ","
@@ -487,5 +523,5 @@ highlight link markdownListMarker Todo
 " Section: Load ~/.vimlocal {{{1"{{{
 "--------------------------------------------------------------------------
 
-" now load specifics to this machine
+" now load specifics to this machine 
 "source ~/.vimlocal"}}}

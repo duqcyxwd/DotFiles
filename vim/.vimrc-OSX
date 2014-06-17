@@ -8,67 +8,6 @@
 " Chuan's .vimrc file From Scott
 
 
-" Section: Key mappings {{{1
-"--------------------------------------------------------------------------
-
-" useful macros I use the most
-nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
-nmap \A :set formatoptions+=a<CR>:echo "autowrap enabled"<CR>
-nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
-nmap \c :TlistToggle<CR>
-nmap \d :%!perltidy<CR>
-nmap \e :NERDTreeToggle<CR>
-nmap \g :Gstatus<CR>
-nmap \l :setlocal number!<CR>:setlocal number?<CR>
-nmap \o :set paste!<CR>:set paste?<CR>
-nmap \q :nohlsearch<CR>
-nmap \s :setlocal invspell<CR>
-nmap \t :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>
-nmap \T :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>
-nmap \u :setlocal list!<CR>:setlocal list?<CR>
-nmap \w :setlocal wrap!<CR>:setlocal wrap?<CR>
-nmap \x :w<CR>:%! xmllint --format - <CR>
-nmap \Y :vertical resize 40<CR>:wincmd l<CR>
-nmap \y :exec "vertical resize " . (80 + (&number * &numberwidth))<CR>:wincmd l<CR>
-nmap \z :w<CR>:!<Up><CR>
-
-" You don't know what you're missing if you don't use this.
-nmap <C-e> :e#<CR>
-
-" Move between open buffers.
-map <C-n> :bnext<CR>
-map <C-p> :bprev<CR>
-
-" Let's try buffkill-vim using my favorite Emacs binding...
-nmap <Esc>k :BD<CR>
-nmap <M-k> :BD<CR>
-nmap <D-k> :BD<CR>
-
-" Emacs-like bindings in normal mode
-nmap <C-x>0 <C-w>c
-nmap <C-x>1 <C-w>o
-nmap <C-x>1 <C-w>s
-nmap <C-x>1 <C-w>v
-nmap <C-x>o <C-w><C-w>
-nmap <M-o> <C-w><C-w>
-
-map <C-=>1 :color aiseered<enter>:source ~/.vim/plugin/mark.vim<enter>
-map <C-=>2 :color baycomb<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>3 :color borland<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>4 :color biogoo <enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>5 :color chocolateliquor<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>6 :color dusk<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>7 :color dw_red<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>8 :color ekvoli<enter>:source ~/.vim/plugin/mark.vim<enter> 
-map <C-=>9 :color tabula<enter>:source ~/.vim/plugin/mark.vim<enter> 
-
-" Emacs-like bindings in insert mode
-imap <C-e> <C-o>$
-
-" Emacs-like bindings in command line
-cno sov so ~/.vimrc
-
-
 " Section: Vundle Setting Pluging {{{1
 "--------------------------------------------------------------------------
 
@@ -125,11 +64,6 @@ filetype plugin indent on     " required
 " see :h vundle for more details or wiki for FAQ
 " NOTE: comments after Plugin commands are not allowed.
 " Put your stuff after this line
-
-
-" Section: Key mappings {{{1 
-"--------------------------------------------------------------------------
-
 
 
 " Section: Other stuff {{{1
