@@ -7,11 +7,37 @@
 "
 " Chuan's .vimrc file From Scott
 "
+
+" Section: Vundle setting {{{1
+"--------------------------------------------------------------------------
+set nocompatible              " be iMproved, required
+filetype off                  " required
+
+" set the runtime path to include Vundle and initialize
+set rtp+=~/.vim/bundle/Vundle.vim
+
+" Keep Plugin commands between vundle#begin/end.
+call vundle#begin()
+" let Vundle manage Vundle, required
+Plugin 'gmarik/Vundle.vim'
+Plugin 'tpope/vim-fugitive'
+Plugin 'L9'
+Plugin 'kien/ctrlp.vim'
+"Plugin 'nerdcommenter'
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
+filetype plugin indent on    " required
+" To ignore plugin indent changes, instead use:
+"filetype plugin on
+"
+" Brief help
+" :PluginList          - list configured plugins
+" :PluginInstall(!)    - install (update) plugins
+" :PluginSearch(!) foo - search (or refresh cache first) for foo
+" :PluginClean(!)      - confirm (or auto-approve) removal of unused plugins
+
 " Section: Key mappings {{{1
 "--------------------------------------------------------------------------
-
-" Copy to system clipbord
-map <C-c> *y
 
 " useful macros I use the most
 nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
@@ -43,6 +69,7 @@ map <C-p> :bprev<CR>
 
 " Let's try buffkill-vim using my favorite Emacs binding...
 nmap <Esc>k :BD<CR>
+nmap <M-k> :BD<CR>
 nmap <D-k> :BD<CR>
 
 " Emacs-like bindings in normal mode
@@ -90,12 +117,12 @@ map <C-h> <C-W>h
 map <C-l> <C-W>l
 
 " Search for the word under the cursor in the current directory
-nmap <C-k> :Ag "\b<cword>\b"
+nmap <C-k> :Ag "\b<cword>\b" <CR>
 
 " Alt-p pipes the current buffer to the current filetype as a command
 " (good for perl, python, ruby, shell, gnuplot...)
-nmap <M-p>  :call RunUsingCurrentFiletype()
-nmap <Esc>p :call RunUsingCurrentFiletype()
+nmap <M-p>  :call RunUsingCurrentFiletype()<CR>
+nmap <Esc>p :call RunUsingCurrentFiletype()<CR>
 function! RunUsingCurrentFiletype()
     execute 'write'
     execute '! clear; '.&filetype.' <% '
@@ -103,10 +130,10 @@ endfunction
 
 " Hex mode from http://vim.wikia.com/wiki/Improved_hex_editing
 " ex command for toggling hex mode - define mapping if desired
-command! -bar Hexmode call ToggleHex()
+command -bar Hexmode call ToggleHex()
 
 " helper function to toggle hex mode
-function! ToggleHex()
+function ToggleHex()
   " hex mode should be considered a read-only operation
   " save values for modified and read-only for restoration later,
   " and clear the read-only flag for now
@@ -142,35 +169,6 @@ function! ToggleHex()
   let &readonly=l:oldreadonly
   let &modifiable=l:oldmodifiable
 endfunction
-
-" Secition: Markdown function {{{1
-"-------------------------------------------------------------------------
-function! MarkdownLevel()
-    if getline(v:lnum) =~ '^# .*$'
-        return ">1"
-    endif
-    if getline(v:lnum) =~ '^## .*$'
-        return ">2"
-    endif
-    if getline(v:lnum) =~ '^### .*$'
-        return ">3"
-    endif
-    if getline(v:lnum) =~ '^#### .*$'
-        return ">4"
-    endif
-    if getline(v:lnum) =~ '^##### .*$'
-        return ">5"
-    endif
-    if getline(v:lnum) =~ '^###### .*$'
-        return ">6"
-    endif
-    return "=" 
-endfunction
-au BufEnter *.md setlocal foldexpr=MarkdownLevel()  
-au BufEnter *.md setlocal foldmethod=expr   
-
-" Section: Vundle {{{1
-" ------------------------------------------------------------------------
 " Section: Hacks {{{1
 "--------------------------------------------------------------------------
 
@@ -184,15 +182,18 @@ au BufEnter *.md setlocal foldmethod=expr
 map j gj
 map k gk
 
+" Insert empty line
+nnoremap <silent><A-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
+nnoremap <silent><A-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
+
 " having Ex mode start or showing me the command history
 " is a complete pain in the ass if i mistype
 map Q <silent>
-" map q: <silent>
+map q: <silent>
 map K <silent>
 "map q <silent>
 
 " Make the cursor stay on the same line when window switching {{{2
-
 function! KeepCurrentLine(motion)
     let theLine = line('.')
     let theCol = col('.')
@@ -205,6 +206,7 @@ endfunction
 nnoremap <C-w>h :call KeepCurrentLine('h')<CR>
 nnoremap <C-w>l :call KeepCurrentLine('l')<CR>
 
+
 " Section: Abbrevations {{{1
 "--------------------------------------------------------------------------
 
@@ -214,10 +216,6 @@ cno $c e <C-\>eCurrentFileDir()<CR>
 function! CurrentFileDir()
    return "e " . expand("%:p:h") . "/"
 endfunction
-
-" Emacs-like bindings in command line
-cno sov so ~/.vimrc
-
 " Section: Vim options {{{1
 "--------------------------------------------------------------------------
 
@@ -345,13 +343,10 @@ endif
 
 
 " A new Vim package system
-runtime bundle/vim-pathogen/autoload/pathogen.vim
-" runtime C:/cygwin64/home/eyonduu/.vim/bundle/vim-pathogen/autoload/pathogen.vim
-runtime pathogen.vim
-call pathogen#infect()
+runtime pathogen-bundle/vim-pathogen/autoload/pathogen.vim
+call pathogen#infect('~/.vim/pathogen-bundle/{}')
+" call pathogen#infect()
 call pathogen#helptags()
-
-" set rpt+=C:\\cygwin64\\home\\eyonduu\\.vim\\bundle\\vim-pathogen/vimfiles
 
 " for any plugins that use this, make their keymappings use comma
 let mapleader = ","
@@ -426,6 +421,7 @@ filetype plugin indent on
 
 " Section: Color and syntax {{{1
 "--------------------------------------------------------------------------
+:set foldmethod=syntax
 
 " Helper to initialize Zenburn colors in 256-color mode.
 colorscheme desert
@@ -523,5 +519,5 @@ highlight link markdownListMarker Todo
 " Section: Load ~/.vimlocal {{{1"{{{
 "--------------------------------------------------------------------------
 
-" now load specifics to this machine 
+" now load specifics to this machine
 "source ~/.vimlocal"}}}
