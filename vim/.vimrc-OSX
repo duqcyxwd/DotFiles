@@ -17,40 +17,48 @@ set nocompatible              " be iMproved, required
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/vundle/
-call vundle#rc()
+set rtp+=~/.vim/bundle/Vundle/
+call vundle#begin()
 " alternatively, pass a path where Vundle should install plugins
 "let path = '~/some/path/here'
 "call vundle#rc(path)
 
 " let Vundle manage Vundle, required
 Plugin 'gmarik/vundle'
+Plugin 'L9' " Required
 
 " The following are examples of different formats supported.
 " Keep Plugin commands between here and filetype plugin indent on.
+
 " scripts on GitHub repos
 Plugin 'tpope/vim-fugitive'
 Plugin 'Lokaltog/vim-easymotion'
 Plugin 'tpope/vim-rails.git'
 Plugin 'tomtom/tcomment_vim'
+Plugin 'kien/ctrlp.vim'
+"Plugin 'nerdcommenter'
+"
+"Gist 
+Plugin 'mattn/webapi-vim'
+Plugin 'mattn/gist-vim'
+"Markdown
+Plugin 'plasticboy/vim-markdown'
+Plugin 'terryma/vim-multiple-cursors'
+
+
 " The sparkup vim script is in a subdirectory of this repo called vim.
 " Pass the path to set the runtimepath properly.
 Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " scripts from http://vim-scripts.org/vim/scripts.html
-Plugin 'L9'
 Plugin 'FuzzyFinder'
 " scripts not on GitHub
-Plugin 'git://git.wincent.com/command-t.git'
+" Plugin 'git://git.wincent.com/command-t.git'
 " git repos on your local machine (i.e. when working on your own plugin)
 " Plugin 'file:///home/gmarik/path/to/plugin'
 " ...
 
-"Gist 
-Bundle 'mattn/webapi-vim'
-Bundle 'mattn/gist-vim'
-"Markdown
-Bundle 'plasticboy/vim-markdown'
-
+" All of your Plugins must be added before the following line
+call vundle#end()            " required
 filetype plugin indent on     " required
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
@@ -66,7 +74,168 @@ filetype plugin indent on     " required
 " Put your stuff after this line
 
 
+" Section: Key mappings {{{1
+"--------------------------------------------------------------------------
+
+" useful macros I use the most
+nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
+nmap \A :set formatoptions+=a<CR>:echo "autowrap enabled"<CR>
+nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
+nmap \c :TlistToggle<CR>
+nmap \d :%!perltidy<CR>
+nmap \e :NERDTreeToggle<CR>
+nmap \g :Gstatus<CR>
+nmap \l :setlocal number!<CR>:setlocal number?<CR>
+nmap \o :set paste!<CR>:set paste?<CR>
+nmap \q :nohlsearch<CR>
+nmap \s :setlocal invspell<CR>
+nmap \t :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>
+nmap \T :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>
+nmap \u :setlocal list!<CR>:setlocal list?<CR>
+nmap \w :setlocal wrap!<CR>:setlocal wrap?<CR>
+nmap \x :w<CR>:%! xmllint --format - <CR>
+nmap \Y :vertical resize 40<CR>:wincmd l<CR>
+nmap \y :exec "vertical resize " . (80 + (&number * &numberwidth))<CR>:wincmd l<CR>
+nmap \z :w<CR>:!<Up><CR>
+
+" You don't know what you're missing if you don't use this.
+nmap <C-e> :e#<CR>
+
+" Move between open buffers.
+map <C-n> :bnext<CR>
+map <C-p> :bprev<CR>
+
+" Let's try buffkill-vim using my favorite Emacs binding...
+nmap <Esc>k :BD<CR>
+nmap <M-k> :BD<CR>
+nmap <D-k> :BD<CR>
+
+" Emacs-like bindings in normal mode
+nmap <C-x>0 <C-w>c
+nmap <C-x>1 <C-w>o
+nmap <C-x>1 <C-w>s
+nmap <C-x>1 <C-w>v
+nmap <C-x>o <C-w><C-w>
+nmap <M-o> <C-w><C-w>
+
+map <C-=>1 :color aiseered<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>2 :color baycomb<enter>:source ~/.vim/plugin/mark.vim<enter>  
+map <C-=>3 :color borland<enter>:source ~/.vim/plugin/mark.vim<enter>  
+map <C-=>4 :color biogoo <enter>:source ~/.vim/plugin/mark.vim<enter>  
+map <C-=>5 :color chocolateliquor<enter>:source ~/.vim/plugin/mark.vim<enter>  
+map <C-=>6 :color dusk<enter>:source ~/.vim/plugin/mark.vim<enter>  
+map <C-=>7 :color dw_red<enter>:source ~/.vim/plugin/mark.vim<enter>  
+map <C-=>8 :color ekvoli<enter>:source ~/.vim/plugin/mark.vim<enter> 
+map <C-=>9 :color tabula<enter>:source ~/.vim/plugin/mark.vim<enter> 
+
+" Emacs-like bindings in insert mode
+imap <C-e> <C-o>$
+
+" Emacs-like bindings in command line
+cnoremap <C-a>  <Home>
+cnoremap <C-b>  <Left>
+cnoremap <C-f>  <Right>
+cnoremap <C-d>  <Delete>
+cnoremap <M-b>  <S-Left>
+cnoremap <M-f>  <S-Right>
+cnoremap <M-d>  <S-right><Delete>
+cnoremap <Esc>b <S-Left>
+cnoremap <Esc>f <S-Right>
+cnoremap <Esc>d <S-right><Delete>
+cnoremap <C-g>  <C-c>
+
+" Why not use the space or return keys to toggle folds?
+nnoremap <space> za
+nnoremap <CR> za
+vnoremap <space> zf
+
+map <C-j> <C-W>j
+map <C-k> <C-W>k
+map <C-h> <C-W>h
+map <C-l> <C-W>l
+
+" Search for the word under the cursor in the current directory
+nmap <C-k> :Ag "\b<cword>\b" <CR>
+
+
+" Alt-p pipes the current buffer to the current filetype as a command
+" (good for perl, python, ruby, shell, gnuplot...)
+nmap <M-p>  :call RunUsingCurrentFiletype()<CR>
+nmap <Esc>p :call RunUsingCurrentFiletype()<CR>
+function! RunUsingCurrentFiletype()
+    execute 'write'
+    execute '! clear; '.&filetype.' <% '
+endfunction
+
+
+" Section: Markdown function {{{1
+"-------------------------------------------------------------------------
+function! MarkdownLevel()
+    if getline(v:lnum) =~ '^# .*$'
+        return ">1"
+    endif
+    if getline(v:lnum) =~ '^## .*$'
+        return ">2"
+    endif
+    if getline(v:lnum) =~ '^### .*$'
+        return ">3"
+    endif
+    if getline(v:lnum) =~ '^#### .*$'
+        return ">4"
+    endif
+    if getline(v:lnum) =~ '^##### .*$'
+        return ">5"
+    endif
+    if getline(v:lnum) =~ '^###### .*$'
+        return ">6"
+    endif
+    return "=" 
+endfunction
+au BufEnter *.md setlocal foldexpr=MarkdownLevel()  
+au BufEnter *.md setlocal foldmethod=expr   
+
+
+" Section: Hacks {{{1
+"--------------------------------------------------------------------------
+
+" Make j & k linewise {{{2
+
+" turn off linewise keys -- normally, the `j' and `k' keys move the cursor down
+" one entire line. with line wrapping on, this can cause the cursor to actually
+" skip a few lines on the screen because it's moving from line N to line N+1 in
+" the file. I want this to act more visually -- I want `down' to mean the next
+" line on the screen
+map j gj
+map k gk
+
+" Insert empty line
+nnoremap <silent><A-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
+nnoremap <silent><A-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
+
+" having Ex mode start or showing me the command history
+" is a complete pain in the ass if i mistype
+map Q <silent>
+map q: <silent>
+map K <silent>
+"map q <silent>
+
+" Make the cursor stay on the same line when window switching {{{2
+function! KeepCurrentLine(motion)
+    let theLine = line('.')
+    let theCol = col('.')
+    exec 'wincmd ' . a:motion
+    if &diff
+        call cursor(theLine, theCol)
+    endif
+endfunction
+
+nnoremap <C-w>h :call KeepCurrentLine('h')<CR>
+nnoremap <C-w>l :call KeepCurrentLine('l')<CR>
+
+
+
 " Section: Other stuff {{{1
+"-------------------------------------------------------------------------
 
 " let g:solarized_termcolors=256
 colorscheme solarized
@@ -170,5 +339,5 @@ endif
 " Section: Load ~/.vimlocal {{{1"{{{
 "--------------------------------------------------------------------------
 
-" now load specifics to this machine
+" now load specifics to this machine :)
 "source ~/.vimlocal"}}}
