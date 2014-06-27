@@ -86,6 +86,8 @@ nmap \d :%!perltidy<CR>
 nmap \e :NERDTreeToggle<CR>
 nmap \g :Gstatus<CR>
 nmap \n :setlocal number!<CR>:setlocal number?<CR>
+nmap \l :set foldcolumn=0<CR>
+nmap \L :set foldcolumn=2<CR>
 nmap \o :set paste!<CR>:set paste?<CR>
 nmap \q :nohlsearch<CR>
 nmap \s :setlocal invspell<CR>
@@ -107,7 +109,7 @@ map <C-p> :bprev<CR>
 
 " Let's try buffkill-vim using my favorite Emacs binding...
 nmap <Esc>k :BD<CR>
-nmap <M-k> :BD<CR>
+nmap <M-k> :BD<CR>"{{{"}}}
 nmap <D-k> :BD<CR>
 
 " Emacs-like bindings in normal mode
@@ -236,7 +238,7 @@ nnoremap <C-w>l :call KeepCurrentLine('l')<CR>
 
 
 
-cno sov so ~/.vimrc
+cno sov so ~/.vimrc<CR>:echo "reload .vimrc"<CR>
 
 " Section: Vim options {{{1
 "--------------------------------------------------------------------------
@@ -480,12 +482,13 @@ highlight clear LineNr
 highlight! def link LineNr Ignore
 
 " nice-looking hilight if I remember to set my terminal colors
-highlight clear Search
+"highlight clear Search
 highlight Search term=NONE cterm=NONE ctermfg=white ctermbg=black
 
 " make hilighted matching parents less offensive
 highlight clear MatchParen
 highlight link MatchParen Search
+
 " colors for NERD_tree
 highlight def link NERDTreeRO NERDTreeFile
 
