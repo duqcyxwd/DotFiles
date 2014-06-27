@@ -34,9 +34,9 @@ Plugin 'L9' " Required
 Plugin 'tpope/vim-fugitive'
 Plugin 'Lokaltog/vim-easymotion'
 Plugin 'tpope/vim-rails.git'
-Plugin 'tomtom/tcomment_vim'
 Plugin 'kien/ctrlp.vim'
-"Plugin 'nerdcommenter'
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/nerdcommenter'
 "
 "Gist 
 Plugin 'mattn/webapi-vim'
@@ -85,7 +85,7 @@ nmap \c :TlistToggle<CR>
 nmap \d :%!perltidy<CR>
 nmap \e :NERDTreeToggle<CR>
 nmap \g :Gstatus<CR>
-nmap \l :setlocal number!<CR>:setlocal number?<CR>
+nmap \n :setlocal number!<CR>:setlocal number?<CR>
 nmap \o :set paste!<CR>:set paste?<CR>
 nmap \q :nohlsearch<CR>
 nmap \s :setlocal invspell<CR>
@@ -254,6 +254,7 @@ set fillchars=vert:\ ,stl:\ ,stlnc:\ ,fold:-,diff:┄
                             " Unicode chars for diffs/folds, and rely on
                             " Colors for window borders
 silent! set foldmethod=marker " Use braces by default
+set foldmethod=syntax
 
 set formatoptions=tcqn1     " t - autowrap normal text
                             " c - autowrap comments
@@ -294,7 +295,7 @@ set smartcase               " Lets you search for ALL CAPS
 set softtabstop=4           " Spaces 'feel' like tabs
 set suffixes+=.pyc          " Ignore these files when tab-completing
 set tabstop=4               " The One True Tab
-set notitle                 " Don't set the title of the Vim window
+set title                 " Don't set the title of the Vim window
 set wildmenu                " Show possible completions on command line
 set wildmode=list:longest,full " List all options and complete
 set wildignore=*.class,*.o,*~,*.pyc,.git,node_modules  " Ignore certain files in tab-completion
@@ -363,21 +364,122 @@ call pathogen#infect('~/.vim/pathogen-bundle/{}')
 " call pathogen#infect()
 call pathogen#helptags()
 
+" NERD_tree.vim
+let NERDTreeIgnore = ['\~$', '\.pyc$']
+
+" ctrlp.vim (replaces FuzzyFinder and Command-T)
+let g:ctrlp_map = '<Leader>t'
+let g:ctrlp_match_window_bottom = 0
+let g:ctrlp_match_window_reversed = 0
+let g:ctrlp_custom_ignore = '\v\~$|\.(o|swp|pyc|wav|mp3|ogg|blend)$|(^|[/\\])\.(hg|git|bzr)($|[/\\])|__init__\.py'
+let g:ctrlp_working_path_mode = 0
+let g:ctrlp_dotfiles = 0
+let g:ctrlp_switch_buffer = 0
+nmap ; :CtrlPBuffer<CR>
+
+" Powerline
+if has('gui_running')
+  let g:Powerline_symbols = "unicode"
+endif
+
+" Section: Color and syntax {{{1
+"--------------------------------------------------------------------------
+
+" Helper to initialize Zenburn colors in 256-color mode.
+" let g:solarized_termcolors=256
+set background=dark
+colorscheme solarized
+" colorscheme desert
+function! ColorTermZenburn()
+  colorscheme zenburn
+  highlight Normal ctermbg=234
+  let g:zenburn_high_Contrast = 1
+endfunction
+
+" Make sure colored syntax mode is on, and make it Just Work with newer 256
+" color terminals like iTerm2.
+if !has('gui_running')
+  if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+    set t_Co=256
+    let &t_ti = "\<Esc>[?47h"
+    let &t_te = "\<Esc>[?47l"
+    call ColorTermZenburn()
+  elseif has("terminfo")
+    colorscheme default
+    set t_Co=8
+    let &t_ti = "\<Esc>[?47h"
+    let &t_te = "\<Esc>[?47l"
+    set t_Sf=[3%p1%dm
+    set t_Sb=[4%p1%dm
+  else
+    colorscheme default
+    set t_Co=8
+    let &t_ti = "\<Esc>[?47h"
+    let &t_te = "\<Esc>[?47l"
+    set t_Sf=[3%dm
+    set t_Sb=[4%dm
+  endif
+endif
+syntax on
+
+" window splits & ruler were too bright - change to white on grey
+" (shouldn't change GUI or non-color term appearance)
+highlight StatusLine   cterm=NONE ctermbg=blue ctermfg=white
+highlight StatusLineNC cterm=NONE ctermbg=black ctermfg=white
+highlight VertSplit    cterm=NONE ctermbg=black ctermfg=white
+
+" turn off coloring for CDATA
+highlight def link xmlCdata NONE
+
+" custom incorrect spelling colors
+highlight SpellBad     term=underline cterm=underline ctermbg=NONE ctermfg=red
+highlight SpellCap     term=underline cterm=underline ctermbg=NONE ctermfg=blue
+highlight SpellRare    term=underline cterm=underline ctermbg=NONE ctermfg=magenta
+highlight SpellLocal   term=underline cterm=underline ctermbg=NONE ctermfg=cyan
+
+" ignore should be... ignored
+highlight Ignore cterm=bold ctermfg=black
+highlight clear FoldColumn
+highlight def link FoldColumn Ignore
+highlight clear Folded
+highlight link Folded Ignore
+highlight clear LineNr
+highlight! def link LineNr Ignore
+
+" nice-looking hilight if I remember to set my terminal colors
+highlight clear Search
+highlight Search term=NONE cterm=NONE ctermfg=white ctermbg=black
+
+" make hilighted matching parents less offensive
+highlight clear MatchParen
+highlight link MatchParen Search
+" colors for NERD_tree
+highlight def link NERDTreeRO NERDTreeFile
+
+" make trailing spaces visible
+highlight SpecialKey ctermbg=Yellow guibg=Yellow
+
+" make menu selections visible
+highlight PmenuSel ctermfg=black ctermbg=magenta
+
+" the sign column slows down remote terminals
+highlight clear SignColumn
+highlight link SignColumn Ignore
+
+" Markdown could be more fruit salady.
+highlight link markdownH1 PreProc
+highlight link markdownH2 PreProc
+highlight link markdownLink Character
+highlight link markdownBold String
+highlight link markdownItalic Statement
+highlight link markdownCode Delimiter
+highlight link markdownCodeBlock Delimiter
+highlight link markdownListMarker Todo
+
+
 " Section: Other stuff {{{1
 "-------------------------------------------------------------------------
 
-" let g:solarized_termcolors=256
-colorscheme solarized
-set number
-set background=dark
-
-" Make Vim more useful
-set nocompatible
-" Use the OS clipboard by default (on versions compiled with `+clipboard`)
-" Set color scheme!¬
-set clipboard=unnamed
-" Enhance command-line completion
-set wildmenu
 " Allow cursor keys in insert mode
 set esckeys
 " Allow backspace in insert mode
@@ -413,37 +515,14 @@ set tabstop=2
 set number
 " Show “invisible” characters
 set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
-set list
-" Highlight searches
-set hlsearch
-" Ignore case of searches
-set ignorecase
-" Highlight dynamically as pattern is typed
-set incsearch
-" Always show status line
-set laststatus=2
-" Respect modeline in files
-set modeline
-set modelines=4
-" Enable mouse in all modes
-set mouse=a
-" Disable error bells
-set noerrorbells
 " Don’t reset cursor to start of line when moving around.
 set nostartofline
-" Show the cursor position
-set ruler
 " Don’t show the intro message when starting Vim
-set shortmess=atI
+" set shortmess=atI
 " Show the current mode
 set showmode
-" Show the filename in the window titlebar
-set title
 " Show the (partial) command as it’s being typed
 set showcmd
-
-" Start scrolling three lines before the horizontal window border
-set scrolloff=3
 
 " Strip trailing whitespace (,ss)
 function! StripWhitespace()
