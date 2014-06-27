@@ -115,8 +115,6 @@ nmap <D-k> :BD<CR>
 " Emacs-like bindings in normal mode
 nmap <C-x>0 <C-w>c
 nmap <C-x>1 <C-w>o
-nmap <C-x>1 <C-w>s
-nmap <C-x>1 <C-w>v
 nmap <C-x>o <C-w><C-w>
 nmap <M-o> <C-w><C-w>
 
@@ -153,7 +151,6 @@ vnoremap <space> zf
 
 nmap <C-j> <C-W>j
 nmap <C-k> <C-W>k
-
 nmap <C-h> <C-W>h
 nmap <C-l> <C-W>l
 
