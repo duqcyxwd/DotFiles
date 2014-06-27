@@ -38,7 +38,7 @@ Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 "
-"Gist 
+"Gist
 Plugin 'mattn/webapi-vim'
 Plugin 'mattn/gist-vim'
 "Markdown
@@ -119,14 +119,14 @@ nmap <C-x>o <C-w><C-w>
 nmap <M-o> <C-w><C-w>
 
 map <C-=>1 :color aiseered<enter>:source ~/.vim/plugin/mark.vim<enter>
-map <C-=>2 :color baycomb<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>3 :color borland<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>4 :color biogoo <enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>5 :color chocolateliquor<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>6 :color dusk<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>7 :color dw_red<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>8 :color ekvoli<enter>:source ~/.vim/plugin/mark.vim<enter> 
-map <C-=>9 :color tabula<enter>:source ~/.vim/plugin/mark.vim<enter> 
+map <C-=>2 :color baycomb<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>3 :color borland<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>4 :color biogoo <enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>5 :color chocolateliquor<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>6 :color dusk<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>7 :color dw_red<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>8 :color ekvoli<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>9 :color tabula<enter>:source ~/.vim/plugin/mark.vim<enter>
 
 " Emacs-like bindings in insert mode
 imap <C-e> <C-o>$
@@ -154,6 +154,8 @@ map <C-k> <C-W>k
 map <C-h> <C-W>h
 map <C-l> <C-W>l
 
+map <C-J> <C-W>j<C-W>_ " open and maximize the split below
+map <C-K> <C-W>k<C-W>_ " open and maximize the split above
 " Search for the word under the cursor in the current directory
 nmap <C-k> :Ag "\b<cword>\b" <CR>
 
@@ -189,10 +191,10 @@ function! MarkdownLevel()
     if getline(v:lnum) =~ '^###### .*$'
         return ">6"
     endif
-    return "=" 
+    return "="
 endfunction
-au BufEnter *.md setlocal foldexpr=MarkdownLevel()  
-au BufEnter *.md setlocal foldmethod=expr   
+au BufEnter *.md setlocal foldexpr=MarkdownLevel()
+au BufEnter *.md setlocal foldmethod=expr
 
 
 " Section: Hacks {{{1
@@ -233,6 +235,7 @@ nnoremap <C-w>h :call KeepCurrentLine('h')<CR>
 nnoremap <C-w>l :call KeepCurrentLine('l')<CR>
 
 
+
 cno sov so ~/.vimrc
 
 " Section: Vim options {{{1
@@ -257,8 +260,8 @@ set fileformats=unix,dos,mac  " Prefer Unix
 set fillchars=vert:\ ,stl:\ ,stlnc:\ ,fold:-,diff:┄
                             " Unicode chars for diffs/folds, and rely on
                             " Colors for window borders
-silent! set foldmethod=marker " Use braces by default
 set foldmethod=syntax
+silent! set foldmethod=marker " Use braces by default
 
 set formatoptions=tcqn1     " t - autowrap normal text
                             " c - autowrap comments
@@ -282,7 +285,7 @@ set gdefault                " Add the g flag to search/replace by default
 " set list                    " Show invisble characters in listchars
 set listchars=tab:▶\ ,trail:◀,extends:»,precedes:«
                             " Unicode characters for various things
-set listchars+=eol:¬,nbsp:_ " Show “invisible” characters
+" set listchars+=eol:¬,nbsp:_ " Show “invisible” characters
 set matchtime=2             " Tenths of second to hilight matching paren
 set modelines=5             " How many lines of head & tail to look for ml's
 set showmode                " Show the current mode
@@ -356,6 +359,24 @@ function! Rename(name, bang)
 endfunction
 
 
+" Strip trailing whitespace (,ss)
+function! StripWhitespace()
+        let save_cursor = getpos(".")
+        let old_query = getreg('/')
+        :%s/\s\+$//e
+        call setpos('.', save_cursor)
+        call setreg('/', old_query)
+endfunction
+noremap <leader>ss :call StripWhitespace()<CR>
+
+
+" Automatic commands
+if has("autocmd")
+        " Enable file type detection
+        filetype on
+        " Treat .json files as .js
+        autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
+endif
 " Section: Python specifics {{{1
 "--------------------------------------------------------------------------
 
@@ -492,30 +513,6 @@ highlight link markdownListMarker Todo
 " Section: Other stuff {{{1
 "-------------------------------------------------------------------------
 
-set viminfo+=! " make sure vim history works
-map <C-J> <C-W>j<C-W>_ " open and maximize the split below
-map <C-K> <C-W>k<C-W>_ " open and maximize the split above
-set wmh=0 " reduces splits to a single line
-
-" Strip trailing whitespace (,ss)
-function! StripWhitespace()
-        let save_cursor = getpos(".")
-        let old_query = getreg('/')
-        :%s/\s\+$//e
-        call setpos('.', save_cursor)
-        call setreg('/', old_query)
-endfunction
-noremap <leader>ss :call StripWhitespace()<CR>
-" Save a file as root (,W)
-noremap <leader>W :w !sudo tee % > /dev/null<CR>
-
-" Automatic commands
-if has("autocmd")
-        " Enable file type detection
-        filetype on
-        " Treat .json files as .js
-        autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
-endif
 
 " Section: Load ~/.vimlocal {{{1"{{{
 "--------------------------------------------------------------------------
