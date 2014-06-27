@@ -238,6 +238,10 @@ cno sov so ~/.vimrc
 " Section: Vim options {{{1
 "--------------------------------------------------------------------------
 
+set exrc                    " Enable per-directory .vimrc files and
+                            " disable unsafe commands in them
+set secure
+
 set autoindent              " Carry over indenting from previous line
 set autoread                " Don't bother me hen a file changes
 
@@ -270,12 +274,19 @@ set incsearch               " Search as you type
 set infercase               " Completion recognizes capitalization
 set laststatus=2            " Always show the status bar
 set linebreak               " Break long lines by word, not char
+set backspace=indent,eol,start
+                            " Allow backspace in insert mode
+set ttyfast                 " Optimize for fast terminal connections
+set gdefault                " Add the g flag to search/replace by default
 
 " set list                    " Show invisble characters in listchars
 set listchars=tab:▶\ ,trail:◀,extends:»,precedes:«
                             " Unicode characters for various things
+set listchars+=eol:¬,nbsp:_ " Show “invisible” characters
 set matchtime=2             " Tenths of second to hilight matching paren
 set modelines=5             " How many lines of head & tail to look for ml's
+set showmode                " Show the current mode
+set showcmd                 " Show the (partial) command as it’s being typed
 silent! set mouse=nvc       " Use the mouse, but not in insert mode
 set nobackup                " No backups left after done editing
 set nonumber                " No line numbers to start
@@ -295,10 +306,11 @@ set smartcase               " Lets you search for ALL CAPS
 set softtabstop=4           " Spaces 'feel' like tabs
 set suffixes+=.pyc          " Ignore these files when tab-completing
 set tabstop=4               " The One True Tab
-set title                 " Don't set the title of the Vim window
+set title                   " Don't set the title of the Vim window
 set wildmenu                " Show possible completions on command line
 set wildmode=list:longest,full " List all options and complete
 set wildignore=*.class,*.o,*~,*.pyc,.git,node_modules  " Ignore certain files in tab-completion
+set nostartofline           " Don’t reset cursor to start of line when moving around.
 
 " Section: Commands & Functions {{{1
 "--------------------------------------------------------------------------
@@ -480,49 +492,10 @@ highlight link markdownListMarker Todo
 " Section: Other stuff {{{1
 "-------------------------------------------------------------------------
 
-" Allow cursor keys in insert mode
-set esckeys
-" Allow backspace in insert mode
-set backspace=indent,eol,start
-" Optimize for fast terminal connections
-set ttyfast
-" Add the g flag to search/replace by default
-set gdefault
-" Use UTF-8 without BOM
-set encoding=utf-8 nobomb
-" Change mapleader
-let mapleader=","
-" Don’t add empty newlines at the end of files
-set binary
-set noeol
-" Centralize backups, swapfiles and undo history
-
 set viminfo+=! " make sure vim history works
 map <C-J> <C-W>j<C-W>_ " open and maximize the split below
 map <C-K> <C-W>k<C-W>_ " open and maximize the split above
-set wmh=0 " reduces splits to a single line 
-
-" Enable per-directory .vimrc files and disable unsafe commands in them
-set exrc
-set secure
-" Enable syntax highlighting
-syntax on
-" Highlight current line
-set cursorline
-" Make tabs as wide as two spaces
-set tabstop=2
-" Enable line numbers
-set number
-" Show “invisible” characters
-set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
-" Don’t reset cursor to start of line when moving around.
-set nostartofline
-" Don’t show the intro message when starting Vim
-" set shortmess=atI
-" Show the current mode
-set showmode
-" Show the (partial) command as it’s being typed
-set showcmd
+set wmh=0 " reduces splits to a single line
 
 " Strip trailing whitespace (,ss)
 function! StripWhitespace()
