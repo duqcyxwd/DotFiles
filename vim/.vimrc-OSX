@@ -151,16 +151,20 @@ nnoremap <space> za
 nnoremap <CR> za
 vnoremap <space> zf
 
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+nmap <C-j> <C-W>j
+nmap <C-k> <C-W>k
+
+nmap <C-h> <C-W>h
+nmap <C-l> <C-W>l
 
 map <C-J> <C-W>j<C-W>_ " open and maximize the split below
 map <C-K> <C-W>k<C-W>_ " open and maximize the split above
 " Search for the word under the cursor in the current directory
-nmap <C-k> :Ag "\b<cword>\b" <CR>
+" nmap <C-k> :Ag "\b<cword>\b" <CR>
 
+" Insert empty line
+nmap <silent><C-CR> :set paste<CR>m`o<Esc>``:set nopaste<CR>
+nmap <silent><S-CR> :set paste<CR>m`O<Esc>``:set nopaste<CR>
 
 " Alt-p pipes the current buffer to the current filetype as a command
 " (good for perl, python, ruby, shell, gnuplot...)
@@ -212,9 +216,6 @@ au BufEnter *.md setlocal foldmethod=expr
 map j gj
 map k gk
 
-" Insert empty line
-nnoremap <silent><A-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
-nnoremap <silent><A-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
 
 " having Ex mode start or showing me the command history
 " is a complete pain in the ass if i mistype
