@@ -23,7 +23,9 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'L9'
 Plugin 'kien/ctrlp.vim'
-"Plugin 'nerdcommenter'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'scrooloose/nerdtree'
+Plugin 'vim-multiple-cursors'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -42,11 +44,14 @@ filetype plugin indent on    " required
 " useful macros I use the most
 nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
 nmap \A :set formatoptions+=a<CR>:echo "autowrap enabled"<CR>
-nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
+" nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
+nmap \b :Bclose<CR>
 nmap \c :TlistToggle<CR>
+nmap \b :Bclose<CR>
 nmap \d :%!perltidy<CR>
 nmap \e :NERDTreeToggle<CR>
 nmap \g :Gstatus<CR>
+nmap \k :BD<CR> 
 nmap \l :setlocal number!<CR>:setlocal number?<CR>
 nmap \o :set paste!<CR>:set paste?<CR>
 nmap \q :nohlsearch<CR>
@@ -66,11 +71,6 @@ nmap <C-e> :e#<CR>
 " Move between open buffers.
 map <C-n> :bnext<CR>
 map <C-p> :bprev<CR>
-
-" Let's try buffkill-vim using my favorite Emacs binding...
-nmap <Esc>k :BD<CR>
-nmap <M-k> :BD<CR>
-nmap <D-k> :BD<CR>
 
 " Emacs-like bindings in normal mode
 nmap <C-x>0 <C-w>c
@@ -110,6 +110,10 @@ cnoremap <C-g>  <C-c>
 nnoremap <space> za
 nnoremap <CR> za
 vnoremap <space> zf
+
+" Disable F1 
+map <F1> <Esc>
+imap <F1> <Esc>
 
 map <C-j> <C-W>j
 map <C-k> <C-W>k
@@ -169,6 +173,7 @@ function ToggleHex()
   let &readonly=l:oldreadonly
   let &modifiable=l:oldmodifiable
 endfunction
+
 
 
 " Secition: Markdown function {{{1
@@ -374,7 +379,7 @@ endif
 " A new Vim package system
 runtime pathogen-bundle/vim-pathogen/autoload/pathogen.vim
 call pathogen#infect('~/.vim/pathogen-bundle/{}')
-" call pathogen#infect()
+"call pathogen#infect()
 call pathogen#helptags()
 
 " for any plugins that use this, make their keymappings use comma
