@@ -51,10 +51,11 @@ nmap \b :Bclose<CR>
 nmap \d :%!perltidy<CR>
 nmap \e :NERDTreeToggle<CR>
 nmap \g :Gstatus<CR>
+nmap \h :nohlsearch<CR>
 nmap \k :BD<CR> 
 nmap \l :setlocal number!<CR>:setlocal number?<CR>
 nmap \o :set paste!<CR>:set paste?<CR>
-nmap \q :nohlsearch<CR>
+"nmap \q :nohlsearch<CR>
 nmap \s :setlocal invspell<CR>
 nmap \t :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>
 nmap \T :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>
@@ -115,10 +116,10 @@ vnoremap <space> zf
 map <F1> <Esc>
 imap <F1> <Esc>
 
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+nmap <C-j> <C-W>j
+nmap <C-k> <C-W>k
+nmap <C-h> <C-W>h
+nmap <C-l> <C-W>l
 
 " Search for the word under the cursor in the current directory
 nmap <C-k> :Ag "\b<cword>\b" <CR>
@@ -215,8 +216,8 @@ map j gj
 map k gk
 
 " Insert empty line
-nnoremap <silent><A-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
-nnoremap <silent><A-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
+nmap <silent><A-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
+nmap <silent><A-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
 
 " having Ex mode start or showing me the command history
 " is a complete pain in the ass if i mistype
