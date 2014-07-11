@@ -1,0 +1,58 @@
+"3.8.2 (created: 2014/02/13 23:52:43)
+
+" scroll
+nnoremap j 3j
+nnoremap k 3k
+nnoremap J <C-d>
+nnoremap K <C-u>
+nnoremap <A-j> j
+nnoremap <A-k> :k
+nnoremap <A-h> 3h
+nnoremap <A-l> 3l
+nnoremap x d 
+nnoremap d <C-d>
+nnoremap D <C-u>
+
+" tab
+nnoremap l <C-n>
+nnoremap h <C-p>
+nnoremap <silent> <C-l> :tabmove! +1<CR>
+nnoremap <silent> <C-h> :tabmove! -1<CR>
+
+nnoremap y Y
+nnoremap Y y
+nnoremap zi zI
+nnoremap zI zi
+nnoremap zm zM
+nnoremap zM zm
+nnoremap zo zO
+nnoremap zO zo
+nnoremap zr zR
+nnoremap zR zr
+nnoremap zz zZ
+nnoremap zZ zz
+
+noremap <silent> <C-r> :restart<CR>
+noremap <silent> <Leader>h :htabopen<Space>
+noremap <silent> <Leader>s :source ~/.vimperatorrc<CR>:echo<Space>"source completed."<CR>
+noremap <silent> <Leader>a :autopagerize<CR>
+noremap U :undo<Space>
+
+noremap <silent> eu :set encoding=UTF-8<CR>
+noremap <silent> es :set encoding=Shift_JIS<CR>
+noremap <silent> ee :set encoding=EUC-JP<CR>
+noremap <silent> ei :set encoding=ISO-2022-JP<CR>
+
+cnoremap <C-j> <Nop>
+cnoremap <C-b> <Left>
+cnoremap <C-f> <Right>
+cnoremap <C-n> <Tab>
+cnoremap <C-p> <S-Tab>
+inoremap <C-f> <Right>
+inoremap <C-b> <Left>
+inoremap <C-p> <Up>
+inoremap <C-n> <Down>
+
+source! "C:\\Users\\eyonduu\\_vimperatorrc.local"
+
+" vim: set ft=vimperator:
