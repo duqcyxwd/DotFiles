@@ -6,29 +6,60 @@
 "   \_/ |_|_| |_| |_|_|  \___|
 "
 " Chuan's .vimrc file From Scott
-"
 
-" Section: Vundle setting {{{1
+
+" Section: Vundle Setting Pluging {{{1
 "--------------------------------------------------------------------------
+
+
+" Plug-in
 set nocompatible              " be iMproved, required
 filetype off                  " required
 
 " set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-
-" Keep Plugin commands between vundle#begin/end.
+set rtp+=~/.vim/bundle/Vundle/
 call vundle#begin()
+" alternatively, pass a path where Vundle should install plugins
+"let path = '~/some/path/here'
+"call vundle#rc(path)
+
 " let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
+Plugin 'gmarik/vundle'
+Plugin 'L9' " Required
+
+" The following are examples of different formats supported.
+" Keep Plugin commands between here and filetype plugin indent on.
+
+" scripts on GitHub repos
 Plugin 'tpope/vim-fugitive'
-Plugin 'L9'
+Plugin 'Lokaltog/vim-easymotion'
+Plugin 'tpope/vim-rails.git'
 Plugin 'kien/ctrlp.vim'
-Plugin 'scrooloose/nerdcommenter'
 Plugin 'scrooloose/nerdtree'
-Plugin 'vim-multiple-cursors'
+Plugin 'scrooloose/nerdcommenter'
+"
+"Gist
+Plugin 'mattn/webapi-vim'
+Plugin 'mattn/gist-vim'
+"Markdown
+Plugin 'plasticboy/vim-markdown'
+Plugin 'terryma/vim-multiple-cursors'
+
+
+" The sparkup vim script is in a subdirectory of this repo called vim.
+" Pass the path to set the runtimepath properly.
+Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
+" scripts from http://vim-scripts.org/vim/scripts.html
+Plugin 'FuzzyFinder'
+" scripts not on GitHub
+" Plugin 'git://git.wincent.com/command-t.git'
+" git repos on your local machine (i.e. when working on your own plugin)
+" Plugin 'file:///home/gmarik/path/to/plugin'
+" ...
+
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
-filetype plugin indent on    " required
+filetype plugin indent on     " required
 " To ignore plugin indent changes, instead use:
 "filetype plugin on
 "
@@ -37,6 +68,11 @@ filetype plugin indent on    " required
 " :PluginInstall(!)    - install (update) plugins
 " :PluginSearch(!) foo - search (or refresh cache first) for foo
 " :PluginClean(!)      - confirm (or auto-approve) removal of unused plugins
+"
+" see :h vundle for more details or wiki for FAQ
+" NOTE: comments after Plugin commands are not allowed.
+" Put your stuff after this line
+
 
 " Section: Key mappings {{{1
 "--------------------------------------------------------------------------
@@ -44,15 +80,14 @@ filetype plugin indent on    " required
 " useful macros I use the most
 nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
 nmap \A :set formatoptions+=a<CR>:echo "autowrap enabled"<CR>
-" nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
-nmap \b :Bclose<CR>
+nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
 nmap \c :TlistToggle<CR>
-nmap \b :Bclose<CR>
 nmap \d :%!perltidy<CR>
 nmap \e :NERDTreeToggle<CR>
 nmap \g :Gstatus<CR>
-nmap \k :BD<CR> 
-nmap \l :setlocal number!<CR>:setlocal number?<CR>
+nmap \n :setlocal number!<CR>:setlocal number?<CR>
+nmap \l :set foldcolumn=0<CR>
+nmap \L :set foldcolumn=2<CR>
 nmap \o :set paste!<CR>:set paste?<CR>
 nmap \q :nohlsearch<CR>
 nmap \s :setlocal invspell<CR>
@@ -72,6 +107,11 @@ nmap <C-e> :e#<CR>
 map <C-n> :bnext<CR>
 map <C-p> :bprev<CR>
 
+" Let's try buffkill-vim using my favorite Emacs binding...
+nmap <Esc>k :BD<CR>
+nmap <M-k> :BD<CR>"{{{"}}}
+nmap <D-k> :BD<CR>
+
 " Emacs-like bindings in normal mode
 nmap <C-x>0 <C-w>c
 nmap <C-x>1 <C-w>o
@@ -81,14 +121,14 @@ nmap <C-x>o <C-w><C-w>
 nmap <M-o> <C-w><C-w>
 
 map <C-=>1 :color aiseered<enter>:source ~/.vim/plugin/mark.vim<enter>
-map <C-=>2 :color baycomb<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>3 :color borland<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>4 :color biogoo <enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>5 :color chocolateliquor<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>6 :color dusk<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>7 :color dw_red<enter>:source ~/.vim/plugin/mark.vim<enter>  
-map <C-=>8 :color ekvoli<enter>:source ~/.vim/plugin/mark.vim<enter> 
-map <C-=>9 :color tabula<enter>:source ~/.vim/plugin/mark.vim<enter> 
+map <C-=>2 :color baycomb<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>3 :color borland<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>4 :color biogoo <enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>5 :color chocolateliquor<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>6 :color dusk<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>7 :color dw_red<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>8 :color ekvoli<enter>:source ~/.vim/plugin/mark.vim<enter>
+map <C-=>9 :color tabula<enter>:source ~/.vim/plugin/mark.vim<enter>
 
 " Emacs-like bindings in insert mode
 imap <C-e> <C-o>$
@@ -111,17 +151,20 @@ nnoremap <space> za
 nnoremap <CR> za
 vnoremap <space> zf
 
-" Disable F1 
-map <F1> <Esc>
-imap <F1> <Esc>
+nmap <C-j> <C-W>j
+nmap <C-k> <C-W>k
 
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+nmap <C-h> <C-W>h
+nmap <C-l> <C-W>l
 
+map <C-J> <C-W>j<C-W>_ " open and maximize the split below
+map <C-K> <C-W>k<C-W>_ " open and maximize the split above
 " Search for the word under the cursor in the current directory
-nmap <C-k> :Ag "\b<cword>\b" <CR>
+" nmap <C-k> :Ag "\b<cword>\b" <CR>
+
+" Insert empty line
+nmap <silent><C-CR> :set paste<CR>m`o<Esc>``:set nopaste<CR>
+nmap <silent><S-CR> :set paste<CR>m`O<Esc>``:set nopaste<CR>
 
 " Alt-p pipes the current buffer to the current filetype as a command
 " (good for perl, python, ruby, shell, gnuplot...)
@@ -132,51 +175,8 @@ function! RunUsingCurrentFiletype()
     execute '! clear; '.&filetype.' <% '
 endfunction
 
-" Hex mode from http://vim.wikia.com/wiki/Improved_hex_editing
-" ex command for toggling hex mode - define mapping if desired
-command -bar Hexmode call ToggleHex()
 
-" helper function to toggle hex mode
-function ToggleHex()
-  " hex mode should be considered a read-only operation
-  " save values for modified and read-only for restoration later,
-  " and clear the read-only flag for now
-  let l:modified=&mod
-  let l:oldreadonly=&readonly
-  let &readonly=0
-  let l:oldmodifiable=&modifiable
-  let &modifiable=1
-  if !exists("b:editHex") || !b:editHex
-    " save old options
-    let b:oldft=&ft
-    let b:oldbin=&bin
-    " set new options
-    setlocal binary " make sure it overrides any textwidth, etc.
-    let &ft="xxd"
-    " set status
-    let b:editHex=1
-    " switch to hex editor
-    %!xxd
-  else
-    " restore old options
-    let &ft=b:oldft
-    if !b:oldbin
-      setlocal nobinary
-    endif
-    " set status
-    let b:editHex=0
-    " return to normal editing
-    %!xxd -r
-  endif
-  " restore values for modified and read only state
-  let &mod=l:modified
-  let &readonly=l:oldreadonly
-  let &modifiable=l:oldmodifiable
-endfunction
-
-
-
-" Secition: Markdown function {{{1
+" Section: Markdown function {{{1
 "-------------------------------------------------------------------------
 function! MarkdownLevel()
     if getline(v:lnum) =~ '^# .*$'
@@ -197,10 +197,12 @@ function! MarkdownLevel()
     if getline(v:lnum) =~ '^###### .*$'
         return ">6"
     endif
-    return "=" 
+    return "="
 endfunction
-au BufEnter *.md setlocal foldexpr=MarkdownLevel()  
-au BufEnter *.md setlocal foldmethod=expr   
+au BufEnter *.md setlocal foldexpr=MarkdownLevel()
+au BufEnter *.md setlocal foldmethod=expr
+
+
 " Section: Hacks {{{1
 "--------------------------------------------------------------------------
 
@@ -214,9 +216,6 @@ au BufEnter *.md setlocal foldmethod=expr
 map j gj
 map k gk
 
-" Insert empty line
-nnoremap <silent><A-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
-nnoremap <silent><A-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
 
 " having Ex mode start or showing me the command history
 " is a complete pain in the ass if i mistype
@@ -239,27 +238,19 @@ nnoremap <C-w>h :call KeepCurrentLine('h')<CR>
 nnoremap <C-w>l :call KeepCurrentLine('l')<CR>
 
 
-" Section: Abbrevations {{{1
-"--------------------------------------------------------------------------
 
-" Vim command line: $c
-" URL: http://www.vim.org/tips/tip.php?tip_id=1055
-cno $c e <C-\>eCurrentFileDir()<CR>
-function! CurrentFileDir()
-   return "e " . expand("%:p:h") . "/"
-endfunction
+cno sov so ~/.vimrc<CR>:echo "reload .vimrc"<CR>
 
-cno sov so ~/.vimrc
 " Section: Vim options {{{1
 "--------------------------------------------------------------------------
 
+set exrc                    " Enable per-directory .vimrc files and
+                            " disable unsafe commands in them
+set secure
 
-set tags=/home/eyonduu/tags/*ctags
 set autoindent              " Carry over indenting from previous line
 set autoread                " Don't bother me hen a file changes
-set autowrite               " Write on :next/:prev/^Z
-set backspace=indent,eol,start
-                            " Allow backspace beyond insertion point
+
 set cindent                 " Automatic program indenting
 set cinkeys-=0#             " Comments don't fiddle with indenting
 set cino=(0                 " Indent newlines after opening parenthesis
@@ -272,7 +263,9 @@ set fileformats=unix,dos,mac  " Prefer Unix
 set fillchars=vert:\ ,stl:\ ,stlnc:\ ,fold:-,diff:┄
                             " Unicode chars for diffs/folds, and rely on
                             " Colors for window borders
+set foldmethod=syntax
 silent! set foldmethod=marker " Use braces by default
+
 set formatoptions=tcqn1     " t - autowrap normal text
                             " c - autowrap comments
                             " q - gq formats comments
@@ -287,11 +280,19 @@ set incsearch               " Search as you type
 set infercase               " Completion recognizes capitalization
 set laststatus=2            " Always show the status bar
 set linebreak               " Break long lines by word, not char
+set backspace=indent,eol,start
+                            " Allow backspace in insert mode
+set ttyfast                 " Optimize for fast terminal connections
+set gdefault                " Add the g flag to search/replace by default
+
 " set list                    " Show invisble characters in listchars
 set listchars=tab:▶\ ,trail:◀,extends:»,precedes:«
                             " Unicode characters for various things
+" set listchars+=eol:¬,nbsp:_ " Show “invisible” characters
 set matchtime=2             " Tenths of second to hilight matching paren
 set modelines=5             " How many lines of head & tail to look for ml's
+set showmode                " Show the current mode
+set showcmd                 " Show the (partial) command as it’s being typed
 silent! set mouse=nvc       " Use the mouse, but not in insert mode
 set nobackup                " No backups left after done editing
 set nonumber                " No line numbers to start
@@ -311,17 +312,15 @@ set smartcase               " Lets you search for ALL CAPS
 set softtabstop=4           " Spaces 'feel' like tabs
 set suffixes+=.pyc          " Ignore these files when tab-completing
 set tabstop=4               " The One True Tab
-set notitle                 " Don't set the title of the Vim window
+set title                   " Don't set the title of the Vim window
 set wildmenu                " Show possible completions on command line
 set wildmode=list:longest,full " List all options and complete
 set wildignore=*.class,*.o,*~,*.pyc,.git,node_modules  " Ignore certain files in tab-completion
+set nostartofline           " Don’t reset cursor to start of line when moving around.
 
 " Section: Commands & Functions {{{1
 "--------------------------------------------------------------------------
 
-" i always, ALWAYS hit ":W" instead of ":w"
-command! Q q
-command! W w
 
 " http://stackoverflow.com/questions/1005/getting-root-permissions-on-a-file-inside-of-vi
 cmap w!! w !sudo tee >/dev/null %
@@ -330,6 +329,7 @@ cmap w!! w !sudo tee >/dev/null %
 command! TEOL %s/ \+$//
 command! CLEAN retab | TEOL
 
+
 " hightlight more than 80 characters
 function! HighlightTooLongLines()
   highlight def link RightMargin Error
@@ -337,6 +337,7 @@ function! HighlightTooLongLines()
     exec 'match RightMargin /\%<' . (&textwidth + 4) . 'v.\%>' . (&textwidth + 2) . 'v/'
   endif
 endfunction
+
 
 " Rename.vim  -  Rename a buffer within Vim and on the disk
 " Copyright June 2007 by Christian J. Robinson <infynity@onewest.net>
@@ -361,8 +362,27 @@ function! Rename(name, bang)
 endfunction
 
 
+" Strip trailing whitespace (,ss)
+function! StripWhitespace()
+        let save_cursor = getpos(".")
+        let old_query = getreg('/')
+        :%s/\s\+$//e
+        call setpos('.', save_cursor)
+        call setreg('/', old_query)
+endfunction
+noremap <leader>ss :call StripWhitespace()<CR>
+
+
+" Automatic commands
+if has("autocmd")
+        " Enable file type detection
+        filetype on
+        " Treat .json files as .js
+        autocmd BufNewFile,BufRead *.json setfiletype json syntax=javascript
+endif
 " Section: Python specifics {{{1
 "--------------------------------------------------------------------------
+
 
 if has('python')
 python << EOF
@@ -375,56 +395,10 @@ endif
 " Section: Plugin settings {{{1
 "--------------------------------------------------------------------------
 
-
-" A new Vim package system
 runtime pathogen-bundle/vim-pathogen/autoload/pathogen.vim
 call pathogen#infect('~/.vim/pathogen-bundle/{}')
-"call pathogen#infect()
+" call pathogen#infect()
 call pathogen#helptags()
-
-" for any plugins that use this, make their keymappings use comma
-let mapleader = ","
-let maplocalleader = ","
-
-" perl.vim
-let perl_include_pod = 1
-
-" perldoc
-let g:perldoc_program='perldoc'
-
-if filereadable("/home/eyonduu/tags/upc.cscope")
-    cs add /home/eyonduu/tags/upc.cscope
-endif
-
-if filereadable("/home/eyonduu/tags/up.cscope")
-    cs add /home/eyonduu/tags/up.cscope
-endif
-
-if filereadable("/home/eyonduu/tags/bbmc.cscope")
-    cs add /home/eyonduu/tags/bbmc.cscope
-endif
-
-if filereadable("/home/eyonduu/tags/elib.cscope")
-    cs add /home/eyonduu/tags/elib.cscope
-endif
-
-if filereadable("/home/eyonduu/tags/bbi.cscope")
-    cs add /home/eyonduu/tags/bbi.cscope
-endif
-
-" Explore.vim (comes with Vim 6)
-let explVertical = 1
-let explSplitRight = 1
-let explWinSize = 30
-let explHideFiles = '^\.,\.(class|swp|pyc|pyo)$,^CVS$'
-let explDirsFirst = -1
-
-" vimspell.vim
-"let spell_auto_type = ""
-
-" taglist.vim
-let Tlist_Use_Right_Window = 1
-let Tlist_WinWidth = 30
 
 " NERD_tree.vim
 let NERDTreeIgnore = ['\~$', '\.pyc$']
@@ -443,22 +417,15 @@ nmap ; :CtrlPBuffer<CR>
 if has('gui_running')
   let g:Powerline_symbols = "unicode"
 endif
-"let g:Powerline_symbols = 'fancy'
-
-" Syntastic
-" let g:syntastic_enable_signs=1
-" let g:syntastic_auto_jump=0
-" let g:syntastic_stl_format = '[%E{Err: %fe #%e}%B{, }%W{Warn: %fw #%w}]'
-
-" enable filetype plugins -- e.g., ftplugin/xml.vim
-filetype plugin indent on
 
 " Section: Color and syntax {{{1
 "--------------------------------------------------------------------------
-:set foldmethod=syntax
 
 " Helper to initialize Zenburn colors in 256-color mode.
-colorscheme desert
+" let g:solarized_termcolors=256
+set background=dark
+colorscheme solarized
+" colorscheme desert
 function! ColorTermZenburn()
   colorscheme zenburn
   highlight Normal ctermbg=234
@@ -497,10 +464,6 @@ highlight StatusLine   cterm=NONE ctermbg=blue ctermfg=white
 highlight StatusLineNC cterm=NONE ctermbg=black ctermfg=white
 highlight VertSplit    cterm=NONE ctermbg=black ctermfg=white
 
-" unfortunately, taglist.vim's filenames is linked to LineNr, which sucks
-highlight def link MyTagListFileName Statement
-highlight def link MyTagListTagName Question
-
 " turn off coloring for CDATA
 highlight def link xmlCdata NONE
 
@@ -520,7 +483,7 @@ highlight clear LineNr
 highlight! def link LineNr Ignore
 
 " nice-looking hilight if I remember to set my terminal colors
-highlight clear Search
+"highlight clear Search
 highlight Search term=NONE cterm=NONE ctermfg=white ctermbg=black
 
 " make hilighted matching parents less offensive
@@ -550,8 +513,13 @@ highlight link markdownCode Delimiter
 highlight link markdownCodeBlock Delimiter
 highlight link markdownListMarker Todo
 
+
+" Section: Other stuff {{{1
+"-------------------------------------------------------------------------
+
+
 " Section: Load ~/.vimlocal {{{1"{{{
 "--------------------------------------------------------------------------
 
-" now load specifics to this machine
+" now load specifics to this machine :)
 "source ~/.vimlocal"}}}

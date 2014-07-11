@@ -1,6 +1,5 @@
 alias ltesetup 'ExecProjName -g lteli -v \!* lte rbs/1.0'
 #alias ccbranch /proj/lterbsSwdi/ccbranch/bin/ccbranch
-#
 
 alias mkview /proj/lteli/Design/bin/mkview 
 alias rmview 'ct rmview -tag'
@@ -36,6 +35,7 @@ setenv LESS '-M -I -R'
 
 module add kdiff3
 
+alias ccc /home/eyonduu/My_Script_and_Tool/colorgcc.pl 
 
 ###################################
 # General shell stuff
@@ -52,7 +52,6 @@ alias ma 'vim ~/.cshrc.user'
 alias mkdir 'mkdir -pv'
 # alias findin 'find . -maxdepth 1 -iname $1 -ls '
 
-
 # alias .     'pwd'
 alias ..    'cd ..'
 alias ../    'cd ..'
@@ -63,8 +62,26 @@ alias ../../../ 'cd ../../..'
 alias .4 'cd ../../../../'
 alias .5 'cd ../../../../..'
 
-
 alias duf 'du . --max-depth=1 -h'
+
+
+##################################
+# About alias itself
+##################################
+alias protoset 'source /proj/lterbsLablogOT/eyonduu/Common_Script_For_MCT/setGitRepoEnv'
+alias rs 'source ~/.cshrc.user'
+alias ca 'less ~/.cshrc.user +G'
+alias ac ca
+alias ae 'gvim ~/.cshrc.user'
+alias gnote 'gvim ~/Notes/Git_Vim_Linux.md ~/DotFiles/vim/.vimrc ~/DotFiles/tcsh/.cshrc.user'
+
+
+###################################
+# general CD
+###################################
+
+alias cdl 'cd /home/eyonduu/rtlogtool/backend'
+alias rp 'cdl && ./pcap_parse test.pcap'
 
 ###################################
 # Shell Setting
@@ -103,14 +120,6 @@ alias st 'pushd /proj/ltegte/release/'
 ###################################
 alias mosh /app/moshell/latest/moshell/moshell
 
-##################################
-# About alias itself
-##################################
-alias protoset 'source /proj/lterbsLablogOT/eyonduu/Common_Script_For_MCT/setGitRepoEnv'
-alias rs 'source ~/.cshrc.user'
-alias ca 'less ~/.cshrc.user +G'
-alias ac ca
-alias ae 'gvim ~/.cshrc.user'
 
 ###################################
 # bbTraceParser        
@@ -127,6 +136,10 @@ alias cdgit 'pushd $MY_GIT_TOP/'
 alias repo 'cd /repo/eyonduu/; cd lrat'
 alias cr 'cd /tmp/repo/; rm -rf eyonduu'
 alias gita 'less /proj/lterbsSwdi/ltegit_admin_jenkins/aliases/.gitaliases'
+
+# Diff
+alias gdvim 'git difftool --tool=vimdiff --no-prompt'
+
 
 #git shortcuts
 alias gs 'git status'
@@ -150,7 +163,30 @@ alias gas 'alias|grep git'
 #clean -dxf will wipe everything requiring user to source gitenv again
 alias gclean 'pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
 
+##################################
+# Git Stash config
+##################################
+git config --global alias.sl "stash list"
+git config --global alias.sll "stash-list"
+git config --global alias.slll "stash-list --full"
+git config --global alias.ss "stash save"
+# git config --global alias.sa '!sh -c "git stash apply stash@{$1}" -'
+# git config --global alias.sd '!sh -c "git stash drop stash@{$1}" -'
 
+alias gsl 'git stash list'
+alias gss 'git stash save'
+alias gsa 'git stash apply'
+alias gst 'git stash'
+alias gsd 'git stash drop '
+
+alias X 'eval "if ($?A) then \\
+        echo variable A exists \\
+        else \\
+        echo no \\
+        endif"'
+        #                         % if ( $?A ) then
+        #                           % %    echo variable A exists
+        #                           % % endif
 ##################################
 # CL find track info such as recommended UPs, baselines for UPs, etc
 # getTrackInfo -h
