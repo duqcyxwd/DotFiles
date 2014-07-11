@@ -61,10 +61,10 @@ nmap \t :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>
 nmap \T :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>
 nmap \u :setlocal list!<CR>:setlocal list?<CR>
 nmap \w :setlocal wrap!<CR>:setlocal wrap?<CR>
-nmap \x :w<CR>:%! xmllint --format - <CR>
+nmap \x :w<CR>
 nmap \Y :vertical resize 40<CR>:wincmd l<CR>
 nmap \y :exec "vertical resize " . (80 + (&number * &numberwidth))<CR>:wincmd l<CR>
-nmap \z :w<CR>:!<Up><CR>
+nmap \z :w<CR><C-z>
 
 " You don't know what you're missing if you don't use this.
 nmap <C-e> :e#<CR>
