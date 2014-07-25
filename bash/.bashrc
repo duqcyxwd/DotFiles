@@ -198,6 +198,9 @@
 # alias cd=cd_func
 alias python='/cygdrive/c/My\ Program/Python/python.exe -i'
 alias py='/cygdrive/c/My\ Program/Python/python.exe -i'
+alias erlang='/cygdrive/c/Program\ Files/erl5.10.2/bin/erl.exe -i'
+alias erl='/cygdrive/c/Program\ Files/erl5.10.2/bin/erl.exe -i'
+
 alias subl='/cygdrive/c/My\ Program/Sublime\ Text\ Build\ 3059\ x64/sublime_text.exe'
 alias rs='source ~/.bashrc'
 
@@ -221,7 +224,7 @@ alias cpwd='pwd | clip'
 ###################################
 # general CD
 ###################################
-alias cpy='cd /cygdrive/c/Local\ Code/rtlogtool/frontend'
+alias cpy='cd /cygdrive/c/Local\ Code/Python/Example'
 alias cdl='cd /cygdrive/c/Local\ Code/Python/Log_trace'
 alias pul='pushd /cygdrive/c/Local\ Code/Python/Log_trace'
 alias rp='cd /cygdrive/c/Local\ Code/rtlogtool/frontend && py RtLogToolFrontend.py'
