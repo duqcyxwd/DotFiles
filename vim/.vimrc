@@ -56,11 +56,13 @@ nmap \k :BD<CR>
 nmap \l :setlocal number!<CR>:setlocal number?<CR>
 nmap \o :set paste!<CR>:set paste?<CR>
 "nmap \q :nohlsearch<CR>
+nmap \q <C-w>c
 nmap \s :setlocal invspell<CR>
+nmap \r :setlocal wrap!<CR>:setlocal wrap?<CR>
 nmap \t :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>
 nmap \T :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>
 nmap \u :setlocal list!<CR>:setlocal list?<CR>
-nmap \w :setlocal wrap!<CR>:setlocal wrap?<CR>
+nmap \w :w<CR>
 nmap \x :w<CR>
 nmap \Y :vertical resize 40<CR>:wincmd l<CR>
 nmap \y :exec "vertical resize " . (80 + (&number * &numberwidth))<CR>:wincmd l<CR>
@@ -70,16 +72,8 @@ nmap \z :w<CR><C-z>
 nmap <C-e> :e#<CR>
 
 " Move between open buffers.
-map <C-n> :bnext<CR>
-map <C-p> :bprev<CR>
-
-" Emacs-like bindings in normal mode
-nmap <C-x>0 <C-w>c
-nmap <C-x>1 <C-w>o
-nmap <C-x>1 <C-w>s
-nmap <C-x>1 <C-w>v
-nmap <C-x>o <C-w><C-w>
-nmap <M-o> <C-w><C-w>
+map <silent> <C-n> :bnext<CR>
+map <silent> <C-p> :bprev<CR>
 
 map <C-=>1 :color aiseered<enter>:source ~/.vim/plugin/mark.vim<enter>
 map <C-=>2 :color baycomb<enter>:source ~/.vim/plugin/mark.vim<enter>  
@@ -116,13 +110,13 @@ vnoremap <space> zf
 map <F1> <Esc>
 imap <F1> <Esc>
 
-nmap <C-j> <C-W>j
-nmap <C-k> <C-W>k
-nmap <C-h> <C-W>h
-nmap <C-l> <C-W>l
+nmap <C-j> <C-W>j<C-W><C-_>
+nmap <C-k> <C-W>k<C-W><C-_>
+nmap <C-h> <C-W>h<C-W><C-_>
+nmap <C-l> <C-W>l<C-W><C-_>
 
 " Search for the word under the cursor in the current directory
-nmap <C-k> :Ag "\b<cword>\b" <CR>
+"nmap <C-k> :Ag "\b<cword>\b" <CR>
 
 " Alt-p pipes the current buffer to the current filetype as a command
 " (good for perl, python, ruby, shell, gnuplot...)
@@ -216,8 +210,8 @@ map j gj
 map k gk
 
 " Insert empty line
-nmap <silent><A-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
-nmap <silent><A-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
+nmap <A-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
+nmap <A-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
 
 " having Ex mode start or showing me the command history
 " is a complete pain in the ass if i mistype
