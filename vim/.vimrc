@@ -23,7 +23,9 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'tpope/vim-fugitive'
 Plugin 'L9'
 Plugin 'kien/ctrlp.vim'
-"Plugin 'nerdcommenter'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'scrooloose/nerdtree'
+Plugin 'vim-multiple-cursors'
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
 filetype plugin indent on    " required
@@ -42,43 +44,36 @@ filetype plugin indent on    " required
 " useful macros I use the most
 nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
 nmap \A :set formatoptions+=a<CR>:echo "autowrap enabled"<CR>
-nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
+" nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
+nmap \b :Bclose<CR>
 nmap \c :TlistToggle<CR>
+nmap \b :Bclose<CR>
 nmap \d :%!perltidy<CR>
 nmap \e :NERDTreeToggle<CR>
 nmap \g :Gstatus<CR>
+nmap \h :nohlsearch<CR>
+nmap \k :BD<CR> 
 nmap \l :setlocal number!<CR>:setlocal number?<CR>
 nmap \o :set paste!<CR>:set paste?<CR>
-nmap \q :nohlsearch<CR>
+"nmap \q :nohlsearch<CR>
+nmap \q <C-w>c
 nmap \s :setlocal invspell<CR>
+nmap \r :setlocal wrap!<CR>:setlocal wrap?<CR>
 nmap \t :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>
 nmap \T :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>
 nmap \u :setlocal list!<CR>:setlocal list?<CR>
-nmap \w :setlocal wrap!<CR>:setlocal wrap?<CR>
-nmap \x :w<CR>:%! xmllint --format - <CR>
+nmap \w :w<CR>
+nmap \x :w<CR>
 nmap \Y :vertical resize 40<CR>:wincmd l<CR>
 nmap \y :exec "vertical resize " . (80 + (&number * &numberwidth))<CR>:wincmd l<CR>
-nmap \z :w<CR>:!<Up><CR>
+nmap \z :w<CR><C-z>
 
 " You don't know what you're missing if you don't use this.
 nmap <C-e> :e#<CR>
 
 " Move between open buffers.
-map <C-n> :bnext<CR>
-map <C-p> :bprev<CR>
-
-" Let's try buffkill-vim using my favorite Emacs binding...
-nmap <Esc>k :BD<CR>
-nmap <M-k> :BD<CR>
-nmap <D-k> :BD<CR>
-
-" Emacs-like bindings in normal mode
-nmap <C-x>0 <C-w>c
-nmap <C-x>1 <C-w>o
-nmap <C-x>1 <C-w>s
-nmap <C-x>1 <C-w>v
-nmap <C-x>o <C-w><C-w>
-nmap <M-o> <C-w><C-w>
+map <silent> <C-n> :bnext<CR>
+map <silent> <C-p> :bprev<CR>
 
 map <C-=>1 :color aiseered<enter>:source ~/.vim/plugin/mark.vim<enter>
 map <C-=>2 :color baycomb<enter>:source ~/.vim/plugin/mark.vim<enter>  
@@ -111,13 +106,17 @@ nnoremap <space> za
 nnoremap <CR> za
 vnoremap <space> zf
 
-map <C-j> <C-W>j
-map <C-k> <C-W>k
-map <C-h> <C-W>h
-map <C-l> <C-W>l
+" Disable F1 
+map <F1> <Esc>
+imap <F1> <Esc>
+
+nmap <C-j> <C-W>j<C-W><C-_>
+nmap <C-k> <C-W>k<C-W><C-_>
+nmap <C-h> <C-W>h<C-W><C-_>
+nmap <C-l> <C-W>l<C-W><C-_>
 
 " Search for the word under the cursor in the current directory
-nmap <C-k> :Ag "\b<cword>\b" <CR>
+"nmap <C-k> :Ag "\b<cword>\b" <CR>
 
 " Alt-p pipes the current buffer to the current filetype as a command
 " (good for perl, python, ruby, shell, gnuplot...)
@@ -171,6 +170,7 @@ function ToggleHex()
 endfunction
 
 
+
 " Secition: Markdown function {{{1
 "-------------------------------------------------------------------------
 function! MarkdownLevel()
@@ -210,8 +210,8 @@ map j gj
 map k gk
 
 " Insert empty line
-nnoremap <silent><A-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
-nnoremap <silent><A-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
+nmap <A-j> :set paste<CR>m`o<Esc>``:set nopaste<CR>
+nmap <A-k> :set paste<CR>m`O<Esc>``:set nopaste<CR>
 
 " having Ex mode start or showing me the command history
 " is a complete pain in the ass if i mistype
@@ -374,7 +374,7 @@ endif
 " A new Vim package system
 runtime pathogen-bundle/vim-pathogen/autoload/pathogen.vim
 call pathogen#infect('~/.vim/pathogen-bundle/{}')
-" call pathogen#infect()
+"call pathogen#infect()
 call pathogen#helptags()
 
 " for any plugins that use this, make their keymappings use comma
