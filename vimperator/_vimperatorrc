@@ -54,5 +54,7 @@ inoremap <C-p> <Up>
 inoremap <C-n> <Down>
 
 source! "C:\\Users\\eyonduu\\_vimperatorrc.local"
+set editor="C:/My\\ Program/GVimPortable/GVimPortable.exe -f"
+
 
 " vim: set ft=vimperator:
