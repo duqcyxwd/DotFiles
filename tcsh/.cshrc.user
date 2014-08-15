@@ -36,6 +36,8 @@ setenv LESS '-M -I -R'
 module add kdiff3
 
 alias ccc /home/eyonduu/My_Script_and_Tool/colorgcc.pl 
+alias ack /home/eyonduu/My_Script_and_Tool/ack
+
 
 ###################################
 # General shell stuff
