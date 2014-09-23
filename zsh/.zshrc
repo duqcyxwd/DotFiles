@@ -12,6 +12,9 @@ alias zshconfig="mate ~/.zshrc"
 alias ohmyzsh="mate ~/.oh-my-zsh"
 alias rs="source ~/.zshrc"
 alias mz="vim ~/.zshrc"
+alias ma="mz"
+alias comp="cd /Users/SuperiMan/Dropbox/Courses/COMP\ 3005\ Database\ Management\ Systems"
+alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
 
 
 # Dir alias
