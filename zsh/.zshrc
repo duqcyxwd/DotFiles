@@ -15,6 +15,7 @@ alias mz="vim ~/.zshrc"
 alias ma="mz"
 alias comp="cd /Users/SuperiMan/Dropbox/Courses/COMP\ 3005\ Database\ Management\ Systems"
 alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
+alias cf='pbpaste | pbcopy' # clean format of clipboard
 
 
 # Dir alias
@@ -93,4 +94,5 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
+alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql -u root -p"
 
