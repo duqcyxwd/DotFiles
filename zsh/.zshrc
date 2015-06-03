@@ -16,6 +16,9 @@ alias ma="mz"
 alias comp="cd /Users/SuperiMan/Dropbox/Courses/COMP\ 3005\ Database\ Management\ Systems"
 alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
 alias cf='pbpaste | pbcopy' # clean format of clipboard
+alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+
+#export $DEFAULT_USER="my_username"
 
 
 # Dir alias
@@ -37,7 +40,7 @@ alias gk='gitk --all&'
 alias gas='alias|grep git'
 #clean all but the stuff the stuff that we would like preserved like .ccache, xmls catalog etc
 #clean -dxf will wipe everything requiring user to source gitenv again
-alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
+#alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
 
 
 # Set to this to use case-sensitive completion
@@ -74,6 +77,7 @@ alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
+
 plugins=(git)
 
 source $ZSH/oh-my-zsh.sh
