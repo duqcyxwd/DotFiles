@@ -20,6 +20,8 @@ alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
 alias notes="mvim /Users/SuperiMan/repo/Notes/Git_Vim_Linux.md"
 alias pcb='pwd |pbcopy'
 alias py='python'
+alias rm="trash"
+# alias sip='/System/Library/Frameworks/Python.framework/Versions/2.7/bin/sip'
 
 # Alias for tools
 
@@ -27,15 +29,18 @@ alias ccc='/Users/SuperiMan/repo/colorgcc/colorgcc.pl'
 
 # Dir alias
 alias csubl='cd /Users/duyongqinchuan/Library/Application\ Support/Sublime\ Text\ 3/Packages/User'
+alias cla='cd /Users/SuperiMan/Dropbox/Code/leapArm'
 alias comp="cd /Users/SuperiMan/Dropbox/Courses/COMP\ 3005\ Database\ Management\ Systems"
 alias czsh='cd ~/.oh-my-zsh'
 alias cb='cd ~/repo/CourseBuilder/'
 alias glight='cd ~/repo/GestureLight'
 alias gesl='cd /Users/SuperiMan/repo/GestureLight/'
+alias gblog='cd /Users/SuperiMan/Dropbox/Code/WebSite/YongqinchuanDu.com/duqcyxwd.github.com'
+alias cblog='cd /Users/SuperiMan/Dropbox/Code/WebSite/YongqinchuanDu.com/duqcyxwd.github.com'
 
 #Common alias
 # alias ll='ls -la'
-# Git sliases
+# Git alias
 git config --global color.ui true
 alias gfp='git fetch -p'
 #pretty git one line git log
@@ -106,3 +111,5 @@ export PATH=$HOME/bin:/usr/local/bin:$PATH
 # ssh
 # export SSH_KEY_PATH="~/.ssh/dsa_id"
 
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
