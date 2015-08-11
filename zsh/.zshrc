@@ -18,10 +18,20 @@ alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
 alias cf='pbpaste | pbcopy' # clean format of clipboard
 alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
-alias notes="mvim /Users/SuperiMan/repo/Notes/Git_Vim_Linux.md"
+alias notes="mvim ~/repo/Notes/CLojure.md"
+alias vnotes="mvim ~/repo/Notes/Git_Vim_Linux.md"
 alias pcb='pwd |pbcopy'
 alias py='python'
+alias rmt='/bin/rm'
 alias rm="trash"
+alias trs='trash'
+alias ems='open -a /Applications/Emacs.app $@'
+alias em='ems'
+# alias emc="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
+
+emt() { emc "$@" & }
+alias sourcetree='open -a SourceTree'
+alias st='sourcetree'
 # alias sip='/System/Library/Frameworks/Python.framework/Versions/2.7/bin/sip'
 
 # Configure git as personal repo
@@ -43,6 +53,8 @@ alias cblog='cd /Users/SuperiMan/Dropbox/Code/WebSite/YongqinchuanDu.com/duqcyxw
 
 #Common alias
 # alias ll='ls -la'
+alias copy="tr -d '\n' | pbcopy"
+
 # Git alias
 git config --global color.ui true
 alias gfp='git fetch -p'
