@@ -11,6 +11,7 @@
 (setq ido-enable-flex-matching t)
 
 (ido-mode 1)
+(setq ns-pop-up-frames nil)
 
 (when (display-graphic-p) (load-theme 'solarized-dark t))
 
@@ -56,7 +57,7 @@
 ;; ;;; Fontify new frames that are created
 ;; (add-to-list 'after-make-frame-functions 'fontify-frame)
 
-(set-face-attribute 'default nil :font "DejaVu Sans Mono-15")
+(set-face-attribute 'default nil :font "DejaVu Sans Mono-14")
 (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-12")
 
 ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")
@@ -77,8 +78,8 @@
 
             ;; (define-key evil-motion-state-map (kbd "M-h") 'evil-window-left)
             ;; (define-key evil-motion-state-map (kbd "M-j") 'evil-window-down)
-            (define-key evil-motion-state-map (kbd "M-k") 'evil-window-up)
-            (define-key evil-motion-state-map (kbd "M-l") 'evil-window-right)
+            ;;(define-key evil-motion-state-map (kbd "M-k") 'evil-window-up)
+            ;; (define-key evil-motion-state-map (kbd "M-l") 'evil-window-right)
 
             (define-key evil-motion-state-map (kbd "M--") 'evil-window-decrease-height)
             (define-key evil-motion-state-map (kbd "M-+") 'evil-window-increase-height)
@@ -133,22 +134,19 @@
             (evil-leader/set-key "v" 'split-window-right)
             (evil-leader/set-key "e" 'pp-eval-last-sexp)
             (evil-leader/set-key "," 'other-window)
-            (evil-leader/set-key "b" 'ibuffer)
+            (evil-leader/set-key "b" 'ido-switch-buffer)
             (evil-leader/set-key "f" 'projectile-find-file-dwim)
+            (evil-leader/set-key "r" 'ido-imenu)
+            (evil-leader/set-key "k" 'cider-popup-buffer-quit-function)
+            (evil-leader/set-key "s" 'ag-project)
 ;;; cider
             (evil-leader/set-key "n" 'cider-repl-set-ns)
-            (evil-leader/set-key "r" 'cider-switch-to-repl-buffer)
             (evil-leader/set-key "0" 'kill-buffer-and-frame)
             (evil-leader/set-key "c" 'cider-load-buffer)
+            (evil-leader/set-key "v" 'cider-switch-to-repl-buffer)
+            (evil-leader/set-key "l" 'evil-cleverparens-mode)
             (global-evil-leader-mode 1)
-            (evil-leader-mode)
-            ))
-
-(use-package evil-cleverparens
-  :ensure t
-  ;; (add-hook 'after-init-hook 'evil-cleverparens-mode)
-  :config (evil-cleverparens-mode 1))
-
+            (evil-leader-mode)))
 
 (use-package evil-visual-mark-mode
   :ensure t
@@ -158,4 +156,7 @@
   :ensure t
   :config (global-evil-visualstar-mode 1))
 
+(use-package evil-cleverparens
+  :ensure t)
+(evil-cleverparens-mode)
 (message "hi we are good at end")
