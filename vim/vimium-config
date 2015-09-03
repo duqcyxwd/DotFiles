@@ -1,0 +1,120 @@
+# Custom key mappings
+
+# Insert your preferred key mappings here.
+map u restoreTab
+
+map S scrollFullPageUp
+map s scrollFullPageUp
+map D scrollFullPageDown
+
+
+map  q Marks.activateCreateMode
+map  '  Marks.activateGotoMode
+map ; Vomnibar.activateTabSelection
+
+
+map - previousTab
+map = nextTab
+
+map h previousTab
+map l nextTab
+
+map J scrollLeft
+map K scrollRight
+
+map F LinkHints.activateModeWithQueue
+
+
+# u reopen
+#D up
+#left table Righttabl
+
+
+# Custom search engines 
+
+cd: https://cenx-cf.atlassian.net/browse/CD-%s
+tk: https://cenx-cf.atlassian.net/browse/%s
+bb: https://bitbucket.org/cenx-cf/%s
+
+yd: http://dict.youdao.com/search?q=%s
+
+goo: http://www.google.com/search?q=%s&ie=utf-8&oe=utf-8&aq=t
+
+w: http://en.wikipedia.org/wiki/Special:Search?search=%s
+
+d: https://duckduckgo.com/?q=%s
+
+amazon.com: http://www.amazon.com/exec/obidos/external-search/?field-keywords=%s&mode=blended
+
+# Google results only for the last year
+recent: https://www.google.com/search?hl=en&tbo=1&tbs=qdr:y&q=%s
+
+# hacker news
+hn: https://www.hnsearch.com/search#request/submissions&q=%s&start=0
+
+# Find your way from your home to places using Google Maps
+home: https://www.google.com/maps/dir/INPUT+YOUR+ADDRESS/%s
+
+# Stack Overflow
+so: http://stackoverflow.com/search?q=%s
+
+# Symbol Hound
+sh: http://symbolhound.com/?q=%s
+
+# Youtube
+yt: http://www.youtube.com/results?search_query=%s
+
+# omniref (ruby documentation)
+rb: https://www.omniref.com/?q=%s
+
+# Use google to search the current site you're on
+site: javascript:location='http://www.google.com/search?num=100&q=site:'%20+%20escape(location.hostname)%20+%20'%20%S'%20;%20void%200
+
+# imdb
+imdb: http://www.imdb.com/find?s=all&q=%s
+
+# google images
+gi: https://www.google.com/search?tbm=isch&q=%s
+
+# wolfram alpha
+wa: http://www.wolframalpha.com/input/?i=%s
+
+# github
+git: https://github.com/search?q=%s
+
+
+
+# CSS for link hints
+div > .vimiumHintMarker {
+/* linkhint boxes */
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#565756),
+color-stop(100%,#242524));
+border: 1px solid #e4e5e4;
+opacity: 1.0;
+text-shadow: none !important;
+}
+
+div > .vimiumHintMarker span {
+/* linkhint text */
+color: #f1f2f1;
+font-weight: normal;
+font-size: 11px;
+font-family: Avenir;
+}
+
+div > .vimiumHintMarker > .matchingCharacter {
+color: #969696;
+}
+
+div > .vimiumHintMarker span {
+/* linkhint text */
+color: #f1f2f1;
+font-weight: normal;
+font-size: 11px;
+font-family: Avenir;
+}
+
+
+div > .vimiumHintMarker > .matchingCharacter {
+color: #969696;
+}
