@@ -7,6 +7,34 @@ ZSH=$HOME/.oh-my-zsh
 # time that oh-my-zsh is loaded.
 # ZSH_THEME="blinks"
 ZSH_THEME="agnoster"
+
+# Configuration only with local computer
+
+alias gcoi="git checkout integration"
+alias gcoip="git checkout integration && git pull"
+alias cortxf='docker run --rm -t -v `pwd`:/opt/cenx docker.cenx.localnet:5000/deployer -f /opt/cenx/solr.yaml'
+alias cortx0='docker run --rm -t -v `pwd`:/opt/cenx docker.cenx.localnet:5000/deployer'
+alias cortx-small='docker run --rm -t -v /opt/cenx:/opt/cenx docker.cenx.localnet:5000/deployer'
+alias time-out-hide='subl /Applications/VLC.app/Contents/Info.plist'
+
+alias tf="t"
+alias later="nohup /Users/chuan.du/repo/DotFiles/otherTool/later.pl"
+
+t(){ timerToStartApplication "$@" &}
+timerToStartApplication() {
+   # sleep 1 && open -a /Applications/Time\ Out\ Free.app
+   ti=$@
+   print "sleep to start Timeout Free\nSleep $ti"
+   pkill "Time Out Free"
+   sleep $@
+   print 'start Timeout Free'
+   open -a /Applications/Time\ Out\ Free.app
+   open -a /Applications/Font\ Book.app }
+
+export DOCKER_HOST=tcp://192.168.59.103:2375
+unset DOCKER_CERT_PATH
+unset DOCKER_TLS_VERIFY
+
 # Alias
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
@@ -50,6 +78,7 @@ alias glight='cd ~/repo/GestureLight'
 alias gesl='cd /Users/SuperiMan/repo/GestureLight/'
 alias gblog='cd /Users/SuperiMan/Dropbox/Code/WebSite/YongqinchuanDu.com/duqcyxwd.github.com'
 alias cblog='cd /Users/SuperiMan/Dropbox/Code/WebSite/YongqinchuanDu.com/duqcyxwd.github.com'
+alias myparker='cd ~/repo/parker/'
 
 #Common alias
 # alias ll='ls -la'
