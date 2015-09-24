@@ -40,28 +40,8 @@
   ;;Puts a plus/minus symbol in the fringe for things you can fold (hide)
   :init (add-hook 'prog-mode-hook 'hideshowvis-minor-mode))
 
-;;; An attempt to make Emacs automatically adjust font size based on resolution
-;; (defun fontify-frame (&optional frame)
-;;   (interactive)
-;;   (let ((target (or frame (window-frame))))
-;;     (if window-system
-;;         (if (or
-;;              (> (frame-pixel-height) 2000)
-;;              (> (frame-pixel-width) 2000))
-;;             (set-frame-parameter target 'font "Menlo 16")
-;;           (set-frame-parameter target 'font "Menlo 15"))
-;;       (set-frame-parameter target 'font "Menlo 15")
-;;       )))
-;; ;;; Fontify current frame for startup
-;; (fontify-frame)
-;; ;;; Fontify new frames that are created
-;; (add-to-list 'after-make-frame-functions 'fontify-frame)
-
 (set-face-attribute 'default nil :font "DejaVu Sans Mono-14")
 (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-12")
-
-;; (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")
-;; (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-11")
 
 (use-package drag-stuff
   :load-path "/Users/chuan.du/.emacs.d/elpa/drag-stuff-0.1.0/")
@@ -137,14 +117,29 @@
             (evil-leader/set-key "b" 'ido-switch-buffer)
             (evil-leader/set-key "f" 'projectile-find-file-dwim)
             (evil-leader/set-key "r" 'ido-imenu)
-            (evil-leader/set-key "k" 'cider-popup-buffer-quit-function)
+            (evil-leader/set-key "0" 'delete-window)
+            (evil-leader/set-key "1" 'delete-other-windows)
+            (evil-leader/set-key "h" 'cider-popup-buffer-quit-function)
+            (evil-leader/set-key "k" 'kill-buffer-and-frame)
             (evil-leader/set-key "s" 'ag-project)
 ;;; cider
             (evil-leader/set-key "n" 'cider-repl-set-ns)
-            (evil-leader/set-key "0" 'kill-buffer-and-frame)
             (evil-leader/set-key "c" 'cider-load-buffer)
             (evil-leader/set-key "v" 'cider-switch-to-repl-buffer)
             (evil-leader/set-key "l" 'evil-cleverparens-mode)
+;;; Window resize
+            (evil-leader/set-key "7"
+              (lambda () (interactive) (text-scale-increase 0)))
+            (evil-leader/set-key "8"
+              (lambda () (interactive)
+                (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")
+                (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-11")
+                (balance-windows)))
+            (evil-leader/set-key "9"
+              (lambda () (interactive)
+                (set-face-attribute 'default nil :font "DejaVu Sans Mono-14")
+                (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-12")
+                (balance-windows)))
             (global-evil-leader-mode 1)
             (evil-leader-mode)))
 
