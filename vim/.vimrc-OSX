@@ -37,7 +37,12 @@ Plugin 'tpope/vim-rails.git'
 Plugin 'kien/ctrlp.vim'
 Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
-"
+Plugin 'rbgrouleff/bclose.vim'
+
+
+" Undo tree
+Plugin 'sjl/gundo.vim'
+
 "Gist
 Plugin 'mattn/webapi-vim'
 Plugin 'mattn/gist-vim'
@@ -45,6 +50,12 @@ Plugin 'mattn/gist-vim'
 Plugin 'plasticboy/vim-markdown'
 Plugin 'terryma/vim-multiple-cursors'
 
+"Clojure
+"Plugin 'tpope/vim-fireplace'
+"Plugin 'guns/vim-clojure-static'
+"Plugin 'oblitum/rainbow'
+"Plugin 'guns/vim-slamhound'
+"Plugin 'vim-scripts/paredit.vim'
 
 " The sparkup vim script is in a subdirectory of this repo called vim.
 " Pass the path to set the runtimepath properly.
@@ -80,7 +91,7 @@ filetype plugin indent on     " required
 " useful macros I use the most
 nmap \a :set formatoptions-=a<CR>:echo "autowrap disabled"<CR>
 nmap \A :set formatoptions+=a<CR>:echo "autowrap enabled"<CR>
-nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
+" nmap \b :set nocin tw=80<CR>:set formatoptions+=a<CR>
 nmap \c :TlistToggle<CR>
 nmap \d :%!perltidy<CR>
 nmap \e :NERDTreeToggle<CR>
@@ -90,9 +101,12 @@ nmap \l :set foldcolumn=0<CR>
 nmap \L :set foldcolumn=2<CR>
 nmap \o :set paste!<CR>:set paste?<CR>
 nmap \q :nohlsearch<CR>
-nmap \s :setlocal invspell<CR>
-nmap \t :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>
-nmap \T :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>
+nmap \r :%Eval<CR>
+nmap \t :noh<CR>
+" nmap \s :cpp<CR>
+" nmap \s :setlocal invspell<CR>
+" nmap \t :set expandtab tabstop=4 shiftwidth=4 softtabstop=4<CR>
+" nmap \T :set expandtab tabstop=2 shiftwidth=2 softtabstop=2<CR>
 nmap \u :setlocal list!<CR>:setlocal list?<CR>
 nmap \w :setlocal wrap!<CR>:setlocal wrap?<CR>
 nmap \x :w<CR>:%! xmllint --format - <CR>
@@ -107,10 +121,20 @@ nmap <C-e> :e#<CR>
 map <C-n> :bnext<CR>
 map <C-p> :bprev<CR>
 
+" Next line
+nmap <S-Enter> O<Esc>
+nmap <CR> o<Esc>
+
+" Sublime-like multiple cursor selector
+let g:multi_cursor_next_key='<C-s>'
+let g:multi_cursor_prev_key='<C-S>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:multi_cursor_quit_key='<Esc>'
+
 " Let's try buffkill-vim using my favorite Emacs binding...
-nmap <Esc>k :BD<CR>
-nmap <M-k> :BD<CR>"{{{"}}}
-nmap <D-k> :BD<CR>
+" nmap <Esc>k :Bclose<CR>
+" nmap <M-k> :BD<CR>"{{{"}}}
+" nmap <D-k> :BD<CR>
 
 " Emacs-like bindings in normal mode
 nmap <C-x>0 <C-w>c
@@ -138,7 +162,7 @@ cnoremap <C-f>  <Right>
 cnoremap <C-d>  <Delete>
 cnoremap <M-b>  <S-Left>
 cnoremap <M-f>  <S-Right>
-cnoremap <M-d>  <S-right><Delete>
+" cnoremap <M-d>  <S-right><Delete>
 cnoremap <Esc>b <S-Left>
 cnoremap <Esc>f <S-Right>
 cnoremap <Esc>d <S-right><Delete>
@@ -158,6 +182,7 @@ map <C-J> <C-W>j<C-W>_ " open and maximize the split below
 map <C-K> <C-W>k<C-W>_ " open and maximize the split above
 " Search for the word under the cursor in the current directory
 " nmap <C-k> :Ag "\b<cword>\b" <CR>
+" :map <F2> "zyiw<C-w>wo<Esc>"zp<C-w>w
 
 " Insert empty line
 nmap <silent><C-CR> :set paste<CR>m`o<Esc>``:set nopaste<CR>
@@ -414,6 +439,9 @@ nmap ; :CtrlPBuffer<CR>
 if has('gui_running')
   let g:Powerline_symbols = "unicode"
 endif
+
+" rainbow Parentheses Improved
+let g:rainbow_active = 1
 
 " Section: Color and syntax {{{1
 "--------------------------------------------------------------------------
