@@ -5,8 +5,7 @@ ZSH=$HOME/.oh-my-zsh
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
-# ZSH_THEME="blinks"
-ZSH_THEME="agnoster"
+ZSH_THEME="agnoster-cus"
 
 # Configuration only with local computer
 
@@ -43,12 +42,12 @@ alias mz="vim ~/.zshrc"
 alias ma="mz"
 alias ca="less ~/.zshrc"
 alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
-alias cf='pbpaste | pbcopy' # clean format of clipboard
 alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
+
 alias notes="mvim ~/repo/Notes/CLojure.md"
 alias vnotes="mvim ~/repo/Notes/Git_Vim_Linux.md"
-alias pcb='pwd |pbcopy'
+
 alias py='python'
 alias rmt='/bin/rm'
 alias rm="trash"
@@ -82,6 +81,11 @@ alias myparker='cd ~/repo/parker/'
 
 #Common alias
 # alias ll='ls -la'
+# CD to any directory with auto complete 
+export repodir="/Users/chuan.du/repo/"
+function c () {cd $repodir$1}
+compctl -g $repodir'*(:t:r)' c
+
 alias copy="tr -d '\n' | pbcopy"
 
 # Git alias
