@@ -226,7 +226,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
             (evil-leader/set-leader ",")
 
             (evil-leader/set-key "w" 'save-buffer)
-            (evil-leader/set-key "," 'dired-jump)
+            (evil-leader/set-key "u" 'dired-jump)
             (evil-leader/set-key "," 'evil-switch-to-windows-last-buffer)
             ;; (evil-leader/set-key "h" 'other-window)
             (evil-leader/set-key "m" 'minimap-mode)
@@ -235,8 +235,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
             (evil-leader/set-key "r" 'ido-imenu)
             (evil-leader/set-key "g" 'cider-repl-previous-matching-input)
             (evil-leader/set-key-for-mode 'text-mode "k" 'edit-server-done) ;; connection for edit-server on brower
-            (evil-leader/set-key "d" 'edit-server-done)
-            (evil-leader/set-key "x" 'kill-this-buffer)
+            ;; (evil-leader/set-key "d" 'edit-server-done)
+            ;; (evil-leader/set-key "x" 'kill-this-buffer)
 
             ;; Ace-jump mode
             ;; toggle-case-fold-search
@@ -269,14 +269,13 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 ;;; cider
             (evil-leader/set-key "t" 'cider-pprint-eval-defun-at-point)
-            (evil-leader/set-key "a" 'cider-repl-clear-buffer)
             (evil-leader/set-key "q" 'kill-buffer-and-window)
             (evil-leader/set-key "e" 'cider-eval-last-sexp)
             (evil-leader/set-key "n" 'cider-repl-set-ns)
 
-            (evil-leader/set-key "c" 'cider-load-buffer)
-            (evil-leader/set-key-for-mode 'clojure-mode "c" 'cider-load-buffer)
-            (evil-leader/set-key-for-mode 'cider-repl-mode "c" 'cider-repl-clear-buffer)
+            (evil-leader/set-key "cn" 'neotree-toggle)
+            (evil-leader/set-key-for-mode 'clojure-mode "cc" 'cider-load-buffer)
+            (evil-leader/set-key-for-mode 'cider-repl-mode "cc" 'cider-repl-clear-buffer)
 
 
             (evil-leader/set-key "v" 'cider-switch-to-repl-buffer-clojure-buffer)
@@ -486,8 +485,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (interactive)
   (if (eq mark-active nil)
       (progn
-        ;; (evil-first-non-blank)
-        (move-beginning-of-line nil)
+        (evil-first-non-blank)
+        ;; (move-beginning-of-line nil)
         (if (or (equal major-mode 'clojure-mode)
                 (equal major-mode 'clojurescript-mode))
             (if (string= (string (char-after (point))) "#")
@@ -496,3 +495,29 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
           (comment-dwim nil)))
     (comment-dwim nil))
   (deactivate-mark))
+
+
+;; Figwheel
+;; (setq cider-cljs-lein-repl
+;;       "(do (require 'figwheel-sidecar.repl-api)
+;;            (figwheel-sidecar.repl-api/start-figwheel!)
+;;            (figwheel-sidecar.repl-api/cljs-repl))")
+
+(defun cider-figwheel-repl ()
+  (interactive)
+  (save-some-buffers)
+  (with-current-buffer (cider-current-repl-buffer)
+    (goto-char (point-max))
+    (insert "(require 'figwheel-sidecar.repl-api)
+             (figwheel-sidecar.repl-api/start-figwheel!) ; idempotent
+             (figwheel-sidecar.repl-api/cljs-repl)")
+    (cider-repl-return)))
+
+(defun user/cider-send-to-repl ()
+  (interactive)
+  (let ((s (buffer-substring-no-properties
+            (nth 0 (cider-last-sexp 'bounds))
+            (nth 1 (cider-last-sexp 'bounds)))))
+    (with-current-buffer (cider-current-connection)
+      (insert s)
+      (cider-repl-return))))
