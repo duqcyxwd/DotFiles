@@ -1,3 +1,5 @@
+(message "Hi, Start loading customer config")
+
 (eval-when-compile
   (require 'use-package))
 
@@ -47,7 +49,7 @@
          ("C-S-c C-S-c" . mc/edit-lines)
          ("C-S-c C-e" . mc/edit-ends-of-lines)))
 
-(message "hi we are so good")
+(message "Hi we are so good so far")
 
 (use-package fold-dwim :ensure t
   :pin melpa-stable
@@ -262,9 +264,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
             (evil-leader/set-key "E"
               (lambda () (interactive)
                 (eval-current-buffer)
-                (set-face-attribute 'default nil :font "DejaVu Sans Mono-14")
-                (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-12")
-                (balance-windows)))
+                (set-face-to-large)))
             (evil-leader/set-key "W" 'whitespace-mode)
 
 ;;; cider
@@ -292,21 +292,9 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
             (evil-leader/set-key "1" 'delete-other-windows)
 
             (evil-leader/set-key "S" 'ace-swap-window)
-            (evil-leader/set-key "7"
-              (lambda () (interactive)
-                (set-face-attribute 'default nil :font "DejaVu Sans Mono-10")
-                (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-11")
-                (balance-windows)))
-            (evil-leader/set-key "8"
-              (lambda () (interactive)
-                (set-face-attribute 'default nil :font "DejaVu Sans Mono-12")
-                (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-11")
-                (balance-windows)))
-            (evil-leader/set-key "9"
-              (lambda () (interactive)
-                (set-face-attribute 'default nil :font "DejaVu Sans Mono-14")
-                (set-face-attribute 'mode-line nil :font "DejaVu Sans Mono-12")
-                (balance-windows)))
+            (evil-leader/set-key "7" 'set-face-to-small)
+            (evil-leader/set-key "8" 'set-face-to-medium)
+            (evil-leader/set-key "9" 'set-face-to-large)
             (global-evil-leader-mode 1)
             (evil-leader-mode)))
 
@@ -460,7 +448,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 
 (message "Hi, We have load almost all config")
 
-
 ;; Disable the annoying square
 (setq ring-bell-function 'ignore)
 
@@ -521,3 +508,27 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (with-current-buffer (cider-current-connection)
       (insert s)
       (cider-repl-return))))
+
+
+(defun set-face-to-small ()
+  (interactive)
+  (set-face-attribute 'default nil :font "Consolas 10")
+  (set-face-attribute 'mode-line nil :font "Consolas 12")
+  (balance-windows))
+(defun set-face-to-medium ()
+  (interactive)
+  (set-face-attribute 'default nil :font "Consolas 14")
+  (set-face-attribute 'mode-line nil :font "Consolas 12")
+  (balance-windows))
+(defun set-face-to-large ()
+  (interactive)
+  (set-face-attribute 'default nil :font "Consolas 16")
+  (set-face-attribute 'mode-line nil :font "Consolas 14")
+
+  ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono 14")
+  ;; (set-face-attribute 'default nil :font "Menlo 10")
+  ;; (set-face-attribute 'default nil :font "Monaco 13")
+  ;; (set-face-attribute 'default nil :font "Monospace 14")
+  ;; (set-face-attribute 'default nil :font "Courier 14")
+
+  (balance-windows))
