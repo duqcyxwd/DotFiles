@@ -34,8 +34,6 @@
 
 (message "SuperUser Loading")
 
-
-
 (defconst SuperUser-packages '(evil-unimpaired
                                (evil-helper :location local)
                                evil-cleverparens
@@ -61,7 +59,16 @@
     :defer t
     :commands (find-next-full-wordds
                find-prev-full-wordds)
-    :init (progn (message "init evil-helper"))))
+    :init (progn (message "init evil-helper")
+                 ;; (spacemacs/set-leader-keys-for-major-mode 'emacs-lisp-mode "Z" 'evil-window-move-far-left)
+                 (evil-leader/set-key
+                   "H" 'evil-window-move-far-left
+                   "L" 'evil-window-move-far-right
+                   "J" 'evil-window-move-very-bottom
+                   "K" 'evil-window-move-very-top
+                   "E" (lambda () (interactive)
+                         (eval-current-buffer)
+                         (set-face-to-large))))))
 
 (defun SuperUser/init-evil-cleverparens ()
   (use-package evil-cleverparens
@@ -76,6 +83,7 @@
 
   ;; Key binding
   (message "Loading: Post Evil key binding")
+  (global-set-key (kbd "M-`") 'other-frame-or-window)
   (define-key evil-normal-state-map "gn" 'find-next-full-wordds)
   (define-key evil-normal-state-map "gp" 'find-prev-full-wordds)
   ;; evil-search-highlight-persist
@@ -182,10 +190,15 @@
     (comment-dwim nil))
   (deactivate-mark))
 
-(defun set-face-to-small ()
+(defun set-face-to-mini ()
   (interactive)
   (set-face-attribute 'default nil :font "Consolas 10")
-  (set-face-attribute 'mode-line nil :font "Consolas 12")
+  (set-face-attribute 'mode-line nil :font "Consolas 9")
+  (balance-windows))
+(defun set-face-to-small ()
+  (interactive)
+  (set-face-attribute 'default nil :font "Consolas 12")
+  (set-face-attribute 'mode-line nil :font "Consolas 11")
   (balance-windows))
 (defun set-face-to-medium ()
   (interactive)

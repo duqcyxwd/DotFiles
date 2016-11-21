@@ -268,10 +268,6 @@
        ;; Buffer and windwow
        (evil-leader/set-key "h" 'cider-popup-buffer-quit-function)
        (evil-leader/set-key "k" 'kill-this-buffer)
-       (evil-leader/set-key "H" 'evil-window-move-far-left)
-       (evil-leader/set-key "L" 'evil-window-move-far-right)
-       (evil-leader/set-key "J" 'evil-window-move-very-bottom)
-       (evil-leader/set-key "K" 'evil-window-move-very-top)
 
 
        (evil-leader/set-key "T" 'toggle-truncate-lines)
@@ -310,5 +306,4 @@
        (evil-leader/set-key "8" 'set-face-to-medium)
        (evil-leader/set-key "9" 'set-face-to-large)
 
-       (global-evil-leader-mode 1)
-       (evil-leader-mode))
+       )
