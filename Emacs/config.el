@@ -77,9 +77,6 @@
 ;;   :config (progn
 ;;             (minimap-mode 0)))
 
-
-;;
-
 ;; edit-server allow emacs to edit stuff form browser
 ;; (use-package edit-server
 ;;   :ensure t
@@ -151,14 +148,6 @@
 
   (define-key evil-normal-state-map (kbd "C-c C-o") 'ace-window)
   (define-key evil-normal-state-map (kbd "C-c o") 'ace-window)
-
-  ;; (define-key evil-motion-state-map (kbd "M-h") 'evil-window-left)
-  ;; (define-key evil-motion-state-map (kbd "M-j") 'evil-window-down)
-  ;;(define-key evil-motion-state-map (kbd "M-k") 'evil-window-up)
-  ;; (define-key evil-motion-state-map (kbd "M-l") 'evil-window-right)
-
-
-  ;; (define-key evil-motion-state-map (kbd "=") 'other-window)
 
   (define-key evil-motion-state-map (kbd "M-=") 'enlarge-window)
   (define-key evil-motion-state-map (kbd "M--") 'shrink-window)
@@ -267,7 +256,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                 (set-face-to-large)))
             (evil-leader/set-key "W" 'whitespace-mode)
 
-;;; cider
+            ;; cider
             (evil-leader/set-key "t" 'cider-pprint-eval-defun-at-point)
             (evil-leader/set-key "q" 'kill-buffer-and-window)
             (evil-leader/set-key "e" 'cider-eval-last-sexp)
@@ -282,7 +271,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
             (evil-leader/set-key "l" 'evil-cleverparens-mode)
             (evil-leader/set-key "'" 'evil-visual-mark-mode)
 
-;;; Window operation
+            ;; Window operation
             ;; C-w, r Rotate windows
             ;; gs windows swap
             ;; (evil-window-rotate-upwards)
@@ -309,8 +298,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   :config (global-evil-visualstar-mode 1))
 
 (use-package evil-cleverparens
-  :ensure t)
-(evil-cleverparens-mode)
+  :ensure t
+  :config (evil-cleverparens-mode 1))
 
 (use-package whitespace :ensure t
   :init (setq whitespace-style '(face trailing lines-tail tabs)
@@ -421,7 +410,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
             ;; (powerline-default-theme)
             (powerline-center-evil-theme-cus)
             (setq powerline-arrow-shape 'arrow)))
-
 
 
 ;; (use-package layout-restore
