@@ -25,11 +25,12 @@
       (insert s)
       (cider-repl-return))))
 
-(defun cider-switch-to-repl-buffer-clojure-buffer ()
-  (interactive)
-  (if (equal major-mode 'cider-repl-mode)
-      (cider-switch-to-last-clojure-buffer)
-    (cider-switch-to-repl-buffer)))
+;; Replaced by , s s
+;; (defun cider-switch-to-repl-buffer-clojure-buffer ()
+;;   (interactive)
+;;   (if (equal major-mode 'cider-repl-mode)
+;;       (cider-switch-to-last-clojure-buffer)
+;;     (cider-switch-to-repl-buffer)))
 
 
 (provide 'cider-helper)

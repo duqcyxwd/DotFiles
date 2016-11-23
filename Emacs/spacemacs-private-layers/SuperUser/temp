@@ -1,16 +1,3 @@
-(message "Hi, Start loading customer config")
-
-(eval-when-compile
-  (require 'use-package))
-
-(use-package diminish
-  :ensure t)
-
-(use-package bind-key
-  :ensure t
-  :bind ())
-
-(global-set-key (kbd "M-`") 'other-frame-or-window)
 (setq ido-separator "\n")
 (setq ido-enable-flex-matching t)
 
@@ -33,9 +20,6 @@
                   auto-window-vscroll nil
                   scroll-step 1)))
 
-(use-package neotree :ensure t
-  :bind ("<f8>" . neotree-toggle))
-
 (use-package multiple-cursors :ensure t :pin melpa-stable
   :bind (("C->" . mc/mark-next-like-this)
          ("C-<" . mc/mark-previous-like-this)
@@ -43,21 +27,7 @@
          ("C-S-c C-S-c" . mc/edit-lines)
          ("C-S-c C-e" . mc/edit-ends-of-lines)))
 
-(use-package fold-dwim :ensure t
-  :pin melpa-stable
-  :bind (("<M-tab>" . fold-dwim-toggle)
-         ("C-f" . fold-dwim-hide-all)
-         ("H-s" . fold-dwim-show-all)))
 
-(use-package hideshowvis :ensure t
-  ;;Puts a plus/minus symbol in the fringe for things you can fold (hide)
-  :init (add-hook 'prog-mode-hook 'hideshowvis-minor-mode))
-
-;; (use-package drag-stuff
-;;   :load-path "/Users/chuan.du/.emacs.d/elpa/drag-stuff-0.1.0/")
-
-
-;; Not working yet
 ;;Exit insert mode by pressing j and then j quickly
 ;; (use-package key-chord
 ;;   :ensure t
@@ -74,43 +44,14 @@
 ;;   :ensure t
 ;;   :config (edit-server-start))
 
-;;; Evil stuff
-
 ;; (put-clojure-indent 'partial 5)
 
 ;; Tip M+: Eval a Expression
 ;; (equal major-mode 'cider-repl-mode)
 
-(use-package evil-leader
-  :ensure t
-  :config )
-
-;;; displays all the evil marks you have registered on a buffer
-(use-package evil-visual-mark-mode
-  :ensure t
-  :config (evil-visual-mark-mode 1))
-
-;;; hit `*` to search the selection forward, or # to search that selection backward.
-(use-package evil-visualstar
-  :ensure t
-  :config (global-evil-visualstar-mode 1))
-
-(use-package evil-cleverparens
-  :ensure t
-  :config (evil-cleverparens-mode 1))
-
 (use-package whitespace :ensure t
   :init (setq whitespace-style '(face trailing lines-tail tabs)
               whitespace-line-column 80))
-
-(use-package auto-indent-mode :ensure t
-  :init (setq auto-indent-on-save-file t
-              auto-indent-blank-lines-on-move nil
-              auto-indent-delete-trailing-whitespace-on-save-file t
-              auto-indent-untabify-on-save-file t
-              auto-indent-indent-style 'aggressive)
-  :config (auto-indent-global-mode)
-  :diminish auto-indent-mode)
 
 (use-package solarized-theme :ensure t
   :init (progn
@@ -208,10 +149,6 @@
             (powerline-center-evil-theme-cus)
             (setq powerline-arrow-shape 'arrow)))
 
-
-;; (use-package layout-restore
-;;   :ensure t)
-
 (defun my-update-modified-flag ()
   "Update the buffer modified flag."
   (interactive)
@@ -233,77 +170,3 @@
 
 ;; Disable the annoying square
 (setq ring-bell-function 'ignore)
-
-(global-set-key (kbd "M-9") 'paredit-wrap-round)
-;; (global-set-key (kbd "C-<right>") 'paredit-forward-slurp-sexp)
-
-
-;; Leader config
-(progn (evil-leader/set-leader ",")
-
-       (evil-leader/set-key "w" 'save-buffer)
-       (evil-leader/set-key "u" 'dired-jump)
-       (evil-leader/set-key "," 'evil-switch-to-windows-last-buffer)
-       ;; (evil-leader/set-key "h" 'other-window)
-       (evil-leader/set-key "m" 'minimap-mode)
-       (evil-leader/set-key "b" 'ido-switch-buffer)
-       (evil-leader/set-key "f" 'projectile-find-file-dwim)
-       (evil-leader/set-key "r" 'ido-imenu)
-       (evil-leader/set-key "g" 'cider-repl-previous-matching-input)
-       (evil-leader/set-key-for-mode 'text-mode "k" 'edit-server-done) ;; connection for edit-server on brower
-       ;; (evil-leader/set-key "d" 'edit-server-done)
-       ;; (evil-leader/set-key "x" 'kill-this-buffer)
-
-       ;; Ace-jump mode
-       ;; toggle-case-fold-search
-       (evil-leader/set-key "o" 'evil-ace-jump-line-mode)
-       (evil-leader/set-key "j" 'evil-ace-jump-word-mode)
-       (evil-leader/set-key "s" 'ag-project)
-
-       ;; (evil-leader/set-key
-       ;;   "ci" 'evilnc-comment-or-uncomment-lines
-       ;;   "cl" 'evilnc-quick-comment-or-uncomment-to-the-line)
-
-
-       ;; Buffer and windwow
-       (evil-leader/set-key "h" 'cider-popup-buffer-quit-function)
-       (evil-leader/set-key "k" 'kill-this-buffer)
-
-
-       (evil-leader/set-key "T" 'toggle-truncate-lines)
-       (evil-leader/set-key "E"
-         (lambda () (interactive)
-           (eval-current-buffer)
-           (set-face-to-large)))
-       (evil-leader/set-key "W" 'whitespace-mode)
-
-       ;; cider
-       (evil-leader/set-key "t" 'cider-pprint-eval-defun-at-point)
-       (evil-leader/set-key "q" 'kill-buffer-and-window)
-       (evil-leader/set-key "e" 'cider-eval-last-sexp)
-       (evil-leader/set-key "n" 'cider-repl-set-ns)
-
-       (evil-leader/set-key "cn" 'neotree-toggle)
-       (evil-leader/set-key-for-mode 'clojure-mode "cc" 'cider-load-buffer)
-       (evil-leader/set-key-for-mode 'cider-repl-mode "cc" 'cider-repl-clear-buffer)
-
-
-       (evil-leader/set-key "v" 'cider-switch-to-repl-buffer-clojure-buffer)
-       (evil-leader/set-key "l" 'evil-cleverparens-mode)
-       (evil-leader/set-key "'" 'evil-visual-mark-mode)
-
-       ;; Window operation
-       ;; C-w, r Rotate windows
-       ;; gs windows swap
-       ;; (evil-window-rotate-upwards)
-       ;;  C-w L/K/J/H.
-       ;; (evil-leader/set-key "0" 'delete-window)
-       (evil-leader/set-key "C" 'delete-window)
-       (evil-leader/set-key "1" 'delete-other-windows)
-
-       (evil-leader/set-key "S" 'ace-swap-window)
-       (evil-leader/set-key "7" 'set-face-to-small)
-       (evil-leader/set-key "8" 'set-face-to-medium)
-       (evil-leader/set-key "9" 'set-face-to-large)
-
-       )

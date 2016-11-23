@@ -36,17 +36,33 @@
 
 (defconst SuperUser-packages '(evil-unimpaired
                                (evil-helper :location local)
+                               ;;(cider-helper :location local)
                                evil-cleverparens
                                auto-indent-mode
+                               paredit
                                ;; whitespace
-                               ;; (cider-helper :location local)
+
                                ))
 ;; (setq SuperUser-packages '(auto-indent-mode))
+;; TODO pretty symbol mode set up
+
+
+(defun SuperUser/post-init-paredit ()
+  (message "Loading: post init paredit mode")
+
+  ;; (let ((paredit-setup (lambda () (paredit-mode 1))))
+  ;;   (add-hook 'lisp-mode-hook paredit-setup)
+  ;;   (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode 1)))
+  ;;   (add-hook 'clojure-mode-hook paredit-setup)
+  ;;   (add-hook 'elisp-mode-hook (lambda () (paredit-mode 1)))
+  ;;   (add-hook 'emacs-lisp-mode-hook (lambda () (paredit-mode 1)))
+  ;;   (add-hook 'cider-repl-mode-hook (lambda () (paredit-mode 1))))
+  )
 
 (defun SuperUser/init-auto-indent-mode ()
   (use-package auto-indent-mode
     :ensure t
-    :init (progn (message "init auto-ident-mode")
+    :init (progn (message "Loading: init auto-ident-mode")
                  (setq auto-indent-on-save-file t
                        auto-indent-blank-lines-on-move nil
                        auto-indent-delete-trailing-whitespace-on-save-file t
@@ -59,34 +75,32 @@
     :defer t
     :commands (find-next-full-wordds
                find-prev-full-wordds)
-    :init (progn (message "init evil-helper")
-                 ;; (spacemacs/set-leader-keys-for-major-mode 'emacs-lisp-mode "Z" 'evil-window-move-far-left)
-                 (evil-leader/set-key
-                   "H" 'evil-window-move-far-left
-                   "L" 'evil-window-move-far-right
-                   "J" 'evil-window-move-very-bottom
-                   "K" 'evil-window-move-very-top
-                   "E" (lambda () (interactive)
-                         (eval-current-buffer)
-                         (set-face-to-large))))))
+    :init (progn (message "Laoding: init evil-helper"))))
 
-(defun SuperUser/init-evil-cleverparens ()
-  (use-package evil-cleverparens
-    :ensure t
-    :config (evil-cleverparens-mode 1)))
+(defun SuperUser/post-init-evil-helper ()
+  (message "Loading: post init evil-helper")
+  (define-key evil-normal-state-map "gn" 'find-next-full-wordds)
+  (define-key evil-normal-state-map "gp" 'find-prev-full-wordds)
 
-;; (use-package whitespace :ensure t
-;;   :init (setq whitespace-style '(face trailing lines-tail tabs)
-;;               whitespace-line-column 80))
+  ;; evil-search-highlight-persist
+  )
+
+(defun SuperUser/post-init-evil-cleverparens ()
+  (message "Loading: Post init eveil clever parens")
+  (evil-cleverparens-mode 1)
+  ;; (add-hook 'clojure-mode-hook #'evil-cleverparens-mode)
+  (evil-leader/set-key "tP" 'evil-cleverparens-mode)
+  (let ((mode-hooker (lambda () (evil-cleverparens-mode 1))))
+    (add-hook 'lisp-mode-hook mode-hooker)
+    ;; (add-hook 'lisp-interaction-mode-hook mode-hooker)
+    (add-hook 'clojure-mode-hook mode-hooker)
+    (add-hook 'emacs-lisp-mode-hook mode-hooker)
+    (add-hook 'cider-repl-mode-hook mode-hooker)))
 
 (defun SuperUser/post-init-evil-unimpaired ()
-
   ;; Key binding
   (message "Loading: Post Evil key binding")
   (global-set-key (kbd "M-`") 'other-frame-or-window)
-  (define-key evil-normal-state-map "gn" 'find-next-full-wordds)
-  (define-key evil-normal-state-map "gp" 'find-prev-full-wordds)
-  ;; evil-search-highlight-persist
 
   (define-key evil-normal-state-map "gh" 'evil-window-left)
   (define-key evil-normal-state-map "gl" 'evil-window-right)
@@ -96,10 +110,10 @@
   (define-key evil-normal-state-map (kbd "C-c C-o") 'ace-window)
   (define-key evil-normal-state-map (kbd "C-c o") 'ace-window)
 
-  ;; (define-key evil-motion-state-map (kbd "s-+") 'enlarge-window)
-  ;; (define-key evil-motion-state-map (kbd "s-=") 'shrink-window)
-  ;; (define-key evil-motion-state-map (kbd "s--") 'evil-window-increase-width)
-  ;; (define-key evil-motion-state-map (kbd "s-_") 'evil-window-decrease-width)
+  (define-key evil-motion-state-map (kbd "M-+") 'enlarge-window)
+  (define-key evil-motion-state-map (kbd "M-=") 'shrink-window)
+  (define-key evil-motion-state-map (kbd "M--") 'evil-window-increase-width)
+  (define-key evil-motion-state-map (kbd "M-_") 'evil-window-decrease-width)
 
   (define-key evil-motion-state-map "gs" 'ace-swap-window)
 
@@ -114,7 +128,8 @@
 
   (define-key evil-normal-state-map (kbd "M-;") 'block-toggle-comments)
   ;; (define-key evil-normal-state-map (kbd "M-/") 'evilnc-comment-or-uncomment-lines)
-  (define-key evil-normal-state-map (kbd "M-/") 'comment-line)
+  (define-key evil-normal-state-map (kbd "M-/") 'spacemacs/comment-or-uncomment-lines)
+
 
   ;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
@@ -133,8 +148,9 @@
     (setq evil-normal-state-cursor '("green" box))
     (setq evil-visual-state-cursor '("orange" box))
     (setq evil-insert-state-cursor '("red" bar))
-    (setq evil-replace-state-cursor '("red" bar))
-    (setq evil-operator-state-cursor '("red" hollow)))
+    ;; (setq evil-replace-state-cursor '("red" bar))
+    (setq evil-operator-state-cursor '("red" hollow))
+    )
 
   ;;  undefine key-binding
   ;; (defun evil-undefine ()
@@ -147,18 +163,19 @@
 
   )
 
-(defun SuperUser/init-cider ()
-  (use-package cider
-    :config
-    (progn
-      (evil-leader/set-key-for-mode 'clojure-mode
-        "ml" 'zoo/cider-switch-and-load
-        "m," 'zoo/cider-load-and-test
-        "mi" 'cider-inspect
-        "mq" 'cider-quit
-        "msc" 'cider-connect)
-      (setq cider-repl-pop-to-buffer-on-connect t)
-      (add-hook 'cider-repl-mode-hook 'zoo/clojure-after-hook))))
+;; (defun SuperUser/post-init-cider-helper ()
+;;   (message "Loading: post init cider")
+
+;;   (progn ;; cider
+;;     ;; (evil-leader/set-key "g" 'cider-repl-previous-matching-input)
+;;     ;; (evil-leader/set-key "t" 'cider-pprint-eval-defun-at-point)
+;;     ;; (evil-leader/set-key "q" 'kill-buffer-and-window)
+;;     ;; (evil-leader/set-key "e" 'cider-eval-last-sexp)
+;;     ;; (evil-leader/set-key "n" 'cider-repl-set-ns)
+
+;;     ;; (evil-leader/set-key-for-mode 'clojure-mode "cc" 'cider-load-buffer)
+;;     ;; (evil-leader/set-key-for-mode 'cider-repl-mode "cc" 'cider-repl-clear-buffer)
+;;     ))
 
 ;; Other helper fucntion
 (defun my-put-file-name-on-clipboard ()
