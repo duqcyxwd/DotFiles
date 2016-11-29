@@ -136,6 +136,7 @@
   ;; (define-key evil-normal-state-map (kbd "SPC") 'evil-toggle-fold)
   ;; (define-key evil-normal-state-map (kbd "SPC") 'evil-toggle-fold)
   (define-key evil-normal-state-map (kbd "RET") 'evil-toggle-fold)
+  (define-key evil-normal-state-map (kbd "<backspace>") 'evil-toggle-fold)
   ;; (define-key evil-visual-state-map (kbd "RET") 'er/expand-region)
 
   ;; Configuration

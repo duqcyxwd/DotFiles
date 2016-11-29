@@ -404,7 +404,6 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
                              (powerline-render rhs)))))))
 
 (use-package powerline :ensure t
-  ;; :init (setq powerline-default-separator 'wave)
   :config (progn
             ;; (powerline-light-thme)
             ;; (powerline-default-theme)
