@@ -29,27 +29,21 @@
 
 ;;; Code:
 
-;; (setq SuperUser-packages '((evil-helper :location local)
-;;                            evil-unimpaired))
-
 (message "SuperUser Loading")
 
 (defconst SuperUser-packages '(evil-unimpaired
                                (evil-helper :location local)
                                ;;(cider-helper :location local)
                                evil-cleverparens
+                               clojure
+                               cider
                                auto-indent-mode
-                               paredit
-                               ;; whitespace
-
-                               ))
+                               paredit))
 ;; (setq SuperUser-packages '(auto-indent-mode))
 ;; TODO pretty symbol mode set up
 
-
 (defun SuperUser/post-init-paredit ()
-  (message "Loading: post init paredit mode")
-
+  (message "Loading: Post init paredit mode")
   ;; (let ((paredit-setup (lambda () (paredit-mode 1))))
   ;;   (add-hook 'lisp-mode-hook paredit-setup)
   ;;   (add-hook 'lisp-interaction-mode-hook (lambda () (paredit-mode 1)))
@@ -77,14 +71,6 @@
                find-prev-full-wordds)
     :init (progn (message "Laoding: init evil-helper"))))
 
-(defun SuperUser/post-init-evil-helper ()
-  (message "Loading: post init evil-helper")
-  (define-key evil-normal-state-map "gn" 'find-next-full-wordds)
-  (define-key evil-normal-state-map "gp" 'find-prev-full-wordds)
-
-  ;; evil-search-highlight-persist
-  )
-
 (defun SuperUser/post-init-evil-cleverparens ()
   (message "Loading: Post init eveil clever parens")
   (evil-cleverparens-mode 1)
@@ -102,6 +88,9 @@
   (message "Loading: Post Evil key binding")
   (global-set-key (kbd "M-`") 'other-frame-or-window)
 
+  (define-key evil-normal-state-map "gn" 'find-next-full-wordds)
+  (define-key evil-normal-state-map "gp" 'find-prev-full-wordds)
+
   (define-key evil-normal-state-map "gh" 'evil-window-left)
   (define-key evil-normal-state-map "gl" 'evil-window-right)
   (define-key evil-normal-state-map "gj" 'evil-window-down)
@@ -116,9 +105,6 @@
   (define-key evil-motion-state-map (kbd "M-_") 'evil-window-decrease-width)
 
   (define-key evil-motion-state-map "gs" 'ace-swap-window)
-
-  ;; (define-key evil-normal-state-map (kbd "C-b") 'evil-scroll-up)
-  ;; (define-key evil-normal-state-map (kbd "C-f") 'evil-scroll-down)
 
   ;; (define-key evil-normal-state-map (kbd "C-b") 'scroll-down-command)
   ;; (define-key evil-normal-state-map (kbd "C-f") 'scroll-up-command)
@@ -144,14 +130,13 @@
   (setq evil-move-cursor-back nil)
 
   ;; Other
-  (when (display-graphic-p)
-    (setq evil-emacs-state-cursor '("red" box))
-    (setq evil-normal-state-cursor '("green" box))
-    (setq evil-visual-state-cursor '("orange" box))
-    (setq evil-insert-state-cursor '("red" bar))
-    ;; (setq evil-replace-state-cursor '("red" bar))
-    (setq evil-operator-state-cursor '("red" hollow))
-    )
+  ;; (when (display-graphic-p)
+  ;;   (setq evil-emacs-state-cursor '("red" box))
+  ;;   (setq evil-normal-state-cursor '("green" box))
+  ;;   (setq evil-visual-state-cursor '("orange" box))
+  ;;   (setq evil-insert-state-cursor '("red" bar))
+  ;;   ;; (setq evil-replace-state-cursor '("red" bar))
+  ;;   (setq evil-operator-state-cursor '("red" hollow)))
 
   ;;  undefine key-binding
   ;; (defun evil-undefine ()
@@ -163,6 +148,19 @@
   ;; (define-key evil-normal-state-map (kbd "M-.") 'evil-undefine)
 
   )
+
+(defun SuperUser/post-init-cider ()
+  ;; Not working need to reload
+  (message "Loading: Post init cider")
+  ;; (spacemacs/set-leader-keys-for-major-mode 'clojure-mode "sn" 'cider-repl-set-ns)
+  (spacemacs/set-leader-keys-for-major-mode 'cider-repl-mode
+    "sh" 'cider-repl-previous-matching-input
+    "sn" 'cider-repl-set-ns)
+  (message "Loading: Remapping keys for clojure-mode")
+  (evil-leader/set-key-for-mode 'clojure-mode
+    "sd" 'cider-find-dwim
+    "et" 'cider-pprint-eval-defun-at-point
+    "cc" 'cider-load-buffer))
 
 ;; (defun SuperUser/post-init-cider-helper ()
 ;;   (message "Loading: post init cider")
@@ -195,22 +193,33 @@
   "If region is set, [un]comments it. Otherwise [un]comments current block.
    - Works for Clojure and ClojureScript"
   (interactive)
-  (if (eq mark-active nil)
-      (progn
-        (evil-first-non-blank)
-        ;; (move-beginning-of-line nil)
-        (if (or (equal major-mode 'clojure-mode)
-                (equal major-mode 'clojurescript-mode))
-            (if (string= (string (char-after (point))) "#")
-                (delete-char 2)
-              (insert "#_"))
-          (comment-dwim nil)))
-    (comment-dwim nil))
-  (deactivate-mark))
+  (progn
+    (evil-first-non-blank)
+    (if (and (or (equal major-mode 'clojure-mode)
+                 (equal major-mode 'clojurescript-mode))
+             (not (string= (string (char-after (point))) ";")))
+        (if (string= (string (char-after (point))) "#")
+            (delete-char 2)
+          (insert "#_"))
+      (spacemacs/comment-or-uncomment-lines 1)))
+  ;; Forget why active do here
+  ;; (if (eq mark-active nil)
+  ;;     (progn
+  ;;       (evil-first-non-blank)
+  ;;       (if (and (or (equal major-mode 'clojure-mode)
+  ;;                    (equal major-mode 'clojurescript-mode))
+  ;;                (not (string= (string (char-after (point))) ";")))
+  ;;           (if (string= (string (char-after (point))) "#")
+  ;;               (delete-char 2)
+  ;;             (insert "#_"))
+  ;;         (spacemacs/comment-or-uncomment-lines 1)))
+  ;;   (comment-dwim nil))
+  ;; (deactivate-mark)
+  )
 
 (defun set-face-to-mini ()
   (interactive)
-  (set-face-attribute 'default nil :font "Consolas 10")
+  (set-face-attribute 'default nil :font "Consolas 11")
   (set-face-attribute 'mode-line nil :font "Consolas 9")
   (balance-windows))
 (defun set-face-to-small ()
@@ -247,6 +256,10 @@
 ;;; packages.el ends here
 
 (message "SuperUser Loading End")
+;; NOTE
+;; M, j i Jump definition in file, heml-jump-in-buffer
+;; Cider
+;; 'cider-repl-previous-matching-input)
 
 ;; Scratch
 ;; (add-hook 'clojurescript-mode-hook

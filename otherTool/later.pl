@@ -8,7 +8,7 @@ if ($num_args > 1) {
 } elsif ($num_args == 1) {
     $break_time=$ARGV[0];
 } else {
-    $break_time=10;
+    $break_time=600;
 }
 
 system ("pkill 'Time Out Break'");
