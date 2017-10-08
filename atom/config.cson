@@ -1,0 +1,195 @@
+"*":
+  "atom-beautify":
+    bash:
+      beautify_on_save: true
+      indent_size: 4
+    js:
+      beautify_on_save: true
+      end_with_newline: true
+    json:
+      beautify_on_save: true
+      end_with_newline: true
+    markdown: {}
+  "atom-ctags":
+    buildTimeout: 30000
+  "atom-focus-mode":
+    focusModeLineOpacity: "100%"
+    focusShadowMode:
+      numberOfLinesToHighlightAboveCursor: 10
+      numberOfLinesToHighlightBelowCursor: 10
+    whenFocusModeIsActivated:
+      enterFullScreen: false
+      hideLineWrapGuide: true
+      useTypeWriterMode: true
+  "atom-fuzzy-grep":
+    minSymbolsToStartSearch: 1
+    showFullPath: true
+  "atom-runner": {}
+  "autocomplete-plus":
+    suppressActivationForEditorClasses: [
+      "narrow"
+    ]
+  "command-palette":
+    historyCommands: true
+    maxHistoryCommands: 3
+    preserveLastSearch: true
+  core:
+    audioBeep: false
+    closeDeletedFileTabs: true
+    disabledPackages: [
+      "linter-clojure"
+      "intentions"
+      "sourcefetch"
+      "sidekit-welcome"
+      "goto-definition"
+      "sidekit"
+      "linter-documents"
+      "git-plus"
+      "goto"
+      "symbol-gen"
+      "pigments"
+      "atom-ctags"
+      "tester"
+      "tester-mocha"
+    ]
+    excludeVcsIgnoredPaths: false
+    ignoredNames: [
+      ".git"
+      ".hg"
+      ".svn"
+      ".DS_Store"
+      "._*"
+      "Thumbs.db"
+      "desktop.ini"
+      "*.zip"
+      "*.tar"
+      ".tag*"
+    ]
+    openEmptyEditorOnStart: false
+    packagesWithKeymapsDisabled: [
+      "git-projects"
+      "git-plus"
+      "move-panes"
+      "swap-panes"
+      "diff-pane"
+      "zentabs"
+      "open-on-bitbucket"
+      "atom-fuzzy-grep"
+      "atom-focus-mode"
+    ]
+    telemetryConsent: "no"
+    titleBar: "custom"
+  editor:
+    fontSize: 13
+    scrollPastEnd: true
+    showIndentGuide: true
+    showInvisibles: true
+  "exception-reporting":
+    userId: "1b4b7798-4072-4ce0-8f66-402e684121da"
+  "fuzzy-finder":
+    ignoredNames: [
+      ".git"
+      ".*"
+      "node_modules*"
+      "target*"
+    ]
+    preserveLastSearch: true
+    searchAllPanes: true
+  "git-projects":
+    rootPath: "/Users/chuan.du/repo;/Users/chuan.du/github;/Users/chuan.du/os-repo;"
+    sortBy: "Latest modification date"
+  github:
+    gitDiagnostics: true
+    performanceToConsole: true
+  linter: {}
+  "linter-jshint":
+    jshintFileName: "/Users/chuan.du/repo/sidekit/resources/.jshintrc"
+  "linter-ui-default":
+    panelHeight: 25
+    panelRepresents: "Entire Project"
+    statusBarClickBehavior: "Jump to next issue"
+  "markdown-preview":
+    liveUpdate: false
+  minimap: {}
+  "my-package":
+    thingVolume: "10"
+  "one-dark-ui": {}
+  "open-on-bitbucket": {}
+  pigments: {}
+  "project-manager":
+    sortBy: "last modified"
+  sidekit:
+    customizationApiUrl: "http://med25.cenx.localnet:8080/customization/"
+    lintScope: "Entire Project"
+  "split-diff":
+    diffWords: true
+    ignoreWhitespace: true
+    leftEditorColor: "red"
+    rightEditorColor: "green"
+    scrollSyncType: "Vertical + Horizontal"
+  tester:
+    testStateStyle: "Icon"
+  "tester-mocha": {}
+  "todo-show":
+    findTheseTodos: [
+      "TODO"
+      "FIXME"
+      "HACK"
+      "NOTE"
+      "COMBAK"
+      "TEMP"
+      "REMOVETAG"
+    ]
+    ignoreThesePaths: [
+      "node_modules"
+      "vendor"
+      "bower_components"
+      ".tags"
+      "scratch*"
+      "*.md"
+      "*hint.js"
+      "esprima*"
+      "jvm-npm.js"
+      "assets/*"
+    ]
+    showInTable: [
+      "File"
+      "Text"
+      "Type"
+    ]
+    sortBy: "Type"
+  "toggle-packages":
+    togglePackages: [
+      "atom-ctags"
+      "atom-beautify"
+      "pigments"
+      "tester"
+      "tester-mocha"
+    ]
+  "tree-view":
+    hideIgnoredNames: true
+    squashDirectoryNames: true
+  "vim-mode-plus":
+    automaticallyEscapeInsertModeOnActivePaneItemChange: true
+    clearHighlightSearchOnResetNormalMode: true
+    dontUpdateRegisterOnChangeOrSubstitute: true
+    highlightSearchExcludeScopes: [
+      "narrow"
+    ]
+    keymapSemicolonToInnerAnyPairInVisualMode: true
+    showHoverSearchCounter: true
+    smoothScrollOnFullScrollMotion: true
+    smoothScrollOnHalfScrollMotion: true
+    smoothScrollOnHalfScrollMotionDuration: 600
+    useClipboardAsDefaultRegister: true
+  "vim-mode-plus-ex-mode":
+    notifiedUseExMode: true
+  welcome:
+    showOnStartup: false
+  "welcome-side-kit": {}
+  whitespace:
+    keepMarkdownLineBreakWhitespace: true
+  zentabs:
+    neverCloseDirty: true
+    neverCloseNew: true
+    neverCloseUnsaved: true

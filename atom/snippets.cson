@@ -1,0 +1,71 @@
+# Your snippets
+#
+# Atom snippets allow you to enter a simple prefix in the editor and hit tab to
+# expand the prefix into a larger code block with templated values.
+#
+# You can create a new snippet in this file by typing "snip" and then hitting
+# tab.
+#
+# An example CoffeeScript snippet to expand log to console.log:
+#
+# '.source.coffee':
+#   'Console log':
+#     'prefix': 'log'
+#     'body': 'console.log $1'
+#
+# Each scope (e.g. '.source.coffee' above) can only be declared once.
+#
+# This file uses CoffeeScript Object Notation (CSON).
+# If you are unfamiliar with CSON, you can read more about it in the
+# Atom Flight Manual:
+# http://flight-manual.atom.io/using-atom/sections/basic-customization/#_cson
+
+'.source.js':
+  'jvm-npm print':
+    'prefix': 'pr'
+    'body': 'print(${1:"crash"});$2 //REMOVETAG'
+  'jvm-npm print + JSONLOG':
+    'prefix': 'prj'
+    'body': 'print(JSON.stringify(${1:"crash"}, null, 2));$2 //REMOVETAG'
+  'define var':
+    'prefix': 'var'
+    'body': 'var ${1:temp} = ${2:"test"};$3'
+  'JSON parser':
+    'prefix': 'jsonp'
+    'body': 'JSON.parse(${1:"JSON"})${2:}$3'
+  'JSON stringify':
+    'prefix': 'jsons'
+    'body': 'JSON.stringify(${1:"JSON"})${2:}$3'
+  'JSON stringify beautiful':
+    'prefix': 'jsonsb'
+    'body': 'JSON.stringify(${1:"JSON"}, null, ${2:2})${3:}$4'
+  'Object keys':
+    'prefix': 'objk'
+    'body': 'Object.keys($1)'
+  'message log':
+    'prefix': 'logm'
+    'body': 'util.message.log(${2:"${1:Hi$3}"});$0'
+  'log':
+    'prefix': 'log'
+    'body': 'console.log(${2:"${1:Hi}"});$0${5: // REMOVETAG}'
+  'log remove later':
+    'prefix': 'logr'
+    'body': 'console.log(${2:"${1:Hi$3}"});$0 // REMOVETAG'
+  'log variable type':
+    'prefix': 'logt'
+    'body': 'console.log(typeof ${1:Hi});$0'
+  'log variable type with string':
+    'prefix': 'logts'
+    'body': 'console.log("type of ${1:Object}: " + typeof ${2:${1:Object}});$0'
+  'typeof check':
+    'prefix': 'typec'
+    'body': 'typeof ${1:Object} !== \'${2:undefined}\''
+  'promise then':
+    'prefix': 'then'
+    'body': '.then($1)$2'
+  'promise catch':
+    'prefix': 'catch'
+    'body': '.catch(${1:console.log})$2'
+  'return':
+    'prefix': 'r'
+    'body': 'return $1'

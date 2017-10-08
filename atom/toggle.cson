@@ -1,0 +1,32 @@
+# Each word must match reglar expression 'w+'.
+# So follwoing settings is invalid.
+# e.g-1) both '<' and '>' not match 'w+'
+#  ['<', '>']
+#
+# e.g-2) OK(this -> @), NG(@ -> this) `@` not match 'w+'
+#  ['this', '@']
+#
+# '*' is wildcard which is always searched finally.
+# '*': [
+#   ['yes'   , 'no']
+#   ['up'    , 'down']
+#   ['right' , 'left']
+#   ['true'  , 'false']
+#   ['high'  , 'low']
+#   ['column', 'row']
+#   ['and'   , 'or']
+#   ['not'   , ''] # just remove `not`
+#   ['on'    , 'off']
+#   ['in'    , 'out']
+#   ['one'   , 'two'   , 'three']
+# ],
+'source.coffee': [
+  ['is', 'isnt']
+  ['if', 'unless']
+]
+'source.js': [
+  # ['it'  , 'xit', 'it.only']
+  ['it'  , 'xit']
+  # ['describe' , 'xdescript', 'describe.only']
+  ['describe', 'xdescript']
+]

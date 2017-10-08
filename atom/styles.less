@@ -1,0 +1,86 @@
+/*
+ * Your Stylesheet
+ *
+ * This stylesheet is loaded when Atom starts up and is reloaded automatically
+ * when it is changed and saved.
+ *
+ * Add your own CSS or Less to fully customize Atom.
+ * If you are unfamiliar with Less, you can read more about it here:
+ * http://lesscss.org
+ */
+
+.theme-one-dark-ui {
+  // .tab-bar { font-size: 18px; }
+  // .tree-view { font-size: 14px; }
+  .status-bar {
+    font-size: 10px;
+  }
+
+  .key-binding {
+    line-height: 1.7em;
+  }
+  .select-list {
+    ol.list-group {
+      max-height: 714px;
+      li {
+        .primary-line {
+          line-height: 1.9em;
+        }
+        .secondary-line {
+          line-height: 1.3em;
+        }
+      }
+    }
+  }
+  // .select-list ol.list-group {
+  //     max-height: 714px;
+  // }
+
+  atom-panel.modal .select-list ol.list-group li {
+    padding: 0.3em 1em;
+  }
+  // Hide scrollbar
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+// atom-text-editor[with-minimap] .vertical-scrollbar {
+//   opacity: 0;
+//   width: 0;
+// }
+
+// atom-text-editor atom-text-editor-minimap .minimap-visible-area::after {
+//   background-color: rgba(0, 255, 0, 0.5);
+// }
+
+// style the background and foreground colors on the atom-text-editor-element itself
+atom-text-editor {
+  // font-family:Noto Sans CJK TC, 思源黑體;
+  // font-size:16px;
+  // color: white;
+  // background-color: hsl(180, 24%, 12%);
+}
+
+.editor .selection .region {
+  background-color: LightGoldenRodYellow;
+}
+
+// style UI elements inside atom-text-editor
+// atom-text-editor .cursor {
+//   border-color: red;
+// }
+
+@keyframes toggle-flash {
+  from {
+    background-color: @syntax-selection-flash-color;
+  }
+  to {
+    background-color: transparent;
+  }
+}
+
+atom-text-editor.editor .clip-history-pasted .region {
+  // default is 1s, you can tweak in the range from 0 to 1s(maximum).
+  animation-duration: 0.5s;
+}

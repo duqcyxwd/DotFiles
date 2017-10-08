@@ -1,0 +1,313 @@
+# Your keymap
+#
+# Atom keymaps work similarly to style sheets. Just as style sheets use
+# selectors to apply styles to elements, Atom keymaps use selectors to associate
+# keystrokes with events in specific contexts. Unlike style sheets however,
+# each selector can only be declared once.
+#
+# You can create a new keybinding in this file by typing "key" and then hitting
+# tab.
+#
+# Here's an example taken from Atom's built-in keymap: #
+# 'atom-text-editor':
+#   'enter': 'editor:newline'
+#
+# 'atom-workspace':
+#   'ctrl-shift-p': 'core:move-up'
+#   'ctrl-p': 'core:move-down'
+#
+# You can find more information about keymaps in these guides:
+# * http://flight-manual.atom.io/using-atom/sections/basic-customization/#_customizing_keybindings
+# * http://flight-manual.atom.io/behind-atom/sections/keymaps-in-depth/
+#
+# If you're having trouble with your keybindings not working, try the
+# Keybinding Resolver: `Cmd+.` on macOS and `Ctrl+.` on other platforms. See the
+# Debugging Guide for more information:
+# * http://flight-manual.atom.io/hacking-atom/sections/debugging/#check-the-keybindings
+#
+# This file uses CoffeeScript Object Notation (CSON).
+# If you are unfamiliar with CSON, you can read more about it in the
+# Atom Flight Manual:
+# http://flight-manual.atom.io/using-atom/sections/basic-customization/#_cson
+
+'atom-workspace':
+# 'body':
+  'cmd-right': 'pane:show-next-item'
+  'cmd-left': 'pane:show-previous-item'
+  'alt-l': 'window:reload'
+
+'atom-text-editor':
+  'cmd-right': 'unset!'
+  'cmd-left': 'unset!'
+
+  'ctrl-shift-x': 'paner:exchange-pane'
+  # 'ctrl-x': 'paner:exchange-pane-stay'
+  'ctrl-c': 'move-panes:move-next'
+  'ctrl-shift-c': 'paner:move-pane-item-stay'
+
+'atom-workspace:not(.has-narrow) atom-text-editor.vim-mode-plus:not(.insert-mode)':
+  'cmd-e': 'narrow:search-by-current-word'
+
+'atom-workspace atom-text-editor:not([mini])':
+  'ctrl-down': 'editor:add-selection-below'
+  'ctrl-up': 'editor:add-selection-above'
+  'cmd-u': 'run-in-atom:run-in-atom'
+  'cmd-i': 'run:file'
+  'cmd-g': 'atom-package-build-helper:trigger'
+  'shift-cmd-down': 'editor:move-line-down'
+  'shift-cmd-up': 'editor:move-line-up'
+  'alt-s': 'fuzzy-grep:toggleLastSearch'
+
+  # Panel
+  # 'cmd-x': 'vim-mode-plus:exchange-pane'
+  # 'cmd-X': 'paner:move-pane-item'
+  'cmd-K': 'vim-mode-plus:move-pane-to-very-top'
+  'cmd-J': 'vim-mode-plus:move-pane-to-very-bottom'
+  'cmd-H': 'vim-mode-plus:move-pane-to-very-left'
+  'cmd-L': 'vim-mode-plus:move-pane-to-very-right'
+
+  'cmd-2': 'paner:split-pane-up-stay'
+  'cmd-3': 'paner:split-pane-right-stay'
+
+  # [cursor history]
+  'ctrl-i': 'cursor-history:next'
+  'ctrl-o': 'cursor-history:prev'
+  # Conflict wiht my iterm new window keybinding
+  # 'ctrl-cmd-i': 'cursor-history:next-within-editor'
+  # 'ctrl-cmd-o': 'cursor-history:prev-within-editor'
+
+'atom-text-editor.vim-mode-plus:not(.insert-mode)':
+
+  '(': 'vim-mode-plus-user:move-to-previous-symbol'
+  ')': 'vim-mode-plus-user:move-to-next-symbol'
+  # 'space k': 'keystroke 5 k'
+  # 'cmd-d': 'vim-mode-plus:select'
+
+  # 'backspace': 'inline:clear-current'
+  '`': 'choose-pane:start'
+  '` `': 'choose-pane:focus-last-focused'
+
+
+  'cmd-l': 'narrow:scan-by-current-word'
+  'space s': 'narrow:search'
+  'space l': 'narrow:scan-by-current-word'
+
+  # 'space a': 'narrow:atom-scan'
+  # 'space A': 'narrow:atom-scan-by-current-word'
+
+  'space G': 'narrow:git-diff-all'
+  # 'space f': 'narrow:fold'
+
+  'space r': 'narrow:symbols'
+  'space R': 'narrow:project-symbols'
+
+  'cmd-o': 'narrow:symbols-by-current-word'
+  'cmd-shift-o': 'narrow:project-symbols-by-current-word'
+
+  'space g': 'fuzzy-grep:toggle'
+
+  'g enter': 'vim-mode-plus:create-persistent-selection'
+
+  ## TDDO CHECK THIS
+  # 'w': 'vim-mode-plus:move-to-next-smart-word'
+  # 'b': 'vim-mode-plus:move-to-previous-smart-word'
+  # 'e': 'vim-mode-plus:move-to-end-of-smart-word'
+
+  'g >': 'vim-mode-plus:rotate-arguments-of-inner-pair'
+  'g <': 'vim-mode-plus:rotate-arguments-backwards-of-inner-pair'
+
+  # 'm s': 'vim-mode-plus:map-surround'
+
+'atom-text-editor.vim-mode-plus.normal-mode':
+
+  # 'B': 'vim-mode-plus:insert-at-start-of-smart-word'
+  # 'E': 'vim-mode-plus:insert-at-end-of-smart-word'
+  'g f':      'open-this:here'
+
+  # 'space space': 'vim-mode-plus:toggle-fold'
+
+  'g j': 'window:focus-pane-below'
+  'g k': 'window:focus-pane-above'
+  'g h': 'window:focus-pane-on-left'
+  'g l': 'window:focus-pane-on-right'
+  'g p': 'project-manager:list-projects'
+
+  'ctrl-w V': 'pane:split-right-and-move-active-item'
+  'ctrl-w S': 'pane:split-down-and-move-active-item'
+
+  'ctrl-w K': 'paner:move-pane-to-very-top'
+  'ctrl-w J': 'paner:move-pane-to-very-bottom'
+  'ctrl-w H': 'paner:move-pane-to-very-left'
+  'ctrl-w L': 'paner:move-pane-to-very-right'
+
+
+  # Focus coding
+  'space f z': 'atom-focus-mode:toggle-scope-focus'
+  'space f x': 'atom-focus-mode:toggle-cursor-focus'
+  'space f c': 'atom-focus-mode:toggle-shadow-focus'
+
+  # Enable shadow follow
+  'space f': 'user:toggle use follow mode atom-focus-mode'
+  'space f f': 'atom-focus-mode:exit'
+
+  'space e': 'atom-shell-commands:mocha'
+
+  'space h': 'hey-pane:toggle-focus-of-active-pane'
+  'space t h': 'hey-pane:toggle-follow-mode'
+
+
+  # toggle-setting: t
+  # -------------------------
+  'space n': 'editor:toggle-line-numbers'
+  'space t n': 'editor:toggle-line-numbers'
+  'space t i': 'user:toggle-show-invisible'
+  'space t I': 'editor:toggle-indent-guide'
+  'space t w': 'editor:toggle-soft-wrap'
+  'space t n': 'editor:toggle-line-numbers'
+
+
+  # surround: ys
+  # -------------------------
+  'S': 'vim-mode-plus:surround-smart-word'
+
+  '-': 'toggle:there'
+
+  # open-on-github, github-diff: g
+  # -------------------------
+  'space g o': 'open-on-github:file'
+  'space g b': 'open-on-github:blame'
+  'space g h': 'open-on-github:history'
+  'space g i': 'open-on-github:issues'
+  'space g c': 'open-on-github:copy-url'
+  'space g r': 'open-on-github:branch-compare'
+  'space g g': 'open-on-github:repository'
+
+  'space b o': 'open-on-bitbucket:file'
+  'space b b': 'open-on-bitbucket:blame'
+  'space b h': 'open-on-bitbucket:history'
+  'space b i': 'open-on-bitbucket:issues'
+  'space b c': 'open-on-bitbucket:copy-url'
+  'space b r': 'open-on-bitbucket:branch-compare'
+  'space b g': 'open-on-bitbucket:repository'
+
+
+  'space g n': 'git-diff:move-to-next-diff'
+  'space g p': 'git-diff:move-to-previous-diff'
+  'space g d': 'git-diff:toggle-diff-list'
+
+'atom-text-editor[mini]':
+  'ctrl-u': 'editor:delete-to-beginning-of-line'
+  'ctrl-w': 'editor:delete-to-beginning-of-word'
+
+'atom-text-editor.vim-mode-plus.normal-mode, atom-text-editor.vim-mode-plus.visual-mode':
+  '-': 'vim-mode-plus:replace-with-register'
+  # 'space m': 'quick-highlight:toggle'
+  'space m': 'vim-mode-plus-user:quick-highlight-word'
+  'space M': 'quick-highlight:clear'
+  'm': 'vim-mode-plus:toggle-preset-occurrence'
+  'M': 'vim-mode-plus:toggle-preset-subword-occurrence'
+
+'atom-text-editor.vim-mode-plus.operator-pending-mode, atom-text-editor.vim-mode-plus.visual-mode':
+
+  # 'a q': 'vim-mode-plus:a-subword'
+  # 'i q': 'vim-mode-plus:inner-subword'
+  # 'z': 'vim-mode-plus:a-fold'
+  "'": 'vim-mode-plus:inner-any-quote'
+
+  # Use closing pair as forwarding version of pair-text-object
+  # What I can to to fix this? with forwaring
+  'i }': 'vim-mode-plus:inner-curly-bracket-allow-forwarding'
+  'a }': 'vim-mode-plus:a-curly-bracket-allow-forwarding'
+
+  'i >': 'vim-mode-plus:inner-angle-bracket-allow-forwarding'
+  'a >': 'vim-mode-plus:a-angle-bracket-allow-forwarding'
+
+  'i )': 'vim-mode-plus:inner-parenthesis-allow-forwarding'
+  'a )': 'vim-mode-plus:a-parenthesis-allow-forwarding'
+
+'atom-text-editor.vim-mode-plus.insert-mode':
+
+  'j j': 'vim-mode-plus:activate-normal-mode'
+  'ctrl-y': 'clip-history:paste'
+  # 'cmd-y': 'clip-history:paste-last'
+  'ctrl-Y': 'clip-history:paste-newer'
+
+'atom-text-editor.vim-mode-plus.visual-mode':
+  # '.': 'vim-mode-plus:repeat'
+
+  # 'ctrl-t': 'vim-mode-plus-user:move-selected-text-toggle-overwrite'
+  # 'ctrl-k': 'vim-mode-plus-user:move-selected-text-up'
+  # 'ctrl-j': 'vim-mode-plus-user:move-selected-text-down'
+  # 'ctrl-h': 'vim-mode-plus-user:move-selected-text-left'
+  # 'ctrl-l': 'vim-mode-plus-user:move-selected-text-right'
+  'cmd-c': 'vim-mode-plus:yank'
+
+'.select-list':
+  ';': 'core:confirm'
+  'ctrl-l': 'pane:split-right'
+  'ctrl-j': 'pane:split-down'
+
+'.markdown-preview':
+  # '-': 'choose-pane:start'
+  '`': 'choose-pane:start'
+  '` `': 'choose-pane:focus-last-focused'
+  'j': 'core:move-down'
+  'k': 'core:move-up'
+
+'atom-workspace .tree-view':
+  '-': 'choose-pane:start'
+  '`': 'choose-pane:start'
+  '` `': 'choose-pane:focus-last-focused'
+  'g g': 'core:move-to-top'
+  'shift-g': 'core:move-to-bottom'
+  # 'ctrl-h': 'focus-pane-or-panel:focus-on-left'
+  # 'ctrl-l': 'focus-pane-or-panel:focus-on-right'
+
+# Narrow
+# -------------------------
+'atom-workspace.has-narrow atom-text-editor.vim-mode-plus.normal-mode':
+  'cmd-f': 'narrow:focus'
+  'cmd-i': 'narrow:focus-prompt'
+  'cmd-[': 'narrow:previous-query-history'
+  'cmd-]': 'narrow:next-query-history'
+  'cmd-e': 'narrow:query-current-word'
+
+'atom-workspace.has-narrow atom-text-editor.vim-mode-plus.normal-mode:not(.narrow-editor)':
+  ';': 'narrow:focus'
+
+'atom-text-editor.narrow.narrow-editor.vim-mode-plus.normal-mode[data-grammar="source narrow"]':
+  'P': 'narrow-ui:protect'
+  'q': 'core:close'
+  'ctrl-right': 'pane:split-right-and-move-active-item'
+  'ctrl-left': 'pane:split-left-and-move-active-item'
+  'i': 'vim-mode-plus:activate-insert-mode'
+  '-': 'narrow-ui:exclude-file'
+  '=': 'narrow-ui:clear-excluded-files'
+  's': 'narrow-ui:select-files'
+  ';': 'narrow-ui:confirm-keep-open'
+  # 'o': 'narrow-ui:confirm-open-here'
+  # ';': 'narrow:focus'
+  'cmd-[': 'narrow-ui:fold:increase-fold-level'
+  'cmd-]': 'narrow-ui:fold:decrease-fold-level'
+
+  "enter": 'core:confirm'
+
+'atom-text-editor.narrow.narrow-editor.vim-mode-plus.insert-mode':
+  'ctrl-enter': 'narrow-ui:set-search-term-boundary'
+
+'atom-text-editor.narrow.narrow-editor.vim-mode-plus.visual-mode[data-grammar="source narrow"]':
+  'I': 'vim-mode-plus:insert-at-start-of-target'
+
+# On narrow-editor
+'atom-text-editor.narrow.narrow-editor[data-grammar="source narrow"]':
+  'cmd-f': 'narrow:focus'
+  'cmd-i': 'narrow:focus-prompt'
+  'cmd-s': 'narrow-ui:update-real-file'
+
+'atom-text-editor.narrow.narrow-editor.vim-mode-plus.insert-mode:not(.autocomplete-active)[data-grammar="source narrow"]':
+  ';': 'narrow-ui:confirm-keep-open'
+
+'atom-workspace.has-narrow atom-text-editor':
+  'ctrl-g': 'narrow:close'
+  # 'ctrl-cmd-i': 'narrow:focus-prompt'
+  'cmd-k cmd-u': 'find-and-replace:select-undo'
