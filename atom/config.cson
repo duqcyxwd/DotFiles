@@ -4,10 +4,8 @@
       beautify_on_save: true
       indent_size: 4
     js:
-      beautify_on_save: true
       end_with_newline: true
     json:
-      beautify_on_save: true
       end_with_newline: true
     markdown: {}
   "atom-ctags":
@@ -47,10 +45,11 @@
       "git-plus"
       "goto"
       "symbol-gen"
-      "pigments"
       "atom-ctags"
       "tester"
       "tester-mocha"
+      "pigments"
+      "atom-beautify"
     ]
     excludeVcsIgnoredPaths: false
     ignoredNames: [
@@ -116,6 +115,12 @@
   "one-dark-ui": {}
   "open-on-bitbucket": {}
   pigments: {}
+  "prettier-atom":
+    formatOnSaveOptions:
+      enabled: true
+      showInStatusBar: true
+    useEslint: true
+    useStylelint: true
   "project-manager":
     sortBy: "last modified"
   sidekit:
@@ -160,10 +165,8 @@
     sortBy: "Type"
   "toggle-packages":
     togglePackages: [
-      "atom-ctags"
       "atom-beautify"
       "pigments"
-      "tester"
       "tester-mocha"
     ]
   "tree-view":
@@ -171,8 +174,11 @@
     squashDirectoryNames: true
   "vim-mode-plus":
     automaticallyEscapeInsertModeOnActivePaneItemChange: true
+    blackholeRegisteredOperators: [
+      "change*"
+      "substitute*"
+    ]
     clearHighlightSearchOnResetNormalMode: true
-    dontUpdateRegisterOnChangeOrSubstitute: true
     highlightSearchExcludeScopes: [
       "narrow"
     ]

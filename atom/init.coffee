@@ -11,28 +11,25 @@
 #     console.log "Saved! #{editor.getPath()}"
 
 atom.commands.add 'atom-text-editor', 'user:use JSON beautify_on_save', ->
-  command = 'atom-beautify.json.beautify_on_save'
-  atom.config.set(command, true)
-  command2 = 'prettier-atom.formatOnSaveOptions.enabled'
-  atom.config.set(command2, false)
+  atom.config.set('atom-beautify.json.beautify_on_save', true)
+  atom.config.set('prettier-atom.formatOnSaveOptions.enabled', false)
 
 atom.commands.add 'atom-text-editor', 'user:use JSON prettier-on-save', ->
-  command = 'prettier-atom.formatOnSaveOptions.enabled'
-  atom.config.set(command, true)
-  command2 = 'atom-beautify.json.beautify_on_save'
-  atom.config.set(command2, false)
+  atom.config.set('prettier-atom.formatOnSaveOptions.enabled', true)
+  atom.config.set('atom-beautify.json.beautify_on_save', false)
 
 atom.commands.add 'atom-text-editor', 'user:turn off format clean on save', ->
-  command = 'prettier-atom.formatOnSaveOptions.enabled'
-  atom.config.set(command, false)
-  command2 = 'atom-beautify.json.beautify_on_save'
-  atom.config.set(command2, false)
-  command3 = 'atom-beautify.js.beautify_on_save'
-  atom.config.set(command3, false)
+  atom.config.set('prettier-atom.formatOnSaveOptions.enabled', false)
+  atom.config.set('atom-beautify.json.beautify_on_save', false)
+  atom.config.set('atom-beautify.js.beautify_on_save', false)
 
 atom.commands.add 'atom-text-editor', 'user:use Javascript beautify_on_save', ->
-  command = 'atom-beautify.js.beautify_on_save'
-  atom.config.set(command, true)
+  atom.config.set('atom-beautify.js.beautify_on_save', true)
+  atom.config.set('prettier-atom.formatOnSaveOptions.enabled', false)
+
+atom.commands.add 'atom-text-editor', 'user:use Javascript prettier-on-save', ->
+  atom.config.set('atom-beautify.js.beautify_on_save', false)
+  atom.config.set('prettier-atom.formatOnSaveOptions.enabled', true)
 
 atom.commands.add 'atom-text-editor', 'user:toggle HTML beautify_on_save', ->
   command = 'atom-beautify.html.beautify_on_save'
