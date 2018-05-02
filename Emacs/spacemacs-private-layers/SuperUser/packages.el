@@ -86,6 +86,9 @@
 (defun SuperUser/post-init-evil-unimpaired ()
   ;; Key binding
   (message "Loading: Post Evil key binding")
+
+  (evil-leader/set-key "sn" 'helm-yas-visit-snippet-file)
+
   (global-set-key (kbd "M-`") 'other-frame-or-window)
 
   (define-key evil-normal-state-map "gn" 'find-next-full-wordds)
@@ -115,7 +118,6 @@
   (define-key evil-normal-state-map (kbd "M-;") 'block-toggle-comments)
   ;; (define-key evil-normal-state-map (kbd "M-/") 'evilnc-comment-or-uncomment-lines)
   (define-key evil-normal-state-map (kbd "M-/") 'spacemacs/comment-or-uncomment-lines)
-
 
   ;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
