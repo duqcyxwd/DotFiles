@@ -31,7 +31,6 @@
 # http://flight-manual.atom.io/using-atom/sections/basic-customization/#_cson
 
 'atom-workspace':
-# 'body':
   'cmd-right': 'pane:show-next-item'
   'cmd-left': 'pane:show-previous-item'
   'alt-l': 'window:reload'
@@ -53,7 +52,8 @@
   'ctrl-up': 'editor:add-selection-above'
   'cmd-u': 'run-in-atom:run-in-atom'
   'cmd-i': 'run:file'
-  'cmd-g': 'atom-package-build-helper:trigger'
+  # 'cmd-g': 'atom-package-build-helper:trigger'
+  'cmd-g': 'build:trigger'
   'shift-cmd-down': 'editor:move-line-down'
   'shift-cmd-up': 'editor:move-line-up'
   'alt-s': 'fuzzy-grep:toggleLastSearch'
@@ -61,10 +61,6 @@
   # Panel
   # 'cmd-x': 'vim-mode-plus:exchange-pane'
   # 'cmd-X': 'paner:move-pane-item'
-  'cmd-K': 'vim-mode-plus:move-pane-to-very-top'
-  'cmd-J': 'vim-mode-plus:move-pane-to-very-bottom'
-  'cmd-H': 'vim-mode-plus:move-pane-to-very-left'
-  'cmd-L': 'vim-mode-plus:move-pane-to-very-right'
 
   'cmd-2': 'paner:split-pane-up-stay'
   'cmd-3': 'paner:split-pane-right-stay'
@@ -87,10 +83,13 @@
   '`': 'choose-pane:start'
   '` `': 'choose-pane:focus-last-focused'
 
+  'space f s': 'core:save'
 
-  'cmd-l': 'narrow:scan-by-current-word'
-  'space s': 'narrow:search'
-  'space l': 'narrow:scan-by-current-word'
+  'space T': 'narrow:reopen'
+  'space s p': 'narrow:search'
+  'space s P': 'narrow:search-by-current-word'
+  'space s s': 'narrow:scan'
+  'space s S': 'narrow:scan-by-current-word'
 
   # 'space a': 'narrow:atom-scan'
   # 'space A': 'narrow:atom-scan-by-current-word'
@@ -158,13 +157,15 @@
 
   # toggle-setting: t
   # -------------------------
-  'space n': 'editor:toggle-line-numbers'
   'space t n': 'editor:toggle-line-numbers'
   'space t i': 'user:toggle-show-invisible'
   'space t I': 'editor:toggle-indent-guide'
   'space t w': 'editor:toggle-soft-wrap'
   'space t n': 'editor:toggle-line-numbers'
 
+  'space t b': 'window:toggle-bottom-dock'
+  'space t l': 'window:toggle-left-dock'
+  'space t r': 'window:toggle-right-dock'
 
   # surround: ys
   # -------------------------
@@ -204,8 +205,9 @@
   # 'space m': 'quick-highlight:toggle'
   'space m': 'vim-mode-plus-user:quick-highlight-word'
   'space M': 'quick-highlight:clear'
-  'm': 'vim-mode-plus:toggle-preset-occurrence'
-  'M': 'vim-mode-plus:toggle-preset-subword-occurrence'
+  'M': 'vim-mode-plus:toggle-preset-occurrence'
+  # 'm': 'vim-mode-plus:toggle-preset-occurrence'
+  # 'M': 'vim-mode-plus:toggle-preset-subword-occurrence'
 
 'atom-text-editor.vim-mode-plus.operator-pending-mode, atom-text-editor.vim-mode-plus.visual-mode':
 
