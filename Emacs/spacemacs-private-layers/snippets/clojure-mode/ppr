@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: ppr
+# key: pprint-with
+# --
+(./pprint $0)

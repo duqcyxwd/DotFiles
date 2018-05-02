@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: log clojure data in json
+# key: logsjson
+# --
+(->> $1 clj->js js/JSON.stringify js/console.log)

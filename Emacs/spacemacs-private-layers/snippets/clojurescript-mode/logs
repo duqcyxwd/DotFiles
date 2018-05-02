@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: log a string
+# key: logs
+# --
+(js/console.log (str "xxx  $0"))
