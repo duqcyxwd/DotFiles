@@ -69,3 +69,10 @@
   'return':
     'prefix': 'r'
     'body': 'return $1'
+'.source.gfm':
+  'Exmaple image in a container':
+    'prefix': 'imgc'
+    'body': '<Container padding={2}> \n  <img src="http://www.slidesjs.com/img/example-slide-350-4.jpg" />\n</Container>'
+  'Exmaple image in a container 2':
+    'prefix': 'imgc2'
+    'body': '<Container padding={2}> \n  <img src="https://ampbyexample.com/img/image1.jpg" />\n</Container>'

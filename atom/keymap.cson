@@ -266,6 +266,9 @@
 # Narrow
 # -------------------------
 'atom-workspace.has-narrow atom-text-editor.vim-mode-plus.normal-mode':
+  'space q': 'narrow:close'
+  'ctrl-g': 'narrow:close'
+
   'cmd-f': 'narrow:focus'
   'cmd-i': 'narrow:focus-prompt'
   'cmd-[': 'narrow:previous-query-history'
