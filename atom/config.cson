@@ -75,6 +75,7 @@
       "open-on-bitbucket"
       "atom-fuzzy-grep"
       "atom-focus-mode"
+      "emmet"
     ]
     telemetryConsent: "no"
     titleBar: "custom"
@@ -83,6 +84,7 @@
     scrollPastEnd: true
     showIndentGuide: true
     showInvisibles: true
+  "emmet-jsx-css-modules": {}
   "exception-reporting":
     userId: "1b4b7798-4072-4ce0-8f66-402e684121da"
   "fuzzy-finder":
@@ -104,7 +106,7 @@
   "linter-jshint":
     jshintFileName: "/Users/chuan.du/repo/sidekit/resources/.jshintrc"
   "linter-ui-default":
-    panelHeight: 25
+    panelHeight: 300
     panelRepresents: "Entire Project"
     statusBarClickBehavior: "Jump to next issue"
   "markdown-preview":

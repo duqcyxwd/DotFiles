@@ -229,6 +229,7 @@
 
 'atom-text-editor.vim-mode-plus.insert-mode':
 
+  'ctrl-f': 'emmet:expand-abbreviation'
   'j j': 'vim-mode-plus:activate-normal-mode'
   'ctrl-y': 'clip-history:paste'
   # 'cmd-y': 'clip-history:paste-last'
