@@ -124,9 +124,8 @@
   (define-key evil-motion-state-map "gk" 'evil-window-up)
   (define-key evil-motion-state-map "gh" 'evil-window-left)
 
-  (define-key evil-motion-state-map "gs" 'ace-swap-window)
-
-  (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
+  ;; Not working
+  ;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
   ;; (define-key evil-normal-state-map (kbd "C-b") 'evil-scroll-up)
   ;; (define-key evil-normal-state-map (kbd "C-f") 'evil-scroll-down)
@@ -138,13 +137,9 @@
   (define-key evil-normal-state-map (kbd "M-f") 'paredit-forward)
 
   (define-key evil-normal-state-map (kbd "M-;") 'block-toggle-comments)
+  (define-key evil-normal-state-map (kbd "C-M-;") 'add-block-toggle-comments)
+  (define-key evil-normal-state-map (kbd "C-;") 'add-block-toggle-comments)
   (define-key evil-normal-state-map (kbd "M-/") 'evilnc-comment-or-uncomment-lines)
-  ;; (add-hook 'clojurescript-mode-hook
-  ;;           (lambda ()
-  ;;             ;; Preferred comment style
-  ;;             (message "clojure script hook called")
-  ;;             (setq comment-start "#_"
-  ;;                   comment-end "")))
 
   (define-key evil-normal-state-map (kbd "C-c C-o") 'ace-window)
   (define-key evil-normal-state-map (kbd "C-c o") 'ace-window)
@@ -211,81 +206,8 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
 ;; Tip M+: Eval a Expression
 ;; (equal major-mode 'cider-repl-mode)
 
-(use-package evil-leader
-  :ensure t
-  :config (progn
-            (evil-leader/set-leader ",")
-
-            (evil-leader/set-key "w" 'save-buffer)
-            (evil-leader/set-key "u" 'dired-jump)
-            (evil-leader/set-key "," 'evil-switch-to-windows-last-buffer)
-            ;; (evil-leader/set-key "h" 'other-window)
-            (evil-leader/set-key "m" 'minimap-mode)
-            (evil-leader/set-key "b" 'ido-switch-buffer)
-            (evil-leader/set-key "f" 'projectile-find-file-dwim)
-            (evil-leader/set-key "r" 'ido-imenu)
-            (evil-leader/set-key "g" 'cider-repl-previous-matching-input)
-            (evil-leader/set-key-for-mode 'text-mode "k" 'edit-server-done) ;; connection for edit-server on brower
-            ;; (evil-leader/set-key "d" 'edit-server-done)
-            ;; (evil-leader/set-key "x" 'kill-this-buffer)
-
-            ;; Ace-jump mode
-            ;; toggle-case-fold-search
-            (evil-leader/set-key "o" 'evil-ace-jump-line-mode)
-            (evil-leader/set-key "j" 'evil-ace-jump-word-mode)
-            (evil-leader/set-key "s" 'ag-project)
-
-            ;; (evil-leader/set-key
-            ;;   "ci" 'evilnc-comment-or-uncomment-lines
-            ;;   "cl" 'evilnc-quick-comment-or-uncomment-to-the-line)
-
-
-            ;; Buffer and windwow
-            (evil-leader/set-key "h" 'cider-popup-buffer-quit-function)
-            (evil-leader/set-key "k" 'kill-this-buffer)
-            (evil-leader/set-key "H" 'evil-window-move-far-left)
-            (evil-leader/set-key "L" 'evil-window-move-far-right)
-            (evil-leader/set-key "J" 'evil-window-move-very-bottom)
-            (evil-leader/set-key "K" 'evil-window-move-very-top)
-
-
-            (evil-leader/set-key "T" 'toggle-truncate-lines)
-            (evil-leader/set-key "E"
-              (lambda () (interactive)
-                (eval-current-buffer)
-                (set-face-to-large)))
-            (evil-leader/set-key "W" 'whitespace-mode)
-
-            ;; cider
-            (evil-leader/set-key "t" 'cider-pprint-eval-defun-at-point)
-            (evil-leader/set-key "q" 'kill-buffer-and-window)
-            (evil-leader/set-key "e" 'cider-eval-last-sexp)
-            (evil-leader/set-key "n" 'cider-repl-set-ns)
-
-            (evil-leader/set-key "cn" 'neotree-toggle)
-            (evil-leader/set-key-for-mode 'clojure-mode "cc" 'cider-load-buffer)
-            (evil-leader/set-key-for-mode 'cider-repl-mode "cc" 'cider-repl-clear-buffer)
-
-
-            (evil-leader/set-key "v" 'cider-switch-to-repl-buffer-clojure-buffer)
-            (evil-leader/set-key "l" 'evil-cleverparens-mode)
-            (evil-leader/set-key "'" 'evil-visual-mark-mode)
-
-            ;; Window operation
-            ;; C-w, r Rotate windows
-            ;; gs windows swap
-            ;; (evil-window-rotate-upwards)
-            ;;  C-w L/K/J/H.
-            ;; (evil-leader/set-key "0" 'delete-window)
-            (evil-leader/set-key "C" 'delete-window)
-            (evil-leader/set-key "1" 'delete-other-windows)
-
-            (evil-leader/set-key "S" 'ace-swap-window)
-            (evil-leader/set-key "7" 'set-face-to-small)
-            (evil-leader/set-key "8" 'set-face-to-medium)
-            (evil-leader/set-key "9" 'set-face-to-large)
-            (global-evil-leader-mode 1)
-            (evil-leader-mode)))
+;; Cider previous match
+;; (evil-leader/set-key "g" 'cider-repl-previous-matching-input)
 
 ;;; displays all the evil marks you have registered on a buffer
 (use-package evil-visual-mark-mode

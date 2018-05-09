@@ -191,6 +191,18 @@
         (clipboard-kill-region (point-min) (point-max)))
       (message filename))))
 
+(defun add-block-toggle-comments ()
+  "If region is set, [un]comments it. Otherwise [un]comments current block.
+   - Works for Clojure and ClojureScript"
+  (interactive)
+  (progn
+    (evil-first-non-blank)
+    (if (and (or (equal major-mode 'clojure-mode)
+                 (equal major-mode 'clojurescript-mode))
+             (not (string= (string (char-after (point))) ";")))
+        (insert "#_")
+      (spacemacs/comment-or-uncomment-lines 1))))
+
 (defun block-toggle-comments ()
   "If region is set, [un]comments it. Otherwise [un]comments current block.
    - Works for Clojure and ClojureScript"
