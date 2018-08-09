@@ -107,8 +107,6 @@
   (define-key evil-motion-state-map (kbd "M--") 'evil-window-increase-width)
   (define-key evil-motion-state-map (kbd "M-_") 'evil-window-decrease-width)
 
-  (define-key evil-motion-state-map "gs" 'ace-swap-window)
-
   ;; (define-key evil-normal-state-map (kbd "C-b") 'scroll-down-command)
   ;; (define-key evil-normal-state-map (kbd "C-f") 'scroll-up-command)
 
@@ -116,10 +114,10 @@
   ;; (define-key evil-normal-state-map (kbd "M-f") 'paredit-forward)
 
   (define-key evil-normal-state-map (kbd "M-;") 'block-toggle-comments)
+  (define-key evil-normal-state-map (kbd "C-M-;") 'add-block-toggle-comments)
   ;; (define-key evil-normal-state-map (kbd "M-/") 'evilnc-comment-or-uncomment-lines)
   (define-key evil-normal-state-map (kbd "M-/") 'spacemacs/comment-or-uncomment-lines)
 
-  ;; (key-chord-define evil-insert-state-map "jj" 'evil-normal-state)
 
   ;; (define-key evil-normal-state-map (kbd "SPC") 'evil-toggle-fold)
   ;; (define-key evil-normal-state-map (kbd "SPC") 'evil-toggle-fold)
