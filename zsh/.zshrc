@@ -25,6 +25,11 @@ function echoAndEval() {
 
 alias ee=echoAndEval
 alias version="ee 'py /Users/chuan.du/script-tool/version.py ./'"
+alias v=version
+
+function noti () {
+    osascript -e "display notification \"$1\" with title \"$2\""
+}
 
 #========== Dev Small stuff ===========
 alias doppelganger="docker run -it --rm -v `pwd`:/transport docker.cenx.localnet:5000/doppelganger:0.1.3-SNAPSHOT-b6"
@@ -99,6 +104,7 @@ function pre-docker() {
 #alias cortx-small='docker run --rm -t -v /opt/cenx:/opt/cenx docker.cenx.localnet:5000/deployer'
 
 #========== local wildfly ===========
+# Unfinished
 ## export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
 ## export PATH=${PATH}:${JBOSS_HOME}/bin
 export PATH=${PATH}:/usr/local/kafka/bin
@@ -111,15 +117,17 @@ function pre-wildfly() {
     export WILDFLY_DEPLOY=${JBOSS_HOME}/standalone/deployments
 }
 
-export WILDFLY_HOME=/Users/chuan.du/CENX/wildfly-10.1.0.Final
+# export WILDFLY_HOME=/Users/chuan.du/CENX/wildfly-10.1.0.Final
+# Wildfly created by Eclipse
+export WILDFLY_HOME=/Users/chuan.du/wildfly-10.0.0.Final
 export WILDFLY_DEPLOY=${WILDFLY_HOME}/standalone/deployments
 export WILDFLY_BIN=${WILDFLY_HOME}/bin
 
-alias deploy-clean='echo "Clean wildfly deploy directory" && rm $WILDFLY_DEPLOY/*.war*'
-alias deploy-war="echo 'deploy war from target' && cp target/*.war $WILDFLY_DEPLOY"
-alias deploy-war-enable="echo 'enable app from deployment' && rm $WILDFLY_DEPLOY/*.undeployed && rm $WILDFLY_DEPLOY/*.failed"
-alias deploy-war-disable-all="echo 'disable app from ' $JBOSS_HOME && rm $WILDFLY_DEPLOY/*.deployed"
-alias wildfly-restart='$WILDFLY_BIN/jboss-cli.sh -c --command=":shutdown(restart=true)"'
+alias wildfly-standalone-deploy-clean='echo "Clean wildfly deploy directory" && rm $WILDFLY_DEPLOY/*.war*'
+alias wildfly-standalone-deploy-war="echo 'deploy war from target' && cp target/*.war $WILDFLY_DEPLOY"
+alias wildfly-standalone-deploy-war-enable="echo 'enable app from deployment' && rm $WILDFLY_DEPLOY/*.undeployed && rm $WILDFLY_DEPLOY/*.failed"
+alias wildfly-standalone-deploy-war-disable-all="echo 'disable app from ' $JBOSS_HOME && rm $WILDFLY_DEPLOY/*.deployed"
+alias wildfly-standalone-restart='$WILDFLY_BIN/jboss-cli.sh -c --command=":shutdown(restart=true)"'
 alias wildfly-standalone='$WILDFLY_BIN/standalone.sh'
 #wildfly commands http://developer-should-know.com/post/76413579867/how-to-restart-jboss-and-wildfly-using-command
 
@@ -148,12 +156,10 @@ export PATH=$PATH:$JAVA_HOME/bin:$DSE_BIN
 alias vi='/usr/local/bin/vim'
 
 alias time-out-hide='subl /Applications/VLC.app/Contents/Info.plist'
-
-alias tf="t"
 alias later="nohup /Users/chuan.du/repo/DotFiles/otherTool/later.pl"
 
 # FileSearch
-function f() {echo 'find . -iname *'$1'*" '${@:2} && find . -iname "*$1*" ${@:2} }
+function f() {echo 'find . -iname "*'$1'*" '${@:2} && find . -iname "*$1*" ${@:2} }
 function r-old() {echo ' grep "'$1'" '${@:2}' -R .' &&  grep "$1" ${@:2} -R . }
 function r() {echo ' Replaced with ag'}
 
@@ -271,8 +277,9 @@ alias gbc="echo 'Copy current branch name' && git rev-parse --abbrev-ref HEAD |p
 alias gb-update-five-one="git fetch -p && git merge origin/r/5.1.x"
 alias gbu51=gb-update-five-one
 alias gbui="echo 'git branch update with integration' && git fetch -p && git merge origin/integration"
-alias gbu61="git fetch -p && git merge origin/r/6.1.0.x"
+alias gbu60x="git fetch -p && git merge origin/r/6.0.x"
 alias gbu800="git fetch -p && git merge origin/r/8.0.0.x"
+alias gbu810="git fetch -p && git merge origin/r/8.1.0.x"
 
 alias gcoi="git checkout integration"
 alias gcoip="git checkout integration && git pull"
@@ -320,6 +327,7 @@ alias gcobr='echo "Create branch and remote branch| Stop using this one, use pus
 
 # git recent branch
 alias gre="ee 'git recent | head'"
+alias grec="ee 'git recent | grep -i chuan | grep -v gone'"
 
 #===== Branch clean up ======
 # Check branch
@@ -335,8 +343,7 @@ alias gbd-remote='ee "git push -d origin"'
 # alias gbdelete-all='gb | grep "f/CD" | grep -v "\*" |xargs -n 1 git branch -D'
 
 # Configure git as my personal repo
-alias config-git="ee \"git config --local user.name 'Yongqinchuan Du' && git config --local user.email 'duqcyxwd@gmail.com'\""
-alias git-config-to-local='config-git'
+alias config-git-local="ee \"git config --local user.name 'Yongqinchuan Du' && git config --local user.email 'duqcyxwd@gmail.com'\""
 
 #===== Git alist =====
 
