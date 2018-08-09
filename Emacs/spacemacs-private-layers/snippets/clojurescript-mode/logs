@@ -2,4 +2,4 @@
 # name: log a string
 # key: logs
 # --
-(js/console.log (str "xxx  $0"))
+(->> ["xxx" $0] (clojure.string/join " ") js/console.log)

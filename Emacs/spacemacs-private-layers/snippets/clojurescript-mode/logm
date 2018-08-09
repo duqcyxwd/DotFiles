@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: log clojure data in Object
+# key: logm
+# --
+(->> [$1] (#(hash-map (str (first %)) (apply vector (rest %)))) clj->js (#(.log js/console %)))
