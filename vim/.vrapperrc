@@ -1,0 +1,73 @@
+" Set leader to space
+" Note: This line MUST come before any <leader> mappings
+let mapleader="<space>"
+
+" Eclipse commands
+eclipseaction st org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.mylyn.tasks.ui.views.tasks)
+
+" eclipseaction build org.eclipse.mylyn.builds.ui.command.RunBuild
+" eclipseaction newtest org.eclipse.mylyn.builds.ui.command.NewTaskFromTest
+
+" Test
+eclipseaction test org.eclipse.jdt.junit.junitShortcut.run
+nnoremap <Leader>ta :test<cr>
+nnoremap ta :test<cr>
+
+eclipseaction reruntest org.eclipse.jdt.junit.junitShortcut.rerunLast
+nnoremap <Leader>tr :reruntest<cr>
+nnoremap tr :reruntest<cr>
+
+eclipseaction failedtest org.eclipse.jdt.junit.junitShortcut.rerunFailedFirst
+nnoremap <Leader>tq :failedtest<cr>
+nnoremap <Leader>tt :failedtest<cr>
+nnoremap tt :reruntest<cr>
+
+eclipseaction testdebug org.eclipse.jdt.junit.junitShortcut.debug
+nnoremap <Leader>td :testdebug<cr>
+
+" Find reference
+eclipseaction findref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
+nmap <leader>re :findref<enter>
+
+eclipseaction eclipsecmdsearch org.eclipse.ui.window.quickAccess
+nnoremap <Leader>s :eclipsecmdsearch<cr>
+
+" Save file
+nnoremap <Leader>fs :w<cr>
+
+" Smart insert semicolon
+noremap <leader>; mqA;<Esc>`q
+
+eclipseaction eclipsenextmember org.eclipse.jdt.ui.edit.text.java.goto.next.member
+nnoremap ]] :eclipsenextmember<cr>
+eclipseaction eclipseprevmember org.eclipse.jdt.ui.edit.text.java.goto.previous.member
+nnoremap [[ :eclipseprevmember<cr>
+
+
+" show documentation for current symbol
+eclipseuiaction eclipseshowdoc org.eclipse.ui.edit.text.showInformation
+nnoremap K   :eclipseshowdoc<cr>
+
+" rename current symbol
+eclipseaction eclipserename org.eclipse.jdt.ui.edit.text.java.rename.element
+au "Dart Editor" eclipseaction eclipserename com.google.dart.tools.ui.edit.text.dart.rename.element
+nnoremap <leader>rn :eclipserename<cr>
+
+"show refactor menu
+eclipseaction eclipserefactormenu org.eclipse.jdt.ui.edit.text.java.refactor.quickMenu
+nnoremap <leader>rm        :eclipserefactormenu<cr>
+
+"show code-generation menu
+eclipseaction eclipsesrcgenmenu org.eclipse.jdt.ui.edit.text.java.source.quickMenu
+nnoremap <leader>rr        :eclipsesrcgenmenu<cr>
+
+
+
+" TODO
+" https://github.com/justinmk/config/blob/master/.vrapperrc
+
+
+eclipseaction debug org.eclipse.debug.ui.commands.DebugLast
+eclipseaction run org.eclipse.debug.ui.commands.RunLast
+
+" TEST
