@@ -1,38 +1,46 @@
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
+
+#=============================== PATH ===========================================
 export PATH="./node_modules/.bin:$PATH"
 export PATH="/Users/chuan.du/repo/dev-env/bin:$PATH"
 export PATH=$HOME/bin:/usr/local/sbin:$HOME/script-tool:/usr/local/bin:$PATH
 
-
 # export is required for python path
-export PYTHONPATH="/Users/chuan.du/repo/autotest/tests/component/cenx-rest-api:${PYTHONPATH}"
+# export PYTHONPATH="/Users/chuan.du/repo/autotest/tests/component/cenx-rest-api:${PYTHONPATH}"
 export NODE_PATH=/usr/lib/node_modules
 
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-# Optionally, if you set this to "random", it'll load a random theme each
-# time that oh-my-zsh is loaded.
-ZSH_THEME="agnoster-cus"
-
-# Autocompletion for teamocil
-compctl -g '~/.teamocil/*(:t:r)' itermocil
-
-#========== Script tool: version ===========
-function echoAndEval() {
-    echo $@ && eval $@
-}
-
+#============================= Script tool: version ===============================
+function echoAndEval() { echo $@ && eval $@ }
 alias ee=echoAndEval
-alias version="ee 'py /Users/chuan.du/script-tool/version.py ./'"
+alias version='py /Users/chuan.du/script-tool/version.py ./'
 alias v=version
 
 function noti () {
+    # terminal-notifier
+    # Can use terminal-notifier if we want icon modification. Can't do noti confirm
+
+    # Buildin noti
     osascript -e "display notification \"$1\" with title \"$2\""
 }
 
-#========== Dev Small stuff ===========
-alias doppelganger="docker run -it --rm -v `pwd`:/transport docker.cenx.localnet:5000/doppelganger:0.1.3-SNAPSHOT-b6"
+function cc() {
+    res=$(pbpaste | sed -e :a -e '$!N; s/\n//; ta' |sed 's/\(CD-[0-9]*\)/[[\1]](https:\/\/cenx-cf.atlassian.net\/browse\/\1) /')
+    echo $res
+}
+
+function color-test() {
+    clear
+    cat /Users/chuan.du/temp/iterm-syntax-test.txt
+}
+
+
+#============================= system-clean-up ===============================
+alias clean-m2-cenx="rm /Users/chuan.du/.m2/repository/cenx"
+
+#============================= Dev Small stuff ===============================
+# alias doppelganger="docker run -it --rm -v `pwd`:/transport docker.cenx.localnet:5000/doppelganger:0.1.3-SNAPSHOT-b6"
+alias doppelganger="docker run -it --rm -v `pwd`:/transport ship.cenx.com:5000/doppelganger"
 export CORTX_IP=192.168.59.103
 export ZK_PORT=2181
 export KAFKA_PORT=9092
@@ -42,17 +50,11 @@ export TERMINUS_REPL_PORT=4083
 export NARANATHU_REPL_PORT=4015
 
 
-#========== Docker ===========
-function docker-stats() {
-    docker stats --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"
-}
-
-function docker-stats-peek() {
-    docker stats --no-stream --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"
-}
-
-function docker-stop() {ee "docker stop \$(docker ps -q)" && docker stop $(docker ps -q)}
-function docker-rm-stopped() {ee "docker rm $(docker ps -a -q)"}
+#============================= Dokcer ===============================
+function docker-stats() { docker stats --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}" }
+function docker-stats-peek() { docker stats --no-stream --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}" }
+function docker-stop() {ee "docker stop \$(docker ps -q)"}
+function docker-rm-stopped() {ee "docker rm $(docker ps -aq -f status=exited)"}
 
 function docker-ps()  {
   docker ps $@ --format "table{{ .Image }}\\t{{ .Names }}\\t{{ .Status }}\\t{{ .Ports }}" | awk '
@@ -82,6 +84,7 @@ function docker-ps()  {
   '
 }
 alias dps=docker-ps
+
 function dpsa() { echo "docker list all containers" &&  dps -a $@; }
 
 function dps-old() {  echo "Docker ps old" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'}
@@ -93,7 +96,7 @@ function pre-docker() {
 }
 
 
-#========== Docker ===========
+#============================== Docker old ===============================
 #export DOCKER_HOST=tcp://192.168.59.103:2375
 #unset DOCKER_HOST
 #unset DOCKER_CERT_PATH
@@ -103,7 +106,7 @@ function pre-docker() {
 #alias cortx0='docker run --rm -t -v `pwd`:/opt/cenx docker.cenx.localnet:5000/deployer'
 #alias cortx-small='docker run --rm -t -v /opt/cenx:/opt/cenx docker.cenx.localnet:5000/deployer'
 
-#========== local wildfly ===========
+#============================ local wildfly ==============================
 # Unfinished
 ## export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
 ## export PATH=${PATH}:${JBOSS_HOME}/bin
@@ -134,15 +137,10 @@ alias wildfly-standalone='$WILDFLY_BIN/standalone.sh'
 alias lcid="lci && deploy-war"
 alias deploy-war-and-standalone="echo 'deploy war and run standalone' && deploy-clean && deploy-war && wildfly-standalone"
 
-
-#========== Add docker-deployer script ===========
-export PATH=${PATH}:/Users/chuan.du/repo/docker-deployer/utilities/
-
 #========== Clojure Repl ===========
 alias lr="lein do clean, repl"
 alias lcr="echo 'lein do clean, repl' && lein do clean, repl"
 alias lci="echo 'lein do clean, install' && lein do clean, install"
-alias lein-cenx-clean="rm /Users/chuan.du/.m2/repository/cenx"
 
 # ================================
 #
@@ -164,7 +162,7 @@ function r-old() {echo ' grep "'$1'" '${@:2}' -R .' &&  grep "$1" ${@:2} -R . }
 function r() {echo ' Replaced with ag'}
 
 # Watch function
-function mywatch() {while :; do a=$($@); clear; echo "$(date)\n\n$a"; sleep 1;  done}
+function mywatch() {while :; do a=$($@); clear; echo "$(date)\n\n$a"; sleep 2;  done}
 #function watch-zookeeper {while :; do clear; echo "$(date)\n\n$(echo stat |nc localhost 2181)"; sleep 1;  done}
 #function watch-zookeeper2 {while :; a=$@; do clear; echo "$(date)\n\n$(echo stat |nc $a 2181)"; sleep 1;  done}
 #function watch-zookeeper-cnumber {while :; do clear; echo "$(date)\n\n$(echo stat | nc localhost 2181 |grep 127.0.0.1 |wc -l)"; sleep 1;  done}
@@ -281,7 +279,7 @@ alias gbu60x="git fetch -p && git merge origin/r/6.0.x"
 alias gbu800="git fetch -p && git merge origin/r/8.0.0.x"
 alias gbu810="git fetch -p && git merge origin/r/8.1.0.x"
 
-alias gcoi="git checkout integration"
+alias gcoi="git checkout integration && git pull"
 alias gcoip="git checkout integration && git pull"
 alias gco51="git fetch -p && git checkout r/5.1.x && git pull"
 alias gco61="git fetch -p && git checkout r/6.1.0.x && git pull"
@@ -369,76 +367,100 @@ alias galias='alias|grep git'
 #clean -dxf will wipe everything requiring user to source gitenv again
 #alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
 
-
-source ~/.zshrc-local.sh
-
-#===== DEFAULT =====
-# Set to this to use case-sensitive completion
-# CASE_SENSITIVE="true"
-
-# Uncomment this to disable bi-weekly auto-update checks
-# DISABLE_AUTO_UPDATE="true"
-
-# Uncomment to change how often before auto-updates occur? (in days)
-# export UPDATE_ZSH_DAYS=13
-
-# Uncomment following line if you want to disable colors in ls
-# DISABLE_LS_COLORS="true"
-
-# Uncomment following line if you want to disable autosetting terminal title.
-# DISABLE_AUTO_TITLE="true"
-
-# Uncomment following line if you want to disable command autocorrection
-# DISABLE_CORRECTION="true"
-
-# Uncomment following line if you want red dots to be displayed while waiting for completion
-# COMPLETION_WAITING_DOTS="true"
-
-# Uncomment following line if you want to disable marking untracked files under
-# VCS as dirty. This makes repository status check for large repositories much,
-# much faster.
-# DISABLE_UNTRACKED_FILES_DIRTY="true"
-
-# Uncomment following line if you want to  shown in the command execution time stamp
-# in the history command output. The optional three formats: "mm/dd/yyyy"|"dd.mm.yyyy"|
-# yyyy-mm-dd
-# HIST_STAMPS="mm/dd/yyyy"
-
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# Example format: plugins=(rails git textmate ruby lighthouse)
-
-# plugins=(git git-extras gitfast)
-plugins=(git git-extras osx mvn npm brew vi-mode docker)
-#plugins=(git git-open)
-
-source $ZSH/oh-my-zsh.sh
-# User configuration
-
-# export MANPATH="/usr/local/man:$MANPATH"
-
-# # Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='mvim'
-# fi
-
-# Compilation flags
-# export ARCHFLAGS="-arch x86_64"
-
-# ssh
-# export SSH_KEY_PATH="~/.ssh/dsa_id"
-
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
+alias lc='colorls -lA --sd'
+#source $(dirname $(gem which colorls))/tab_complete.sh
+
+# Autocompletion for teamocil
+compctl -g '~/.teamocil/*(:t:r)' itermocil
+
+#======================== Terminal Config ==================================
+source ~/.zshrc-local.sh
+
+#=============================== oh-my-zsh  ======================================
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+
+# ZSH_THEME="agnoster-cus"
+# ZSH_THEME="powerlevel9k/powerlevel9k"
+
+power-version(){
+    local color='%F{yellow}'
+    PROJECT_VERSION=`python /Users/chuan.du/script-tool/version.py ./ powermode`
+    if [[ $PROJECT_VERSION != 'None' ]]; then
+        echo -n "%{$color%}$(print_icon 'VCS_HG_ICON')$PROJECT_VERSION" # \uf230 is  
+    fi
+}
+
+#POWERLEVEL9K_MODE='nerdfont-complete':
+POWERLEVEL9K_MODE='awesome-fontconfig'
+POWERLEVEL9K_CUSTOM_VERSION="power-version"
+POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='green'
+POWERLEVEL9K_VI_INSERT_MODE_STRING=''
+
+POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=( ram load ip vcs custom_version newline ssh dir )
+POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status vi_mode root_indicator command_execution_time background_jobs time) 
+
+alias signs="open https://github.com/bhilburn/powerlevel9k#vcs-symbols"
+
+
+#=========================== Antigen ==================================
+source ~/antigen.zsh
+
+# Load the oh-my-zsh's library.
+antigen use oh-my-zsh
+
+# Bundles from the default repo (robbyrussell's oh-my-zsh).
+antigen bundle git
+antigen bundle git-extras
+antigen bundle osx
+antigen bundle mvn
+antigen bundle npm
+antigen bundle brew
+antigen bundle docker
+antigen bundle lein
+antigen bundle vi-mode
+
+antigen bundle command-not-found
+antigen bundle gimbo/iterm2-tabs.zsh
+antigen bundle gretzky/auto-color-ls
+
+# Syntax highlighting bundle.
+antigen bundle zsh-users/zsh-syntax-highlighting
+antigen bundle zsh-users/zsh-autosuggestions
+
+# Theme
+antigen theme bhilburn/powerlevel9k powerlevel9k
+
+# Tell Antigen that you're done.
+antigen apply
+
+
+
+
+
+#========================= oh-my-zsh DEFAULT ==================================
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# vi-mode
+# plugins=(git git-extras osx mvn npm brew docker)
+
+source $ZSH/oh-my-zsh.sh
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 
+#============================== antibody ======================================
+# # antibody vs antigen
+# source <(antibody init)
+# antibody bundle bhilburn/powerlevel9k
+# antibody bundle < ~/.zsh_plugins.txt
 
-#========== Other helper script ===========
-
+# bindkey '^k' autosuggest-accept
+# bindkey '^\n' autosuggest-execute
+#========================= Other helper script ================================
+#
 # Media
 # Convert m4a/wma to mp3
 # mkdir newfiles
@@ -449,4 +471,4 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 ## Hacky
 #if [ $(which docker-credential-osxkeychain) ]; then
 #        unlink $(which docker-credential-osxkeychain)
-#    fi
+# fi
