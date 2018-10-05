@@ -169,9 +169,11 @@ cnoremap <Esc>d <S-right><Delete>
 cnoremap <C-g>  <C-c>
 
 " Why not use the space or return keys to toggle folds?
-nnoremap <space> za
+" nnoremap <space> za
 nnoremap <CR> za
-vnoremap <space> zf
+" vnoremap <space> zf
+let mapleader = " "
+nmap <leader>fs :w<CR>
 
 nmap <C-j> <C-W>j
 nmap <C-k> <C-W>k
