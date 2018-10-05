@@ -16,36 +16,34 @@ export EDITOR='vim'
 # source ~/.bin/tmuxinator.zsh
 
 #============================= Script tool: version ===============================
-function echoAndEval() { echo $@ && eval $@ }
+function echoAndEval() { echo $@ && eval $@; }
 alias ee=echoAndEval
 alias version='py /Users/chuan.du/script-tool/version.py ./'
 alias v=version
 
-function noti () {
-    # terminal-notifier
-    # Can use terminal-notifier if we want icon modification. Can't do noti confirm
-
-    # Buildin noti
-    osascript -e "display notification \"$1\" with title \"$2\""
+function noti() {
+	# terminal-notifier
+	# Can use terminal-notifier if we want icon modification. Can't do noti confirm
+	# Buildin noti
+	osascript -e "display notification \"$1\" with title \"$2\""
 }
 
 function cc() {
-    res=$(pbpaste | sed -e :a -e '$!N; s/\n//; ta' |sed 's/\(CD-[0-9]*\)/[[\1]](https:\/\/cenx-cf.atlassian.net\/browse\/\1) /')
-    echo $res
+	res=$(pbpaste | sed -e :a -e '$!N; s/\n//; ta' | sed 's/\(CD-[0-9]*\)/[[\1]](https:\/\/cenx-cf.atlassian.net\/browse\/\1) /')
+	echo $res
 }
 
 function color-test() {
-    clear
-    cat /Users/chuan.du/temp/iterm-syntax-test.txt
+	clear
+	cat /Users/chuan.du/temp/iterm-syntax-test.txt
 }
-
 
 #============================= system-clean-up ===============================
 alias clean-m2-cenx="rm /Users/chuan.du/.m2/repository/cenx"
 
 #============================= Dev Small stuff ===============================
 # alias doppelganger="docker run -it --rm -v `pwd`:/transport docker.cenx.localnet:5000/doppelganger:0.1.3-SNAPSHOT-b6"
-alias doppelganger="docker run -it --rm -v `pwd`:/transport ship.cenx.com:5000/doppelganger"
+alias doppelganger="docker run -it --rm -v $(pwd):/transport ship.cenx.com:5000/doppelganger"
 export CORTX_IP=192.168.59.103
 export ZK_PORT=2181
 export KAFKA_PORT=9092
@@ -54,15 +52,14 @@ export PARKER_REPL_PORT=4081
 export TERMINUS_REPL_PORT=4083
 export NARANATHU_REPL_PORT=4015
 
-
 #============================= Dokcer ===============================
-function docker-stats() { docker stats --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}" }
-function docker-stats-peek() { docker stats --no-stream --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}" }
-function docker-stop() {ee "docker stop \$(docker ps -q)"}
+function docker-stats() { docker stats --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
+function docker-stats-peek() { docker stats --no-stream --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
+function docker-stop() {ee 'docker stop $(docker ps -q)'}
 function docker-rm-stopped() {ee "docker rm $(docker ps -aq -f status=exited)"}
 
-function docker-ps()  {
-  docker ps $@ --format "table{{ .Image }}\\t{{ .Names }}\\t{{ .Status }}\\t{{ .Ports }}" | awk '
+function docker-ps() {
+	docker ps $@ --format 'table{{ .Image }}\t{{ .Names }}\t{{ .Status }}\t{{ .Ports }}' | awk '
     NR % 2 == 0 {
       printf "\033[0m";
     }
@@ -90,16 +87,15 @@ function docker-ps()  {
 }
 alias dps=docker-ps
 
-function dpsa() { echo "docker list all containers" &&  dps -a $@; }
+function dpsa() { echo "docker list all containers" && dps -a $@; }
 
-function dps-old() {  echo "Docker ps old" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'}
-function dps-old-p() { echo "Docker ps old with port" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'}
+function dps-old() { echo "Docker ps old" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
+function dps-old-p() { echo "Docker ps old with port" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
 
 function pre-docker() {
-    export DOCKER_MACHINE_IP=$(docker-machine ip)
-    eval $(docker-machine env)
+	export DOCKER_MACHINE_IP=$(docker-machine ip)
+	eval $(docker-machine env)
 }
-
 
 #============================== Docker old ===============================
 #export DOCKER_HOST=tcp://192.168.59.103:2375
@@ -119,10 +115,10 @@ export PATH=${PATH}:/usr/local/kafka/bin
 export PATH=${PATH}:/usr/local/Cellar/kafka/0.8.2.1/bin
 
 function pre-wildfly() {
-    echo "export JBOSS_HOME"
-    export JBOSS_HOME=/Users/chuan.du/Downloads/wildfly-10.1.0.Final
-    ## export PATH=${PATH}:${JBOSS_HOME}/bin
-    export WILDFLY_DEPLOY=${JBOSS_HOME}/standalone/deployments
+	echo "export JBOSS_HOME"
+	export JBOSS_HOME=/Users/chuan.du/Downloads/wildfly-10.1.0.Final
+	## export PATH=${PATH}:${JBOSS_HOME}/bin
+	export WILDFLY_DEPLOY=${JBOSS_HOME}/standalone/deployments
 }
 
 # export WILDFLY_HOME=/Users/chuan.du/CENX/wildfly-10.1.0.Final
@@ -163,25 +159,27 @@ alias later="nohup /Users/chuan.du/repo/DotFiles/otherTool/later.pl"
 
 # FileSearch
 function f() {echo 'find . -iname "*'$1'*" '${@:2} && find . -iname "*$1*" ${@:2} }
-function r-old() {echo ' grep "'$1'" '${@:2}' -R .' &&  grep "$1" ${@:2} -R . }
+function r-old() {echo ' grep "'$1'" '${@:2}' -R .' && grep "$1" ${@:2} -R . }
 function r() {echo ' Replaced with ag'}
 
 # Watch function
-function mywatch() {while :; do a=$($@); clear; echo "$(date)\n\n$a"; sleep 2;  done}
+# TODO Add this back
+# function mywatch() {while :; do a=$($@); clear; echo "$(date)\n\n$a"; sleep 2;  done}
 #function watch-zookeeper {while :; do clear; echo "$(date)\n\n$(echo stat |nc localhost 2181)"; sleep 1;  done}
 #function watch-zookeeper2 {while :; a=$@; do clear; echo "$(date)\n\n$(echo stat |nc $a 2181)"; sleep 1;  done}
 #function watch-zookeeper-cnumber {while :; do clear; echo "$(date)\n\n$(echo stat | nc localhost 2181 |grep 127.0.0.1 |wc -l)"; sleep 1;  done}
 
 # t(){ timerToStartApplication "$@" &}
 timerToStartApplication() {
-    # sleep 1 && open -a /Applications/Time\ Out\ Free.app
-    ti=$@
-    print "sleep to start Timeout Free\nSleep $ti"
-    pkill "Time Out Free"
-    sleep $@
-    print 'start Timeout Free'
-    open -a /Applications/Time\ Out\ Free.app
-open -a /Applications/Font\ Book.app }
+	# sleep 1 && open -a /Applications/Time\ Out\ Free.app
+	ti=$@
+	print "sleep to start Timeout Free\nSleep $ti"
+	pkill "Time Out Free"
+	sleep $@
+	print 'start Timeout Free'
+	open -a /Applications/Time\ Out\ Free.app
+	open -a /Applications/Font\ Book.app
+}
 
 # Alias
 alias zshconfig="vim ~/.zshrc"
@@ -233,15 +231,15 @@ alias mp='myparker'
 
 # CD to any directory with auto complete
 export repodir="/Users/chuan.du/repo/"
-function c () {cd $repodir$1}
+function c() {cd $repodir$1}
 compctl -g $repodir'*(:t:r)' c
 
 export repodir2="/opt/cenx/application/"
-function opt () {cd $repodir2$1}
+function opt() {cd $repodir2$1}
 compctl -g $repodir2'*(:t:r)' opt
 
 export repodir3="/Users/chuan.du/github/"
-function cd-gh () {cd $repodir3$1}
+function cd-gh() {cd $repodir3$1}
 compctl -g $repodir3'*(:t:r)' cd-gh
 
 #============= Powerful and Common alias =============
@@ -252,9 +250,8 @@ alias cpwd='echo "copy currenty directory" && pwd |pbcopy'
 
 #Copy file path to clipboard
 #greadlink -f development.pem
+function getPath() {greadlink -f $1 | tr -d '\n' | pbcopy }
 alias cpath=getPath
-getPath() {greadlink -f $1 |tr -d '\n' | pbcopy}
-
 alias cf='pbpaste | pbcopy' # clean format of clipboard
 
 #============= Git alias =============
@@ -280,35 +277,35 @@ alias gco61="git fetch -p && git checkout r/6.1.0.x && git pull"
 alias gfco='git fetch -p && git checkout'
 
 #=== Special Git Tool  ====
-function get_git_current_branch() { git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/' }
+function get_git_current_branch() { git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'; }
 
-current_branch() { git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/\1/' }
+function get_current_branch() { git branch 2>/dev/null | sed -e "/^[^*]/d" -e "s/* \(.*\)/\1/"; }
 
 function git_create_branch() {
-    if [ -z "$1" ] ; then
-        echo "*******************************************"
-        echo "*   !!! WARNING !!!  Branch not created   *"
-        echo "*******************************************"
-        echo ""
-        echo "Silly me!!! I need to specify a parameter, the branch.."
-    else
-        current_branch=$(get_git_current_branch)
-        set -x
-        git checkout -b $1
-        if [ $? -eq 0 ] ; then
-            git push --set-upstream origin $1
-            if [ $? -ne 0 ] ; then
-                git checkout ${current_branch}
-                git branch -D $1
-            fi
-        fi
-        set +x
-    fi
+	if [ -z "$1" ]; then
+		echo "*******************************************"
+		echo "*   !!! WARNING !!!  Branch not created   *"
+		echo "*******************************************"
+		echo ""
+		echo "Silly me!!! I need to specify a parameter, the branch.."
+	else
+		current_branch=$(get_git_current_branch)
+		set -x
+		git checkout -b $1
+		if [ $? -eq 0 ]; then
+			git push --set-upstream origin $1
+			if [ $? -ne 0 ]; then
+				git checkout ${current_branch}
+				git branch -D $1
+			fi
+		fi
+		set +x
+	fi
 }
 
-function gitopen-current-branch () {
-  current_branch=$(current_branch)
-  ee "gitopen -b ${current_branch}"
+function gitopen-current-branch() {
+	current_branch=$(get_current_branch)
+	ee "gitopen -b ${current_branch}"
 }
 
 alias gcob="ee 'gco -b'"
@@ -379,99 +376,96 @@ source ~/.zshrc-local.sh
 
 # ZSH_THEME="agnoster-cus"
 # ZSH_THEME="agnoster"
-ZSH_THEME="powerlevel9k/powerlevel9k"
+# ZSH_THEME="powerlevel9k/powerlevel9k"
 
+function load_POWERLEVEL9K() {
+	power-version() {
+		local color='%F{yellow}'
+		PROJECT_VERSION=$(python /Users/chuan.du/script-tool/version.py ./ powermode)
+		if [[ $PROJECT_VERSION != 'None' ]]; then
+			echo -n "%{$color%}$(print_icon 'VCS_HG_ICON')$PROJECT_VERSION"
+		fi
+	}
 
-function load_POWERLEVEL9K {
-    power-version(){
-        local color='%F{yellow}'
-        PROJECT_VERSION=`python /Users/chuan.du/script-tool/version.py ./ powermode`
-        if [[ $PROJECT_VERSION != 'None' ]]; then
-            echo -n "%{$color%}$(print_icon 'VCS_HG_ICON')$PROJECT_VERSION" 
-        fi
-    }
-    
-    #POWERLEVEL9K_MODE='nerdfont-complete':
-    POWERLEVEL9K_MODE='awesome-fontconfig'
-    POWERLEVEL9K_CUSTOM_VERSION="power-version"
-    POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='green'
-    POWERLEVEL9K_VI_INSERT_MODE_STRING=''
-    
-    if [ "$SIMPLE" -eq "1" ]; then 
-      echo "THEME: SIMPLE POWERLEVEL9K"
-      POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=( dir )
-      POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=( command_execution_time )
-    else
-      echo "THEME: POWERLEVEL9K"
-      POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=( ram load ip vcs custom_version newline ssh dir )
-      POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status vi_mode root_indicator command_execution_time background_jobs time )
-    fi
+	#POWERLEVEL9K_MODE='nerdfont-complete':
+	POWERLEVEL9K_MODE='awesome-fontconfig'
+	POWERLEVEL9K_CUSTOM_VERSION="power-version"
+	POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='green'
+	POWERLEVEL9K_VI_INSERT_MODE_STRING=''
 
-    alias signs="open https://github.com/bhilburn/powerlevel9k#vcs-symbols"
+	if [ "$SIMPLE" -eq "1" ]; then
+		echo "THEME: SIMPLE POWERLEVEL9K"
+		POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir)
+		POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time)
+	else
+		echo "THEME: POWERLEVEL9K"
+		POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(ram load ip vcs custom_version newline ssh dir)
+		POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status vi_mode root_indicator command_execution_time background_jobs time)
+	fi
+
+	alias signs="open https://github.com/bhilburn/powerlevel9k#vcs-symbols"
 }
 
 #=========================== Antigen ==================================
-function load_Antigen {
-  echo "Use antigen"
-  source ~/antigen.zsh
+function load_Antigen() {
+	echo "Use antigen"
+	source ~/antigen.zsh
 
-  # Load the oh-my-zsh's library.
-  antigen use oh-my-zsh
+	# Load the oh-my-zsh's library.
+	antigen use oh-my-zsh
 
-  # Bundles from the default repo (robbyrussell's oh-my-zsh).
-  antigen bundle git
-  antigen bundle git-extras
-  antigen bundle osx
-  antigen bundle mvn
-  antigen bundle npm
-  antigen bundle brew
-  antigen bundle docker
-  antigen bundle lein
-  antigen bundle vi-mode
-  antigen bundle tmuxinator
-  antigen bundle paulmelnikow/zsh-startup-timer
-  antigen bundle shayneholmes/zsh-iterm2colors
+	# Bundles from the default repo (robbyrussell's oh-my-zsh).
+	antigen bundle git
+	antigen bundle git-extras
+	antigen bundle osx
+	antigen bundle mvn
+	antigen bundle npm
+	antigen bundle brew
+	antigen bundle docker
+	antigen bundle lein
+	antigen bundle vi-mode
+	antigen bundle tmuxinator
+	antigen bundle paulmelnikow/zsh-startup-timer
+	antigen bundle shayneholmes/zsh-iterm2colors
 
-  alias ac=_iterm2colors_apply
-  alias acl='echo $_iterm2colors_current'
-  alias acr=_iterm2colors_apply_random
+	alias ac=_iterm2colors_apply
+	alias acl='echo $_iterm2colors_current'
+	alias acr=_iterm2colors_apply_random
 
-  # My  bundles
-  antigen bundle command-not-found
-  antigen bundle gimbo/iterm2-tabs.zsh
-  antigen bundle gretzky/auto-color-ls
-  # Not working Cuold be removed
-  antigen bundle djui/alias-tips
-  antigen bundle "MichaelAquilina/zsh-you-should-use"
+	# My  bundles
+	antigen bundle command-not-found
+	antigen bundle gimbo/iterm2-tabs.zsh
+	antigen bundle gretzky/auto-color-ls
+	# Not working Cuold be removed
+	antigen bundle djui/alias-tips
+	antigen bundle "MichaelAquilina/zsh-you-should-use"
 
-  antigen bundle sei40kr/zsh-tmux-rename
+	antigen bundle sei40kr/zsh-tmux-rename
 
-  # Syntax highlighting bundle.
-  antigen bundle zsh-users/zsh-syntax-highlighting
-  antigen bundle zsh-users/zsh-autosuggestions
-  # antigen bundle jimeh/zsh-peco-history
-  # antigen bundle b4b4r07/zsh-history
-  antigen bundle zdharma/history-search-multi-word
-  # Something looks very powerful but not sure why I need it
-  antigen bundle psprint/zsh-cmd-architect
-  antigen bundle popstas/zsh-command-time
+	# Syntax highlighting bundle.
+	antigen bundle zsh-users/zsh-syntax-highlighting
+	antigen bundle zsh-users/zsh-autosuggestions
+	# antigen bundle jimeh/zsh-peco-history
+	# antigen bundle b4b4r07/zsh-history
+	antigen bundle zdharma/history-search-multi-word
+	# Something looks very powerful but not sure why I need it
+	antigen bundle psprint/zsh-cmd-architect
+	antigen bundle popstas/zsh-command-time
 
-  # Theme
-  # antigen theme bhilburn/powerlevel9k powerlevel9k
+	# Theme
+	antigen theme bhilburn/powerlevel9k powerlevel9k
 
-  # Tell Antigen that you're done.
-  antigen apply
+	# Tell Antigen that you're done.
+	antigen apply
 }
-
-
 
 #============================== antibody ======================================
 
-function load_Antibody {
-  echo "Use antibody"
-  source <(antibody init)
-  antibody bundle bhilburn/powerlevel9k
-  antibody bundle < ~/.zsh_plugins.txt
+function load_Antibody() {
+	echo "Use antibody"
+	source <(antibody init)
+	antibody bundle bhilburn/powerlevel9k
+	antibody bundle <~/.zsh_plugins.txt
 }
 
 #========================= oh-my-zsh DEFAULT ==================================
@@ -482,12 +476,11 @@ function load_Antibody {
 
 load_POWERLEVEL9K
 if [ "$FIRSTTIME" -ne "1" ]; then
-    echo "Start oh-my-zsh"
-    source $ZSH/oh-my-zsh.sh
+	echo "Start oh-my-zsh"
+	source $ZSH/oh-my-zsh.sh
 fi
 FIRSTTIME=1
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
 
 #========================= load zsh plugins ===================================
 chooseantigen=0
@@ -495,11 +488,10 @@ chooseantibody=1
 bundlechoose=0
 
 if [ "$bundlechoose" -eq 0 ]; then
-    load_Antigen
-else 
-    load_Antibody
+	load_Antigen
+else
+	load_Antibody
 fi
-
 
 # Some good keybind is overwrite by plugins or oh-my-zsh
 bindkey '^k' autosuggest-accept
