@@ -1,5 +1,6 @@
 # Path to your oh-my-zsh configuration.
 ZSH=$HOME/.oh-my-zsh
+export TERM="xterm-256color"
 
 #=============================== PATH ===========================================
 export PATH="./node_modules/.bin:$PATH"
@@ -9,6 +10,10 @@ export PATH=$HOME/bin:/usr/local/sbin:$HOME/script-tool:/usr/local/bin:$PATH
 # export is required for python path
 # export PYTHONPATH="/Users/chuan.du/repo/autotest/tests/component/cenx-rest-api:${PYTHONPATH}"
 export NODE_PATH=/usr/lib/node_modules
+
+# Tmuxinator
+export EDITOR='vim'
+# source ~/.bin/tmuxinator.zsh
 
 #============================= Script tool: version ===============================
 function echoAndEval() { echo $@ && eval $@ }
@@ -225,18 +230,6 @@ alias cblog='cd /Users/SuperiMan/Dropbox/Code/WebSite/YongqinchuanDu.com/duqcyxw
 alias myparker='cd ~/repo/parker/'
 alias nova='cd ~/repo/nova'
 alias mp='myparker'
-alias mp2='cd ~/repo/parker2/'
-alias mp3='cd ~/repo/parker3/'
-
-alias cm='/Users/chuan.du/repo/devops/deployments/medium'
-
-alias plataea-clean="rm ~/.m2/repository/cenx/plataea/*"
-alias clean-plataea=plataea-clean
-
-alias cmr=ramesseum
-alias cmp=plataea
-alias cml=levski
-alias cany='cd /opt/cenx/application/analytics/'
 
 # CD to any directory with auto complete
 export repodir="/Users/chuan.du/repo/"
@@ -371,6 +364,7 @@ alias galias='alias|grep git'
 export PATH="/usr/local/heroku/bin:$PATH"
 
 alias lc='colorls -lA --sd'
+alias lcg='colorls -lA --sd --gs'
 #source $(dirname $(gem which colorls))/tab_complete.sh
 
 # Autocompletion for teamocil
@@ -384,62 +378,101 @@ source ~/.zshrc-local.sh
 # Look in ~/.oh-my-zsh/themes/
 
 # ZSH_THEME="agnoster-cus"
-# ZSH_THEME="powerlevel9k/powerlevel9k"
+# ZSH_THEME="agnoster"
+ZSH_THEME="powerlevel9k/powerlevel9k"
 
-power-version(){
-    local color='%F{yellow}'
-    PROJECT_VERSION=`python /Users/chuan.du/script-tool/version.py ./ powermode`
-    if [[ $PROJECT_VERSION != 'None' ]]; then
-        echo -n "%{$color%}$(print_icon 'VCS_HG_ICON')$PROJECT_VERSION" # \uf230 is  
+
+function load_POWERLEVEL9K {
+    power-version(){
+        local color='%F{yellow}'
+        PROJECT_VERSION=`python /Users/chuan.du/script-tool/version.py ./ powermode`
+        if [[ $PROJECT_VERSION != 'None' ]]; then
+            echo -n "%{$color%}$(print_icon 'VCS_HG_ICON')$PROJECT_VERSION" 
+        fi
+    }
+    
+    #POWERLEVEL9K_MODE='nerdfont-complete':
+    POWERLEVEL9K_MODE='awesome-fontconfig'
+    POWERLEVEL9K_CUSTOM_VERSION="power-version"
+    POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='green'
+    POWERLEVEL9K_VI_INSERT_MODE_STRING=''
+    
+    if [ "$SIMPLE" -eq "1" ]; then 
+      echo "THEME: SIMPLE POWERLEVEL9K"
+      POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=( dir )
+      POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=( command_execution_time )
+    else
+      echo "THEME: POWERLEVEL9K"
+      POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=( ram load ip vcs custom_version newline ssh dir )
+      POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status vi_mode root_indicator command_execution_time background_jobs time )
     fi
+
+    alias signs="open https://github.com/bhilburn/powerlevel9k#vcs-symbols"
 }
 
-#POWERLEVEL9K_MODE='nerdfont-complete':
-POWERLEVEL9K_MODE='awesome-fontconfig'
-POWERLEVEL9K_CUSTOM_VERSION="power-version"
-POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='green'
-POWERLEVEL9K_VI_INSERT_MODE_STRING=''
-
-POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=( ram load ip vcs custom_version newline ssh dir )
-POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status vi_mode root_indicator command_execution_time background_jobs time) 
-
-alias signs="open https://github.com/bhilburn/powerlevel9k#vcs-symbols"
-
-
 #=========================== Antigen ==================================
-source ~/antigen.zsh
+function load_Antigen {
+  echo "Use antigen"
+  source ~/antigen.zsh
 
-# Load the oh-my-zsh's library.
-antigen use oh-my-zsh
+  # Load the oh-my-zsh's library.
+  antigen use oh-my-zsh
 
-# Bundles from the default repo (robbyrussell's oh-my-zsh).
-antigen bundle git
-antigen bundle git-extras
-antigen bundle osx
-antigen bundle mvn
-antigen bundle npm
-antigen bundle brew
-antigen bundle docker
-antigen bundle lein
-antigen bundle vi-mode
+  # Bundles from the default repo (robbyrussell's oh-my-zsh).
+  antigen bundle git
+  antigen bundle git-extras
+  antigen bundle osx
+  antigen bundle mvn
+  antigen bundle npm
+  antigen bundle brew
+  antigen bundle docker
+  antigen bundle lein
+  antigen bundle vi-mode
+  antigen bundle tmuxinator
+  antigen bundle paulmelnikow/zsh-startup-timer
+  antigen bundle shayneholmes/zsh-iterm2colors
 
-antigen bundle command-not-found
-antigen bundle gimbo/iterm2-tabs.zsh
-antigen bundle gretzky/auto-color-ls
+  alias ac=_iterm2colors_apply
+  alias acl='echo $_iterm2colors_current'
+  alias acr=_iterm2colors_apply_random
 
-# Syntax highlighting bundle.
-antigen bundle zsh-users/zsh-syntax-highlighting
-antigen bundle zsh-users/zsh-autosuggestions
+  # My  bundles
+  antigen bundle command-not-found
+  antigen bundle gimbo/iterm2-tabs.zsh
+  antigen bundle gretzky/auto-color-ls
+  # Not working Cuold be removed
+  antigen bundle djui/alias-tips
+  antigen bundle "MichaelAquilina/zsh-you-should-use"
 
-# Theme
-antigen theme bhilburn/powerlevel9k powerlevel9k
+  antigen bundle sei40kr/zsh-tmux-rename
 
-# Tell Antigen that you're done.
-antigen apply
+  # Syntax highlighting bundle.
+  antigen bundle zsh-users/zsh-syntax-highlighting
+  antigen bundle zsh-users/zsh-autosuggestions
+  # antigen bundle jimeh/zsh-peco-history
+  # antigen bundle b4b4r07/zsh-history
+  antigen bundle zdharma/history-search-multi-word
+  # Something looks very powerful but not sure why I need it
+  antigen bundle psprint/zsh-cmd-architect
+  antigen bundle popstas/zsh-command-time
+
+  # Theme
+  # antigen theme bhilburn/powerlevel9k powerlevel9k
+
+  # Tell Antigen that you're done.
+  antigen apply
+}
 
 
 
+#============================== antibody ======================================
 
+function load_Antibody {
+  echo "Use antibody"
+  source <(antibody init)
+  antibody bundle bhilburn/powerlevel9k
+  antibody bundle < ~/.zsh_plugins.txt
+}
 
 #========================= oh-my-zsh DEFAULT ==================================
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
@@ -447,18 +480,33 @@ antigen apply
 # vi-mode
 # plugins=(git git-extras osx mvn npm brew docker)
 
-source $ZSH/oh-my-zsh.sh
+load_POWERLEVEL9K
+if [ "$FIRSTTIME" -ne "1" ]; then
+    echo "Start oh-my-zsh"
+    source $ZSH/oh-my-zsh.sh
+fi
+FIRSTTIME=1
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 
-#============================== antibody ======================================
-# # antibody vs antigen
-# source <(antibody init)
-# antibody bundle bhilburn/powerlevel9k
-# antibody bundle < ~/.zsh_plugins.txt
+#========================= load zsh plugins ===================================
+chooseantigen=0
+chooseantibody=1
+bundlechoose=0
 
-# bindkey '^k' autosuggest-accept
-# bindkey '^\n' autosuggest-execute
+if [ "$bundlechoose" -eq 0 ]; then
+    load_Antigen
+else 
+    load_Antibody
+fi
+
+
+# Some good keybind is overwrite by plugins or oh-my-zsh
+bindkey '^k' autosuggest-accept
+bindkey '^\n' autosuggest-execute
+# bindkey "^R" history-incremental-search-backward
+# bindkey "^S" history-incremental-search-forward
+
 #========================= Other helper script ================================
 #
 # Media
@@ -471,4 +519,4 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 ## Hacky
 #if [ $(which docker-credential-osxkeychain) ]; then
 #        unlink $(which docker-credential-osxkeychain)
-# fi
+#fi
