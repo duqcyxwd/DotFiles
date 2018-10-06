@@ -360,10 +360,12 @@ alias galias='alias|grep git'
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
-alias lc='colorls -lA --sd'
-alias lcg='colorls -lA --sd --gs'
-#source $(dirname $(gem which colorls))/tab_complete.sh
+alias l='colorls -A --sd --report'
+alias lg='colorls -A --sd --report --gs'
+alias lc='colorls -l --sd --gs'
+alias lca='colorls -lA --sd --gs'
 
+source $(dirname $(gem which colorls))/tab_complete.sh
 # Autocompletion for teamocil
 compctl -g '~/.teamocil/*(:t:r)' itermocil
 
@@ -377,6 +379,7 @@ source ~/.zshrc-local.sh
 # ZSH_THEME="agnoster-cus"
 # ZSH_THEME="agnoster"
 # ZSH_THEME="powerlevel9k/powerlevel9k"
+# ZSH_THEME="spaceship"
 
 function load_POWERLEVEL9K() {
 	power-version() {
@@ -408,7 +411,7 @@ function load_POWERLEVEL9K() {
 
 #=========================== Antigen ==================================
 function load_Antigen() {
-	echo "Use antigen"
+	echo "ZSH PlUGIN ENGINE: Antigen"
 	source ~/antigen.zsh
 
 	# Load the oh-my-zsh's library.
@@ -452,11 +455,22 @@ function load_Antigen() {
 	antigen bundle psprint/zsh-cmd-architect
 	antigen bundle popstas/zsh-command-time
 
-	# Theme
-	antigen theme bhilburn/powerlevel9k powerlevel9k
+	echo "THEME: spaceship"
 
+    if [ "$STARTED" -ne "1" ]; then
+	    # Spaceship theme doesn't support reload and antigen don't support fucntionalize antigen code
+	    # antigen theme bhilburn/powerlevel9k powerlevel9k
+	    antigen theme denysdovhan/spaceship-prompt
+    fi
+	
 	# Tell Antigen that you're done.
 	antigen apply
+}
+
+function load_Antigen_init() {
+	echo "ZSH PlUGIN ENGINE: Antibody"
+	source ~/antigen.zsh
+	antigen init ~/.antigenrc
 }
 
 #============================== antibody ======================================
@@ -473,25 +487,20 @@ function load_Antibody() {
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # vi-mode
 # plugins=(git git-extras osx mvn npm brew docker)
-
-load_POWERLEVEL9K
-if [ "$FIRSTTIME" -ne "1" ]; then
-	echo "Start oh-my-zsh"
-	source $ZSH/oh-my-zsh.sh
-fi
-FIRSTTIME=1
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+# plugins=()
 
 #========================= load zsh plugins ===================================
-chooseantigen=0
-chooseantibody=1
-bundlechoose=0
-
-if [ "$bundlechoose" -eq 0 ]; then
-	load_Antigen
-else
-	load_Antibody
+load_POWERLEVEL9K
+#load_Antigen
+load_Antigen_init
+if [ "$STARTED" -ne "1" ]; then
+	# load_Antibody
+    # echo "INIT: oh-my-zsh"
+    # source $ZSH/oh-my-zsh.sh
 fi
+STARTED=1
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # Some good keybind is overwrite by plugins or oh-my-zsh
 bindkey '^k' autosuggest-accept
