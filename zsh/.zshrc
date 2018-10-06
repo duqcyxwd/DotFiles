@@ -185,7 +185,7 @@ timerToStartApplication() {
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 alias rs='ee "source ~/.zshrc"'
-alias mz='ee "vim ~/.zshrc"'
+alias mz='ee "vim ~/.zshrc && shfmt -l -s -w -ci .zshrc"'
 alias ca="less ~/.zshrc"
 alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
 alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
