@@ -8,22 +8,26 @@ eclipseaction st org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.vie
 " eclipseaction build org.eclipse.mylyn.builds.ui.command.RunBuild
 " eclipseaction newtest org.eclipse.mylyn.builds.ui.command.NewTaskFromTest
 
-" Test
+" Junit Test
 eclipseaction test org.eclipse.jdt.junit.junitShortcut.run
-nnoremap <Leader>ta :test<cr>
 nnoremap ta :test<cr>
 
 eclipseaction reruntest org.eclipse.jdt.junit.junitShortcut.rerunLast
-nnoremap <Leader>tr :reruntest<cr>
 nnoremap tr :reruntest<cr>
 
 eclipseaction failedtest org.eclipse.jdt.junit.junitShortcut.rerunFailedFirst
-nnoremap <Leader>tq :failedtest<cr>
-nnoremap <Leader>tt :failedtest<cr>
 nnoremap tt :reruntest<cr>
 
 eclipseaction testdebug org.eclipse.jdt.junit.junitShortcut.debug
-nnoremap <Leader>td :testdebug<cr>
+nnoremap td :testdebug<cr>
+
+eclipseaction nt org.eclipse.jdt.internal.junit.wizards.NewTestCaseCreationWizard
+nnoremap <Leader>nt :nt<cr>
+
+" Line number
+eclipseaction togglelinenumber org.eclipse.ui.editors.lineNumberToggle
+nnoremap <Leader>tl :togglelinenumber<cr>
+
 
 " Find reference
 eclipseaction findref org.eclipse.jdt.ui.edit.text.java.search.references.in.workspace
@@ -61,7 +65,17 @@ nnoremap <leader>rm        :eclipserefactormenu<cr>
 eclipseaction eclipsesrcgenmenu org.eclipse.jdt.ui.edit.text.java.source.quickMenu
 nnoremap <leader>rr        :eclipsesrcgenmenu<cr>
 
+eclipseaction eclipsegotoimpl org.eclipse.jdt.ui.edit.text.java.open.implementation
+nnoremap gd :eclipsegotoimpl<CR>
 
+eclipseaction eclipsesearchnext org.eclipse.jdt.ui.edit.text.java.search.occurrences.in.file
+nnoremap gn :eclipsesearchnext<CR>
+
+eclipseaction eclipsecreategettersetter org.eclipse.jdt.ui.edit.text.java.create.getter.setter
+nnoremap <leader>gs :eclipsecreategettersetter<CR>
+
+" Reload config
+nnoremap <leader>ll :source .vrapperrc<CR>
 
 " TODO
 " https://github.com/justinmk/config/blob/master/.vrapperrc
@@ -70,4 +84,5 @@ nnoremap <leader>rr        :eclipsesrcgenmenu<cr>
 eclipseaction debug org.eclipse.debug.ui.commands.DebugLast
 eclipseaction run org.eclipse.debug.ui.commands.RunLast
 
-" TEST
+" Notes
+

@@ -1,6 +1,37 @@
-# Path to your oh-my-zsh configuration.
+# zmodload zsh/zprof
 ZSH=$HOME/.oh-my-zsh
 export TERM="xterm-256color"
+
+export STARTUP_LOG=~/.startup.log
+export STARTUP_LOG_ALL=~/.startup_all.log
+/bin/rm -f $STARTUP_LOG_ALL
+/bin/rm -f $STARTUP_LOG
+touch $STARTUP_LOG
+touch $STARTUP_LOG_ALL
+
+export IS_ASYNC=1
+export START_MESSAGE=1
+
+#=============================== pre script  ===========================================
+function startMessage() { artii "Welcome, Chuan" && neofetch && fortune | cowsay && cat $STARTUP_LOG | boxes -d stone -p a2t1 }
+function mlog() { echo $@ >>$STARTUP_LOG }
+#=============================== ZSH ASYNC PATH ===========================================
+
+function pre-async() {
+    source /Users/chuan.du/github/zsh-async/async.zsh
+    async_init
+    async_start_worker my_worker -n
+
+    export COMPLETED=0
+
+    if [ "$START_MESSAGE" -eq "1" ]; then
+        async_job my_worker $(startMessage >> $STARTUP_LOG_ALL)
+    fi
+}
+
+if [ "$IS_ASYNC" -eq "1" ]; then
+    pre-async
+fi
 
 #=============================== PATH ===========================================
 export PATH="./node_modules/.bin:$PATH"
@@ -13,11 +44,181 @@ export NODE_PATH=/usr/lib/node_modules
 
 # Tmuxinator
 export EDITOR='vim'
-# source ~/.bin/tmuxinator.zsh
 
-#============================= Script tool: version ===============================
+#======================== Terminal Config ==================================
+source ~/.zshrc-local.sh
+
+#=============================== oh-my-zsh  ======================================
+# Set name of the theme to load.
+# Look in ~/.oh-my-zsh/themes/
+
+# ZSH_THEME="agnoster-cus"
+# ZSH_THEME="agnoster"
+# ZSH_THEME="powerlevel9k/powerlevel9k"
+
+function load_POWERLEVEL9K() {
+	power-version() {
+		local color='%F{yellow}'
+		PROJECT_VERSION=$(python /Users/chuan.du/script-tool/version.py ./ powermode)
+		if [[ $PROJECT_VERSION != 'None' ]]; then
+			echo -n "%{$color%}$(print_icon 'VCS_HG_ICON')$PROJECT_VERSION"
+		fi
+	}
+
+	#POWERLEVEL9K_MODE='nerdfont-complete':
+	POWERLEVEL9K_MODE='awesome-fontconfig'
+	POWERLEVEL9K_CUSTOM_VERSION="power-version"
+	POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='green'
+	POWERLEVEL9K_VI_INSERT_MODE_STRING=''
+
+	if [ "$SIMPLE" -eq "1" ]; then
+		mlog "THEME: SIMPLE POWERLEVEL9K"
+		POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir)
+		POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time)
+	else
+		mlog "THEME: POWERLEVEL9K"
+		POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(ram load ip vcs custom_version newline ssh dir)
+		POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status vi_mode root_indicator command_execution_time background_jobs time)
+	fi
+
+	alias signs="open https://github.com/bhilburn/powerlevel9k#vcs-symbols"
+}
+
+#=========================== Antigen ==================================
+
+
+function load_Antigen() {
+	mlog "PlUGIN ENGINE: Antigen"
+	source ~/antigen.zsh
+
+	# Load the oh-my-zsh's library.
+	antigen use oh-my-zsh
+
+	# Bundles from the default repo (robbyrussell's oh-my-zsh).
+	antigen bundle git
+	antigen bundle git-extras
+	antigen bundle osx
+	antigen bundle mvn
+	antigen bundle npm
+	antigen bundle brew
+	antigen bundle docker
+	antigen bundle lein
+	antigen bundle vi-mode
+	antigen bundle tmuxinator
+
+
+	# My  bundles
+	antigen bundle shayneholmes/zsh-iterm2colors
+	antigen bundle paulmelnikow/zsh-startup-timer
+	antigen bundle command-not-found
+	antigen bundle gimbo/iterm2-tabs.zsh
+	antigen bundle gretzky/auto-color-ls
+	# Not working Could be removed
+	antigen bundle djui/alias-tips
+	antigen bundle "MichaelAquilina/zsh-you-should-use"
+
+	antigen bundle sei40kr/zsh-tmux-rename
+
+	# Syntax highlighting bundle.
+	antigen bundle zsh-users/zsh-syntax-highlighting
+	antigen bundle zsh-users/zsh-autosuggestions
+	# antigen bundle jimeh/zsh-peco-history
+	# antigen bundle b4b4r07/zsh-history
+	antigen bundle zdharma/history-search-multi-word
+	# Something looks very powerful but not sure why I need it
+	antigen bundle psprint/zsh-cmd-architect
+	antigen bundle popstas/zsh-command-time
+
+    
+
+	echo "THEME: spaceship"
+	if [ "$ZSH_STARTED" -ne "1" ]; then
+		# Spaceship theme doesn't support reload and antigen don't support fucntionalize antigen code
+		# antigen theme bhilburn/powerlevel9k powerlevel9k
+
+		# Spaceship THEME
+		antigen theme denysdovhan/spaceship-prompt
+		# antigen theme maximbaz/spaceship-prompt 
+        # SPACESHIP_PROMPT_ADD_NEWLINE=false
+	fi
+
+	# Tell Antigen that you're done.
+	antigen apply
+}
+
+function load_Antigen_init() {
+	echo "PlUGIN ENGINE: Antigen Init"
+	source ~/antigen.zsh
+	antigen init ~/.antigenrc
+}
+
+function plugin-config(){
+
+    # Some good keybind is overwrite by plugins or oh-my-zsh
+    # Also includes plugin variables
+
+    # Spaceship
+    export SPACESHIP_TIME_SHOW=true
+
+
+	# zsh-iterm2colors
+	alias ac=_iterm2colors_apply
+	alias acl='echo $_iterm2colors_current'
+	alias acr=_iterm2colors_apply_random
+
+
+    alias l='colorls -A --sd --report'
+    alias lg='colorls -A --sd --report --gs'
+    alias lc='colorls -l --sd --gs'
+    alias lca='colorls -lA --sd --gs'
+
+    bindkey '^k' autosuggest-accept
+    bindkey '^\n' autosuggest-execute
+    # bindkey "^R" history-incremental-search-backward
+    # bindkey "^S" history-incremental-search-forward
+
+}
+
+#============================== antibody ======================================
+
+function load_Antibody() {
+    mlog "Use antibody"
+    source <(antibody init)
+
+    # antibody bundle bhilburn/powerlevel9k
+    antibody bundle <~/.zsh_plugins.txt
+
+    echo "THEME: spaceship"
+    if [ "$ZSH_STARTED" -ne "1" ]; then
+        antibody bundle denysdovhan/spaceship-prompt
+        # antigen theme maximbaz/spaceship-prompt 
+	fi
+}
+
+#========================= oh-my-zsh DEFAULT ==================================
+# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
+# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
+# vi-mode
+# plugins=(git git-extras osx mvn npm brew docker)
+# plugins=()
+
+#========================= load ZSH plugins ===================================
+
+# load_POWERLEVEL9K
+if [ "$ZSH_STARTED" -ne "1" ]; then
+	mlog "INIT: oh-my-zsh"
+	source $ZSH/oh-my-zsh.sh
+fi
+
+# load_Antigen>>$STARTUP_LOG
+# load_Antigen_init>>$STARTUP_LOG
+load_Antibody>>$STARTUP_LOG 
+
+#============================= Script tool: Most useful tool ever ===============================
+alias -g timeElapsed="pv -F 'Elapsed time: %t'"
+
 function echoAndEval() { echo $@ && eval $@; }
-alias ee=echoAndEval
+alias -g ee=echoAndEval
 alias version='py /Users/chuan.du/script-tool/version.py ./'
 alias v=version
 
@@ -164,7 +365,7 @@ function r() {echo ' Replaced with ag'}
 
 # Watch function
 # TODO Add this back
-# function mywatch() {while :; do a=$($@); clear; echo "$(date)\n\n$a"; sleep 2;  done}
+function mywatch() {while :; do a=$($@); clear; echo "$(date)\n\n$a"; sleep 2;  done}
 #function watch-zookeeper {while :; do clear; echo "$(date)\n\n$(echo stat |nc localhost 2181)"; sleep 1;  done}
 #function watch-zookeeper2 {while :; a=$@; do clear; echo "$(date)\n\n$(echo stat |nc $a 2181)"; sleep 1;  done}
 #function watch-zookeeper-cnumber {while :; do clear; echo "$(date)\n\n$(echo stat | nc localhost 2181 |grep 127.0.0.1 |wc -l)"; sleep 1;  done}
@@ -184,7 +385,8 @@ timerToStartApplication() {
 # Alias
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
-alias rs='ee "source ~/.zshrc"'
+# alias rs="ee 'source ~/.zshrc'"
+alias rs='source ~/.zshrc'
 alias mz='ee "vim ~/.zshrc && shfmt -l -s -w -ci .zshrc"'
 alias ca="less ~/.zshrc"
 alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
@@ -215,6 +417,7 @@ alias tf='echo "Task finished"'
 alias sql="echo 'psql to localhost' && ee \"export PAGER='less -SF' && psql -h 'localhost' -U 'postgres'\""
 
 #============= Dir alias =============
+alias cgh='cd ~/github'
 alias cdatomic='cd /Users/chuan.du/datomic-home/datomic-pro-0.9.5153'
 alias csubl='cd /Users/duyongqinchuan/Library/Application\ Support/Sublime\ Text\ 3/Packages/User'
 alias cla='cd /Users/SuperiMan/Dropbox/Code/leapArm'
@@ -239,8 +442,8 @@ function opt() {cd $repodir2$1}
 compctl -g $repodir2'*(:t:r)' opt
 
 export repodir3="/Users/chuan.du/github/"
-function cd-gh() {cd $repodir3$1}
-compctl -g $repodir3'*(:t:r)' cd-gh
+function gh() {cd $repodir3$1}
+compctl -g $repodir3'*(:t:r)' gh
 
 #============= Powerful and Common alias =============
 # alias copy="echo 'Copy file path' && tr -d '\n' | pbcopy"
@@ -254,11 +457,13 @@ function getPath() {greadlink -f $1 | tr -d '\n' | pbcopy }
 alias cpath=getPath
 alias cf='pbpaste | pbcopy' # clean format of clipboard
 
-#============= Git alias =============
+alias dir='dirs -v'
+
+#============================= Git alias =================================
 git config --global color.ui true
 alias tag="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
 
-#=== Working ====
+#======================= Working =========================================
 
 alias gu="git add project.clj && git commit -m 'Upversion'"
 alias gbc="echo 'Copy current branch name' && git rev-parse --abbrev-ref HEAD |pbcopy && git branch"
@@ -344,9 +549,9 @@ alias gitxdi="ee 'git diff origin/integration..$get_git_current_branch | gitx'"
 alias gdi-gitx=gitxdi
 alias gds="ee 'git diff -w --stat'"
 
-#pretty git one line git log
-alias gh="ee 'git log --pretty=tformat:\"%h %ad | %s%d [%an]\" --graph --date=short'"
-#show only the file names changed in commit
+#pretty git one line git log with time and author(should use glog)
+alias glogt="ee 'git log --pretty=tformat:\"%h %ad | %s%d [%an]\" --graph --date=short'"
+#show only the file names changed in last commit
 alias gsf='git show --pretty="format:" --name-only'
 
 #show all git aliases
@@ -357,157 +562,15 @@ alias galias='alias|grep git'
 #clean -dxf will wipe everything requiring user to source gitenv again
 #alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
 
+
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
-
-alias l='colorls -A --sd --report'
-alias lg='colorls -A --sd --report --gs'
-alias lc='colorls -l --sd --gs'
-alias lca='colorls -lA --sd --gs'
 
 source $(dirname $(gem which colorls))/tab_complete.sh
 # Autocompletion for teamocil
 compctl -g '~/.teamocil/*(:t:r)' itermocil
 
-#======================== Terminal Config ==================================
-source ~/.zshrc-local.sh
-
-#=============================== oh-my-zsh  ======================================
-# Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
-
-# ZSH_THEME="agnoster-cus"
-# ZSH_THEME="agnoster"
-# ZSH_THEME="powerlevel9k/powerlevel9k"
-# ZSH_THEME="spaceship"
-
-function load_POWERLEVEL9K() {
-	power-version() {
-		local color='%F{yellow}'
-		PROJECT_VERSION=$(python /Users/chuan.du/script-tool/version.py ./ powermode)
-		if [[ $PROJECT_VERSION != 'None' ]]; then
-			echo -n "%{$color%}$(print_icon 'VCS_HG_ICON')$PROJECT_VERSION"
-		fi
-	}
-
-	#POWERLEVEL9K_MODE='nerdfont-complete':
-	POWERLEVEL9K_MODE='awesome-fontconfig'
-	POWERLEVEL9K_CUSTOM_VERSION="power-version"
-	POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='green'
-	POWERLEVEL9K_VI_INSERT_MODE_STRING=''
-
-	if [ "$SIMPLE" -eq "1" ]; then
-		echo "THEME: SIMPLE POWERLEVEL9K"
-		POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir)
-		POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time)
-	else
-		echo "THEME: POWERLEVEL9K"
-		POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(ram load ip vcs custom_version newline ssh dir)
-		POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status vi_mode root_indicator command_execution_time background_jobs time)
-	fi
-
-	alias signs="open https://github.com/bhilburn/powerlevel9k#vcs-symbols"
-}
-
-#=========================== Antigen ==================================
-function load_Antigen() {
-	echo "ZSH PlUGIN ENGINE: Antigen"
-	source ~/antigen.zsh
-
-	# Load the oh-my-zsh's library.
-	antigen use oh-my-zsh
-
-	# Bundles from the default repo (robbyrussell's oh-my-zsh).
-	antigen bundle git
-	antigen bundle git-extras
-	antigen bundle osx
-	antigen bundle mvn
-	antigen bundle npm
-	antigen bundle brew
-	antigen bundle docker
-	antigen bundle lein
-	antigen bundle vi-mode
-	antigen bundle tmuxinator
-	antigen bundle paulmelnikow/zsh-startup-timer
-	antigen bundle shayneholmes/zsh-iterm2colors
-
-	alias ac=_iterm2colors_apply
-	alias acl='echo $_iterm2colors_current'
-	alias acr=_iterm2colors_apply_random
-
-	# My  bundles
-	antigen bundle command-not-found
-	antigen bundle gimbo/iterm2-tabs.zsh
-	antigen bundle gretzky/auto-color-ls
-	# Not working Cuold be removed
-	antigen bundle djui/alias-tips
-	antigen bundle "MichaelAquilina/zsh-you-should-use"
-
-	antigen bundle sei40kr/zsh-tmux-rename
-
-	# Syntax highlighting bundle.
-	antigen bundle zsh-users/zsh-syntax-highlighting
-	antigen bundle zsh-users/zsh-autosuggestions
-	# antigen bundle jimeh/zsh-peco-history
-	# antigen bundle b4b4r07/zsh-history
-	antigen bundle zdharma/history-search-multi-word
-	# Something looks very powerful but not sure why I need it
-	antigen bundle psprint/zsh-cmd-architect
-	antigen bundle popstas/zsh-command-time
-
-	echo "THEME: spaceship"
-
-    if [ "$STARTED" -ne "1" ]; then
-	    # Spaceship theme doesn't support reload and antigen don't support fucntionalize antigen code
-	    # antigen theme bhilburn/powerlevel9k powerlevel9k
-	    antigen theme denysdovhan/spaceship-prompt
-    fi
-	
-	# Tell Antigen that you're done.
-	antigen apply
-}
-
-function load_Antigen_init() {
-	echo "ZSH PlUGIN ENGINE: Antibody"
-	source ~/antigen.zsh
-	antigen init ~/.antigenrc
-}
-
-#============================== antibody ======================================
-
-function load_Antibody() {
-	echo "Use antibody"
-	source <(antibody init)
-	antibody bundle bhilburn/powerlevel9k
-	antibody bundle <~/.zsh_plugins.txt
-}
-
-#========================= oh-my-zsh DEFAULT ==================================
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# vi-mode
-# plugins=(git git-extras osx mvn npm brew docker)
-# plugins=()
-
-#========================= load zsh plugins ===================================
-load_POWERLEVEL9K
-#load_Antigen
-load_Antigen_init
-if [ "$STARTED" -ne "1" ]; then
-	# load_Antibody
-    # echo "INIT: oh-my-zsh"
-    # source $ZSH/oh-my-zsh.sh
-fi
-STARTED=1
-
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-# Some good keybind is overwrite by plugins or oh-my-zsh
-bindkey '^k' autosuggest-accept
-bindkey '^\n' autosuggest-execute
-# bindkey "^R" history-incremental-search-backward
-# bindkey "^S" history-incremental-search-forward
-
+plugin-config
 #========================= Other helper script ================================
 #
 # Media
@@ -521,3 +584,18 @@ bindkey '^\n' autosuggest-execute
 #if [ $(which docker-credential-osxkeychain) ]; then
 #        unlink $(which docker-credential-osxkeychain)
 #fi
+
+test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+#========================= Startup message  ===================================
+
+if [ "$START_MESSAGE" -eq "1" ]; then
+    if [ "$IS_ASYNC" -eq "1" ]; then
+        ( cat $STARTUP_LOG_ALL && cat $STARTUP_LOG | boxes -d stone -p a2t1 ) | lolcat
+    else
+        (startMessage)| lolcat
+    fi
+fi
+
+# zprof # bottom of .zshrc
+
+export ZSH_STARTED=1
