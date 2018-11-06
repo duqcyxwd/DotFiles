@@ -7,6 +7,7 @@
 "
 " Chuan's .vimrc file From Scott
 
+let mapleader = " "
 
 " Section: Vundle Setting Pluging {{{1
 "--------------------------------------------------------------------------
@@ -172,13 +173,18 @@ cnoremap <C-g>  <C-c>
 " nnoremap <space> za
 nnoremap <CR> za
 " vnoremap <space> zf
-let mapleader = " "
 nmap <leader>fs :w<CR>
 
+" Windows
 nmap <C-j> <C-W>j
 nmap <C-k> <C-W>k
 nmap <C-h> <C-W>h
 nmap <C-l> <C-W>l
+
+nnoremap gj <C-W>j
+nnoremap gk <C-W>k
+nnoremap gh <C-W>h
+nnoremap gl <C-W>l
 
 map <C-J> <C-W>j<C-W>_ " open and maximize the split below
 map <C-K> <C-W>k<C-W>_ " open and maximize the split above
@@ -237,8 +243,8 @@ au BufEnter *.md setlocal foldmethod=expr
 " skip a few lines on the screen because it's moving from line N to line N+1 in
 " the file. I want this to act more visually -- I want `down' to mean the next
 " line on the screen
-map j gj
-map k gk
+nnoremap j gj
+nnoremap k gk
 
 
 " having Ex mode start or showing me the command history

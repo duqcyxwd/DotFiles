@@ -1,4 +1,5 @@
 # zmodload zsh/zprof
+revolver --style "bouncingBar" start "Loading zsh config"
 ZSH=$HOME/.oh-my-zsh
 export TERM="xterm-256color"
 
@@ -13,8 +14,71 @@ export IS_ASYNC=1
 export START_MESSAGE=1
 
 #=============================== pre script  ===========================================
-function startMessage() { artii "Welcome, Chuan" && neofetch && fortune | cowsay && cat $STARTUP_LOG | boxes -d stone -p a2t1 }
+function startMessage() { 
+	artii "Welcome, Chuan" &&
+	neofetch &&
+	fortune | cowsay  
+	cat $STARTUP_LOG | boxes -d stone -p a2t1 
+}
+
+function async_start_message(){
+	(startMessage) >>  $STARTUP_LOG_ALL
+}
 function mlog() { echo $@ >>$STARTUP_LOG }
+
+function spaceship-power-version(){
+	# Version
+	SPACESHIP_FOOBAR_SHOW="${SPACESHIP_FOOBAR_SHOW=true}"
+	SPACESHIP_FOOBAR_PREFIX="${SPACESHIP_FOOBAR_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
+	SPACESHIP_FOOBAR_SUFFIX="${SPACESHIP_FOOBAR_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
+	SPACESHIP_FOOBAR_SYMBOL="${SPACESHIP_FOOBAR_SYMBOL="🍷 "}"
+	SPACESHIP_FOOBAR_COLOR="${SPACESHIP_FOOBAR_COLOR="white"}"
+
+	# ------------------------------------------------------------------------------
+	# Section
+	# ------------------------------------------------------------------------------
+
+	# Show foobar status
+	# spaceship_ prefix before section's name is required!
+	# Otherwise this section won't be loaded.
+	spaceship_foobar() {
+	# If SPACESHIP_FOOBAR_SHOW is false, don't show foobar section
+	[[ $SPACESHIP_FOOBAR_SHOW == false ]] && return
+
+	spaceship::exists power-v || return
+
+	[[ -f pom.xml || -n *.xml(#qN^/) ]] || return
+
+	# Use quotes around unassigned local variables to prevent
+	# getting replaced by global aliases
+	# http://zsh.sourceforge.net/Doc/Release/Shell-Grammar.html#Aliasing
+	local 'foobar_status'
+
+	foobar_status=$(power-v)
+
+	# Display foobar section
+	spaceship::section \
+		"$SPACESHIP_FOOBAR_COLOR" \
+		"$SPACESHIP_FOOBAR_PREFIX" \
+		"$SPACESHIP_FOOBAR_SYMBOL$foobar_status" \
+		"$SPACESHIP_FOOBAR_SUFFIX"
+	}
+
+}
+
+alias -g timeElapsed="pv -F 'Elapsed time: %t'"
+
+function echoAndEval() { echo $@ && eval $@; }
+alias -g ee=echoAndEval
+alias version='py /Users/chuan.du/script-tool/version.py ./'
+alias v=version
+
+function noti() {
+	# terminal-notifier
+	# Can use terminal-notifier if we want icon modification. Can't do noti confirm
+	# Buildin noti
+	osascript -e "display notification \"$1\" with title \"$2\""
+}
 #=============================== ZSH ASYNC PATH ===========================================
 
 function pre-async() {
@@ -25,7 +89,8 @@ function pre-async() {
     export COMPLETED=0
 
     if [ "$START_MESSAGE" -eq "1" ]; then
-        async_job my_worker $(startMessage >> $STARTUP_LOG_ALL)
+        # async_job my_worker $(startMessage >> $STARTUP_LOG_ALL)
+        async_worker_eval my_worker async_start_message
     fi
 }
 
@@ -45,8 +110,6 @@ export NODE_PATH=/usr/lib/node_modules
 # Tmuxinator
 export EDITOR='vim'
 
-#======================== Terminal Config ==================================
-source ~/.zshrc-local.sh
 
 #=============================== oh-my-zsh  ======================================
 # Set name of the theme to load.
@@ -55,6 +118,10 @@ source ~/.zshrc-local.sh
 # ZSH_THEME="agnoster-cus"
 # ZSH_THEME="agnoster"
 # ZSH_THEME="powerlevel9k/powerlevel9k"
+
+function power-v(){
+    python /Users/chuan.du/script-tool/version.py ./ powermode
+}
 
 function load_POWERLEVEL9K() {
 	power-version() {
@@ -112,15 +179,16 @@ function load_Antigen() {
 	antigen bundle paulmelnikow/zsh-startup-timer
 	antigen bundle command-not-found
 	antigen bundle gimbo/iterm2-tabs.zsh
-	antigen bundle gretzky/auto-color-ls
-	# Not working Could be removed
+	# antigen bundle gretzky/auto-color-ls
+
+	# Alias helper
 	antigen bundle djui/alias-tips
 	antigen bundle "MichaelAquilina/zsh-you-should-use"
 
 	antigen bundle sei40kr/zsh-tmux-rename
 
 	# Syntax highlighting bundle.
-	antigen bundle zsh-users/zsh-syntax-highlighting
+	# antigen bundle zsh-users/zsh-syntax-highlighting
 	antigen bundle zsh-users/zsh-autosuggestions
 	# antigen bundle jimeh/zsh-peco-history
 	# antigen bundle b4b4r07/zsh-history
@@ -158,7 +226,10 @@ function plugin-config(){
     # Also includes plugin variables
 
     # Spaceship
-    export SPACESHIP_TIME_SHOW=true
+    SPACESHIP_TIME_SHOW=true
+    SPACESHIP_EXEC_TIME_ELAPSED=1
+	spaceship-power-version
+	SPACESHIP_PROMPT_ORDER=(time user dir host git hg package node ruby elixir xcode swift golang php rust haskell julia docker aws venv conda pyenv dotnet ember kubecontext exec_time foobar line_sep battery vi_mode jobs exit_code char)
 
 
 	# zsh-iterm2colors
@@ -170,6 +241,7 @@ function plugin-config(){
     alias l='colorls -A --sd --report'
     alias lg='colorls -A --sd --report --gs'
     alias lc='colorls -l --sd --gs'
+    alias ll='colorls -l --sd --gs'
     alias lca='colorls -lA --sd --gs'
 
     bindkey '^k' autosuggest-accept
@@ -189,10 +261,10 @@ function load_Antibody() {
     antibody bundle <~/.zsh_plugins.txt
 
     echo "THEME: spaceship"
-    if [ "$ZSH_STARTED" -ne "1" ]; then
-        antibody bundle denysdovhan/spaceship-prompt
+    antibody bundle denysdovhan/spaceship-prompt
+    # if [ "$ZSH_STARTED" -ne "1" ]; then
         # antigen theme maximbaz/spaceship-prompt 
-	fi
+	# fi
 }
 
 #========================= oh-my-zsh DEFAULT ==================================
@@ -210,24 +282,11 @@ if [ "$ZSH_STARTED" -ne "1" ]; then
 	source $ZSH/oh-my-zsh.sh
 fi
 
-# load_Antigen>>$STARTUP_LOG
+load_Antigen>>$STARTUP_LOG
 # load_Antigen_init>>$STARTUP_LOG
-load_Antibody>>$STARTUP_LOG 
+# load_Antibody>>$STARTUP_LOG 
 
 #============================= Script tool: Most useful tool ever ===============================
-alias -g timeElapsed="pv -F 'Elapsed time: %t'"
-
-function echoAndEval() { echo $@ && eval $@; }
-alias -g ee=echoAndEval
-alias version='py /Users/chuan.du/script-tool/version.py ./'
-alias v=version
-
-function noti() {
-	# terminal-notifier
-	# Can use terminal-notifier if we want icon modification. Can't do noti confirm
-	# Buildin noti
-	osascript -e "display notification \"$1\" with title \"$2\""
-}
 
 function cc() {
 	res=$(pbpaste | sed -e :a -e '$!N; s/\n//; ta' | sed 's/\(CD-[0-9]*\)/[[\1]](https:\/\/cenx-cf.atlassian.net\/browse\/\1) /')
@@ -328,16 +387,19 @@ export WILDFLY_HOME=/Users/chuan.du/wildfly-10.0.0.Final
 export WILDFLY_DEPLOY=${WILDFLY_HOME}/standalone/deployments
 export WILDFLY_BIN=${WILDFLY_HOME}/bin
 
+export ZOOKEEPER_INSTANCES=LOCAL
+export ZOOKEEPER_LOCAL_HOST=LOCALHOST
+export ZOOKEEPER_LOCAL_CLIENT_PORT=2181
+
+alias wildfly-standalone='$WILDFLY_BIN/standalone.sh -b=172.17.0.1'
 alias wildfly-standalone-deploy-clean='echo "Clean wildfly deploy directory" && rm $WILDFLY_DEPLOY/*.war*'
 alias wildfly-standalone-deploy-war="echo 'deploy war from target' && cp target/*.war $WILDFLY_DEPLOY"
+alias wildfly-standalone-deploy-all="echo 'deploy war' && cp *.war $WILDFLY_DEPLOY"
 alias wildfly-standalone-deploy-war-enable="echo 'enable app from deployment' && rm $WILDFLY_DEPLOY/*.undeployed && rm $WILDFLY_DEPLOY/*.failed"
 alias wildfly-standalone-deploy-war-disable-all="echo 'disable app from ' $JBOSS_HOME && rm $WILDFLY_DEPLOY/*.deployed"
 alias wildfly-standalone-restart='$WILDFLY_BIN/jboss-cli.sh -c --command=":shutdown(restart=true)"'
-alias wildfly-standalone='$WILDFLY_BIN/standalone.sh'
-#wildfly commands http://developer-should-know.com/post/76413579867/how-to-restart-jboss-and-wildfly-using-command
 
-alias lcid="lci && deploy-war"
-alias deploy-war-and-standalone="echo 'deploy war and run standalone' && deploy-clean && deploy-war && wildfly-standalone"
+alias wfsstart=wildfly-standalone
 
 #========== Clojure Repl ===========
 alias lr="lein do clean, repl"
@@ -387,7 +449,8 @@ alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 # alias rs="ee 'source ~/.zshrc'"
 alias rs='source ~/.zshrc'
-alias mz='ee "vim ~/.zshrc && shfmt -l -s -w -ci .zshrc"'
+# alias mz='ee "vim ~/.zshrc && shfmt -l -s -w -ci .zshrc"'
+alias mz='vim ~/.zshrc && shfmt -l -s -w -ci .zshrc'
 alias ca="less ~/.zshrc"
 alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
 alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
@@ -461,9 +524,13 @@ alias dir='dirs -v'
 
 #============================= Git alias =================================
 git config --global color.ui true
-alias tag="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
+alias tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
+alias git-hidden="git ls-files -v | grep '^[a-z]' | cut -c3-"
+alias git-hide='ee "git update-index --assume-unchanged"'
+alias git-unhide-all='ee "git update-index --really-refresh"'
+alias git-update-all='find . -type d -depth 1 -exec git --git-dir={}/.git --work-tree=$PWD/{} pull origin master \;'
 
-#======================= Working =========================================
+#======================= Git Alias for work  =========================================
 
 alias gu="git add project.clj && git commit -m 'Upversion'"
 alias gbc="echo 'Copy current branch name' && git rev-parse --abbrev-ref HEAD |pbcopy && git branch"
@@ -571,6 +638,10 @@ source $(dirname $(gem which colorls))/tab_complete.sh
 compctl -g '~/.teamocil/*(:t:r)' itermocil
 
 plugin-config
+
+#======================== Terminal Config ==================================
+source ~/.zshrc-local.sh
+
 #========================= Other helper script ================================
 #
 # Media
@@ -587,15 +658,22 @@ plugin-config
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 #========================= Startup message  ===================================
-
+if [ "$IS_ASYNC" -eq "1" ]; then
+    async_stop_worker my_worker
+fi
 if [ "$START_MESSAGE" -eq "1" ]; then
+    revolver stop
     if [ "$IS_ASYNC" -eq "1" ]; then
-        ( cat $STARTUP_LOG_ALL && cat $STARTUP_LOG | boxes -d stone -p a2t1 ) | lolcat
+         cat $STARTUP_LOG_ALL | lolcat
     else
-        (startMessage)| lolcat
+        (startMessage) | lolcat
     fi
 fi
 
 # zprof # bottom of .zshrc
 
 export ZSH_STARTED=1
+
+
+
+export PATH="/usr/local/opt/maven@3.3/bin:$PATH"

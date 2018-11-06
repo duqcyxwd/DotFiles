@@ -117,6 +117,11 @@ nmap <C-k> <C-W>k<C-W><C-_>
 nmap <C-h> <C-W>h<C-W><C-_>
 nmap <C-l> <C-W>l<C-W><C-_>
 
+nmap gj <C-W>j
+nmap gk <C-W>k
+nmap gh <C-W>h
+nmap gl <C-W>l
+
 " Search for the word under the cursor in the current directory
 "nmap <C-k> :Ag "\b<cword>\b" <CR>
 
@@ -434,7 +439,7 @@ let g:ctrlp_custom_ignore = '\v\~$|\.(o|swp|pyc|wav|mp3|ogg|blend)$|(^|[/\\])\.(
 let g:ctrlp_working_path_mode = 0
 let g:ctrlp_dotfiles = 0
 let g:ctrlp_switch_buffer = 0
-nmap ; :CtrlPBuffer<CR>
+nmap <Leader>; :CtrlPBuffer<CR>
 
 " Powerline
 if has('gui_running')

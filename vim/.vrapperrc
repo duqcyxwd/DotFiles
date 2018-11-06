@@ -1,28 +1,23 @@
+" vim:fdm=marker:ts=4:sw=4:et:
+"        _
+" __   _(_)_ __ ___  _ __ ___
+" \ \ / / | '_ ` _ \| '__/ __|
+"  \ V /| | | | | | | | | (__
+"   \_/ |_|_| |_| |_|_|  \___|
+"
+" Chuan's .vrapperrc for Eclipse
+
+
 " Set leader to space
 " Note: This line MUST come before any <leader> mappings
 let mapleader="<space>"
 
-" Eclipse commands
+" Section: Eclipse commands {{{1
+"--------------------------------------------------------------------------
 eclipseaction st org.eclipse.ui.views.showView(org.eclipse.ui.views.showView.viewId=org.eclipse.mylyn.tasks.ui.views.tasks)
 
 " eclipseaction build org.eclipse.mylyn.builds.ui.command.RunBuild
 " eclipseaction newtest org.eclipse.mylyn.builds.ui.command.NewTaskFromTest
-
-" Junit Test
-eclipseaction test org.eclipse.jdt.junit.junitShortcut.run
-nnoremap ta :test<cr>
-
-eclipseaction reruntest org.eclipse.jdt.junit.junitShortcut.rerunLast
-nnoremap tr :reruntest<cr>
-
-eclipseaction failedtest org.eclipse.jdt.junit.junitShortcut.rerunFailedFirst
-nnoremap tt :reruntest<cr>
-
-eclipseaction testdebug org.eclipse.jdt.junit.junitShortcut.debug
-nnoremap td :testdebug<cr>
-
-eclipseaction nt org.eclipse.jdt.internal.junit.wizards.NewTestCaseCreationWizard
-nnoremap <Leader>nt :nt<cr>
 
 " Line number
 eclipseaction togglelinenumber org.eclipse.ui.editors.lineNumberToggle
@@ -36,8 +31,6 @@ nmap <leader>re :findref<enter>
 eclipseaction eclipsecmdsearch org.eclipse.ui.window.quickAccess
 nnoremap <Leader>s :eclipsecmdsearch<cr>
 
-" Save file
-nnoremap <Leader>fs :w<cr>
 
 " Smart insert semicolon
 noremap <leader>; mqA;<Esc>`q
@@ -76,6 +69,68 @@ nnoremap <leader>gs :eclipsecreategettersetter<CR>
 
 " Reload config
 nnoremap <leader>ll :source .vrapperrc<CR>
+
+" Section: Vrapper Plugins {{{1
+"--------------------------------------------------------------------------
+
+" Search Sneak plugin
+nmap <Leader>s <Plug>(sneak_s)
+nmap ; <Plug>(sneak-next)
+nmap , <Plug>(sneak-prev)
+
+nmap f <Plug>(sneak_f)
+nmap F <Plug>(sneak_F)
+nmap t <Plug>(sneak_t)
+nmap T <Plug>(sneak_T)
+vmap f <Plug>(sneak_f)
+vmap F <Plug>(sneak_F)
+vmap t <Plug>(sneak_t)
+vmap T <Plug>(sneak_T)
+
+omap z <Plug>(sneak_s)
+omap Z <Plug>(sneak_S)
+
+
+" Section: Junit Test {{{1
+"--------------------------------------------------------------------------
+eclipseaction test org.eclipse.jdt.junit.junitShortcut.run
+nnoremap ta :test<cr>
+
+eclipseaction reruntest org.eclipse.jdt.junit.junitShortcut.rerunLast
+nnoremap tr :reruntest<cr>
+
+eclipseaction failedtest org.eclipse.jdt.junit.junitShortcut.rerunFailedFirst
+nnoremap tt :reruntest<cr>
+
+eclipseaction testdebug org.eclipse.jdt.junit.junitShortcut.debug
+nnoremap td :testdebug<cr>
+
+eclipseaction nt org.eclipse.jdt.internal.junit.wizards.NewTestCaseCreationWizard
+nnoremap <Leader>nt :nt<cr>
+
+" Section: Key mappings {{{1
+"--------------------------------------------------------------------------
+
+map gj <c-w>j
+map gh <c-w>h
+map gk <c-w>k
+map gl <c-w>l
+" nnoremap <a-h> gT
+" nnoremap <a-l> gt
+nnoremap gt <C-W>gt
+nnoremap gT <C-W>gT
+
+" Move between open buffers.
+map <C-n> :bnext<CR>
+map <C-p> :bprev<CR>
+
+" Section: Others {{{1
+"--------------------------------------------------------------------------
+
+" Save file
+nnoremap <Leader>fs :w<cr>
+
+
 
 " TODO
 " https://github.com/justinmk/config/blob/master/.vrapperrc
