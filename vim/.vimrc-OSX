@@ -348,6 +348,8 @@ set wildmode=list:longest,full " List all options and complete
 set wildignore=*.class,*.o,*~,*.pyc,.git,node_modules  " Ignore certain files in tab-completion
 set nostartofline           " Don’t reset cursor to start of line when moving around.
 
+set clipboard+=unnamed      " use system clipboard
+
 " Section: Commands & Functions {{{1
 "--------------------------------------------------------------------------
 
@@ -551,7 +553,7 @@ highlight link markdownListMarker Todo
 "-------------------------------------------------------------------------
 
 
-" Section: Load ~/.vimlocal {{{1"{{{
+" Section: Load ~/.vimlocal {{{1
 "--------------------------------------------------------------------------
 
 " now load specifics to this machine :)

@@ -1,8 +1,30 @@
-# zmodload zsh/zprof
-revolver --style "bouncingBar" start "Loading zsh config"
+#   __  ____     __  ______ _____ _    _ _____   _____
+#  |  \/  \ \   / / |___  // ____| |  | |  __ \ / ____|
+#  | \  / |\ \_/ /     / /| (___ | |__| | |__) | |
+#  | |\/| | \   /     / /  \___ \|  __  |  _  /| |
+#  | |  | |  | |     / /__ ____) | |  | | | \ \| |____
+#  |_|  |_|  |_|    /_____|_____/|_|  |_|_|  \_\\_____|
+#
+#  My .zshrc to save some coffee time and keep my hair on my head
+
+# Section: Init {{{1
+# --------------------------------------------------------------------------
+# Display a loading sign for zshrc
+export IS_ASYNC=1
+export START_MESSAGE=1
+export LOADING_BAR=1
+export IS_ZSH_PLUGIN=1
+
+if [ "$LOADING_BAR" -eq "1" ]; then
+    revolver --style "bouncingBar" start "Loading zsh config"
+fi
+
+# Section: Default PATH Parameter {{{1
+# --------------------------------------------------------------------------
+
+
 ZSH=$HOME/.oh-my-zsh
 export TERM="xterm-256color"
-
 export STARTUP_LOG=~/.startup.log
 export STARTUP_LOG_ALL=~/.startup_all.log
 /bin/rm -f $STARTUP_LOG_ALL
@@ -10,9 +32,9 @@ export STARTUP_LOG_ALL=~/.startup_all.log
 touch $STARTUP_LOG
 touch $STARTUP_LOG_ALL
 
-export IS_ASYNC=1
-export START_MESSAGE=1
 
+# Section: pre script {{{1
+# --------------------------------------------------------------------------
 #=============================== pre script  ===========================================
 function startMessage() { 
 	artii "Welcome, Chuan" &&
@@ -79,6 +101,9 @@ function noti() {
 	# Buildin noti
 	osascript -e "display notification \"$1\" with title \"$2\""
 }
+
+# Section: ZSH ASYNC PATH {{{1
+# --------------------------------------------------------------------------
 #=============================== ZSH ASYNC PATH ===========================================
 
 function pre-async() {
@@ -98,6 +123,8 @@ if [ "$IS_ASYNC" -eq "1" ]; then
     pre-async
 fi
 
+# Section: PATH {{{1
+# --------------------------------------------------------------------------
 #=============================== PATH ===========================================
 export PATH="./node_modules/.bin:$PATH"
 export PATH="/Users/chuan.du/repo/dev-env/bin:$PATH"
@@ -111,6 +138,8 @@ export NODE_PATH=/usr/lib/node_modules
 export EDITOR='vim'
 
 
+# Section: oh-my-zsh {{{1
+# --------------------------------------------------------------------------
 #=============================== oh-my-zsh  ======================================
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
@@ -151,6 +180,8 @@ function load_POWERLEVEL9K() {
 	alias signs="open https://github.com/bhilburn/powerlevel9k#vcs-symbols"
 }
 
+# Section: Antigen {{{1
+# --------------------------------------------------------------------------
 #=========================== Antigen ==================================
 
 
@@ -172,9 +203,20 @@ function load_Antigen() {
 	antigen bundle lein
 	antigen bundle vi-mode
 	antigen bundle tmuxinator
+	antigen bundle iterm2
+
+
+	# antigen bundle helm
+    # Helm completion
+    # source /Users/chuan.du/repo/DotFiles/zsh/helm-zsh-completion
+
+    # Kubectl
+	antigen bundle johanhaleby/kubetail
+	antigen bundle kubectl
 
 
 	# My  bundles
+	# Iterm2 Color
 	antigen bundle shayneholmes/zsh-iterm2colors
 	antigen bundle paulmelnikow/zsh-startup-timer
 	antigen bundle command-not-found
@@ -183,18 +225,21 @@ function load_Antigen() {
 
 	# Alias helper
 	antigen bundle djui/alias-tips
-	antigen bundle "MichaelAquilina/zsh-you-should-use"
+	# antigen bundle "MichaelAquilina/zsh-you-should-use"
 
 	antigen bundle sei40kr/zsh-tmux-rename
 
 	# Syntax highlighting bundle.
 	# antigen bundle zsh-users/zsh-syntax-highlighting
+	
 	antigen bundle zsh-users/zsh-autosuggestions
 	# antigen bundle jimeh/zsh-peco-history
 	# antigen bundle b4b4r07/zsh-history
 	antigen bundle zdharma/history-search-multi-word
+
 	# Something looks very powerful but not sure why I need it
-	antigen bundle psprint/zsh-cmd-architect
+	# antigen bundle psprint/zsh-cmd-architect
+	
 	antigen bundle popstas/zsh-command-time
 
     
@@ -229,13 +274,16 @@ function plugin-config(){
     SPACESHIP_TIME_SHOW=true
     SPACESHIP_EXEC_TIME_ELAPSED=1
 	spaceship-power-version
-	SPACESHIP_PROMPT_ORDER=(time user dir host git hg package node ruby elixir xcode swift golang php rust haskell julia docker aws venv conda pyenv dotnet ember kubecontext exec_time foobar line_sep battery vi_mode jobs exit_code char)
+	# SPACESHIP_PROMPT_ORDER=(time user dir host git hg package node ruby elixir xcode swift golang php rust haskell julia docker aws venv conda pyenv dotnet ember kubecontext exec_time foobar line_sep battery vi_mode jobs exit_code char)
+	# foobar is power-version, need to fix this
+	SPACESHIP_PROMPT_ORDER=(time user dir host git hg package node ruby elixir xcode swift golang php rust haskell julia aws venv conda pyenv dotnet ember foobar exec_time line_sep battery vi_mode jobs exit_code char )
 
 
 	# zsh-iterm2colors
 	alias ac=_iterm2colors_apply
 	alias acl='echo $_iterm2colors_current'
 	alias acr=_iterm2colors_apply_random
+	alias ac-light='ac "ayu_light"'
 
 
     alias l='colorls -A --sd --report'
@@ -251,6 +299,8 @@ function plugin-config(){
 
 }
 
+# Section: Antibody {{{1
+# --------------------------------------------------------------------------
 #============================== antibody ======================================
 
 function load_Antibody() {
@@ -267,6 +317,9 @@ function load_Antibody() {
 	# fi
 }
 
+# Section: Load plugins {{{1
+# --------------------------------------------------------------------------
+
 #========================= oh-my-zsh DEFAULT ==================================
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
@@ -282,10 +335,16 @@ if [ "$ZSH_STARTED" -ne "1" ]; then
 	source $ZSH/oh-my-zsh.sh
 fi
 
-load_Antigen>>$STARTUP_LOG
-# load_Antigen_init>>$STARTUP_LOG
-# load_Antibody>>$STARTUP_LOG 
 
+if [ "$IS_ZSH_PLUGIN" -eq "1" ]; then
+    load_Antigen>>$STARTUP_LOG
+    # load_Antigen_init>>$STARTUP_LOG
+    # load_Antibody>>$STARTUP_LOG 
+fi
+
+
+# Section: Script tools {{{1
+# --------------------------------------------------------------------------
 #============================= Script tool: Most useful tool ever ===============================
 
 function cc() {
@@ -298,8 +357,17 @@ function color-test() {
 	cat /Users/chuan.du/temp/iterm-syntax-test.txt
 }
 
+# Change iTerm2 Profile
+
+# this might work as well: iterm2_profile Performance
+alias performance='echo -e "\033]50;SetProfile=Performance\x7"'
+
 #============================= system-clean-up ===============================
 alias clean-m2-cenx="rm /Users/chuan.du/.m2/repository/cenx"
+
+
+# Section: Dev small and Docker {{{1
+# --------------------------------------------------------------------------
 
 #============================= Dev Small stuff ===============================
 # alias doppelganger="docker run -it --rm -v `pwd`:/transport docker.cenx.localnet:5000/doppelganger:0.1.3-SNAPSHOT-b6"
@@ -316,7 +384,8 @@ export NARANATHU_REPL_PORT=4015
 function docker-stats() { docker stats --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
 function docker-stats-peek() { docker stats --no-stream --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
 function docker-stop() {ee 'docker stop $(docker ps -q)'}
-function docker-rm-stopped() {ee "docker rm $(docker ps -aq -f status=exited)"}
+function docker-rm-container-stopped() {ee "docker rm $(docker ps -aq -f status=exited)"}
+function docker-rm-images-stopped() {ee "docker rm $(docker ps -aq -f status=exited)"}
 
 function docker-ps() {
 	docker ps $@ --format 'table{{ .Image }}\t{{ .Names }}\t{{ .Status }}\t{{ .Ports }}' | awk '
@@ -347,7 +416,7 @@ function docker-ps() {
 }
 alias dps=docker-ps
 
-function dpsa() { echo "docker list all containers" && dps -a $@; }
+function dpsa() { echo "docker list all containers" && docker-ps -a $@; }
 
 function dps-old() { echo "Docker ps old" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
 function dps-old-p() { echo "Docker ps old with port" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
@@ -367,6 +436,8 @@ function pre-docker() {
 #alias cortx0='docker run --rm -t -v `pwd`:/opt/cenx docker.cenx.localnet:5000/deployer'
 #alias cortx-small='docker run --rm -t -v /opt/cenx:/opt/cenx docker.cenx.localnet:5000/deployer'
 
+# Section: Local wildfly {{{1
+# --------------------------------------------------------------------------
 #============================ local wildfly ==============================
 # Unfinished
 ## export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
@@ -393,13 +464,18 @@ export ZOOKEEPER_LOCAL_CLIENT_PORT=2181
 
 alias wildfly-standalone='$WILDFLY_BIN/standalone.sh -b=172.17.0.1'
 alias wildfly-standalone-deploy-clean='echo "Clean wildfly deploy directory" && rm $WILDFLY_DEPLOY/*.war*'
-alias wildfly-standalone-deploy-war="echo 'deploy war from target' && cp target/*.war $WILDFLY_DEPLOY"
+alias wildfly-standalone-deploy-war="echo 'deploy war' && cp ./*.war $WILDFLY_DEPLOY"
+alias wildfly-standalone-deploy-target-war="echo 'deploy war from target' && cp target/*.war $WILDFLY_DEPLOY"
 alias wildfly-standalone-deploy-all="echo 'deploy war' && cp *.war $WILDFLY_DEPLOY"
 alias wildfly-standalone-deploy-war-enable="echo 'enable app from deployment' && rm $WILDFLY_DEPLOY/*.undeployed && rm $WILDFLY_DEPLOY/*.failed"
 alias wildfly-standalone-deploy-war-disable-all="echo 'disable app from ' $JBOSS_HOME && rm $WILDFLY_DEPLOY/*.deployed"
 alias wildfly-standalone-restart='$WILDFLY_BIN/jboss-cli.sh -c --command=":shutdown(restart=true)"'
 
 alias wfsstart=wildfly-standalone
+
+
+# Section: Something {{{1
+# --------------------------------------------------------------------------
 
 #========== Clojure Repl ===========
 alias lr="lein do clean, repl"
@@ -443,6 +519,10 @@ timerToStartApplication() {
 	open -a /Applications/Time\ Out\ Free.app
 	open -a /Applications/Font\ Book.app
 }
+
+
+# Section: Alias {{{1
+# --------------------------------------------------------------------------
 
 # Alias
 alias zshconfig="vim ~/.zshrc"
@@ -522,6 +602,8 @@ alias cf='pbpaste | pbcopy' # clean format of clipboard
 
 alias dir='dirs -v'
 
+# Section: Git {{{1
+# --------------------------------------------------------------------------
 #============================= Git alias =================================
 git config --global color.ui true
 alias tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
@@ -630,15 +712,22 @@ alias galias='alias|grep git'
 #alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
 
 
+# Section: Something {{{1
+# --------------------------------------------------------------------------
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
+# Section: Something {{{1
+# --------------------------------------------------------------------------
+# Forget what is this
 source $(dirname $(gem which colorls))/tab_complete.sh
 # Autocompletion for teamocil
 compctl -g '~/.teamocil/*(:t:r)' itermocil
 
 plugin-config
 
+# Section: Something {{{1
+# --------------------------------------------------------------------------
 #======================== Terminal Config ==================================
 source ~/.zshrc-local.sh
 
@@ -657,12 +746,21 @@ source ~/.zshrc-local.sh
 #fi
 
 test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+
+
+# Section: Something {{{1
+# --------------------------------------------------------------------------
 #========================= Startup message  ===================================
 if [ "$IS_ASYNC" -eq "1" ]; then
     async_stop_worker my_worker
 fi
-if [ "$START_MESSAGE" -eq "1" ]; then
+
+if [ "$LOADING_BAR" -eq "1" ]; then
     revolver stop
+fi
+
+if [ "$START_MESSAGE" -eq "1" ]; then
+
     if [ "$IS_ASYNC" -eq "1" ]; then
          cat $STARTUP_LOG_ALL | lolcat
     else
@@ -677,3 +775,5 @@ export ZSH_STARTED=1
 
 
 export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
+
+# }}}

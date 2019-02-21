@@ -47,6 +47,10 @@ nnoremap gk <c-w>k
 nnoremap <leader>tw :action EditorToggleShowWhitespaces<cr>
 nnoremap <leader>l <c-w>l
 
+
+" Smart insert semicolon
+noremap <leader>; mqA;<Esc>`q
+
 " switch between current and last buffer
 "nmap <leader>. <C-^>
 nnoremap <leader>. :action VimFilePrevious<cr>
@@ -55,6 +59,29 @@ nmap <leader>cc :action CommentByLineComment<CR>
 nmap <leader>rff :action ReformatCode<CR>
 nmap <leader>, :action AceJumpAction<CR>
 nmap <leader>q :action CloseContent<CR>
+
+nmap <leader>tt :action RerunFailedTests<CR>
+nmap <leader>ta :action RunClass<CR>
+
+" AceJump
+" Press `f` to activate AceJump
+" map f :action AceAction<CR>
+" Press `F` to activate Target Mode
+" map F :action AceTargetAction<CR>
+" Press `g` to activate Line Mode
+
+" use system clipboard 
+set clipboard+=unnamed
+
+nnoremap <CR> zc
+vnoremap <CR> zo
+nmap <leader>fs :w<CR>
+
+nmap <c-w>L :action MoveEditorToOppositeTabGroup<CR>
+nmap gL :action MoveEditorToOppositeTabGroup<CR>
+nmap gH :action MoveEditorToOppositeTabGroup<CR>
+nmap gJ :action MoveEditorToOppositeTabGroup<CR>
+
 nmap csw' :action Macro.surround_with_single_quote<CR>
 nmap csw" :action Macro.surround_with_double_quote<CR>
 nmap ds' :action Macro.surround_undo_single_quote<CR>
