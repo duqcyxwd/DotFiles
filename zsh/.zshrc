@@ -10,10 +10,17 @@
 # Section: Init {{{1
 # --------------------------------------------------------------------------
 # Display a loading sign for zshrc
+
+# ASYNC only support loading startup message
 export IS_ASYNC=1
 export START_MESSAGE=1
 export LOADING_BAR=1
-export IS_ZSH_PLUGIN=1
+# export ZSH_PLUGIN_LOADED=1 # Disable ZSH PLUGIN # unset ZSH_PLUGIN_LOADED
+export ZPROF_TRACK=0
+
+if [ "$ZPROF_TRACK" -eq "1" ]; then
+    zmodload zsh/zprof # top of .zshrc
+fi
 
 if [ "$LOADING_BAR" -eq "1" ]; then
     revolver --style "bouncingBar" start "Loading zsh config"
@@ -22,30 +29,44 @@ fi
 # Section: Default PATH Parameter {{{1
 # --------------------------------------------------------------------------
 
-
+# Path to your oh-my-zsh installation.
 ZSH=$HOME/.oh-my-zsh
 export TERM="xterm-256color"
 export STARTUP_LOG=~/.startup.log
 export STARTUP_LOG_ALL=~/.startup_all.log
-/bin/rm -f $STARTUP_LOG_ALL
-/bin/rm -f $STARTUP_LOG
-touch $STARTUP_LOG
-touch $STARTUP_LOG_ALL
+export WELCOME_LOG=~/.welcome_message.log
+
+export HIST_STAMPS="yyyy-mm-dd"
 
 
 # Section: pre script {{{1
 # --------------------------------------------------------------------------
 #=============================== pre script  ===========================================
 function startMessage() { 
-	artii "Welcome, Chuan" &&
-	neofetch &&
-	fortune | cowsay  
-	cat $STARTUP_LOG | boxes -d stone -p a2t1 
+    if [[ -v ZSH_PLUGIN_LOADED ]]; then
+        # Resource zsh.rc
+        cat $WELCOME_LOG > $STARTUP_LOG_ALL
+        echo "" > $STARTUP_LOG 
+    else
+        echo "" > $STARTUP_LOG &&
+        echo "" > $WELCOME_LOG &&
+        echo "" > $STARTUP_LOG_ALL &&
+        (artii "Welcome, Chuan" >> $WELCOME_LOG) &&
+            (neofetch >> $WELCOME_LOG) &&
+            ((fortune | cowsay) >> $WELCOME_LOG) &&
+            cat $WELCOME_LOG > $STARTUP_LOG_ALL
+    fi
+}
+
+function PRINT_START_MESSAGE() {
+    (cat $STARTUP_LOG | boxes -d stone -p a2t1) >> $STARTUP_LOG_ALL
+    cat $STARTUP_LOG_ALL | lolcat
 }
 
 function async_start_message(){
-	(startMessage) >>  $STARTUP_LOG_ALL
+	startMessage
 }
+
 function mlog() { echo $@ >>$STARTUP_LOG }
 
 function spaceship-power-version(){
@@ -111,24 +132,27 @@ function pre-async() {
     async_init
     async_start_worker my_worker -n
 
-    export COMPLETED=0
-
     if [ "$START_MESSAGE" -eq "1" ]; then
-        # async_job my_worker $(startMessage >> $STARTUP_LOG_ALL)
         async_worker_eval my_worker async_start_message
     fi
 }
 
 if [ "$IS_ASYNC" -eq "1" ]; then
     pre-async
-fi
+fi 
 
-# Section: PATH {{{1
+
+# Section: ENV PATH {{{1
 # --------------------------------------------------------------------------
 #=============================== PATH ===========================================
-export PATH="./node_modules/.bin:$PATH"
-export PATH="/Users/chuan.du/repo/dev-env/bin:$PATH"
+
 export PATH=$HOME/bin:/usr/local/sbin:$HOME/script-tool:/usr/local/bin:$PATH
+export PATH="/Users/chuan.du/repo/dev-env/bin:$PATH"
+export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
+export PATH="./node_modules/.bin:$PATH"
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
+
 
 # export is required for python path
 # export PYTHONPATH="/Users/chuan.du/repo/autotest/tests/component/cenx-rest-api:${PYTHONPATH}"
@@ -205,14 +229,9 @@ function load_Antigen() {
 	antigen bundle tmuxinator
 	antigen bundle iterm2
 
-
-	# antigen bundle helm
-    # Helm completion
-    # source /Users/chuan.du/repo/DotFiles/zsh/helm-zsh-completion
-
-    # Kubectl
-	antigen bundle johanhaleby/kubetail
+    # Kubectl alias
 	antigen bundle kubectl
+	antigen bundle johanhaleby/kubetail
 
 
 	# My  bundles
@@ -227,7 +246,7 @@ function load_Antigen() {
 	antigen bundle djui/alias-tips
 	# antigen bundle "MichaelAquilina/zsh-you-should-use"
 
-	antigen bundle sei40kr/zsh-tmux-rename
+	# antigen bundle sei40kr/zsh-tmux-rename
 
 	# Syntax highlighting bundle.
 	# antigen bundle zsh-users/zsh-syntax-highlighting
@@ -241,8 +260,6 @@ function load_Antigen() {
 	# antigen bundle psprint/zsh-cmd-architect
 	
 	antigen bundle popstas/zsh-command-time
-
-    
 
 	echo "THEME: spaceship"
 	if [ "$ZSH_STARTED" -ne "1" ]; then
@@ -266,7 +283,6 @@ function load_Antigen_init() {
 }
 
 function plugin-config(){
-
     # Some good keybind is overwrite by plugins or oh-my-zsh
     # Also includes plugin variables
 
@@ -284,7 +300,22 @@ function plugin-config(){
 	alias acl='echo $_iterm2colors_current'
 	alias acr=_iterm2colors_apply_random
 	alias ac-light='ac "ayu_light"'
+	alias ac-darkside='ac "Darkside"'
+	alias ac-ocean='ac "OceanicMaterial"'
+	alias ac-sd='ac "Solarized Darcula"'
 
+    ac-my-colors(){
+        MYCOLORS=("ayu_light" "Darkside" "OceanicMaterial"  "Solarized Darcula" "Broadcast" "Desert" "DotGov" "Misterioso" "Galaxy")
+        RANDOM=$$$(gdate +%N)
+        NEW_COLOR=${MYCOLORS[$RANDOM % ${#MYCOLORS[@]} + 1]}
+        # echo "change color to " $NEW_COLOR
+        _iterm2colors_apply $NEW_COLOR
+        mlog "COLOR THEME: " $_iterm2colors_current
+    }
+    
+    alias rc='ac-my-colors &&  echo "COLOR THEME: " $_iterm2colors_current'
+
+    ac-my-colors
 
     alias l='colorls -A --sd --report'
     alias lg='colorls -A --sd --report --gs'
@@ -310,7 +341,7 @@ function load_Antibody() {
     # antibody bundle bhilburn/powerlevel9k
     antibody bundle <~/.zsh_plugins.txt
 
-    echo "THEME: spaceship"
+    echo "POWERLINE THEME: spaceship"
     antibody bundle denysdovhan/spaceship-prompt
     # if [ "$ZSH_STARTED" -ne "1" ]; then
         # antigen theme maximbaz/spaceship-prompt 
@@ -328,15 +359,14 @@ function load_Antibody() {
 # plugins=()
 
 #========================= load ZSH plugins ===================================
-
-# load_POWERLEVEL9K
 if [ "$ZSH_STARTED" -ne "1" ]; then
 	mlog "INIT: oh-my-zsh"
 	source $ZSH/oh-my-zsh.sh
 fi
 
 
-if [ "$IS_ZSH_PLUGIN" -eq "1" ]; then
+# if [ "$ZSH_PLUGIN_LOADED" -ne "1" ]; then
+if [[ ! -v ZSH_PLUGIN_LOADED ]]; then
     load_Antigen>>$STARTUP_LOG
     # load_Antigen_init>>$STARTUP_LOG
     # load_Antibody>>$STARTUP_LOG 
@@ -415,6 +445,26 @@ function docker-ps() {
   '
 }
 alias dps=docker-ps
+
+function dpsc() {
+	docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t' 
+}
+
+function dpsv(){
+    export FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nPORTS\t{{.Ports}}\nCOMMAND\t{{.Command}}\nCREATED\t{{.CreatedAt}}\nSTATUS\t{{.Status}}\n"
+    docker ps $@ --format="$FORMAT" --no-trunc
+}
+
+function dpsvf(){
+    dpsv --filter name=$@
+}
+
+function dexec(){
+    echo "Docker exec -it by name"
+    firstmatch=`docker ps -q --filter name=$@ | head -1`
+    dpsv -f id=$firstmatch
+    docker exec -it `docker ps -q --filter name=$@ | head -1` bash
+}
 
 function dpsa() { echo "docker list all containers" && docker-ps -a $@; }
 
@@ -529,7 +579,7 @@ alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 # alias rs="ee 'source ~/.zshrc'"
 alias rs='source ~/.zshrc'
-# alias mz='ee "vim ~/.zshrc && shfmt -l -s -w -ci .zshrc"'
+alias rst='unset ZSH_PLUGIN_LOADED && source ~/.zshrc'
 alias mz='vim ~/.zshrc && shfmt -l -s -w -ci .zshrc'
 alias ca="less ~/.zshrc"
 alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
@@ -711,12 +761,6 @@ alias galias='alias|grep git'
 #clean -dxf will wipe everything requiring user to source gitenv again
 #alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
 
-
-# Section: Something {{{1
-# --------------------------------------------------------------------------
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
-
 # Section: Something {{{1
 # --------------------------------------------------------------------------
 # Forget what is this
@@ -753,6 +797,8 @@ test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell
 #========================= Startup message  ===================================
 if [ "$IS_ASYNC" -eq "1" ]; then
     async_stop_worker my_worker
+else
+    startMessage
 fi
 
 if [ "$LOADING_BAR" -eq "1" ]; then
@@ -760,20 +806,44 @@ if [ "$LOADING_BAR" -eq "1" ]; then
 fi
 
 if [ "$START_MESSAGE" -eq "1" ]; then
-
-    if [ "$IS_ASYNC" -eq "1" ]; then
-         cat $STARTUP_LOG_ALL | lolcat
-    else
-        (startMessage) | lolcat
-    fi
+    PRINT_START_MESSAGE
 fi
 
-# zprof # bottom of .zshrc
 
+# Only load omz and theme once
 export ZSH_STARTED=1
+export ZSH_PLUGIN_LOADED=1
+export IS_ASYNC=0
 
+# unset ZSH_PLUGIN_LOADED && unset ZSH_STARTED && unset IS_ASYNC
 
+# antigen bundle helm
+# Helm completion
+source /Users/chuan.du/repo/DotFiles/zsh/helm-zsh-completion
+# echo "load helm new completion xxx"
+# source <(helm completion zsh | sed -E 's/\["(.+)"\]/\[\1\]/g')
 
-export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
+# Example of lazy load
+# Check if 'kubectl' is a command in $PATH
+if [ $commands[kubectl] ]; then
+
+  # Placeholder 'kubectl' shell function:
+  # Will only be executed on the first call to 'kubectl'
+  kubectl() {
+
+    # Remove this function, subsequent calls will execute 'kubectl' directly
+    unfunction "$0"
+
+    # Load auto-completion
+    source <(kubectl completion zsh)
+
+    # Execute 'kubectl' binary
+    $0 "$@"
+  }
+fi
+
+if [ "$ZPROF_TRACK" -eq "1" ]; then
+    zprof # bottom of .zshrc
+fi
 
 # }}}
