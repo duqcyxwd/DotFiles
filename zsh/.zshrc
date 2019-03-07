@@ -16,6 +16,7 @@ export IS_ASYNC=1
 export START_MESSAGE=1
 export LOADING_BAR=1
 # export ZSH_PLUGIN_LOADED=1 # Disable ZSH PLUGIN # unset ZSH_PLUGIN_LOADED
+export OH_MY_ZSH_LOADED=1
 export ZPROF_TRACK=0
 
 if [ "$ZPROF_TRACK" -eq "1" ]; then
@@ -32,9 +33,9 @@ fi
 # Path to your oh-my-zsh installation.
 ZSH=$HOME/.oh-my-zsh
 export TERM="xterm-256color"
-export STARTUP_LOG=~/.startup.log
-export STARTUP_LOG_ALL=~/.startup_all.log
-export WELCOME_LOG=~/.welcome_message.log
+export ZSH_LOADING_LOG=~/.startup.log
+export MESSAGE_CACHE_BEFORE_PRINT=~/.startup_all.log
+export WELCOME_MESSAGE=~/.welcome_message.log
 
 export HIST_STAMPS="yyyy-mm-dd"
 
@@ -42,34 +43,33 @@ export HIST_STAMPS="yyyy-mm-dd"
 # Section: pre script {{{1
 # --------------------------------------------------------------------------
 #=============================== pre script  ===========================================
-function startMessage() { 
+PREPARE_START_MESSAGE() { 
     if [[ -v ZSH_PLUGIN_LOADED ]]; then
         # Resource zsh.rc
-        cat $WELCOME_LOG > $STARTUP_LOG_ALL
-        echo "" > $STARTUP_LOG 
+        cat $WELCOME_MESSAGE > $MESSAGE_CACHE_BEFORE_PRINT
+        echo "" > $ZSH_LOADING_LOG 
     else
-        echo "" > $STARTUP_LOG &&
-        echo "" > $WELCOME_LOG &&
-        echo "" > $STARTUP_LOG_ALL &&
-        (artii "Welcome, Chuan" >> $WELCOME_LOG) &&
-            (neofetch >> $WELCOME_LOG) &&
-            ((fortune | cowsay) >> $WELCOME_LOG) &&
-            cat $WELCOME_LOG > $STARTUP_LOG_ALL
+        sleep 3
+        echo "" > $ZSH_LOADING_LOG &&
+        echo "" > $WELCOME_MESSAGE &&
+        echo "" > $MESSAGE_CACHE_BEFORE_PRINT &&
+        (artii "Welcome, Chuan" && neofetch  && (fortune | cowsay )) > $WELCOME_MESSAGE &&
+            cat $WELCOME_MESSAGE > $MESSAGE_CACHE_BEFORE_PRINT
     fi
 }
 
-function PRINT_START_MESSAGE() {
-    (cat $STARTUP_LOG | boxes -d stone -p a2t1) >> $STARTUP_LOG_ALL
-    cat $STARTUP_LOG_ALL | lolcat
+PRINT_START_MESSAGE() {
+    (cat $WELCOME_MESSAGE &&
+        cat $ZSH_LOADING_LOG | boxes -d stone -p a2t1 ) | lolcat
 }
 
-function async_start_message(){
-	startMessage
+async_start_message(){
+	PREPARE_START_MESSAGE
 }
 
-function mlog() { echo $@ >>$STARTUP_LOG }
+mlog() { echo $@ >>$ZSH_LOADING_LOG }
 
-function spaceship-power-version(){
+spaceship-power-version(){
 	# Version
 	SPACESHIP_FOOBAR_SHOW="${SPACESHIP_FOOBAR_SHOW=true}"
 	SPACESHIP_FOOBAR_PREFIX="${SPACESHIP_FOOBAR_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
@@ -109,10 +109,10 @@ function spaceship-power-version(){
 
 }
 
-alias -g timeElapsed="pv -F 'Elapsed time: %t'"
 
-function echoAndEval() { echo $@ && eval $@; }
+echoAndEval() { echo $@ && eval $@; }
 alias -g ee=echoAndEval
+alias -g timeElapsed="pv -F 'Elapsed time: %t'"
 alias version='py /Users/chuan.du/script-tool/version.py ./'
 alias v=version
 
@@ -130,6 +130,26 @@ function noti() {
 function pre-async() {
     source /Users/chuan.du/github/zsh-async/async.zsh
     async_init
+    completed_callback() {
+        # print "STOP MY WORKER"
+        async_stop_worker my_worker
+
+        # Something very interesting. callback is working
+        # Async works with alias but not tab_complete
+        source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
+        # May not working auto complete is not working
+        # source ~/.zshrc-local.sh
+
+        source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
+        source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
+        source /Users/chuan.du/.antigen/bundles/zdharma/history-search-multi-word/history-search-multi-word.plugin.zsh
+        if [ $commands[autojump] ]; then
+            [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+        fi
+        # plugin_config
+        ac_my_colors
+    }
+    async_register_callback my_worker completed_callback
     async_start_worker my_worker -n
 
     if [ "$START_MESSAGE" -eq "1" ]; then
@@ -207,73 +227,74 @@ function load_POWERLEVEL9K() {
 # Section: Antigen {{{1
 # --------------------------------------------------------------------------
 #=========================== Antigen ==================================
-
+function load_Antigen0() {
+	echo "THEME: spaceship"
+    if ! type "antigen" > /dev/null; then
+        source ~/antigen.zsh
+        # Load the oh-my-zsh's library. It will conflict with other theme
+        antigen use oh-my-zsh
+    fi
+	antigen theme denysdovhan/spaceship-prompt
+    antigen bundle paulmelnikow/zsh-startup-timer
+	antigen apply
+}
 
 function load_Antigen() {
-	mlog "PlUGIN ENGINE: Antigen"
-	source ~/antigen.zsh
+    mlog "PlUGIN ENGINE: Antigen"
+    if ! type "antigen" > /dev/null; then
+        source ~/antigen.zsh
+        # Load the oh-my-zsh's library. It will conflict with other theme
+        antigen use oh-my-zsh
+    fi
 
-	# Load the oh-my-zsh's library.
-	antigen use oh-my-zsh
-
-	# Bundles from the default repo (robbyrussell's oh-my-zsh).
-	antigen bundle git
-	antigen bundle git-extras
-	antigen bundle osx
-	antigen bundle mvn
-	antigen bundle npm
-	antigen bundle brew
-	antigen bundle docker
-	antigen bundle lein
 	antigen bundle vi-mode
-	antigen bundle tmuxinator
-	antigen bundle iterm2
+	antigen bundle iterm2 # Iterm2 profile, color
 
-    # Kubectl alias
-	antigen bundle kubectl
-	antigen bundle johanhaleby/kubetail
-
-
-	# My  bundles
-	# Iterm2 Color
-	antigen bundle shayneholmes/zsh-iterm2colors
-	antigen bundle paulmelnikow/zsh-startup-timer
-	antigen bundle command-not-found
-	antigen bundle gimbo/iterm2-tabs.zsh
+    antigen bundle shayneholmes/zsh-iterm2colors # Iterm2 Color "0.01"
+    antigen bundle paulmelnikow/zsh-startup-timer
+    
 	# antigen bundle gretzky/auto-color-ls
+    # antigen bundle johanhaleby/kubetail
 
-	# Alias helper
-	antigen bundle djui/alias-tips
-	# antigen bundle "MichaelAquilina/zsh-you-should-use"
-
-	# antigen bundle sei40kr/zsh-tmux-rename
+    antigen bundle djui/alias-tips # Alias helper
 
 	# Syntax highlighting bundle.
 	# antigen bundle zsh-users/zsh-syntax-highlighting
-	
-	antigen bundle zsh-users/zsh-autosuggestions
-	# antigen bundle jimeh/zsh-peco-history
-	# antigen bundle b4b4r07/zsh-history
-	antigen bundle zdharma/history-search-multi-word
+    # antigen bundle zsh-users/zsh-autosuggestions # "0.02"
+    # antigen bundle zdharma/history-search-multi-word # 0.02s
 
 	# Something looks very powerful but not sure why I need it
 	# antigen bundle psprint/zsh-cmd-architect
 	
-	antigen bundle popstas/zsh-command-time
-
-	echo "THEME: spaceship"
-	if [ "$ZSH_STARTED" -ne "1" ]; then
-		# Spaceship theme doesn't support reload and antigen don't support fucntionalize antigen code
-		# antigen theme bhilburn/powerlevel9k powerlevel9k
-
-		# Spaceship THEME
-		antigen theme denysdovhan/spaceship-prompt
-		# antigen theme maximbaz/spaceship-prompt 
-        # SPACESHIP_PROMPT_ADD_NEWLINE=false
-	fi
+    echo "THEME: spaceship"
+    antigen theme denysdovhan/spaceship-prompt
 
 	# Tell Antigen that you're done.
-	antigen apply
+    antigen apply
+
+    # Lazy load bundles
+    if ! type "kubetail" > /dev/null; then
+        kubetail() {
+            unfunction "$0"
+            antigen bundle johanhaleby/kubetail
+            $0 "$@"
+        }
+    fi
+
+    gst() {
+        unfunction "$0"
+        antigen bundle git
+        antigen bundle git-extras
+        $0 "$@"
+    }
+
+    mvn() { unfunction "$0" && antigen bundle mvn && $0 "$@" }
+    npm() { unfunction "$0" && antigen bundle npm && $0 "$@" }
+    brew(){ unfunction "$0" && antigen bundle brew && $0 "$@" }
+    docker(){ unfunction "$0" && antigen bundle docker && $0 "$@" }
+    lein(){ unfunction "$0" && antigen bundle lein && $0 "$@" }
+    tmuxinator(){ unfunction "$0" && antigen bundle tmuxinator && $0 "$@" }
+
 }
 
 function load_Antigen_init() {
@@ -282,7 +303,7 @@ function load_Antigen_init() {
 	antigen init ~/.antigenrc
 }
 
-function plugin-config(){
+function plugin_config(){
     # Some good keybind is overwrite by plugins or oh-my-zsh
     # Also includes plugin variables
 
@@ -304,24 +325,22 @@ function plugin-config(){
 	alias ac-ocean='ac "OceanicMaterial"'
 	alias ac-sd='ac "Solarized Darcula"'
 
-    ac-my-colors(){
-        MYCOLORS=("ayu_light" "Darkside" "OceanicMaterial"  "Solarized Darcula" "Broadcast" "Desert" "DotGov" "Misterioso" "Galaxy")
-        RANDOM=$$$(gdate +%N)
-        NEW_COLOR=${MYCOLORS[$RANDOM % ${#MYCOLORS[@]} + 1]}
-        # echo "change color to " $NEW_COLOR
+    ac_my_colors(){
+        local MYCOLORS=("ayu_light" "Darkside" "OceanicMaterial"  "Solarized Darcula" "Broadcast" "Desert" "DotGov" "Misterioso" "Galaxy")
+        local RANDOM=$$$(gdate +%N)
+        local NEW_COLOR=${MYCOLORS[$RANDOM % ${#MYCOLORS[@]} + 1]}
         _iterm2colors_apply $NEW_COLOR
         mlog "COLOR THEME: " $_iterm2colors_current
     }
     
-    alias rc='ac-my-colors &&  echo "COLOR THEME: " $_iterm2colors_current'
-
-    ac-my-colors
+    alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
 
     alias l='colorls -A --sd --report'
     alias lg='colorls -A --sd --report --gs'
     alias lc='colorls -l --sd --gs'
     alias ll='colorls -l --sd --gs'
     alias lca='colorls -lA --sd --gs'
+    source $(dirname $(gem which colorls))/tab_complete.sh
 
     bindkey '^k' autosuggest-accept
     bindkey '^\n' autosuggest-execute
@@ -343,7 +362,7 @@ function load_Antibody() {
 
     echo "POWERLINE THEME: spaceship"
     antibody bundle denysdovhan/spaceship-prompt
-    # if [ "$ZSH_STARTED" -ne "1" ]; then
+    # if [ "$OH_MY_ZSH_LOADED" -ne "1" ]; then
         # antigen theme maximbaz/spaceship-prompt 
 	# fi
 }
@@ -359,17 +378,19 @@ function load_Antibody() {
 # plugins=()
 
 #========================= load ZSH plugins ===================================
-if [ "$ZSH_STARTED" -ne "1" ]; then
+if [ "$OH_MY_ZSH_LOADED" -ne "1" ]; then
 	mlog "INIT: oh-my-zsh"
+	echo "INIT: oh-my-zsh"
 	source $ZSH/oh-my-zsh.sh
 fi
 
 
-# if [ "$ZSH_PLUGIN_LOADED" -ne "1" ]; then
 if [[ ! -v ZSH_PLUGIN_LOADED ]]; then
-    load_Antigen>>$STARTUP_LOG
-    # load_Antigen_init>>$STARTUP_LOG
-    # load_Antibody>>$STARTUP_LOG 
+    # load_Antigen
+    # load_Antigen0>>$ZSH_LOADING_LOG
+    load_Antigen>>$ZSH_LOADING_LOG
+    # load_Antigen_init>>$ZSH_LOADING_LOG
+    # load_Antibody>>$ZSH_LOADING_LOG 
 fi
 
 
@@ -482,10 +503,6 @@ function pre-docker() {
 #unset DOCKER_CERT_PATH
 #unset DOCKER_TLS_VERIFY
 
-#alias cortxf='docker run --rm -t -v `pwd`:/opt/cenx docker.cenx.localnet:5000/deployer -f /opt/cenx/solr.yaml'
-#alias cortx0='docker run --rm -t -v `pwd`:/opt/cenx docker.cenx.localnet:5000/deployer'
-#alias cortx-small='docker run --rm -t -v /opt/cenx:/opt/cenx docker.cenx.localnet:5000/deployer'
-
 # Section: Local wildfly {{{1
 # --------------------------------------------------------------------------
 #============================ local wildfly ==============================
@@ -541,9 +558,6 @@ export JAVA_HOME=$(/usr/libexec/java_home)
 export DSE_BIN=/Users/chuan.du/CENX/dse/bin
 export PATH=$PATH:$JAVA_HOME/bin:$DSE_BIN
 
-alias vi='/usr/local/bin/vim'
-
-alias time-out-hide='subl /Applications/VLC.app/Contents/Info.plist'
 alias later="nohup /Users/chuan.du/repo/DotFiles/otherTool/later.pl"
 
 # FileSearch
@@ -552,7 +566,6 @@ function r-old() {echo ' grep "'$1'" '${@:2}' -R .' && grep "$1" ${@:2} -R . }
 function r() {echo ' Replaced with ag'}
 
 # Watch function
-# TODO Add this back
 function mywatch() {while :; do a=$($@); clear; echo "$(date)\n\n$a"; sleep 2;  done}
 #function watch-zookeeper {while :; do clear; echo "$(date)\n\n$(echo stat |nc localhost 2181)"; sleep 1;  done}
 #function watch-zookeeper2 {while :; a=$@; do clear; echo "$(date)\n\n$(echo stat |nc $a 2181)"; sleep 1;  done}
@@ -575,12 +588,14 @@ timerToStartApplication() {
 # --------------------------------------------------------------------------
 
 # Alias
+alias e='exa -l'
+alias vi='/usr/local/bin/vim'
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 # alias rs="ee 'source ~/.zshrc'"
 alias rs='source ~/.zshrc'
 alias rst='unset ZSH_PLUGIN_LOADED && source ~/.zshrc'
-alias mz='vim ~/.zshrc && shfmt -l -s -w -ci .zshrc'
+alias mz='vim ~/.zshrc && shfmt -l -s -w -ci ~/.zshrc'
 alias ca="less ~/.zshrc"
 alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
 alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
@@ -610,21 +625,6 @@ alias tf='echo "Task finished"'
 alias sql="echo 'psql to localhost' && ee \"export PAGER='less -SF' && psql -h 'localhost' -U 'postgres'\""
 
 #============= Dir alias =============
-alias cgh='cd ~/github'
-alias cdatomic='cd /Users/chuan.du/datomic-home/datomic-pro-0.9.5153'
-alias csubl='cd /Users/duyongqinchuan/Library/Application\ Support/Sublime\ Text\ 3/Packages/User'
-alias cla='cd /Users/SuperiMan/Dropbox/Code/leapArm'
-alias comp="cd /Users/SuperiMan/Dropbox/Courses/COMP\ 3005\ Database\ Management\ Systems"
-alias czsh='cd ~/.oh-my-zsh'
-alias cb='cd ~/repo/CourseBuilder/'
-alias glight='cd ~/repo/GestureLight'
-alias gesl='cd /Users/SuperiMan/repo/GestureLight/'
-alias gblog='cd /Users/SuperiMan/Dropbox/Code/WebSite/YongqinchuanDu.com/duqcyxwd.github.com'
-alias cblog='cd /Users/SuperiMan/Dropbox/Code/WebSite/YongqinchuanDu.com/duqcyxwd.github.com'
-alias myparker='cd ~/repo/parker/'
-alias nova='cd ~/repo/nova'
-alias mp='myparker'
-
 # CD to any directory with auto complete
 export repodir="/Users/chuan.du/repo/"
 function c() {cd $repodir$1}
@@ -646,17 +646,15 @@ alias cpwd='echo "copy currenty directory" && pwd |pbcopy'
 
 #Copy file path to clipboard
 #greadlink -f development.pem
-function getPath() {greadlink -f $1 | tr -d '\n' | pbcopy }
-alias cpath=getPath
+cpath() {greadlink -f $1 | tr -d '\n' | pbcopy }
 alias cf='pbpaste | pbcopy' # clean format of clipboard
-
 alias dir='dirs -v'
 
 # Section: Git {{{1
 # --------------------------------------------------------------------------
 #============================= Git alias =================================
 git config --global color.ui true
-alias tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
+alias git-tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
 alias git-hidden="git ls-files -v | grep '^[a-z]' | cut -c3-"
 alias git-hide='ee "git update-index --assume-unchanged"'
 alias git-unhide-all='ee "git update-index --really-refresh"'
@@ -750,8 +748,6 @@ alias gds="ee 'git diff -w --stat'"
 
 #pretty git one line git log with time and author(should use glog)
 alias glogt="ee 'git log --pretty=tformat:\"%h %ad | %s%d [%an]\" --graph --date=short'"
-#show only the file names changed in last commit
-alias gsf='git show --pretty="format:" --name-only'
 
 #show all git aliases
 alias galias='alias|grep git'
@@ -763,12 +759,10 @@ alias galias='alias|grep git'
 
 # Section: Something {{{1
 # --------------------------------------------------------------------------
-# Forget what is this
-source $(dirname $(gem which colorls))/tab_complete.sh
 # Autocompletion for teamocil
 compctl -g '~/.teamocil/*(:t:r)' itermocil
 
-plugin-config
+plugin_config
 
 # Section: Something {{{1
 # --------------------------------------------------------------------------
@@ -789,16 +783,164 @@ source ~/.zshrc-local.sh
 #        unlink $(which docker-credential-osxkeychain)
 #fi
 
-test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
+# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # Section: Something {{{1
 # --------------------------------------------------------------------------
+
+# unset ZSH_PLUGIN_LOADED && unset OH_MY_ZSH_LOADED && unset IS_ASYNC
+
+# Helm completion
+# source <(helm completion zsh | sed -E 's/\["(.+)"\]/\[\1\]/g')
+  if [ $commands[helm] ]; then
+    helm() {
+      unfunction "$0"
+      source <(helm completion zsh | sed -E 's/\["(.+)"\]/\[\1\]/g')
+      $0 "$@"
+    }
+  fi
+
+kubectl_env() {
+    # source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
+    alias k=kubectl
+
+    # Apply a YML file
+    alias kaf='kubectl apply -f'
+
+    # Drop into an interactive terminal on a container
+    alias keti='kubectl exec -ti'
+
+    # Manage configuration quickly to switch contexts between local, dev ad staging.
+    alias kcuc='kubectl config use-context'
+    alias kcsc='kubectl config set-context'
+    alias kcdc='kubectl config delete-context'
+    alias kccc='kubectl config current-context'
+
+    # General aliases
+    alias kdel='kubectl delete'
+    alias kdelf='kubectl delete -f'
+
+    # Pod management.
+    alias kgp='kubectl get pods'
+    alias kgpw='kgp --watch'
+    alias kgpwide='kgp -o wide'
+    alias kep='kubectl edit pods'
+    alias kdp='kubectl describe pods'
+    alias kdelp='kubectl delete pods'
+
+    # get pod by label: kgpl "app=myapp" -n myns
+    alias kgpl='kgp -l'
+
+    # Service management.
+    alias kgs='kubectl get svc'
+    alias kgsw='kgs --watch'
+    alias kgswide='kgs -o wide'
+    alias kes='kubectl edit svc'
+    alias kds='kubectl describe svc'
+    alias kdels='kubectl delete svc'
+
+    # Ingress management
+    alias kgi='kubectl get ingress'
+    alias kei='kubectl edit ingress'
+    alias kdi='kubectl describe ingress'
+    alias kdeli='kubectl delete ingress'
+
+    # Namespace management
+    alias kgns='kubectl get namespaces'
+    alias kens='kubectl edit namespace'
+    alias kdns='kubectl describe namespace'
+    alias kdelns='kubectl delete namespace'
+    alias kcn='kubectl config set-context $(kubectl config current-context) --namespace'
+
+    # ConfigMap management
+    alias kgcm='kubectl get configmaps'
+    alias kecm='kubectl edit configmap'
+    alias kdcm='kubectl describe configmap'
+    alias kdelcm='kubectl delete configmap'
+
+    # Secret management
+    alias kgsec='kubectl get secret'
+    alias kdsec='kubectl describe secret'
+    alias kdelsec='kubectl delete secret'
+
+    # Deployment management.
+    alias kgd='kubectl get deployment'
+    alias kgdw='kgd --watch'
+    alias kgdwide='kgd -o wide'
+    alias ked='kubectl edit deployment'
+    alias kdd='kubectl describe deployment'
+    alias kdeld='kubectl delete deployment'
+    alias ksd='kubectl scale deployment'
+    alias krsd='kubectl rollout status deployment'
+    kres(){
+        kubectl set env $@ REFRESHED_AT=$(date +%Y%m%d%H%M%S)
+    }
+
+    # Rollout management.
+    alias kgrs='kubectl get rs'
+    alias krh='kubectl rollout history'
+    alias kru='kubectl rollout undo'
+
+    # Port forwarding
+    alias kpf="kubectl port-forward"
+
+    # Tools for accessing all information
+    alias kga='kubectl get all'
+    alias kgaa='kubectl get all --all-namespaces'
+
+    # Logs
+    alias kl='kubectl logs'
+    alias klf='kubectl logs -f'
+
+    # File copy
+    alias kcp='kubectl cp'
+
+    # Node Management
+    alias kgno='kubectl get nodes'
+    alias keno='kubectl edit node'
+    alias kdno='kubectl describe node'
+    alias kdelno='kubectl delete node'
+}
+
+# Example of lazy load
+# Check if 'kubectl' is a command in $PATH
+if [ $commands[kubectl] ]; then
+  kubectl_env
+  kubectl() {
+    unfunction "$0"
+    source <(kubectl completion zsh)
+    $0 "$@"
+  }
+fi
+
+# Lazy load example
+# if [ $commands[kubectl] ]; then
+# 
+#   # Placeholder 'kubectl' shell function:
+#   # Will only be executed on the first call to 'kubectl'
+#   kubectl() {
+# 
+#     # Remove this function, subsequent calls will execute 'kubectl' directly
+#     unfunction "$0"
+# 
+#     # Load auto-completion
+#     source <(kubectl completion zsh)
+# 
+#     # Execute 'kubectl' binary
+#     $0 "$@"
+#   }
+# fi
+
+
 #========================= Startup message  ===================================
+
 if [ "$IS_ASYNC" -eq "1" ]; then
-    async_stop_worker my_worker
+    # No need stop worker
+    # async_stop_worker my_worker
 else
-    startMessage
+    if [ "$START_MESSAGE" -eq "1" ]; then
+        PREPARE_START_MESSAGE
+    fi
 fi
 
 if [ "$LOADING_BAR" -eq "1" ]; then
@@ -811,39 +953,11 @@ fi
 
 
 # Only load omz and theme once
-export ZSH_STARTED=1
+export OH_MY_ZSH_LOADED=1
 export ZSH_PLUGIN_LOADED=1
 export IS_ASYNC=0
-
-# unset ZSH_PLUGIN_LOADED && unset ZSH_STARTED && unset IS_ASYNC
-
-# antigen bundle helm
-# Helm completion
-source /Users/chuan.du/repo/DotFiles/zsh/helm-zsh-completion
-# echo "load helm new completion xxx"
-# source <(helm completion zsh | sed -E 's/\["(.+)"\]/\[\1\]/g')
-
-# Example of lazy load
-# Check if 'kubectl' is a command in $PATH
-if [ $commands[kubectl] ]; then
-
-  # Placeholder 'kubectl' shell function:
-  # Will only be executed on the first call to 'kubectl'
-  kubectl() {
-
-    # Remove this function, subsequent calls will execute 'kubectl' directly
-    unfunction "$0"
-
-    # Load auto-completion
-    source <(kubectl completion zsh)
-
-    # Execute 'kubectl' binary
-    $0 "$@"
-  }
-fi
 
 if [ "$ZPROF_TRACK" -eq "1" ]; then
     zprof # bottom of .zshrc
 fi
-
 # }}}
