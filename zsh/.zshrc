@@ -15,9 +15,28 @@
 export IS_ASYNC=1
 export START_MESSAGE=1
 export LOADING_BAR=1
-# export ZSH_PLUGIN_LOADED=1 # Disable ZSH PLUGIN # unset ZSH_PLUGIN_LOADED
 export OH_MY_ZSH_LOADED=1
 export ZPROF_TRACK=0
+# export ZSH_PLUGIN_LOADED=1 # Disable ZSH PLUGIN # unset ZSH_PLUGIN_LOADED
+
+# Section: ENV PATH {{{1
+# --------------------------------------------------------------------------
+#=============================== PATH ===========================================
+
+export PATH=$HOME/bin:/usr/local/sbin:$HOME/script-tool:/usr/local/bin:$PATH
+export PATH="/Users/chuan.du/repo/dev-env/bin:$PATH"
+export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
+export PATH="./node_modules/.bin:$PATH"
+### Added by the Heroku Toolbelt
+export PATH="/usr/local/heroku/bin:$PATH"
+
+
+# export is required for python path
+# export PYTHONPATH="/Users/chuan.du/repo/autotest/tests/component/cenx-rest-api:${PYTHONPATH}"
+export NODE_PATH=/usr/lib/node_modules
+
+# Tmuxinator
+export EDITOR='vim'
 
 if [ "$ZPROF_TRACK" -eq "1" ]; then
     zmodload zsh/zprof # top of .zshrc
@@ -49,7 +68,6 @@ PREPARE_START_MESSAGE() {
         cat $WELCOME_MESSAGE > $MESSAGE_CACHE_BEFORE_PRINT
         echo "" > $ZSH_LOADING_LOG 
     else
-        sleep 3
         echo "" > $ZSH_LOADING_LOG &&
         echo "" > $WELCOME_MESSAGE &&
         echo "" > $MESSAGE_CACHE_BEFORE_PRINT &&
@@ -59,8 +77,7 @@ PREPARE_START_MESSAGE() {
 }
 
 PRINT_START_MESSAGE() {
-    (cat $WELCOME_MESSAGE &&
-        cat $ZSH_LOADING_LOG | boxes -d stone -p a2t1 ) | lolcat
+    (cat $WELCOME_MESSAGE && (cat $ZSH_LOADING_LOG | boxes -d stone -p a2t1 ) ) | lolcat
 }
 
 async_start_message(){
@@ -69,8 +86,7 @@ async_start_message(){
 
 mlog() { echo $@ >>$ZSH_LOADING_LOG }
 
-spaceship-power-version(){
-	# Version
+spaceship_power_version(){
 	SPACESHIP_FOOBAR_SHOW="${SPACESHIP_FOOBAR_SHOW=true}"
 	SPACESHIP_FOOBAR_PREFIX="${SPACESHIP_FOOBAR_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
 	SPACESHIP_FOOBAR_SUFFIX="${SPACESHIP_FOOBAR_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
@@ -85,38 +101,29 @@ spaceship-power-version(){
 	# spaceship_ prefix before section's name is required!
 	# Otherwise this section won't be loaded.
 	spaceship_foobar() {
-	# If SPACESHIP_FOOBAR_SHOW is false, don't show foobar section
-	[[ $SPACESHIP_FOOBAR_SHOW == false ]] && return
-
-	spaceship::exists power-v || return
-
-	[[ -f pom.xml || -n *.xml(#qN^/) ]] || return
-
-	# Use quotes around unassigned local variables to prevent
-	# getting replaced by global aliases
-	# http://zsh.sourceforge.net/Doc/Release/Shell-Grammar.html#Aliasing
-	local 'foobar_status'
-
-	foobar_status=$(power-v)
-
-	# Display foobar section
-	spaceship::section \
-		"$SPACESHIP_FOOBAR_COLOR" \
-		"$SPACESHIP_FOOBAR_PREFIX" \
-		"$SPACESHIP_FOOBAR_SYMBOL$foobar_status" \
-		"$SPACESHIP_FOOBAR_SUFFIX"
-	}
+        [[ $SPACESHIP_FOOBAR_SHOW == false ]] && return
+        spaceship::exists power_v || return
+        [[ -f pom.xml || -n *.xml(#qN^/) ]] || return
+        local 'foobar_status'
+        foobar_status=$(power_v)
+        spaceship::section \
+            "$SPACESHIP_FOOBAR_COLOR" \
+            "$SPACESHIP_FOOBAR_PREFIX" \
+            "$SPACESHIP_FOOBAR_SYMBOL$foobar_status" \
+            "$SPACESHIP_FOOBAR_SUFFIX"
+        }
 
 }
 
 
 echoAndEval() { echo $@ && eval $@; }
+
 alias -g ee=echoAndEval
 alias -g timeElapsed="pv -F 'Elapsed time: %t'"
 alias version='py /Users/chuan.du/script-tool/version.py ./'
 alias v=version
 
-function noti() {
+noti() {
 	# terminal-notifier
 	# Can use terminal-notifier if we want icon modification. Can't do noti confirm
 	# Buildin noti
@@ -127,12 +134,21 @@ function noti() {
 # --------------------------------------------------------------------------
 #=============================== ZSH ASYNC PATH ===========================================
 
-function pre-async() {
+pre-async() {
     source /Users/chuan.du/github/zsh-async/async.zsh
     async_init
-    completed_callback() {
+
+    local my_worker_stop(){
         # print "STOP MY WORKER"
         async_stop_worker my_worker
+    }
+    local lazy_load() {
+        # print "LAZY LOAD"
+        # source /Users/chuan.du/github/anishathalye-dotfiles/zsh/prompt.zsh
+        # Manully load theme to spped them up.
+        # fpath=( "$HOME/.zfunctions" $fpath )
+        # autoload -U promptinit; promptinit
+        # prompt spaceship
 
         # Something very interesting. callback is working
         # Async works with alias but not tab_complete
@@ -143,16 +159,34 @@ function pre-async() {
         source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
         source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
         source /Users/chuan.du/.antigen/bundles/zdharma/history-search-multi-word/history-search-multi-word.plugin.zsh
+        source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
+        
+        # Antibody load
+        # source ~/.zsh_plugins.sh
+
         if [ $commands[autojump] ]; then
             [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
         fi
         # plugin_config
         ac_my_colors
+
+        autoload -Uz compinit
+        if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
+            compinit
+        else
+            compinit -C
+        fi
+        async_stop_worker lazyloader 
     }
-    async_register_callback my_worker completed_callback
     async_start_worker my_worker -n
+    async_register_callback my_worker my_worker_stop
+
+    async_start_worker lazyloader -n
+    async_register_callback lazyloader lazy_load
 
     if [ "$START_MESSAGE" -eq "1" ]; then
+        async_worker_eval lazyloader sleep 0.1
+        async_worker_eval my_worker sleep 5
         async_worker_eval my_worker async_start_message
     fi
 }
@@ -160,27 +194,6 @@ function pre-async() {
 if [ "$IS_ASYNC" -eq "1" ]; then
     pre-async
 fi 
-
-
-# Section: ENV PATH {{{1
-# --------------------------------------------------------------------------
-#=============================== PATH ===========================================
-
-export PATH=$HOME/bin:/usr/local/sbin:$HOME/script-tool:/usr/local/bin:$PATH
-export PATH="/Users/chuan.du/repo/dev-env/bin:$PATH"
-export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
-export PATH="./node_modules/.bin:$PATH"
-### Added by the Heroku Toolbelt
-export PATH="/usr/local/heroku/bin:$PATH"
-
-
-# export is required for python path
-# export PYTHONPATH="/Users/chuan.du/repo/autotest/tests/component/cenx-rest-api:${PYTHONPATH}"
-export NODE_PATH=/usr/lib/node_modules
-
-# Tmuxinator
-export EDITOR='vim'
-
 
 # Section: oh-my-zsh {{{1
 # --------------------------------------------------------------------------
@@ -192,11 +205,11 @@ export EDITOR='vim'
 # ZSH_THEME="agnoster"
 # ZSH_THEME="powerlevel9k/powerlevel9k"
 
-function power-v(){
+power_v(){
     python /Users/chuan.du/script-tool/version.py ./ powermode
 }
 
-function load_POWERLEVEL9K() {
+load_POWERLEVEL9K() {
 	power-version() {
 		local color='%F{yellow}'
 		PROJECT_VERSION=$(python /Users/chuan.du/script-tool/version.py ./ powermode)
@@ -227,7 +240,7 @@ function load_POWERLEVEL9K() {
 # Section: Antigen {{{1
 # --------------------------------------------------------------------------
 #=========================== Antigen ==================================
-function load_Antigen0() {
+load_Antigen0() {
 	echo "THEME: spaceship"
     if ! type "antigen" > /dev/null; then
         source ~/antigen.zsh
@@ -239,7 +252,7 @@ function load_Antigen0() {
 	antigen apply
 }
 
-function load_Antigen() {
+load_Antigen() {
     mlog "PlUGIN ENGINE: Antigen"
     if ! type "antigen" > /dev/null; then
         source ~/antigen.zsh
@@ -247,70 +260,28 @@ function load_Antigen() {
         antigen use oh-my-zsh
     fi
 
-	antigen bundle vi-mode
-	antigen bundle iterm2 # Iterm2 profile, color
-
-    antigen bundle shayneholmes/zsh-iterm2colors # Iterm2 Color "0.01"
-    antigen bundle paulmelnikow/zsh-startup-timer
-    
-	# antigen bundle gretzky/auto-color-ls
-    # antigen bundle johanhaleby/kubetail
-
-    antigen bundle djui/alias-tips # Alias helper
-
-	# Syntax highlighting bundle.
-	# antigen bundle zsh-users/zsh-syntax-highlighting
-    # antigen bundle zsh-users/zsh-autosuggestions # "0.02"
-    # antigen bundle zdharma/history-search-multi-word # 0.02s
-
-	# Something looks very powerful but not sure why I need it
-	# antigen bundle psprint/zsh-cmd-architect
-	
-    echo "THEME: spaceship"
-    antigen theme denysdovhan/spaceship-prompt
-
-	# Tell Antigen that you're done.
-    antigen apply
-
-    # Lazy load bundles
-    if ! type "kubetail" > /dev/null; then
-        kubetail() {
-            unfunction "$0"
-            antigen bundle johanhaleby/kubetail
-            $0 "$@"
-        }
-    fi
-
-    gst() {
-        unfunction "$0"
-        antigen bundle git
-        antigen bundle git-extras
-        $0 "$@"
-    }
-
-    mvn() { unfunction "$0" && antigen bundle mvn && $0 "$@" }
-    npm() { unfunction "$0" && antigen bundle npm && $0 "$@" }
-    brew(){ unfunction "$0" && antigen bundle brew && $0 "$@" }
-    docker(){ unfunction "$0" && antigen bundle docker && $0 "$@" }
-    lein(){ unfunction "$0" && antigen bundle lein && $0 "$@" }
-    tmuxinator(){ unfunction "$0" && antigen bundle tmuxinator && $0 "$@" }
+    source ~/.antigenrc
 
 }
 
-function load_Antigen_init() {
+load_Antigen_init() {
 	echo "PlUGIN ENGINE: Antigen Init"
-	source ~/antigen.zsh
+    if ! type "antigen" > /dev/null; then
+        source ~/antigen.zsh
+        # Load the oh-my-zsh's library. It will conflict with other theme
+        antigen use oh-my-zsh
+    fi
 	antigen init ~/.antigenrc
 }
 
-function plugin_config(){
+plugin_config(){
     # Some good keybind is overwrite by plugins or oh-my-zsh
     # Also includes plugin variables
 
     # Spaceship
     SPACESHIP_TIME_SHOW=true
     SPACESHIP_EXEC_TIME_ELAPSED=1
-	spaceship-power-version
+	spaceship_power_version
 	# SPACESHIP_PROMPT_ORDER=(time user dir host git hg package node ruby elixir xcode swift golang php rust haskell julia docker aws venv conda pyenv dotnet ember kubecontext exec_time foobar line_sep battery vi_mode jobs exit_code char)
 	# foobar is power-version, need to fix this
 	SPACESHIP_PROMPT_ORDER=(time user dir host git hg package node ruby elixir xcode swift golang php rust haskell julia aws venv conda pyenv dotnet ember foobar exec_time line_sep battery vi_mode jobs exit_code char )
@@ -335,6 +306,11 @@ function plugin_config(){
     
     alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
 
+    alias exa='/usr/local/bin/exa --time-style=long-iso'
+    alias ea='exa --git --group-directories-first -a'
+    alias el='exa -l --git --group-directories-first'
+    alias e='exa --git --group-directories-first'
+
     alias l='colorls -A --sd --report'
     alias lg='colorls -A --sd --report --gs'
     alias lc='colorls -l --sd --gs'
@@ -346,14 +322,16 @@ function plugin_config(){
     bindkey '^\n' autosuggest-execute
     # bindkey "^R" history-incremental-search-backward
     # bindkey "^S" history-incremental-search-forward
-
+    
+    # Vi-mode
+    export KEYTIMEOUT=1
 }
 
 # Section: Antibody {{{1
 # --------------------------------------------------------------------------
 #============================== antibody ======================================
 
-function load_Antibody() {
+load_Antibody() {
     mlog "Use antibody"
     source <(antibody init)
 
@@ -361,10 +339,10 @@ function load_Antibody() {
     antibody bundle <~/.zsh_plugins.txt
 
     echo "POWERLINE THEME: spaceship"
-    antibody bundle denysdovhan/spaceship-prompt
-    # if [ "$OH_MY_ZSH_LOADED" -ne "1" ]; then
-        # antigen theme maximbaz/spaceship-prompt 
-	# fi
+    # antibody bundle denysdovhan/spaceship-prompt
+    if [ "$OH_MY_ZSH_LOADED" -ne "1" ]; then
+        # antibody bundle maximbaz/spaceship-prompt 
+	fi
 }
 
 # Section: Load plugins {{{1
@@ -384,6 +362,7 @@ if [ "$OH_MY_ZSH_LOADED" -ne "1" ]; then
 	source $ZSH/oh-my-zsh.sh
 fi
 
+# source /Users/chuan.du/github/anishathalye-dotfiles/zsh/prompt.zsh
 
 if [[ ! -v ZSH_PLUGIN_LOADED ]]; then
     # load_Antigen
@@ -398,12 +377,12 @@ fi
 # --------------------------------------------------------------------------
 #============================= Script tool: Most useful tool ever ===============================
 
-function cc() {
+cc() {
 	res=$(pbpaste | sed -e :a -e '$!N; s/\n//; ta' | sed 's/\(CD-[0-9]*\)/[[\1]](https:\/\/cenx-cf.atlassian.net\/browse\/\1) /')
 	echo $res
 }
 
-function color-test() {
+color-test() {
 	clear
 	cat /Users/chuan.du/temp/iterm-syntax-test.txt
 }
@@ -432,13 +411,18 @@ export TERMINUS_REPL_PORT=4083
 export NARANATHU_REPL_PORT=4015
 
 #============================= Dokcer ===============================
-function docker-stats() { docker stats --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
-function docker-stats-peek() { docker stats --no-stream --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
-function docker-stop() {ee 'docker stop $(docker ps -q)'}
-function docker-rm-container-stopped() {ee "docker rm $(docker ps -aq -f status=exited)"}
-function docker-rm-images-stopped() {ee "docker rm $(docker ps -aq -f status=exited)"}
+docker-stats() { docker stats --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
+docker-stats-peek() { docker stats --no-stream --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
+alias=docker-stop='docker stop $(docker ps -q)'
+alias docker-rm-container-stopped="docker rm $(docker ps -aq -f status=exited)"
+alias docker-rm-images-stopped="docker rm $(docker ps -aq -f status=exited)"
+alias docker-rmi-clean='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
+docker-cleanup-deep(){
+    docker rm -v $(docker ps --filter status=exited -q 2>/dev/null) 2>/dev/null
+    docker rmi $(docker images --filter dangling=true -q 2>/dev/null) 2>/dev/null
+}
 
-function docker-ps() {
+docker-ps() {
 	docker ps $@ --format 'table{{ .Image }}\t{{ .Names }}\t{{ .Status }}\t{{ .Ports }}' | awk '
     NR % 2 == 0 {
       printf "\033[0m";
@@ -467,32 +451,32 @@ function docker-ps() {
 }
 alias dps=docker-ps
 
-function dpsc() {
+dpsc() {
 	docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t' 
 }
 
-function dpsv(){
+dpsv(){
     export FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nPORTS\t{{.Ports}}\nCOMMAND\t{{.Command}}\nCREATED\t{{.CreatedAt}}\nSTATUS\t{{.Status}}\n"
     docker ps $@ --format="$FORMAT" --no-trunc
 }
 
-function dpsvf(){
+dpsvf(){
     dpsv --filter name=$@
 }
 
-function dexec(){
+dexec(){
     echo "Docker exec -it by name"
     firstmatch=`docker ps -q --filter name=$@ | head -1`
     dpsv -f id=$firstmatch
     docker exec -it `docker ps -q --filter name=$@ | head -1` bash
 }
 
-function dpsa() { echo "docker list all containers" && docker-ps -a $@; }
+dpsa() { echo "docker list all containers" && docker-ps -a $@; }
 
-function dps-old() { echo "Docker ps old" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
-function dps-old-p() { echo "Docker ps old with port" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
+dps-old() { echo "Docker ps old" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
+dps-old-p() { echo "Docker ps old with port" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
 
-function pre-docker() {
+pre-docker() {
 	export DOCKER_MACHINE_IP=$(docker-machine ip)
 	eval $(docker-machine env)
 }
@@ -512,7 +496,7 @@ function pre-docker() {
 export PATH=${PATH}:/usr/local/kafka/bin
 export PATH=${PATH}:/usr/local/Cellar/kafka/0.8.2.1/bin
 
-function pre-wildfly() {
+pre-wildfly() {
 	echo "export JBOSS_HOME"
 	export JBOSS_HOME=/Users/chuan.du/Downloads/wildfly-10.1.0.Final
 	## export PATH=${PATH}:${JBOSS_HOME}/bin
@@ -561,15 +545,15 @@ export PATH=$PATH:$JAVA_HOME/bin:$DSE_BIN
 alias later="nohup /Users/chuan.du/repo/DotFiles/otherTool/later.pl"
 
 # FileSearch
-function f() {echo 'find . -iname "*'$1'*" '${@:2} && find . -iname "*$1*" ${@:2} }
-function r-old() {echo ' grep "'$1'" '${@:2}' -R .' && grep "$1" ${@:2} -R . }
-function r() {echo ' Replaced with ag'}
+f() {echo 'find . -iname "*'$1'*" '${@:2} && find . -iname "*$1*" ${@:2} }
+r-old() {echo ' grep "'$1'" '${@:2}' -R .' && grep "$1" ${@:2} -R . }
+r() {echo ' Replaced with ag'}
 
 # Watch function
-function mywatch() {while :; do a=$($@); clear; echo "$(date)\n\n$a"; sleep 2;  done}
-#function watch-zookeeper {while :; do clear; echo "$(date)\n\n$(echo stat |nc localhost 2181)"; sleep 1;  done}
-#function watch-zookeeper2 {while :; a=$@; do clear; echo "$(date)\n\n$(echo stat |nc $a 2181)"; sleep 1;  done}
-#function watch-zookeeper-cnumber {while :; do clear; echo "$(date)\n\n$(echo stat | nc localhost 2181 |grep 127.0.0.1 |wc -l)"; sleep 1;  done}
+mywatch() {while :; do a=$($@); clear; echo "$(date)\n\n$a"; sleep 2;  done}
+#watch-zookeeper {while :; do clear; echo "$(date)\n\n$(echo stat |nc localhost 2181)"; sleep 1;  done}
+#watch-zookeeper2 {while :; a=$@; do clear; echo "$(date)\n\n$(echo stat |nc $a 2181)"; sleep 1;  done}
+#watch-zookeeper-cnumber {while :; do clear; echo "$(date)\n\n$(echo stat | nc localhost 2181 |grep 127.0.0.1 |wc -l)"; sleep 1;  done}
 
 # t(){ timerToStartApplication "$@" &}
 timerToStartApplication() {
@@ -588,13 +572,12 @@ timerToStartApplication() {
 # --------------------------------------------------------------------------
 
 # Alias
-alias e='exa -l'
 alias vi='/usr/local/bin/vim'
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 # alias rs="ee 'source ~/.zshrc'"
 alias rs='source ~/.zshrc'
-alias rst='unset ZSH_PLUGIN_LOADED && source ~/.zshrc'
+alias rst='unset ZSH_PLUGIN_LOADED && antigen-reset && source ~/.zshrc'
 alias mz='vim ~/.zshrc && shfmt -l -s -w -ci ~/.zshrc'
 alias ca="less ~/.zshrc"
 alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
@@ -612,10 +595,6 @@ alias em='ems'
 
 alias sourcetree='open -a SourceTree'
 alias st='sourcetree'
-# alias sip='/System/Library/Frameworks/Python.framework/Versions/2.7/bin/sip'
-
-# Alias for tools
-alias ccc='/Users/SuperiMan/repo/colorgcc/colorgcc.pl'
 
 # Alias for echo done
 alias tf='echo "Task finished"'
@@ -627,15 +606,15 @@ alias sql="echo 'psql to localhost' && ee \"export PAGER='less -SF' && psql -h '
 #============= Dir alias =============
 # CD to any directory with auto complete
 export repodir="/Users/chuan.du/repo/"
-function c() {cd $repodir$1}
+c() {cd $repodir$1}
 compctl -g $repodir'*(:t:r)' c
 
 export repodir2="/opt/cenx/application/"
-function opt() {cd $repodir2$1}
+opt() {cd $repodir2$1}
 compctl -g $repodir2'*(:t:r)' opt
 
 export repodir3="/Users/chuan.du/github/"
-function gh() {cd $repodir3$1}
+gh() {cd $repodir3$1}
 compctl -g $repodir3'*(:t:r)' gh
 
 #============= Powerful and Common alias =============
@@ -679,11 +658,11 @@ alias gco61="git fetch -p && git checkout r/6.1.0.x && git pull"
 alias gfco='git fetch -p && git checkout'
 
 #=== Special Git Tool  ====
-function get_git_current_branch() { git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'; }
+get_git_current_branch() { git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'; }
 
-function get_current_branch() { git branch 2>/dev/null | sed -e "/^[^*]/d" -e "s/* \(.*\)/\1/"; }
+get_current_branch() { git branch 2>/dev/null | sed -e "/^[^*]/d" -e "s/* \(.*\)/\1/"; }
 
-function git_create_branch() {
+git_create_branch() {
 	if [ -z "$1" ]; then
 		echo "*******************************************"
 		echo "*   !!! WARNING !!!  Branch not created   *"
@@ -705,7 +684,7 @@ function git_create_branch() {
 	fi
 }
 
-function gitopen-current-branch() {
+gitopen-current-branch() {
 	current_branch=$(get_current_branch)
 	ee "gitopen -b ${current_branch}"
 }
@@ -800,112 +779,9 @@ source ~/.zshrc-local.sh
     }
   fi
 
-kubectl_env() {
-    # source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
-    alias k=kubectl
-
-    # Apply a YML file
-    alias kaf='kubectl apply -f'
-
-    # Drop into an interactive terminal on a container
-    alias keti='kubectl exec -ti'
-
-    # Manage configuration quickly to switch contexts between local, dev ad staging.
-    alias kcuc='kubectl config use-context'
-    alias kcsc='kubectl config set-context'
-    alias kcdc='kubectl config delete-context'
-    alias kccc='kubectl config current-context'
-
-    # General aliases
-    alias kdel='kubectl delete'
-    alias kdelf='kubectl delete -f'
-
-    # Pod management.
-    alias kgp='kubectl get pods'
-    alias kgpw='kgp --watch'
-    alias kgpwide='kgp -o wide'
-    alias kep='kubectl edit pods'
-    alias kdp='kubectl describe pods'
-    alias kdelp='kubectl delete pods'
-
-    # get pod by label: kgpl "app=myapp" -n myns
-    alias kgpl='kgp -l'
-
-    # Service management.
-    alias kgs='kubectl get svc'
-    alias kgsw='kgs --watch'
-    alias kgswide='kgs -o wide'
-    alias kes='kubectl edit svc'
-    alias kds='kubectl describe svc'
-    alias kdels='kubectl delete svc'
-
-    # Ingress management
-    alias kgi='kubectl get ingress'
-    alias kei='kubectl edit ingress'
-    alias kdi='kubectl describe ingress'
-    alias kdeli='kubectl delete ingress'
-
-    # Namespace management
-    alias kgns='kubectl get namespaces'
-    alias kens='kubectl edit namespace'
-    alias kdns='kubectl describe namespace'
-    alias kdelns='kubectl delete namespace'
-    alias kcn='kubectl config set-context $(kubectl config current-context) --namespace'
-
-    # ConfigMap management
-    alias kgcm='kubectl get configmaps'
-    alias kecm='kubectl edit configmap'
-    alias kdcm='kubectl describe configmap'
-    alias kdelcm='kubectl delete configmap'
-
-    # Secret management
-    alias kgsec='kubectl get secret'
-    alias kdsec='kubectl describe secret'
-    alias kdelsec='kubectl delete secret'
-
-    # Deployment management.
-    alias kgd='kubectl get deployment'
-    alias kgdw='kgd --watch'
-    alias kgdwide='kgd -o wide'
-    alias ked='kubectl edit deployment'
-    alias kdd='kubectl describe deployment'
-    alias kdeld='kubectl delete deployment'
-    alias ksd='kubectl scale deployment'
-    alias krsd='kubectl rollout status deployment'
-    kres(){
-        kubectl set env $@ REFRESHED_AT=$(date +%Y%m%d%H%M%S)
-    }
-
-    # Rollout management.
-    alias kgrs='kubectl get rs'
-    alias krh='kubectl rollout history'
-    alias kru='kubectl rollout undo'
-
-    # Port forwarding
-    alias kpf="kubectl port-forward"
-
-    # Tools for accessing all information
-    alias kga='kubectl get all'
-    alias kgaa='kubectl get all --all-namespaces'
-
-    # Logs
-    alias kl='kubectl logs'
-    alias klf='kubectl logs -f'
-
-    # File copy
-    alias kcp='kubectl cp'
-
-    # Node Management
-    alias kgno='kubectl get nodes'
-    alias keno='kubectl edit node'
-    alias kdno='kubectl describe node'
-    alias kdelno='kubectl delete node'
-}
-
 # Example of lazy load
 # Check if 'kubectl' is a command in $PATH
 if [ $commands[kubectl] ]; then
-  kubectl_env
   kubectl() {
     unfunction "$0"
     source <(kubectl completion zsh)
@@ -944,7 +820,7 @@ else
 fi
 
 if [ "$LOADING_BAR" -eq "1" ]; then
-    revolver stop
+    revolver stop # Stop loading Bar
 fi
 
 if [ "$START_MESSAGE" -eq "1" ]; then
