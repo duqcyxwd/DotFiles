@@ -18,7 +18,9 @@ antigen bundle djui/alias-tips # Alias helper
 # antigen bundle psprint/zsh-cmd-architect
 
 # echo "THEME: spaceship"
-antigen theme denysdovhan/spaceship-prompt
+# antigen theme denysdovhan/spaceship-prompt
+# Async prompt
+antigen theme maximbaz/spaceship-prompt
 
 # echo "THEME: pure"
 # antigen bundle mafredri/zsh-async

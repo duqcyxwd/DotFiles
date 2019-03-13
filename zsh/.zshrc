@@ -86,7 +86,52 @@ async_start_message(){
 
 mlog() { echo $@ >>$ZSH_LOADING_LOG }
 
-spaceship_power_version(){
+spaceship_power_version_init() {
+    SPACESHIP_POWER_VERSION_SHOW="${SPACESHIP_POWER_VERSION_SHOW=true}"
+	SPACESHIP_POWER_VERSION_PREFIX="${SPACESHIP_POWER_VERSION_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
+	SPACESHIP_POWER_VERSION_SUFFIX="${SPACESHIP_POWER_VERSION_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
+	SPACESHIP_POWER_VERSION_SYMBOL="${SPACESHIP_POWER_VERSION_SYMBOL="🍷 "}"
+	SPACESHIP_POWER_VERSION_COLOR="${SPACESHIP_POWER_VERSION_COLOR="white"}"
+
+	# ------------------------------------------------------------------------------
+	# Section power_version
+	# ------------------------------------------------------------------------------
+    spaceship_async_job_load_power_version() {
+        [[ $SPACESHIP_POWER_VERSION_SHOW == false ]] && return
+        async_job spaceship spaceship_async_job_power_version
+    }
+    spaceship_async_job_power_version() {
+        # echo "spaceship_async_job_power_version" >> ~/temp/temp.log
+        local version=$(power_v)
+        # echo $version >> ~/temp/temp.log
+        [[ -z "$version" ]] && return
+        echo "$version"
+    }
+    spaceship_power_version() {
+        [[ -z "${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]}" ]] && return
+        spaceship::section \
+            "$SPACESHIP_POWER_VERSION_COLOR" \
+            "$SPACESHIP_POWER_VERSION_PREFIX" \
+            "${SPACESHIP_POWER_VERSION_SYMBOL}${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]}" \
+            "$SPACESHIP_POWER_VERSION_SUFFIX"
+    }
+
+    # Sync way to load power version
+	# spaceship_power_version() {
+    #     [[ $SPACESHIP_POWER_VERSION_SHOW == false ]] && return
+    #     spaceship::exists power_v || return
+    #     [[ -f pom.xml || -n *.xml(#qN^/) ]] || return
+    #     local version=$(power_v)
+    #     spaceship::section \
+    #         "$SPACESHIP_POWER_VERSION_COLOR" \
+    #         "$SPACESHIP_POWER_VERSION_PREFIX" \
+    #         "$SPACESHIP_POWER_VERSION_SYMBOL$version" \
+    #         "$SPACESHIP_POWER_VERSION_SUFFIX"
+    #     }
+}
+
+# Deprecated
+spaceship_power_version_foobar(){
 	SPACESHIP_FOOBAR_SHOW="${SPACESHIP_FOOBAR_SHOW=true}"
 	SPACESHIP_FOOBAR_PREFIX="${SPACESHIP_FOOBAR_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
 	SPACESHIP_FOOBAR_SUFFIX="${SPACESHIP_FOOBAR_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
@@ -120,8 +165,10 @@ echoAndEval() { echo $@ && eval $@; }
 
 alias -g ee=echoAndEval
 alias -g timeElapsed="pv -F 'Elapsed time: %t'"
-alias version='py /Users/chuan.du/script-tool/version.py ./'
-alias v=version
+alias v='py /Users/chuan.du/script-tool/version.py ./'
+power_v(){
+    python /Users/chuan.du/script-tool/version.py ./ powermode
+}
 
 noti() {
 	# terminal-notifier
@@ -140,7 +187,7 @@ pre-async() {
 
     local my_worker_stop(){
         # print "STOP MY WORKER"
-        async_stop_worker my_worker
+        # async_stop_worker my_worker
     }
     local lazy_load() {
         # print "LAZY LOAD"
@@ -160,6 +207,7 @@ pre-async() {
         source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
         source /Users/chuan.du/.antigen/bundles/zdharma/history-search-multi-word/history-search-multi-word.plugin.zsh
         source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
+        source /Users/chuan.du/github/kafka-zsh-completions/kafka.zsh
         
         # Antibody load
         # source ~/.zsh_plugins.sh
@@ -176,7 +224,8 @@ pre-async() {
         else
             compinit -C
         fi
-        async_stop_worker lazyloader 
+        ## Disable async loader to test theme
+        # async_stop_worker lazyloader 
     }
     async_start_worker my_worker -n
     async_register_callback my_worker my_worker_stop
@@ -205,14 +254,10 @@ fi
 # ZSH_THEME="agnoster"
 # ZSH_THEME="powerlevel9k/powerlevel9k"
 
-power_v(){
-    python /Users/chuan.du/script-tool/version.py ./ powermode
-}
-
 load_POWERLEVEL9K() {
 	power-version() {
 		local color='%F{yellow}'
-		PROJECT_VERSION=$(python /Users/chuan.du/script-tool/version.py ./ powermode)
+		PROJECT_VERSION=$(power_v)
 		if [[ $PROJECT_VERSION != 'None' ]]; then
 			echo -n "%{$color%}$(print_icon 'VCS_HG_ICON')$PROJECT_VERSION"
 		fi
@@ -281,10 +326,27 @@ plugin_config(){
     # Spaceship
     SPACESHIP_TIME_SHOW=true
     SPACESHIP_EXEC_TIME_ELAPSED=1
-	spaceship_power_version
-	# SPACESHIP_PROMPT_ORDER=(time user dir host git hg package node ruby elixir xcode swift golang php rust haskell julia docker aws venv conda pyenv dotnet ember kubecontext exec_time foobar line_sep battery vi_mode jobs exit_code char)
-	# foobar is power-version, need to fix this
-	SPACESHIP_PROMPT_ORDER=(time user dir host git hg package node ruby elixir xcode swift golang php rust haskell julia aws venv conda pyenv dotnet ember foobar exec_time line_sep battery vi_mode jobs exit_code char )
+	spaceship_power_version_init
+	
+	# SPACESHIP_PROMPT_ORDER=(time user host dir git hg package node ruby elixir xcode swift golang php rust haskell julia aws venv conda pyenv dotnet ember kubecontext power_version exec_time line_sep battery vi_mode jobs exit_code char )
+	# maximbaz/spaceship-prompt
+	SPACESHIP_DIR_PREFIX=""
+    SPACESHIP_GIT_STATUS_SHOW=true
+    SPACESHIP_GIT_STATUS_PREFIX="["
+    SPACESHIP_GIT_STATUS_SUFFIX="] "
+    SPACESHIP_GIT_STATUS_COLOR="red"
+    SPACESHIP_GIT_STATUS_UNTRACKED="?"
+    SPACESHIP_GIT_STATUS_ADDED="+"
+    SPACESHIP_GIT_STATUS_MODIFIED="!"
+    SPACESHIP_GIT_STATUS_RENAMED="»"
+    SPACESHIP_GIT_STATUS_DELETED="✘"
+    SPACESHIP_GIT_STATUS_STASHED="$"
+    SPACESHIP_GIT_STATUS_UNMERGED="="
+    SPACESHIP_GIT_STATUS_AHEAD="⇡"
+    SPACESHIP_GIT_STATUS_BEHIND="⇣"
+    SPACESHIP_GIT_STATUS_DIVERGED="⇕"
+	
+	SPACESHIP_PROMPT_ORDER=(time user host git_branch git_status power_version hg package node ruby elixir xcode swift golang php haskell julia aws venv conda pyenv dotnet ember kubecontext exec_time line_sep dir battery vi_mode jobs exit_code char )
 
 
 	# zsh-iterm2colors
