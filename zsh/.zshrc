@@ -66,10 +66,10 @@ PREPARE_START_MESSAGE() {
         echo "" >$ZSH_LOADING_LOG
     else
         echo "" >$ZSH_LOADING_LOG &&
-        echo "" >$WELCOME_MESSAGE &&
-        echo "" >$MESSAGE_CACHE_BEFORE_PRINT &&
-        (artii "Welcome, Chuan" && neofetch && (fortune | cowsay)) >$WELCOME_MESSAGE &&
-        cat $WELCOME_MESSAGE >$MESSAGE_CACHE_BEFORE_PRINT
+            echo "" >$WELCOME_MESSAGE &&
+            echo "" >$MESSAGE_CACHE_BEFORE_PRINT &&
+            (artii "Welcome, Chuan" && neofetch && (fortune | cowsay)) >$WELCOME_MESSAGE &&
+            cat $WELCOME_MESSAGE >$MESSAGE_CACHE_BEFORE_PRINT
     fi
 }
 
@@ -88,7 +88,7 @@ spaceship_power_version_init() {
     SPACESHIP_POWER_VERSION_SUFFIX="${SPACESHIP_POWER_VERSION_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
     SPACESHIP_POWER_VERSION_SYMBOL="${SPACESHIP_POWER_VERSION_SYMBOL="🍷 "}"
     SPACESHIP_POWER_VERSION_COLOR="${SPACESHIP_POWER_VERSION_COLOR="white"}"
-    
+
     # ------------------------------------------------------------------------------
     # Section power_version
     # ------------------------------------------------------------------------------
@@ -106,12 +106,12 @@ spaceship_power_version_init() {
     spaceship_power_version() {
         [[ -z ${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]} ]] && return
         spaceship::section \
-        "$SPACESHIP_POWER_VERSION_COLOR" \
-        "$SPACESHIP_POWER_VERSION_PREFIX" \
-        "${SPACESHIP_POWER_VERSION_SYMBOL}${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]}" \
-        "$SPACESHIP_POWER_VERSION_SUFFIX"
+            "$SPACESHIP_POWER_VERSION_COLOR" \
+            "$SPACESHIP_POWER_VERSION_PREFIX" \
+            "${SPACESHIP_POWER_VERSION_SYMBOL}${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]}" \
+            "$SPACESHIP_POWER_VERSION_SUFFIX"
     }
-    
+
     # Sync way to load power version
     # spaceship_power_version() {
     #     [[ $SPACESHIP_POWER_VERSION_SHOW == false ]] && return
@@ -153,28 +153,28 @@ lazy_load() {
     # fpath=( "$HOME/.zfunctions" $fpath )
     # autoload -U promptinit; promptinit
     # prompt spaceship
-    
+
     # Something very interesting. callback is working
     # Async works with alias but not tab_complete
     source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
     source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
-    
+
     source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
     source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
     source /Users/chuan.du/.antigen/bundles/zdharma/history-search-multi-word/history-search-multi-word.plugin.zsh
     source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
     source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/mvn/mvn.plugin.zsh
     source /Users/chuan.du/github/kafka-zsh-completions/kafka.zsh
-    
+
     # Antibody load
     # source ~/.zsh_plugins.sh
-    
+
     if [ $commands[autojump] ]; then
         [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
     fi
     # plugin_config
     ac_my_colors
-    
+
     autoload -Uz compinit
     if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
         compinit
@@ -188,7 +188,7 @@ lazy_load() {
 pre-async() {
     source /Users/chuan.du/github/zsh-async/async.zsh
     async_init
-    
+
     _my_worker_stop() {
         # print "STOP MY WORKER"
         async_stop_worker my_worker
@@ -196,13 +196,13 @@ pre-async() {
     _async_start_message() {
         PREPARE_START_MESSAGE
     }
-    
+
     async_start_worker my_worker -n
     async_register_callback my_worker _my_worker_stop
-    
+
     async_start_worker lazyloader -n
     async_register_callback lazyloader lazy_load
-    
+
     if [ "$START_MESSAGE" -eq "1" ]; then
         async_worker_eval lazyloader sleep 1
         async_worker_eval my_worker sleep 5
@@ -232,13 +232,13 @@ load_POWERLEVEL9K() {
             echo -n "%{$color%}$(print_icon 'VCS_HG_ICON')$PROJECT_VERSION"
         fi
     }
-    
+
     #POWERLEVEL9K_MODE='nerdfont-complete':
     POWERLEVEL9K_MODE='awesome-fontconfig'
     POWERLEVEL9K_CUSTOM_VERSION="power-version"
     POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='green'
     POWERLEVEL9K_VI_INSERT_MODE_STRING=''
-    
+
     if [ "$SIMPLE" -eq "1" ]; then
         mlog "THEME: SIMPLE POWERLEVEL9K"
         POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir)
@@ -248,7 +248,7 @@ load_POWERLEVEL9K() {
         POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(ram load ip vcs custom_version newline ssh dir)
         POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status vi_mode root_indicator command_execution_time background_jobs time)
     fi
-    
+
     alias signs="open https://github.com/bhilburn/powerlevel9k#vcs-symbols"
 }
 
@@ -307,7 +307,7 @@ load_Antigen() {
     tmuxinator() {
         unfunction "$0" && antigen bundle tmuxinator && $0 "$@"
     }
-    
+
 }
 
 load_Antigen_init() {
@@ -323,12 +323,12 @@ load_Antigen_init() {
 plugin_config() {
     # Some good keybind is overwrite by plugins or oh-my-zsh
     # Also includes plugin variables
-    
+
     # Spaceship
     SPACESHIP_TIME_SHOW=true
     SPACESHIP_EXEC_TIME_ELAPSED=1
     spaceship_power_version_init
-    
+
     # SPACESHIP_PROMPT_ORDER=(time user host dir git hg package node ruby elixir xcode swift golang php rust haskell julia aws venv conda pyenv dotnet ember kubecontext power_version exec_time line_sep battery vi_mode jobs exit_code char )
     # maximbaz/spaceship-prompt
     SPACESHIP_DIR_PREFIX=""
@@ -346,9 +346,9 @@ plugin_config() {
     SPACESHIP_GIT_STATUS_AHEAD="⇡"
     SPACESHIP_GIT_STATUS_BEHIND="⇣"
     SPACESHIP_GIT_STATUS_DIVERGED="⇕"
-    
+
     SPACESHIP_PROMPT_ORDER=(time user host git_branch git_status power_version hg package node ruby elixir xcode swift golang php haskell julia aws venv conda pyenv dotnet ember kubecontext exec_time line_sep dir battery vi_mode jobs exit_code char)
-    
+
     # zsh-iterm2colors
     alias ac=_iterm2colors_apply
     alias acl='echo $_iterm2colors_current'
@@ -357,7 +357,7 @@ plugin_config() {
     alias ac-darkside='ac "Darkside"'
     alias ac-ocean='ac "OceanicMaterial"'
     alias ac-sd='ac "Solarized Darcula"'
-    
+
     ac_my_colors() {
         local MYCOLORS=("ayu_light" "Darkside" "OceanicMaterial" "Solarized Darcula" "Broadcast" "Desert" "DotGov" "Misterioso" "Galaxy")
         local RANDOM=$$$(gdate +%N)
@@ -365,26 +365,26 @@ plugin_config() {
         _iterm2colors_apply $NEW_COLOR
         mlog "COLOR THEME: " $_iterm2colors_current
     }
-    
+
     alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
-    
+
     alias exa='/usr/local/bin/exa --time-style=long-iso'
     alias ea='exa --git --group-directories-first -a'
     alias el='exa -l --git --group-directories-first'
     alias e='exa --git --group-directories-first'
-    
+
     alias l='colorls -A --sd --report'
     alias lg='colorls -A --sd --report --gs'
     alias lc='colorls -l --sd --gs'
     alias ll='colorls -l --sd --gs'
     alias lca='colorls -lA --sd --gs'
     source $(dirname $(gem which colorls))/tab_complete.sh
-    
+
     bindkey '^k' autosuggest-accept
     bindkey '^\n' autosuggest-execute
     # bindkey "^R" history-incremental-search-backward
     # bindkey "^S" history-incremental-search-forward
-    
+
     # Vi-mode
     export KEYTIMEOUT=1
 }
@@ -397,12 +397,12 @@ load_Antibody() {
     mlog "Use antibody"
     # No matter what I try, this is super slow
     source ~/.zsh_plugins.sh
-    
+
     # source <(antibody init)
-    
+
     # # antibody bundle bhilburn/powerlevel9k
     # antibody bundle <~/.zsh_plugins.txt
-    
+
     # echo "POWERLINE THEME: spaceship"
     # # antibody bundle denysdovhan/spaceship-prompt
     # if [ "$OH_MY_ZSH_LOADED" -ne "1" ]; then
@@ -645,7 +645,7 @@ alias ohmyzsh="vim ~/.oh-my-zsh"
 # alias rs="ee 'source ~/.zshrc'"
 alias rs='source ~/.zshrc'
 alias rst='unset ZSH_PLUGIN_LOADED && antigen-reset && source ~/.zshrc'
-alias mz='vim ~/.zshrc && shfmt -l -s -w -ci ~/.zshrc'
+alias mz='vim ~/.zshrc && shfmt -i 4 -s -w -ci ~/.zshrc'
 alias ca="less ~/.zshrc"
 alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
 alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
