@@ -7,90 +7,256 @@
 "
 " Chuan's .ideavimrc for IntelliJ
 
-" ---------------
-" Color
-" ---------------
-" colorscheme monokai-chris
-"
-let mapleader =" "
-set background=dark
+" Section: Spacemacs {{{1
+" =================================================================
+""" This file contains default spacemacs settings and key bindings
+" Settings
+source ~/github/intelli-space/spacemacs/settings.vim
 
-set hlsearch
-set showmode
+" Key bindings
+source ~/github/intelli-space/spacemacs/applications.vim
+source ~/github/intelli-space/spacemacs/buffers.vim
+source ~/github/intelli-space/spacemacs/colors.vim
+source ~/github/intelli-space/spacemacs/compile-comments.vim
+source ~/github/intelli-space/spacemacs/errors.vim
+source ~/github/intelli-space/spacemacs/files.vim
+source ~/github/intelli-space/spacemacs/frame.vim
+source ~/github/intelli-space/spacemacs/git-vcs.vim
+source ~/github/intelli-space/spacemacs/help.vim
+source ~/github/intelli-space/spacemacs/insertion.vim
+source ~/github/intelli-space/spacemacs/jump-join-split.vim
+" source ~/github/intelli-space/spacemacs/leader.vim
+" source ~/github/intelli-space/extra/leader.vim {{{2
+" =================================================================
+" Execute an action. Like <M-x>
+nnoremap <leader><Space>    :action GotoAction<CR>
+vnoremap <leader><Space>    <Esc>:action GotoAction<CR>
+
+" Focus last buffer
+nnoremap <leader><tab>    :action VimFilePrevious<CR>
+vnoremap <leader><tab>    <Esc>:action VimFilePrevious<CR>
+
+" Open the terminal window (use :! for a single shell cmd)
+nnoremap <leader>'    :action Terminal.OpenInTerminal<CR>
+vnoremap <leader>'    <Esc>:action Terminal.OpenInTerminal<CR>
+nnoremap <leader>!    :action Terminal.OpenInTerminal<CR>
+vnoremap <leader>!    <Esc>:action Terminal.OpenInTerminal<CR>
+
+" Show usages for symbol.
+" Ideally this should be FindInPath the current word, but I think that it is
+" not possible.
+nnoremap <leader>*    :action ShowUsages<CR>
+vnoremap <leader>*    <Esc>:action ShowUsages<CR>
+
+" Show key bindings
+nnoremap <leader>?    :map<CR>
+vnoremap <leader>?    <Esc>:map<CR>
+
+" }}}
+source ~/github/intelli-space/spacemacs/misc.vim
+source ~/github/intelli-space/spacemacs/narrow-numbers.vim
+source ~/github/intelli-space/spacemacs/projects.vim
+source ~/github/intelli-space/spacemacs/quit.vim
+source ~/github/intelli-space/spacemacs/registers-rings-resume.vim
+source ~/github/intelli-space/spacemacs/search-symbol.vim
+source ~/github/intelli-space/spacemacs/text.vim
+source ~/github/intelli-space/spacemacs/toggles.vim
+source ~/github/intelli-space/spacemacs/ui_toogles-themes.vim
+source ~/github/intelli-space/spacemacs/windows.vim
+source ~/github/intelli-space/spacemacs/zoom.vim
+
+
+" Section: Extra {{{1
+" =================================================================
+" Key bindings
+source ~/github/intelli-space/extra/applications.vim
+source ~/github/intelli-space/extra/bookmarks.vim
+source ~/github/intelli-space/extra/buffers.vim
+source ~/github/intelli-space/extra/compile-comments.vim
+source ~/github/intelli-space/extra/errors.vim
+source ~/github/intelli-space/extra/files.vim
+source ~/github/intelli-space/extra/frame.vim
+source ~/github/intelli-space/extra/git-vcs.vim
+source ~/github/intelli-space/extra/help-history.vim
+source ~/github/intelli-space/extra/jump.vim
+source ~/github/intelli-space/extra/leader.vim
+source ~/github/intelli-space/extra/run.vim
+source ~/github/intelli-space/extra/search.vim
+source ~/github/intelli-space/extra/toggles.vim
+source ~/github/intelli-space/extra/ui_toggles-themes.vim
+source ~/github/intelli-space/extra/windows.vim
+
+" Section: Major {{{1
+" =================================================================
+" This file contains the most common spacemacs major mode key bindings
+source ~/github/intelli-space/major/compile.vim
+source ~/github/intelli-space/major/debug.vim
+source ~/github/intelli-space/major/go.vim
+source ~/github/intelli-space/major/help-hierarchy.vim
+source ~/github/intelli-space/major/leader.vim
+source ~/github/intelli-space/major/projects.vim
+source ~/github/intelli-space/major/refactoring.vim
+
+" Section: Spacemacs hybrid mode. {{{1
+" =================================================================
+
+" Unbind C-g
+nnoremap <C-g> <Esc>
+vnoremap <C-g> <Esc>
+inoremap <C-g> <Esc>a
+
+" C-a goes to first character
+nnoremap <C-a> ^
+vnoremap <C-a> ^
+inoremap <C-a> <Esc>I
+cnoremap <C-a> <Home>
+
+" C-e goes to end of line
+nnoremap <C-e> $
+vnoremap <C-e> $
+inoremap <C-e> <Esc>A
+cnoremap <C-e> <End>
+
+" C-d deletes a character
+inoremap <C-d> <del>
+
+" C-p goes up
+inoremap <C-p> <up>
+
+" C-n goes down
+inoremap <C-n> <down>
+
+" Section: Personal {{{1
+" =================================================================
+" Config {{{2
+" =================================================================
+" ---------------
+" Behaviors
+" ---------------
+syntax enable
 set undolevels=100
 set mps+=<:>
+set autoread            " Automatically reload changes if detected
+set timeoutlen=1000     " Time to wait for a command (after leader for example).
 
 " ---------------
 " UI
 " ---------------
-set ruler          " Ruler on
-set number         " Line numbers on
+set background=dark
+set ruler               " Ruler on
+set number              " Line numbers on
 
-set hlsearch
-set scrolloff=3
 set ignorecase smartcase
-set showmode
-set history=1000
+set scrolloff=3
+set history=2000
 
+" }}}
+" Addition to intelli-space {{{2
+" =================================================================
+
+" Addition to extra/jump.vim
+nnoremap <leader>jf   :action GotoFile<CR>
+vnoremap <leader>jf   <Esc>:action GotoFile<CR>
+
+" Addition to 'spacemacs/windows.vim'
+nnoremap <leader>wu :action ReopenClosedTab<cr>
+
+" Smart insert semicolon
+" noremap <leader>; mqA;<Esc>`q
+unoremap <leader>;;
+unmap <leader>;;
+uvnoremap <leader>;
+noremap <leader>; mQA;<Esc>'Q
+" }}}
+" Others {{{2
+" =================================================================
 " easy system clipboard copy/paste
 noremap <space>y "*y
 noremap <space>Y "*Y
 noremap <space>p "*p
 noremap <space>P "*P
 
+"============= Navigation ===================
 " easy window navigation
 nnoremap gl <c-w>l
 nnoremap gj <c-w>j
 nnoremap gh <c-w>h
 nnoremap gk <c-w>k
 
-nnoremap <leader>tw :action EditorToggleShowWhitespaces<cr>
-nnoremap <leader>l <c-w>l
-
-
-" Smart insert semicolon
-noremap <leader>; mqA;<Esc>`q
-
-" switch between current and last buffer
-"nmap <leader>. <C-^>
-nnoremap <leader>. :action VimFilePrevious<cr>
-nmap <leader>/ :nohlsearch<CR>
-nmap <leader>cc :action CommentByLineComment<CR>
-nmap <leader>rff :action ReformatCode<CR>
-nmap <leader>, :action AceJumpAction<CR>
-nmap <leader>q :action CloseContent<CR>
-
-nmap <leader>tt :action RerunFailedTests<CR>
-nmap <leader>ta :action RunClass<CR>
-
-" AceJump
-" Press `f` to activate AceJump
-" map f :action AceAction<CR>
-" Press `F` to activate Target Mode
-" map F :action AceTargetAction<CR>
-" Press `g` to activate Line Mode
-
-" use system clipboard 
-set clipboard+=unnamed
-
-nnoremap <CR> zc
-vnoremap <CR> zo
-nmap <leader>fs :w<CR>
-
 nmap <c-w>L :action MoveEditorToOppositeTabGroup<CR>
 nmap gL :action MoveEditorToOppositeTabGroup<CR>
 nmap gH :action MoveEditorToOppositeTabGroup<CR>
-nmap gJ :action MoveEditorToOppositeTabGroup<CR>
 
-nmap csw' :action Macro.surround_with_single_quote<CR>
-nmap csw" :action Macro.surround_with_double_quote<CR>
-nmap ds' :action Macro.surround_undo_single_quote<CR>
-nmap ds" :action Macro.surround_undo_double_quote<CR>
-nmap cs"' :action Macro.surround_double_to_single_quote<CR>
-" remove extra whitespace
-nmap <leader><space> :%s/\s\+$<CR>
-"nmap ,<space> :%s/\s\+$//e<CR>
-"
-"
+" Just to beginning and end of lines easier. From http://vimbits.com/bits/16
+noremap H ^
+noremap L $
+
+" Swap implementations of ` and ' jump to markers
+" By default, ' jumps to the marked line, ` jumps to the marked line and
+" column, so swap them
+nnoremap ' `
+nnoremap ` '
+
+
+" built-in navigation to navigated items works better
+nnoremap <c-o> :action Back<cr>
+nnoremap <c-i> :action Forward<cr>
+
+" SPC f e R	 ?
+" nnoremap <leader>R :source ~/.ideavimrc<cr>
+
+" code navigation
+" Go to
+" nnoremap <leader>d :action GotoImplementation<cr>
+nnoremap <leader>[ :action GotoSuperMethod<cr>
+
+" Fold and unfold
+nnoremap <CR> zc
+vnoremap <CR> zo
+
+
+" nnoremap <leader>gg :action Switcher<cr>
+" nnoremap <leader>su :action FindUsages<cr>
+" nnoremap gu :action FindUsages<cr>
+" nnoremap <leader>gt :action GotoTest<cr>
+" nnoremap <leader>k :action HighlightUsagesInFile<cr>
+" nnoremap <leader>tt :action RerunFailedTests<CR>
+" nnoremap <leader>ta :action RunClass<CR>
+" nnoremap <leader>ra :action Run<cr>
+" nnoremap <leader>rr :action RunClass<cr>
+" nnoremap <leader>rc :action Compile<cr>
+" nnoremap \d :action DebugClass<cr>
+" nnoremap \D :action Debug<cr>
+" nnoremap \c :action CheckStyleCurrentFileAction<cr>
+
+nnoremap \a    :action RunAnything<CR>
+nnoremap \C    :action Compile<CR>
+nnoremap \c    :action RunClass<CR>
+nnoremap \k    :action Stop<CR>
+nnoremap \q    :nohlsearch<CR>
+nnoremap \R    :action Run<CR>
+nnoremap \r    :action RunClass<CR>
+nnoremap \w    :action EditorGutterToggleGlobalSoftWraps<CR>
+
+"map \\    :action GuiDesigner.ExpandSelection<CR>
+
+nnoremap <leader>mcC      :action Compile<CR>
+
+" Select configuration and run
+nnoremap <leader>Rs    :action ChooseRunConfiguration<CR>
+vnoremap <leader>Rs    <Esc>:action ChooseRunConfiguration<CR>
+
+nnoremap <leader>mrd :action com.github.setial.intellijjavadocs.action.JavaDocGenerateActionOnEditor<CR>
+nnoremap <leader>mrD :action com.github.setial.intellijjavadocs.action.JavaDocsGenerateActionOnEditor<CR>
+
+noremap <leader>rrr :action Refactorings.QuickListPopupAction<CR>
+
+" code refactoring
+" nnoremap <space>rn :action RenameElement<cr>
+" nnoremap <leader>cc :action ReformatCode<CR>
+
 "https://github.com/saaguero/ideavimrc/blob/master/.ideavimrc
 "https://github.com/rekendahl/dotfiles/blob/master/.ideavimrc
+"Action List https://gist.github.com/zchee/9c78f91cc5ad771c1f5d
+
+}}}
