@@ -102,6 +102,7 @@ nmap \l :set foldcolumn=0<CR>
 nmap \L :set foldcolumn=2<CR>
 nmap \o :set paste!<CR>:set paste?<CR>
 nmap \q :nohlsearch<CR>
+nmap \h :nohlsearch<CR>
 nmap \r :%Eval<CR>
 nmap \t :noh<CR>
 " nmap \s :cpp<CR>
@@ -174,6 +175,16 @@ cnoremap <C-g>  <C-c>
 nnoremap <CR> za
 " vnoremap <space> zf
 nmap <leader>fs :w<CR>
+
+" Swap implementations of ` and ' jump to markers
+" By default, ' jumps to the marked line, ` jumps to the marked line and
+" column, so swap them
+nnoremap ' `
+nnoremap ` '
+
+" Just to beginning and end of lines easier. From http://vimbits.com/bits/16
+noremap H ^
+noremap L $
 
 " Windows
 nmap <C-j> <C-W>j
