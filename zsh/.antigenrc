@@ -3,13 +3,11 @@ antigen bundle iterm2 # Iterm2 profile, color
 
 antigen bundle shayneholmes/zsh-iterm2colors # Iterm2 Color "0.01"
 antigen bundle paulmelnikow/zsh-startup-timer
+antigen bundle djui/alias-tips # Alias helper
 
 # antigen bundle gretzky/auto-color-ls
 # antigen bundle johanhaleby/kubetail
 
-antigen bundle djui/alias-tips # Alias helper
-
-# Syntax highlighting bundle.
 # antigen bundle zsh-users/zsh-syntax-highlighting
 # antigen bundle zsh-users/zsh-autosuggestions # "0.02"
 # antigen bundle zdharma/history-search-multi-word # 0.02s
@@ -28,26 +26,3 @@ antigen theme maximbaz/spaceship-prompt
 
 # Tell Antigen that you're done.
 antigen apply
-
-# Lazy load bundles
-if ! type "kubetail" > /dev/null; then
-kubetail() {
-    unfunction "$0"
-        antigen bundle johanhaleby/kubetail
-        $0 "$@"
-}
-fi
-
-gst() {
-    unfunction "$0"
-        antigen bundle git
-        antigen bundle git-extras
-        $0 "$@"
-}
-
-mvn() { unfunction "$0" && antigen bundle mvn && $0 "$@" }
-npm() { unfunction "$0" && antigen bundle npm && $0 "$@" }
-brew(){ unfunction "$0" && antigen bundle brew && $0 "$@" }
-docker(){ unfunction "$0" && antigen bundle docker && $0 "$@" }
-lein(){ unfunction "$0" && antigen bundle lein && $0 "$@" }
-tmuxinator(){ unfunction "$0" && antigen bundle tmuxinator && $0 "$@" }

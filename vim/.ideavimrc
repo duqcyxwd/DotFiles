@@ -167,6 +167,12 @@ unoremap <leader>;;
 unmap <leader>;;
 uvnoremap <leader>;
 noremap <leader>; mQA;<Esc>'Q
+
+
+" hybrid.vim
+" unnnoremap <C-a> 
+nnoremap <C-a> :action VimChangeNumberInc<CR>
+
 " }}}
 " Others {{{2
 " =================================================================

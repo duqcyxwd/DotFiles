@@ -13,39 +13,35 @@
 
 # ASYNC only support loading startup message
 export IS_ASYNC=1
-export START_MESSAGE=1
-export LOADING_BAR=1
-export OH_MY_ZSH_LOADED=1
+export START_MESSAGE=0
+export LOADING_BAR=0
 export ZPROF_TRACK=0
 # export ZSH_PLUGIN_LOADED=1 # Disable ZSH PLUGIN # unset ZSH_PLUGIN_LOADED
 
-# Section: ENV PATH {{{1
+# Section: PATH {{{1
 # --------------------------------------------------------------------------
-#=============================== PATH ===========================================
-
+# PATH: Global PATH {{{2
+# --------------------------------------------------------------------------
 export PATH=$HOME/bin:/usr/local/sbin:$HOME/script-tool:/usr/local/bin:$PATH
-export PATH="/Users/chuan.du/repo/dev-env/bin:$PATH"
-export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
+# export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
 export PATH="./node_modules/.bin:$PATH"
 ### Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
 
-# export is required for python path
-# export PYTHONPATH="/Users/chuan.du/repo/autotest/tests/component/cenx-rest-api:${PYTHONPATH}"
-export NODE_PATH=/usr/lib/node_modules
+export KAFKA_HOME=/usr/local/kafka
+export KAFKA=$KAFKA_HOME/bin
+export KAFKA_CONFIG=$KAFKA_HOME/config
+export PATH=$KAFKA:$PATH
 
+# export is required for python path
+export NODE_PATH=/usr/lib/node_modules
 # Tmuxinator
 export EDITOR='vim'
 
-if [ "$ZPROF_TRACK" -eq "1" ]; then
-    zmodload zsh/zprof
-fi
+[[ $ZPROF_TRACK -eq "1" ]] && zmodload zsh/zprof
+[[ $LOADING_BAR -eq "1" ]] && revolver --style "bouncingBar" start "Loading zsh config"
 
-if [ "$LOADING_BAR" -eq "1" ]; then
-    revolver --style "bouncingBar" start "Loading zsh config"
-fi
-
-# Section: Default PATH Parameter {{{1
+# PATH: Default PATH Parameter {{{2
 # --------------------------------------------------------------------------
 
 # Path to your oh-my-zsh installation.
@@ -54,12 +50,14 @@ export TERM="xterm-256color"
 export ZSH_LOADING_LOG=~/.startup.log
 export MESSAGE_CACHE_BEFORE_PRINT=~/.startup_all.log
 export WELCOME_MESSAGE=~/.welcome_message.log
-export HIST_STAMPS="yyyy-mm-dd"
+export HIST_STAMPS="yyyy-mm-dd" # ZSH History time format
+# }}}
 
 # Section: pre script {{{1
+# Script Before loading
 # --------------------------------------------------------------------------
 #=============================== pre script  ===========================================
-PREPARE_START_MESSAGE() {
+prepare_start_message() {
     if [[ -v ZSH_PLUGIN_LOADED ]]; then
         # Resource zsh.rc
         cat $WELCOME_MESSAGE >$MESSAGE_CACHE_BEFORE_PRINT
@@ -73,57 +71,12 @@ PREPARE_START_MESSAGE() {
     fi
 }
 
-PRINT_START_MESSAGE() {
+print_start_message() {
     (cat $WELCOME_MESSAGE && (cat $ZSH_LOADING_LOG | boxes -d stone -p a2t1)) | lolcat
-    return 0
 }
 
 mlog() {
     echo $@ >>$ZSH_LOADING_LOG
-}
-
-spaceship_power_version_init() {
-    SPACESHIP_POWER_VERSION_SHOW="${SPACESHIP_POWER_VERSION_SHOW=true}"
-    SPACESHIP_POWER_VERSION_PREFIX="${SPACESHIP_POWER_VERSION_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
-    SPACESHIP_POWER_VERSION_SUFFIX="${SPACESHIP_POWER_VERSION_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
-    SPACESHIP_POWER_VERSION_SYMBOL="${SPACESHIP_POWER_VERSION_SYMBOL="🍷 "}"
-    SPACESHIP_POWER_VERSION_COLOR="${SPACESHIP_POWER_VERSION_COLOR="white"}"
-
-    # ------------------------------------------------------------------------------
-    # Section power_version
-    # ------------------------------------------------------------------------------
-    spaceship_async_job_load_power_version() {
-        [[ $SPACESHIP_POWER_VERSION_SHOW == false ]] && return
-        async_job spaceship spaceship_async_job_power_version
-    }
-    spaceship_async_job_power_version() {
-        # echo "spaceship_async_job_power_version" >> ~/temp/temp.log
-        local version=$(power_v)
-        # echo $version >> ~/temp/temp.log
-        [[ -z $version ]] && return
-        echo "$version"
-    }
-    spaceship_power_version() {
-        [[ -z ${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]} ]] && return
-        spaceship::section \
-            "$SPACESHIP_POWER_VERSION_COLOR" \
-            "$SPACESHIP_POWER_VERSION_PREFIX" \
-            "${SPACESHIP_POWER_VERSION_SYMBOL}${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]}" \
-            "$SPACESHIP_POWER_VERSION_SUFFIX"
-    }
-
-    # Sync way to load power version
-    # spaceship_power_version() {
-    #     [[ $SPACESHIP_POWER_VERSION_SHOW == false ]] && return
-    #     spaceship::exists power_v || return
-    #     [[ -f pom.xml || -n *.xml(#qN^/) ]] || return
-    #     local version=$(power_v)
-    #     spaceship::section \
-    #         "$SPACESHIP_POWER_VERSION_COLOR" \
-    #         "$SPACESHIP_POWER_VERSION_PREFIX" \
-    #         "$SPACESHIP_POWER_VERSION_SYMBOL$version" \
-    #         "$SPACESHIP_POWER_VERSION_SUFFIX"
-    #     }
 }
 
 echoAndEval() { echo $@ && eval $@; }
@@ -144,19 +97,14 @@ noti() {
 
 # Section: ZSH ASYNC PATH {{{1
 # --------------------------------------------------------------------------
-#=============================== ZSH ASYNC PATH ===========================================
-
-lazy_load() {
-    # print "LAZY LOAD completed"
-    # source /Users/chuan.du/github/anishathalye-dotfiles/zsh/prompt.zsh
-    # Manully load theme to spped them up.
-    # fpath=( "$HOME/.zfunctions" $fpath )
-    # autoload -U promptinit; promptinit
-    # prompt spaceship
-
+# Async_load {{{2
+async_load() {
     # Something very interesting. callback is working
     # Async works with alias but not tab_complete
-    source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
+
+    # Make sure this doesn't break anything, if break clean this out
+    # source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/oh-my-zsh.sh
+
     source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
 
     source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
@@ -166,27 +114,48 @@ lazy_load() {
     source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/mvn/mvn.plugin.zsh
     source /Users/chuan.du/github/kafka-zsh-completions/kafka.zsh
 
+    # tmux
+    source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/tmux/tmux.plugin.zsh
+    ZSH_TMUX_ITERM2=true
+    ZSH_TMUX_AUTOCONNECT=true
+
+    alias tmuxt='unset ZSH_PLUGIN_LOADED && /usr/local/bin/tmux'
+    alias tca='tmux -CC attach -t'
+    alias tcad='tmux -CC attach -d -t' #Detach other client
+    alias tcs='tmux -CC new-session -s'
+
+    # mux
+    source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/tmuxinator/tmuxinator.plugin.zsh
+    # Auto completion
+    source /Users/chuan.du/github/tmuxinator/completion/tmuxinator.zsh
+
     # Antibody load
     # source ~/.zsh_plugins.sh
+
+    plugin_config
 
     if [ $commands[autojump] ]; then
         [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
     fi
-    # plugin_config
-    ac_my_colors
 
     autoload -Uz compinit
     if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
         compinit
     else
+        # compinit -c
         compinit -C
     fi
+    # compdef _tmuxinator tmuxinator mux
+
     ## Disable async loader to test theme
     async_stop_worker lazyloader
+    ac_my_colors
 }
+# }}}
+# async_cust_init {{{2
+source /Users/chuan.du/github/zsh-async/async.zsh
+async_cust_init() {
 
-pre-async() {
-    source /Users/chuan.du/github/zsh-async/async.zsh
     async_init
 
     _my_worker_stop() {
@@ -194,31 +163,28 @@ pre-async() {
         async_stop_worker my_worker
     }
     _async_start_message() {
-        PREPARE_START_MESSAGE
+        prepare_start_message
     }
 
     async_start_worker my_worker -n
     async_register_callback my_worker _my_worker_stop
 
     async_start_worker lazyloader -n
-    async_register_callback lazyloader lazy_load
+    async_register_callback lazyloader async_load
+    async_worker_eval lazyloader sleep 1 # Start async load after 1s
 
     if [ "$START_MESSAGE" -eq "1" ]; then
-        async_worker_eval lazyloader sleep 1
         async_worker_eval my_worker sleep 5
         async_worker_eval my_worker _async_start_message
     fi
 }
+# }}}
 
-if [ "$IS_ASYNC" -eq "1" ]; then
-    pre-async
-fi
-
-# Section: oh-my-zsh {{{1
+### }}}
+[[ $IS_ASYNC -eq "1" ]] && async_cust_init
+# Section: Theme Config {{{1
 # --------------------------------------------------------------------------
-#=============================== oh-my-zsh  ======================================
 # Set name of the theme to load.
-# Look in ~/.oh-my-zsh/themes/
 
 # ZSH_THEME="agnoster-cus"
 # ZSH_THEME="agnoster"
@@ -254,7 +220,6 @@ load_POWERLEVEL9K() {
 
 # Section: Antigen {{{1
 # --------------------------------------------------------------------------
-#=========================== Antigen ==================================
 # Load very basic plugins
 load_Antigen0() {
     echo "THEME: spaceship"
@@ -271,13 +236,40 @@ load_Antigen0() {
 load_Antigen() {
     mlog "PlUGIN ENGINE: Antigen"
     if ! type "antigen" >/dev/null; then
-        echo "init antigen"
         source ~/antigen.zsh
         # Load the oh-my-zsh's library. It will conflict with other theme
+        # echo "load oh-my-zsh"
         antigen use oh-my-zsh
     fi
-    source ~/.antigenrc
-    # Lazy load bundles
+    # Antigen loading package {{{2
+
+    antigen bundle vi-mode
+    antigen bundle iterm2                        # Iterm2 profile, color
+
+    antigen bundle shayneholmes/zsh-iterm2colors # Iterm2 Color "0.01"
+    antigen bundle paulmelnikow/zsh-startup-timer
+    antigen bundle djui/alias-tips # Alias helper
+
+    # antigen bundle gretzky/auto-color-ls             # Async load
+    # antigen bundle johanhaleby/kubetail              # Lazy load
+
+    # antigen bundle zsh-users/zsh-syntax-highlighting # Async load
+    # antigen bundle zsh-users/zsh-autosuggestions     # 0.02  Async load
+    # antigen bundle zdharma/history-search-multi-word # 0.02s Async load
+
+    # echo "THEME: spaceship"
+    # antigen theme denysdovhan/spaceship-prompt
+    # Async prompt
+    antigen theme maximbaz/spaceship-prompt
+
+    # echo "THEME: pure"
+    # antigen bundle mafredri/zsh-async
+    # antigen bundle sindresorhus/pure
+    # }}}
+
+    antigen apply
+
+    # Lazy load bundles {{{2
     if ! type "kubetail" >/dev/null; then
         kubetail() {
             unfunction "$0"
@@ -304,98 +296,18 @@ load_Antigen() {
     lein() {
         unfunction "$0" && antigen bundle lein && $0 "$@"
     }
-    tmuxinator() {
-        unfunction "$0" && antigen bundle tmuxinator && $0 "$@"
-    }
-
+    # tmuxinator() {
+    #     unfunction "$0" && antigen bundle tmuxinator && $0 "$@"
+    # }
+    # }}}
 }
-
-load_Antigen_init() {
-    echo "PlUGIN ENGINE: Antigen Init"
-    if ! type "antigen" >/dev/null; then
-        source ~/antigen.zsh
-        # Load the oh-my-zsh's library. It will conflict with other theme
-        antigen use oh-my-zsh
-    fi
-    antigen init ~/.antigenrc
-}
-
-plugin_config() {
-    # Some good keybind is overwrite by plugins or oh-my-zsh
-    # Also includes plugin variables
-
-    # Spaceship
-    SPACESHIP_TIME_SHOW=true
-    SPACESHIP_EXEC_TIME_ELAPSED=1
-    spaceship_power_version_init
-
-    # SPACESHIP_PROMPT_ORDER=(time user host dir git hg package node ruby elixir xcode swift golang php rust haskell julia aws venv conda pyenv dotnet ember kubecontext power_version exec_time line_sep battery vi_mode jobs exit_code char )
-    # maximbaz/spaceship-prompt
-    SPACESHIP_DIR_PREFIX=""
-    SPACESHIP_GIT_STATUS_SHOW=true
-    SPACESHIP_GIT_STATUS_PREFIX="["
-    SPACESHIP_GIT_STATUS_SUFFIX="] "
-    SPACESHIP_GIT_STATUS_COLOR="red"
-    SPACESHIP_GIT_STATUS_UNTRACKED="?"
-    SPACESHIP_GIT_STATUS_ADDED="+"
-    SPACESHIP_GIT_STATUS_MODIFIED="!"
-    SPACESHIP_GIT_STATUS_RENAMED="»"
-    SPACESHIP_GIT_STATUS_DELETED="✘"
-    SPACESHIP_GIT_STATUS_STASHED="$"
-    SPACESHIP_GIT_STATUS_UNMERGED="="
-    SPACESHIP_GIT_STATUS_AHEAD="⇡"
-    SPACESHIP_GIT_STATUS_BEHIND="⇣"
-    SPACESHIP_GIT_STATUS_DIVERGED="⇕"
-
-    SPACESHIP_PROMPT_ORDER=(time user host git_branch git_status power_version hg package node ruby elixir xcode swift golang php haskell julia aws venv conda pyenv dotnet ember kubecontext exec_time line_sep dir battery vi_mode jobs exit_code char)
-
-    # zsh-iterm2colors
-    alias ac=_iterm2colors_apply
-    alias acl='echo $_iterm2colors_current'
-    alias acr=_iterm2colors_apply_random
-    alias ac-light='ac "ayu_light"'
-    alias ac-darkside='ac "Darkside"'
-    alias ac-ocean='ac "OceanicMaterial"'
-    alias ac-sd='ac "Solarized Darcula"'
-
-    ac_my_colors() {
-        local MYCOLORS=("ayu_light" "Darkside" "OceanicMaterial" "Solarized Darcula" "Broadcast" "Desert" "DotGov" "Misterioso" "Galaxy")
-        local RANDOM=$$$(gdate +%N)
-        local NEW_COLOR=${MYCOLORS[RANDOM % ${#MYCOLORS[@]} + 1]}
-        _iterm2colors_apply $NEW_COLOR
-        mlog "COLOR THEME: " $_iterm2colors_current
-    }
-
-    alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
-
-    alias exa='/usr/local/bin/exa --time-style=long-iso'
-    alias ea='exa --git --group-directories-first -a'
-    alias el='exa -l --git --group-directories-first'
-    alias e='exa --git --group-directories-first'
-
-    alias l='colorls -A --sd --report'
-    alias lg='colorls -A --sd --report --gs'
-    alias lc='colorls -l --sd --gs'
-    alias ll='colorls -l --sd --gs'
-    alias lca='colorls -lA --sd --gs'
-    source $(dirname $(gem which colorls))/tab_complete.sh
-
-    bindkey '^k' autosuggest-accept
-    bindkey '^\n' autosuggest-execute
-    # bindkey "^R" history-incremental-search-backward
-    # bindkey "^S" history-incremental-search-forward
-
-    # Vi-mode
-    export KEYTIMEOUT=1
-}
-
+# }}}
 # Section: Antibody {{{1
 # --------------------------------------------------------------------------
-#============================== antibody ======================================
-
 load_Antibody() {
     mlog "Use antibody"
     # No matter what I try, this is super slow
+    autoload -Uz compinit && compinit
     source ~/.zsh_plugins.sh
 
     # source <(antibody init)
@@ -404,42 +316,31 @@ load_Antibody() {
     # antibody bundle <~/.zsh_plugins.txt
 
     # echo "POWERLINE THEME: spaceship"
-    # # antibody bundle denysdovhan/spaceship-prompt
-    # if [ "$OH_MY_ZSH_LOADED" -ne "1" ]; then
-    #     # antibody bundle maximbaz/spaceship-prompt
-    # fi
+    # antibody bundle denysdovhan/spaceship-prompt
+    # antibody bundle maximbaz/spaceship-prompt
 }
-
-# Section: Load plugins {{{1
+# }}}
+# Section: ZSH Plugin Loading {{{1
 # --------------------------------------------------------------------------
 
-#========================= oh-my-zsh DEFAULT ==================================
-# Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
-# Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
-# vi-mode
-# plugins=(git git-extras osx mvn npm brew docker)
-# plugins=()
-
-#========================= load ZSH plugins ===================================
-if [ "$OH_MY_ZSH_LOADED" -ne "1" ]; then
-    mlog "INIT: oh-my-zsh"
-    echo "INIT: oh-my-zsh"
-    source $ZSH/oh-my-zsh.sh
-fi
-
-# source /Users/chuan.du/github/anishathalye-dotfiles/zsh/prompt.zsh
-
+# echo "ZSH_PLUGIN_LOADED $ZSH_PLUGIN_LOADED (1 for loaded)"
 if [[ ! -v ZSH_PLUGIN_LOADED ]]; then
     # load_Antigen0>>$ZSH_LOADING_LOG
-    load_Antigen >>$ZSH_LOADING_LOG
+    load_Antigen
+    # load_Antigen >>$ZSH_LOADING_LOG
     # load_Antigen_init>>$ZSH_LOADING_LOG
-    # load_Antibody>>$ZSH_LOADING_LOG
+    # load_Antibody >>$ZSH_LOADING_LOG
 fi
 
-# Section: Script tools {{{1
+# Section: Script Tools {{{1
 # --------------------------------------------------------------------------
-#============================= Script tool: Most useful tool ever ===============================
+# Tool: A {{{2
+# --------------------------------------------------------------------------
+# Change iTerm2 Profile
+# this might work as well: iterm2_profile Performance
+alias performance='echo -e "\033]50;SetProfile=Performance\x7"'
 
+# Convert CD to markdown format
 cc() {
     res=$(pbpaste | sed -e :a -e '$!N; s/\n//; ta' | sed 's/\(CD-[0-9]*\)/[[\1]](https:\/\/cenx-cf.atlassian.net\/browse\/\1) /')
     echo $res
@@ -447,30 +348,29 @@ cc() {
 
 color-test() {
     clear
-    cat /Users/chuan.du/temp/iterm-syntax-test.txt
+    cat /Users/chuan.du/script-tool/iterm-syntax-test.txt
 }
 
-# Change iTerm2 Profile
+# Tool: B {{{2
+# --------------------------------------------------------------------------
+#========================= Other helper script ================================
+#
+# Media
+# Convert m4a/wma to mp3
+# mkdir newfiles
+# for f in *.m4a; do ffmpeg -i "$f" -codec:v copy -codec:a libmp3lame -q:a 2 newfiles/"${f%.m4a}.mp3"; done
+# for f in *.wma; do ffmpeg -i "$f" -codec:v copy -codec:a libmp3lame -q:a 2 newfiles/"${f%.wma}.mp3"; done
 
-# this might work as well: iterm2_profile Performance
-alias performance='echo -e "\033]50;SetProfile=Performance\x7"'
+#
+## Hacky
+#if [ $(which docker-credential-osxkeychain) ]; then
+#        unlink $(which docker-credential-osxkeychain)
+#fi
 
-#============================= system-clean-up ===============================
-alias clean-m2-cenx="rm /Users/chuan.du/.m2/repository/cenx"
+# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 
 # Section: Dev small and Docker {{{1
 # --------------------------------------------------------------------------
-
-#============================= Dev Small stuff ===============================
-# alias doppelganger="docker run -it --rm -v `pwd`:/transport docker.cenx.localnet:5000/doppelganger:0.1.3-SNAPSHOT-b6"
-alias doppelganger="docker run -it --rm -v $(pwd):/transport ship.cenx.com:5000/doppelganger"
-export CORTX_IP=192.168.59.103
-export ZK_PORT=2181
-export KAFKA_PORT=9092
-export SOLR_PORT=8983
-export PARKER_REPL_PORT=4081
-export TERMINUS_REPL_PORT=4083
-export NARANATHU_REPL_PORT=4015
 
 #============================= Dokcer ===============================
 docker-stats() { docker stats --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
@@ -484,7 +384,7 @@ docker-cleanup-deep() {
     docker rmi $(docker images --filter dangling=true -q 2>/dev/null) 2>/dev/null
 }
 
-docker-ps() {
+docker-psp() {
     docker ps $@ --format 'table{{ .Image }}\t{{ .Names }}\t{{ .Status }}\t{{ .Ports }}' | awk '
     NR % 2 == 0 {
       printf "\033[0m";
@@ -511,29 +411,34 @@ docker-ps() {
     }
     '
 }
-alias dps=docker-ps
 
-dpsc() {
+alias dpsp=docker-psp
+dpspa() { echo "docker list all containers" && docker-psp -a $@; }
+
+# Print with Container ID
+dps() {
     docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t'
 }
+alias dpsa='dps -a'
 
+# Print in vertical
 dpsv() {
-    export FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nPORTS\t{{.Ports}}\nCOMMAND\t{{.Command}}\nCREATED\t{{.CreatedAt}}\nSTATUS\t{{.Status}}\n"
-    docker ps $@ --format="$FORMAT" --no-trunc
+    local FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nPORTS\t{{.Ports}}\nCOMMAND\t{{.Command}}\nLABEL\t{{.Labels}}\nCREATED\t{{.CreatedAt}}\nSTATUS\t{{.Status}}\n"
+    docker ps $@ -a --format="$FORMAT" --no-trunc
 }
 
+# find and print in vertical
 dpsvf() {
     dpsv --filter name=$@
 }
 
+# Docker exec
 dexec() {
     echo "Docker exec -it by name"
     firstmatch=$(docker ps -q --filter name=$@ | head -1)
     dpsv -f id=$firstmatch
     docker exec -it $(docker ps -q --filter name=$@ | head -1) bash
 }
-
-dpsa() { echo "docker list all containers" && docker-ps -a $@; }
 
 dps-old() { echo "Docker ps old" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
 dps-old-p() { echo "Docker ps old with port" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
@@ -543,6 +448,8 @@ pre-docker() {
     eval $(docker-machine env)
 }
 
+alias dimages='docker images'
+
 #============================== Docker old ===============================
 #export DOCKER_HOST=tcp://192.168.59.103:2375
 #unset DOCKER_HOST
@@ -551,12 +458,9 @@ pre-docker() {
 
 # Section: Local wildfly {{{1
 # --------------------------------------------------------------------------
-#============================ local wildfly ==============================
 # Unfinished
 ## export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
 ## export PATH=${PATH}:${JBOSS_HOME}/bin
-export PATH=${PATH}:/usr/local/kafka/bin
-export PATH=${PATH}:/usr/local/Cellar/kafka/0.8.2.1/bin
 
 pre-wildfly() {
     echo "export JBOSS_HOME"
@@ -586,7 +490,7 @@ alias wildfly-standalone-restart='$WILDFLY_BIN/jboss-cli.sh -c --command=":shutd
 
 alias wfsstart=wildfly-standalone
 
-# Section: Something {{{1
+# Section: lein Java funcion {{{1
 # --------------------------------------------------------------------------
 
 #========== Clojure Repl ===========
@@ -603,12 +507,10 @@ export JAVA_HOME=$(/usr/libexec/java_home)
 export DSE_BIN=/Users/chuan.du/CENX/dse/bin
 export PATH=$PATH:$JAVA_HOME/bin:$DSE_BIN
 
-alias later="nohup /Users/chuan.du/repo/DotFiles/otherTool/later.pl"
-
 # FileSearch
 f() {echo 'find . -iname "*'$1'*" '${@:2} && find . -iname "*$1*" ${@:2} }
 r-old() {echo ' grep "'$1'" '${@:2}' -R .' && grep "$1" ${@:2} -R . }
-r() {echo ' Replaced with ag'}
+r() {echo 'Replaced with ag'}
 
 # Watch function
 mywatch() {
@@ -623,16 +525,12 @@ mywatch() {
 #watch-zookeeper2 {while :; a=$@; do clear; echo "$(date)\n\n$(echo stat |nc $a 2181)"; sleep 1;  done}
 #watch-zookeeper-cnumber {while :; do clear; echo "$(date)\n\n$(echo stat | nc localhost 2181 |grep 127.0.0.1 |wc -l)"; sleep 1;  done}
 
-# t(){ timerToStartApplication "$@" &}
-timerToStartApplication() {
-    # sleep 1 && open -a /Applications/Time\ Out\ Free.app
-    ti=$@
-    print "sleep to start Timeout Free\nSleep $ti"
-    pkill "Time Out Free"
-    sleep $@
-    print 'start Timeout Free'
-    open -a /Applications/Time\ Out\ Free.app
-    open -a /Applications/Font\ Book.app
+clean-terminal() {
+    /bin/rm /var/log/cenx-alarm-pp/*
+    /bin/rm ~/temp/*
+    /bin/rm -rf /Users/chuan.du/.m2/repository/cenx/cenx-*
+    docker-cleanup-deep
+
 }
 
 # Section: Alias {{{1
@@ -644,13 +542,13 @@ alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 # alias rs="ee 'source ~/.zshrc'"
 alias rs='source ~/.zshrc'
-alias rst='unset ZSH_PLUGIN_LOADED && antigen-reset && source ~/.zshrc'
+alias rst='unset ZSH_PLUGIN_LOADED && source ~/.zshrc'
 alias mz='vim ~/.zshrc && shfmt -i 4 -s -w -ci ~/.zshrc'
 alias ca="less ~/.zshrc"
 alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
 alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
-alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
 
+alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
 alias notes="mvim ~/repo/Notes/CLojure.md"
 
 alias py='python'
@@ -658,7 +556,6 @@ alias rmt='/bin/rm'
 alias rm="trash"
 alias ems='open -a /Applications/Emacs.app $@'
 alias em='ems'
-# alias emc="/Applications/Emacs.app/Contents/MacOS/bin/emacsclient"
 
 alias sourcetree='open -a SourceTree'
 alias st='sourcetree'
@@ -685,13 +582,8 @@ gh() {cd $repodir3$1}
 compctl -g $repodir3'*(:t:r)' gh
 
 #============= Powerful and Common alias =============
-# alias copy="echo 'Copy file path' && tr -d '\n' | pbcopy"
-# Don't know
-# alias copy="tr -d '\n' | pbcopy"
 alias cpwd='echo "copy currenty directory" && pwd |pbcopy'
-
 #Copy file path to clipboard
-#greadlink -f development.pem
 cpath() {greadlink -f $1 | tr -d '\n' | pbcopy }
 alias cf='pbpaste | pbcopy' # clean format of clipboard
 alias dir='dirs -v'
@@ -752,8 +644,7 @@ git_create_branch() {
 }
 
 gitopen-current-branch() {
-    current_branch=$(get_current_branch)
-    ee "gitopen -b ${current_branch}"
+    ee "gitopen -b $(get_current_branch)"
 }
 
 alias gcob="ee 'gco -b'"
@@ -803,38 +694,13 @@ alias galias='alias|grep git'
 #clean -dxf will wipe everything requiring user to source gitenv again
 #alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
 
-# Section: Something {{{1
+# Section: Some Autocompletion {{{1
 # --------------------------------------------------------------------------
 # Autocompletion for teamocil
 compctl -g '~/.teamocil/*(:t:r)' itermocil
-
-plugin_config
-
-# Section: Something {{{1
+# }}}
+# Section: Lazy Plugin Load {{{1
 # --------------------------------------------------------------------------
-#======================== Terminal Config ==================================
-source ~/.zshrc-local.sh
-
-#========================= Other helper script ================================
-#
-# Media
-# Convert m4a/wma to mp3
-# mkdir newfiles
-# for f in *.m4a; do ffmpeg -i "$f" -codec:v copy -codec:a libmp3lame -q:a 2 newfiles/"${f%.m4a}.mp3"; done
-# for f in *.wma; do ffmpeg -i "$f" -codec:v copy -codec:a libmp3lame -q:a 2 newfiles/"${f%.wma}.mp3"; done
-
-#
-## Hacky
-#if [ $(which docker-credential-osxkeychain) ]; then
-#        unlink $(which docker-credential-osxkeychain)
-#fi
-
-# test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
-
-# Section: Something {{{1
-# --------------------------------------------------------------------------
-
-# unset ZSH_PLUGIN_LOADED && unset OH_MY_ZSH_LOADED && unset IS_ASYNC
 
 # Helm completion
 # source <(helm completion zsh | sed -E 's/\["(.+)"\]/\[\1\]/g')
@@ -856,7 +722,7 @@ if [ $commands[kubectl] ]; then
     }
 fi
 
-# Lazy load example
+# Lazy load example {{{2
 # if [ $commands[kubectl] ]; then
 #
 #   # Placeholder 'kubectl' shell function:
@@ -873,32 +739,165 @@ fi
 #     $0 "$@"
 #   }
 # fi
+# }}}
 
-#========================= Startup message  ===================================
+# Section: plugin_config {{{1
+# --------------------------------------------------------------------------
+# spaceship_power_version_init {{{2
+
+spaceship_power_version_init() {
+    SPACESHIP_POWER_VERSION_SHOW="${SPACESHIP_POWER_VERSION_SHOW=true}"
+    SPACESHIP_POWER_VERSION_PREFIX="${SPACESHIP_POWER_VERSION_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
+    SPACESHIP_POWER_VERSION_SUFFIX="${SPACESHIP_POWER_VERSION_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
+    SPACESHIP_POWER_VERSION_SYMBOL="${SPACESHIP_POWER_VERSION_SYMBOL="🍷 "}"
+    SPACESHIP_POWER_VERSION_COLOR="${SPACESHIP_POWER_VERSION_COLOR="white"}"
+
+    # ------------------------------------------------------------------------------
+    # Section power_version
+    # ------------------------------------------------------------------------------
+    spaceship_async_job_load_power_version() {
+        [[ $SPACESHIP_POWER_VERSION_SHOW == false ]] && return
+        async_job spaceship spaceship_async_job_power_version
+    }
+    spaceship_async_job_power_version() {
+        # echo "spaceship_async_job_power_version" >> ~/temp/temp.log
+        local version=$(power_v)
+        # echo $version >> ~/temp/temp.log
+        [[ -z $version ]] && return
+        echo "$version"
+    }
+    spaceship_power_version() {
+        [[ -z ${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]} ]] && return
+        spaceship::section \
+            "$SPACESHIP_POWER_VERSION_COLOR" \
+            "$SPACESHIP_POWER_VERSION_PREFIX" \
+            "${SPACESHIP_POWER_VERSION_SYMBOL}${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]}" \
+            "$SPACESHIP_POWER_VERSION_SUFFIX"
+    }
+
+    # Sync way to load power version
+    # spaceship_power_version() {
+    #     [[ $SPACESHIP_POWER_VERSION_SHOW == false ]] && return
+    #     spaceship::exists power_v || return
+    #     [[ -f pom.xml || -n *.xml(#qN^/) ]] || return
+    #     local version=$(power_v)
+    #     spaceship::section \
+    #         "$SPACESHIP_POWER_VERSION_COLOR" \
+    #         "$SPACESHIP_POWER_VERSION_PREFIX" \
+    #         "$SPACESHIP_POWER_VERSION_SYMBOL$version" \
+    #         "$SPACESHIP_POWER_VERSION_SUFFIX"
+    #     }
+}
+
+spaceship_config() {
+    # Spaceship
+    SPACESHIP_TIME_SHOW=true
+    SPACESHIP_EXEC_TIME_ELAPSED=1
+
+    # SPACESHIP_PROMPT_ORDER=(time user host dir git hg package node ruby elixir xcode swift golang php rust haskell julia aws venv conda pyenv dotnet ember kubecontext power_version exec_time line_sep battery vi_mode jobs exit_code char )
+    # maximbaz/spaceship-prompt
+    SPACESHIP_DIR_PREFIX=""
+    SPACESHIP_GIT_STATUS_SHOW=true
+    SPACESHIP_GIT_STATUS_PREFIX="["
+    SPACESHIP_GIT_STATUS_SUFFIX="] "
+    SPACESHIP_GIT_STATUS_COLOR="red"
+    SPACESHIP_GIT_STATUS_UNTRACKED="?"
+    SPACESHIP_GIT_STATUS_ADDED="+"
+    SPACESHIP_GIT_STATUS_MODIFIED="!"
+    SPACESHIP_GIT_STATUS_RENAMED="»"
+    SPACESHIP_GIT_STATUS_DELETED="✘"
+    SPACESHIP_GIT_STATUS_STASHED="$"
+    SPACESHIP_GIT_STATUS_UNMERGED="="
+    SPACESHIP_GIT_STATUS_AHEAD="⇡"
+    SPACESHIP_GIT_STATUS_BEHIND="⇣"
+    SPACESHIP_GIT_STATUS_DIVERGED="⇕"
+
+    SPACESHIP_PROMPT_ORDER=(time user host git_branch git_status power_version hg package node ruby elixir xcode swift golang php haskell julia aws venv conda pyenv dotnet ember kubecontext exec_time line_sep dir battery vi_mode jobs exit_code char)
+}
+
+# }}}
+# plugin_config {{{2
+plugin_config() {
+    # Some good keybind is overwrite by plugins or oh-my-zsh
+    # Also includes plugin variables
+
+    # zsh-iterm2colors
+    alias ac=_iterm2colors_apply
+    alias acl='echo $_iterm2colors_current'
+    alias acr=_iterm2colors_apply_random
+    alias ac-light='ac "ayu_light"'
+    alias ac-darkside='ac "Darkside"'
+    alias ac-ocean='ac "OceanicMaterial"'
+    alias ac-sd='ac "Solarized Darcula"'
+
+    ac_my_colors() {
+        # Light Theme "ayu_light"
+        local MYCOLORS=("Darkside" "OceanicMaterial" "Solarized Darcula" "Broadcast" "Desert" "DotGov" "Misterioso" "Galaxy")
+        local RANDOM=$$$(gdate +%N)
+        local NEW_COLOR=${MYCOLORS[RANDOM % ${#MYCOLORS[@]} + 1]}
+        _iterm2colors_apply $NEW_COLOR
+        mlog "COLOR THEME: " $_iterm2colors_current
+    }
+
+    alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
+
+    alias exa='/usr/local/bin/exa --time-style=long-iso --git --group-directories-first'
+    alias e=exa
+    alias l=exa
+
+    alias ea='exa -a'
+    alias el='exa -l'
+    alias ll=el
+    alias ela='exa -l -a'
+    alias la=ela
+    alias laa='el .?* -d'
+
+    alias lta='exa --git --group-directories-first -lT'
+    alias lt1='exa --git --group-directories-first -lT -L 1'
+    alias lt2='exa --git --group-directories-first -lT -L 2'
+    alias lt3='exa --git --group-directories-first -lT -L 3'
+    alias lt4='exa --git --group-directories-first -lT -L 4'
+    alias lt=lt2
+
+    alias lc='colorls -l --sd --gs'
+    alias lca='colorls -lA --sd --gs'
+
+    bindkey '^k' autosuggest-accept
+    bindkey '^\n' autosuggest-execute
+    # bindkey "^R" history-incremental-search-backward
+    # bindkey "^S" history-incremental-search-forward
+
+    # Vi-mode
+    export KEYTIMEOUT=1
+}
+# }}}
+# }}}
+
+# Section: Load local config && plugin config
+spaceship_power_version_init
+spaceship_config
+plugin_config
+source ~/.zshrc-local.sh
+
+# Section: After Load {{{1
+# --------------------------------------------------------------------------
 
 if [ "$IS_ASYNC" -eq "1" ]; then
     # No need stop worker
     # async_stop_worker my_worker
 else
     if [ "$START_MESSAGE" -eq "1" ]; then
-        PREPARE_START_MESSAGE
+        prepare_start_message
     fi
 fi
 
-if [ "$LOADING_BAR" -eq "1" ]; then
-    revolver stop # Stop loading Bar
-fi
-
-if [ "$START_MESSAGE" -eq "1" ]; then
-    PRINT_START_MESSAGE
-fi
+[[ $LOADING_BAR -eq "1" ]] && revolver stop # Stop loading Bar
+[[ $START_MESSAGE -eq "1" ]] && print_start_message
 
 # Only load omz and theme once
-export OH_MY_ZSH_LOADED=1
 export ZSH_PLUGIN_LOADED=1
 export IS_ASYNC=0
+# unset ZSH_PLUGIN_LOADED && unset IS_ASYNC
 
-if [ "$ZPROF_TRACK" -eq "1" ]; then
-    zprof # bottom of .zshrc
-fi
+[[ $ZPROF_TRACK -eq "1" ]] && zprof # bottom of .zshrc
 # }}}
