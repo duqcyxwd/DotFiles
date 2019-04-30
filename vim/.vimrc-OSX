@@ -470,7 +470,9 @@ let g:rainbow_active = 1
 " Helper to initialize Zenburn colors in 256-color mode.
 " let g:solarized_termcolors=256
 set background=dark
-colorscheme solarized
+syntax on
+" colorscheme solarized
+
 " colorscheme desert
 " function! ColorTermZenburn()
 "   colorscheme zenburn
@@ -502,7 +504,6 @@ colorscheme solarized
 "     set t_Sb=[4%dm
 "   endif
 " endif
-syntax on
 
 " window splits & ruler were too bright - change to white on grey
 " (shouldn't change GUI or non-color term appearance)

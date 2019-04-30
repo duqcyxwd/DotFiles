@@ -106,7 +106,6 @@ async_load() {
     # source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/oh-my-zsh.sh
 
     source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
-
     source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
     source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
     source /Users/chuan.du/.antigen/bundles/zdharma/history-search-multi-word/history-search-multi-word.plugin.zsh
@@ -530,6 +529,7 @@ clean-terminal() {
     /bin/rm ~/temp/*
     /bin/rm -rf /Users/chuan.du/.m2/repository/cenx/cenx-*
     docker-cleanup-deep
+    /bin/rm -rf /usr/local/kafka_2.9.1-0.8.2.2/logs/*
 
 }
 
@@ -550,6 +550,9 @@ alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 
 alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
 alias notes="mvim ~/repo/Notes/CLojure.md"
+
+# Cheatsheet
+alias cidea='cat /Users/chuan.du/repo/DotFiles/vim/ideavim-cheatsheet | grep $@'
 
 alias py='python'
 alias rmt='/bin/rm'
@@ -869,6 +872,9 @@ plugin_config() {
 
     # Vi-mode
     export KEYTIMEOUT=1
+
+    ## Fun
+    alias test-passed='if [ "$?" -eq "0" ]; then lolcat ~/.tp -a -s 40 -d 2; fi;'
 }
 # }}}
 # }}}
@@ -876,7 +882,6 @@ plugin_config() {
 # Section: Load local config && plugin config
 spaceship_power_version_init
 spaceship_config
-plugin_config
 source ~/.zshrc-local.sh
 
 # Section: After Load {{{1

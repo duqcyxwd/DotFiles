@@ -173,6 +173,11 @@ noremap <leader>; mQA;<Esc>'Q
 " unnnoremap <C-a> 
 nnoremap <C-a> :action VimChangeNumberInc<CR>
 
+" Other
+nnoremap <leader>ss :action FileStructurePopup<CR>
+vnoremap <leader>ss   <Esc>:action FileStructurePopup<CR>
+
+
 " }}}
 " Others {{{2
 " =================================================================
@@ -256,6 +261,8 @@ nnoremap <leader>mrd :action com.github.setial.intellijjavadocs.action.JavaDocGe
 nnoremap <leader>mrD :action com.github.setial.intellijjavadocs.action.JavaDocsGenerateActionOnEditor<CR>
 
 noremap <leader>rrr :action Refactorings.QuickListPopupAction<CR>
+
+
 
 " code refactoring
 " nnoremap <space>rn :action RenameElement<cr>

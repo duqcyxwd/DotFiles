@@ -1,0 +1,272 @@
+n  <CR>        * zc
+n  <C-A>       * :action VimChangeNumberInc<CR>
+n  <C-E>       * $
+n  <C-G>       * <Esc>
+n  <C-I>       * :action Forward<CR>
+n  <C-O>       * :action Back<CR>
+n  <C-W>L        :action MoveEditorToOppositeTabGroup<CR>
+n  <Plug>CSurround * call com.maddyhome.idea.vim.extension.surround.VimSurroundExtension.CSurroundHandler
+n  <Plug>DSurround * call com.maddyhome.idea.vim.extension.surround.VimSurroundExtension.DSurroundHandler
+   <Plug>VSurround * call com.maddyhome.idea.vim.extension.surround.VimSurroundExtension.VSurroundHandler
+n  <Plug>YSurround * call com.maddyhome.idea.vim.extension.surround.VimSurroundExtension.YSurroundHandler
+n   <Tab>      * :action VimFilePrevious<CR>
+n              * :action GotoAction<CR>
+n   !          * :action Terminal.OpenInTerminal<CR>
+n   '          * :action Terminal.OpenInTerminal<CR>
+n   *          * :action ShowUsages<CR>
+    ;          * mQA;<Esc>'Q
+n   ?          * :map<CR>
+n   BN         * :action GotoPreviousBookmark<CR>
+n   BT         * :action ToggleBookmarkWithMnemonic<CR>
+n   Bl         * :action ShowBookmarks<CR>
+n   Bn         * :action GotoNextBookmark<CR>
+n   Bp         * :action GotoPreviousBookmark<CR>
+n   Bt         * :action ToggleBookmark<CR>
+n   Cl         * :action ShowColorPicker<CR>
+n   FO         * :action PreviousProjectWindow<CR>
+n   Fo         * :action NextProjectWindow<CR>
+    P          * "*P
+n   Ra         * :action RunAnything<CR>
+n   Rc         * :action RunClass<CR>
+n   Rk         * :action Stop<CR>
+n   Rr         * :action Run<CR>
+n   Rs         * :action ChooseRunConfiguration<CR>
+n   TT         * :action ChangeView<CR>
+n   Tm         * :action HideAllWindows<CR>
+n   Tp         * :action TogglePresentationMode<CR>
+n   Tt         * :action ToggleDistractionFreeMode<CR>
+    Y          * "*Y
+n   [          * :action GotoSuperMethod<CR>
+n   ]          * :action EditorCodeBlockEnd<CR>
+n   aP         * :action Performance.ActivityMonitor<CR>
+n   ak         * :action WelcomeScreen.Plugins<CR>
+n   aot        * :action ActivateTODOToolWindow<CR>
+n   ap         * :action ShowProcessWindow<CR>
+n   at         * :action ActivateTODOToolWindow<CR>
+n   b<C-D>     * :action CloseAllEditorsButActive<CR>
+n   b$         * :action GoToLastTab<CR>
+n   b0         * :action GoToTab1<CR>
+n   bP         * ggVGp<CR>
+n   bY         * :%y<CR>
+n   bb         * :action RecentFiles<CR>
+n   bd         * :action CloseContent<CR>
+n   bm         * :action ActivateEventLogToolWindow<CR>
+n   bn         * :action NextTab<CR>
+n   bp         * :action PreviousTab<CR>
+n   bs         * :action NewScratchBuffer<CR>
+n   bu         * :action ReopenClosedTab<CR>
+n   bx         * :action CloseAllEditors<CR>
+n   cC         * :action Compile<CR>
+n   cb         * :action CommentByBlockComment<CR>
+n   cc         * :action CompileDirty<CR>
+n   cl         * :action CommentByLineComment<CR>
+n   cm         * :action MakeModule<CR>
+n   cp         * vip<CR>:action CommentByLineComment<CR>:action VimVisualExitMode<CR>
+n   ct         * Vgg:action CommentByLineComment<CR>:action VimVisualExitMode<CR>
+n   cy         * yyP:action CommentByLineComment<CR>
+n   eL         * :action InspectCode<CR>
+n   eN         * :action GotoPreviousError<CR>
+n   el         * :action CodeInspection.OnEditor<CR>
+n   en         * :action GotoNextError<CR>
+n   ep         * :action GotoPreviousError<CR>
+n   er         * :action ShowIntentionActions<CR>
+n   es         * :action EditInspectionSettings<CR>
+n   ex         * :action ShowErrorDescription<CR>
+n   fF         * :action GotoFile<CR>
+n   fN         * :action NewElement<CR>
+n   fR         * :action RenameFile<CR>
+n   fS         * :action SaveAll<CR>
+n   fb         * :action ShowBookmarks<CR>
+n   feR        * :source ~/.ideavimrc<CR>
+n   fed        * :action ShowSettings<CR>
+n   ff         * :action GotoFile<CR>
+n   fg         * :action FindInPath<CR>
+n   fn         * :action NewClass<CR>
+n   fr         * :action RecentFiles<CR>
+n   fs         * :action SaveDocument<CR>
+n   ft         * :action ActivateProjectToolWindow<CR>
+n   fyy        * :action CopyPaths<CR>
+n   gG         * :action ActivateVersionControlToolWindow<CR>
+n   gS         * :action Vcs.Show.Shelf<CR>
+n   gb         * :action Git.Branches<CR>
+n   gc         * :action Git.Clone<CR>
+n   gfl        * :action Vcs.ShowTabbedFileHistory<CR>
+n   gg         * :action Vcs.QuickListPopupAction<CR>
+n   gi         * :action Git.Init<CR>
+n   gp         * :action Vcs.Push<CR>
+n   gs         * :action Vcs.Show.Local.Changes<CR>
+n   gv+        * :action Vcs.UpdateProject<CR>
+n   gvg        * :action Annotate<CR>
+n   gvl        * :action Vcs.Show.Log<CR>
+n   h          * :action ContextHelp<CR>
+n   ha         * :actionlist<CR>
+n   hdb        * :map<CR>
+n   hdk        * :map<CR>
+n   hh         * :action LocalHistory.ShowHistory<CR>
+n   hk         * :map<CR>
+n   hp         * :action WelcomeScreen.DevelopPlugins<CR>
+n   hr         * :action ContextHelp<CR>
+n   hv         * :action Help.JetBrainsTV<CR>
+n   ij         * o<Esc>k
+n   ik         * O<Esc>j
+n   ilp        * iLorem ipsum dolor sit amet, consectetuer adipiscing elit.  Donec hendrerit tempor tellus.  Donec pretium posuere tellus.  Proin quam nisl, tincidunt et, mattis eget, convallis nec, purus.  Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.  Nulla posuere.  Donec vitae dolor.  Nullam tristique diam non turpis.  Cras placerat accumsan nulla.  Nullam rutrum.  Nam vestibulum accumsan nisl.<Esc>
+n   ils        * iLorem ipsum dolor sit amet, consectetuer adipiscing elit.
+n   is         * :action InsertLiveTemplate<CR>
+n   j=         * :action ReformatCode<CR>
+n   jD         * :action ActivateProjectToolWindow<CR>
+n   jc         * :action GotoClass<CR>
+n   jd         * :action ActivateProjectToolWindow<CR>
+n   je         * :action FileStructurePopup<CR>
+n   jf         * :action GotoFile<CR>
+n   jn         * i<CR><Esc>
+n   jo         * i<CR><Esc>k$
+n   js         * :action GotoSymbol<CR>
+n   m=         * :action ReformatCode<CR>
+n   mcC        * :action Compile<CR>
+n   mcc        * :action CompileDirty<CR>
+n   mdB        * :action ViewBreakpoints<CR>
+n   mdC        * :action Debugger.RemoveAllBreakpointsInFile<CR>
+n   mdD        * :action DebugClass<CR>
+n   mdb        * :action ToggleLineBreakpoint<CR>
+n   mdc        * :action Resume<CR>
+n   mdd        * :action Debug<CR>
+n   mdn        * :action StepOver<CR>
+n   mdo        * :action StepOut<CR>
+n   mdr        * :action ChooseDebugConfiguration<CR>
+n   mds        * :action StepInto<CR>
+n   mg[        * :action EditorCodeBlockStart<CR>
+n   mg]        * :action EditorCodeBlockEnd<CR>
+n   mgg        * :action GotoDeclaration<CR>
+n   mgi        * :action GotoImplementation<CR>
+n   mgt        * :action GotoTypeDeclaration<CR>
+n   mhH        * :action QuickImplementations<CR>
+n   mhU        * :action ShowUsages<CR>
+n   mhc        * :action CallHierarchy<CR>
+n   mhh        * :action QuickJavaDoc<CR>
+n   mhi        * :action TypeHierarchy<CR>
+n   mhu        * :action FindUsages<CR>
+n   mpb        * :action CompileDirty<CR>
+n   mpc        * :action NewProject<CR>
+n   mpi        * :action ImportProject<CR>
+n   mpo        * :action WelcomeScreen.OpenProject<CR>
+n   mpr        * :action Run<CR>
+n   mrC        * :action CodeCleanup<CR>
+n   mrD        * :action com.github.setial.intellijjavadocs.action.JavaDocsGenerateActionOnEditor<CR>
+n   mrG        * :action GenerateGetterAndSetter<CR>
+n   mrI        * :action ImplementMethods<CR>
+n   mrN        * :action NewElement<CR>
+n   mrR        * :action Refactorings.QuickListPopupAction<CR>
+n   mrc        * :action GenerateConstructor<CR>
+n   mrd        * :action com.github.setial.intellijjavadocs.action.JavaDocGenerateActionOnEditor<CR>
+n   mrem       * :action ExtractMethod<CR>
+n   mres       * :action ExtractSuperclass<CR>
+n   mrg        * :action Generate<CR>
+n   mri        * :action OptimizeImports<CR>
+n   mrn        * :action NewClass<CR>
+n   mrr        * :action RenameElement<CR>
+n   n+         * :action VimChangeNumberInc<CR>
+n   n-         * :action VimChangeNumberDec<CR>
+n   n=         * :action VimChangeNumberInc<CR>
+    p          * "*p
+n   p!         * :action ActivateTerminalToolWindow<CR>
+n   pD         * :action ActivateProjectToolWindow<CR>
+n   pI         * :action InvalidateCaches<CR>
+n   pR         * :action ReplaceInPath<CR>
+n   pT         * :action RerunTests<CR>
+n   pa         * :action GotoTest<CR>
+n   pb         * :action RecentFiles<CR>
+n   pc         * :action CompileDirty<CR>
+n   pf         * :action GotoFile<CR>
+n   ph         * :action RecentFiles<CR>
+n   pp         * :action ManageRecentProjects<CR>
+n   pr         * :action RecentFiles<CR>
+n   pt         * :action ActivateProjectToolWindow<CR>
+n   pv         * :action Vcs.Show.Local.Changes<CR>
+n   qQ         * :action Exit<CR>
+n   qf         * :action CloseProject<CR>
+n   qq         * :action CloseProject<CR>
+n   qs         * :action SaveAll<CR>:action CloseProject<CR>
+n   rB         * :action RecentFiles<CR>
+n   rb         * :action RecentFiles<CR>
+n   re         * :reg<CR>
+    rrr        * :action Refactorings.QuickListPopupAction<CR>
+n   rs         * :action FindInPath<CR>
+n   ry         * :action PasteMultiple<CR>
+n   sP         * :action FindUsages<CR>
+n   sc         * :nohlsearch<CR>
+n   sf         * :action Find<CR>
+n   sh         * :action HighlightUsagesInFile<CR>
+n   sl         * :action FindInPath<CR>
+n   sp         * :action FindInPath<CR>
+n   ss         * :action SearchEverywhere<CR>
+n   tg         * :action EditorToggleShowGutterIcons<CR>
+n   ti         * :action EditorToggleShowIndentLines<CR>
+n   tl         * :action EditorGutterToggleGlobalSoftWraps<CR>
+n   tn         * :action EditorGutterToggleGlobalLineNumbers<CR>
+n   tp         * :action TogglePowerSave<CR>
+n   tw         * :action EditorToggleShowWhitespaces<CR>
+n   w<Left>    * :action VimWindowLeft<CR>
+n   w<Up>      * :action VimWindowUp<CR>
+n   w<Right>   * :action VimWindowRight<CR>
+n   w<Down>    * :action VimWindowDown<CR>
+n   w-         * :action SplitHorizontally<CR>
+n   w/         * :action SplitVertically<CR>
+n   wH         * :action VimWindowLeft<CR>10@:
+n   wJ         * :action VimWindowDown<CR>10@:
+n   wK         * :action VimWindowUp<CR>10@:
+n   wL         * :action VimWindowRight<CR>10@:
+n   wS         * :action SplitHorizontally<CR>:action VimWindowDown<CR>
+n   wV         * :action SplitVertically<CR>:action VimWindowRight<CR>
+n   wd         * :action VimWindowClose<CR>
+n   wh         * :action VimWindowLeft<CR>
+n   wj         * :action VimWindowDown<CR>
+n   wk         * :action VimWindowUp<CR>
+n   wl         * :action VimWindowRight<CR>
+n   wm         * :action VimWindowOnly<CR>
+n   wo         * :action NextProjectWindow<CR>
+n   wpm        * :action ActivateEventLogToolWindow<CR>
+n   ws         * :action SplitHorizontally<CR>
+n   wu         * :action ReopenClosedTab<CR>
+n   wv         * :action SplitVertically<CR>
+n   ww         * :action VimWindowNext<CR>
+n   wx         * :action VimWindowClose<CR>
+n   xJ         * $:action MoveLineDown<CR>
+n   xK         * $:action MoveLineUp<CR>
+n   xU         * vU
+n   xc         * g<C-G>
+n   xd         * wh:action EditorHungryBackSpace<CR>
+n   xtc        * xhP
+n   xtl        * ddkP
+n   xu         * vu
+n   xwc        * g<C-G>
+    y          * "*y
+n   zx+        * :action EditorIncreaseFontSize<CR>
+n   zx-        * :action EditorDecreaseFontSize<CR>
+n   zx0        * :action EditorResetFontSize<CR>
+n   zx=        * :action EditorIncreaseFontSize<CR>
+n  '           * `
+   H           * ^
+   L           * $
+   S             <Plug>VSurround
+n  \C          * :action Compile<CR>
+n  \R          * :action Run<CR>
+n  \a          * :action RunAnything<CR>
+n  \c          * :action RunClass<CR>
+n  \k          * :action Stop<CR>
+n  \q          * :nohlsearch<CR>
+n  \r          * :action RunClass<CR>
+n  \w          * :action EditorGutterToggleGlobalSoftWraps<CR>
+n  `           * '
+n  cs            <Plug>CSurround
+n  ds            <Plug>DSurround
+n  g,          * :action JumpToNextChange<CR>
+n  g;          * :action JumpToLastChange<CR>
+n  gH            :action MoveEditorToOppositeTabGroup<CR>
+n  gL            :action MoveEditorToOppositeTabGroup<CR>
+n  gh          * <C-W>h
+n  gj          * <C-W>j
+n  gk          * <C-W>k
+n  gl          * <C-W>l
+n  ys            <Plug>YSurround
+n  zm          * :action CollapseAllRegions<CR>
+n  zr          * :action ExpandAllRegions<CR>
