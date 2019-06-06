@@ -417,27 +417,3 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     (with-current-buffer (cider-current-connection)
       (insert s)
       (cider-repl-return))))
-
-
-(defun set-face-to-small ()
-  (interactive)
-  (set-face-attribute 'default nil :font "Consolas 10")
-  (set-face-attribute 'mode-line nil :font "Consolas 12")
-  (balance-windows))
-(defun set-face-to-medium ()
-  (interactive)
-  (set-face-attribute 'default nil :font "Consolas 14")
-  (set-face-attribute 'mode-line nil :font "Consolas 12")
-  (balance-windows))
-(defun set-face-to-large ()
-  (interactive)
-  (set-face-attribute 'default nil :font "Consolas 16")
-  (set-face-attribute 'mode-line nil :font "Consolas 14")
-
-  ;; (set-face-attribute 'default nil :font "DejaVu Sans Mono 14")
-  ;; (set-face-attribute 'default nil :font "Menlo 10")
-  ;; (set-face-attribute 'default nil :font "Monaco 13")
-  ;; (set-face-attribute 'default nil :font "Monospace 14")
-  ;; (set-face-attribute 'default nil :font "Courier 14")
-
-  (balance-windows))

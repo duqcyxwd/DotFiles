@@ -23,6 +23,7 @@ export ZPROF_TRACK=0
 # PATH: Global PATH {{{2
 # --------------------------------------------------------------------------
 export PATH=$HOME/bin:/usr/local/sbin:$HOME/script-tool:/usr/local/bin:$PATH
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 # export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
 export PATH="./node_modules/.bin:$PATH"
 ### Added by the Heroku Toolbelt
@@ -105,16 +106,18 @@ async_load() {
     # Make sure this doesn't break anything, if break clean this out
     # source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/oh-my-zsh.sh
 
-    source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
-    source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
-    source /Users/chuan.du/.antigen/bundles/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
-    source /Users/chuan.du/.antigen/bundles/zdharma/history-search-multi-word/history-search-multi-word.plugin.zsh
-    source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
-    source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/mvn/mvn.plugin.zsh
+    # Manully async load bundles that installed by antigen
+    local ANTIGEN_BUNDLES=~/.antigen/bundles
+    source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
+    source $ANTIGEN_BUNDLES/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
+    source $ANTIGEN_BUNDLES/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
+    source $ANTIGEN_BUNDLES/zdharma/history-search-multi-word/history-search-multi-word.plugin.zsh
+    source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
+    source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/mvn/mvn.plugin.zsh
     source /Users/chuan.du/github/kafka-zsh-completions/kafka.zsh
 
     # tmux
-    source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/tmux/tmux.plugin.zsh
+    source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmux/tmux.plugin.zsh
     ZSH_TMUX_ITERM2=true
     ZSH_TMUX_AUTOCONNECT=true
 
@@ -124,13 +127,12 @@ async_load() {
     alias tcs='tmux -CC new-session -s'
 
     # mux
-    source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/plugins/tmuxinator/tmuxinator.plugin.zsh
+    source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmuxinator/tmuxinator.plugin.zsh
     # Auto completion
     source /Users/chuan.du/github/tmuxinator/completion/tmuxinator.zsh
 
     # Antibody load
     # source ~/.zsh_plugins.sh
-
     plugin_config
 
     if [ $commands[autojump] ]; then
@@ -361,29 +363,32 @@ color-test() {
 # for f in *.wma; do ffmpeg -i "$f" -codec:v copy -codec:a libmp3lame -q:a 2 newfiles/"${f%.wma}.mp3"; done
 
 #
-## Hacky
+## Hacky, this might help with jenkin login
 #if [ $(which docker-credential-osxkeychain) ]; then
 #        unlink $(which docker-credential-osxkeychain)
 #fi
 
 # test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
+#}}}
 
 # Section: Dev small and Docker {{{1
 # --------------------------------------------------------------------------
-
-#============================= Dokcer ===============================
-docker-stats() { docker stats --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
-docker-stats-peek() { docker stats --no-stream --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
-alias=docker-stop='docker stop $(docker ps -q)'
-alias docker-rm-container-stopped="docker rm $(docker ps -aq -f status=exited)"
-alias docker-rm-images-stopped="docker rm $(docker ps -aq -f status=exited)"
-alias docker-rmi-clean='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
-docker-cleanup-deep() {
-    docker rm -v $(docker ps --filter status=exited -q 2>/dev/null) 2>/dev/null
-    docker rmi $(docker images --filter dangling=true -q 2>/dev/null) 2>/dev/null
+# TODO Use tput cols to determine images info
+#Section: Docker functions {{{2
+# --------------------------------------------------------------------------
+# Docker ps pretty
+docker-ps() {
+    docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t'
 }
 
-docker-psp() {
+docker-ps-more() {
+    # docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t{{ .Image }}\\t{{.Command}}\\t{{.RunningFor}}'
+    docker ps $@ --format 'table {{ .Names }}\t {{ .ID }}\t {{ .Command }}\t {{ .RunningFor }}\t {{ .Status }}\t {{ .Size }}\t {{ .Mounts }}\t {{.Image}}\t'
+
+}
+
+# Docker ps pretty with port
+docker-ps-port() {
     docker ps $@ --format 'table{{ .Image }}\t{{ .Names }}\t{{ .Status }}\t{{ .Ports }}' | awk '
     NR % 2 == 0 {
       printf "\033[0m";
@@ -411,49 +416,129 @@ docker-psp() {
     '
 }
 
-alias dpsp=docker-psp
-dpspa() { echo "docker list all containers" && docker-psp -a $@; }
-
-# Print with Container ID
-dps() {
-    docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t'
-}
-alias dpsa='dps -a'
-
 # Print in vertical
-dpsv() {
-    local FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nPORTS\t{{.Ports}}\nCOMMAND\t{{.Command}}\nLABEL\t{{.Labels}}\nCREATED\t{{.CreatedAt}}\nSTATUS\t{{.Status}}\n"
-    docker ps $@ -a --format="$FORMAT" --no-trunc
+docker-ps-vertical-old() {
+    local FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nSTATUS\t{{.Status}}\nRunningFor\t{{.RunningFor}}\nCOMMAND\t{{.Command}}\nPORTS\t{{.Ports}}\nLABEL\t{{.Labels}}\nMounts\t{{.Mounts}}\nNetworks\t{{.Networks}}\nSize\t{{.Size}}\n\n"
+    docker ps --filter name=$@ -a --format="$FORMAT" --no-trunc
 }
 
-# find and print in vertical
-dpsvf() {
-    dpsv --filter name=$@
+docker-ps-vertical() {
+    local FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nSTATUS\t{{.Status}}\nLIVE\t{{.RunningFor}}\nCOMMAND\t{{.Command}}\nPORTS\t{{.Ports}}\nLABEL\t{{.Labels}}\nMOUNTS\t{{.Mounts}}\nNETS\t{{.Networks}}\nSIZE\t{{.Size}}\n\n"
+    docker ps --filter name=$@ -a --format="$FORMAT" --no-trunc | awk '
+    NR == 1 {
+      PORTSPADDING = "\n";
+      for(n = 1; n < 9; n++)
+          PORTSPADDING = PORTSPADDING " ";
+    }
+    NR > 1 {
+    }
+    {
+        if ($1 ~ "PORT") {
+            POS = index($0, $2);
+            DATA = substr($0, POS);
+            gsub(/, /, PORTSPADDING, DATA);
+            printf "\033[1m%s\033[0m%s\n", substr($0, 0, POS - 1), DATA;
+        } else if ($1 ~ "LABEL" || $1 ~ "MOUNTS") {
+            POS = index($0, $2);
+            DATA = substr($0, POS);
+            gsub(/,/, PORTSPADDING, DATA);
+            printf "\033[1m%s\033[0m%s\n", substr($0, 0, POS - 1), DATA;
+        } else if ($1 ~ "ID" || $1 + "IMAGE") {
+            POS = index($0, $2);
+            printf "\033[1m%s\033[0m\033[4m%s\033[0m\n", substr($0, 0, POS - 1), $2;
+        } else {
+            POS = index($0, $2);
+            printf "\033[1m%s\033[0m%s\n", substr($0, 0, POS - 1), $2;
+        }
+    }
+    END {
+      printf "\033[0m";
+    }
+    '
 }
 
 # Docker exec
-dexec() {
+docker-exec-name() {
     echo "Docker exec -it by name"
     firstmatch=$(docker ps -q --filter name=$@ | head -1)
     dpsv -f id=$firstmatch
     docker exec -it $(docker ps -q --filter name=$@ | head -1) bash
 }
 
-dps-old() { echo "Docker ps old" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
-dps-old-p() { echo "Docker ps old with port" && docker ps -a --format "table {{.Names}}\t{{.Image}}\t{{.Status}}\t{{.Ports}}" | awk 'NR == 1; NR > 1 { print $0 | "sort" }'; }
+# Docker stats
+docker-stats() { docker stats $@ --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
 
-pre-docker() {
-    export DOCKER_MACHINE_IP=$(docker-machine ip)
-    eval $(docker-machine env)
+docker-stats-peek() {
+    if [ $# -eq 0 ]; then
+        docker stats --no-stream
+    else
+        docker stats --no-stream | grep $1
+    fi
 }
 
-alias dimages='docker images'
+### }}}
+#Section: Docker Alias {{{2
+# --------------------------------------------------------------------------
 
+alias dps=docker-ps
+alias dpsa='dps -a'
+alias dpss=docker-ps-more
+alias dpsv=docker-ps-vertical
+alias dpsp=docker-ps-port
+alias dexec=docker-exec-name
+alias dki='docker images'
+alias dkin='docker inspect'
+alias dstats=docker-stats
+alias dks=docker-stats
+alias dksp=docker-stats-peek
+
+# Docker clean
+alias docker-stop='echo "Docker stop all containers" && docker stop $(docker ps -q)'
+alias dkstop=docker-stop
+alias dkprune='docker system prune -af'
+alias docker-clean='ee "docker system prune"'
+alias docker-clean-unused='ee "docker system prune --all --force --volumes"'
+alias docker-clean-stop-all='docker stop $(docker container ls -a -q) && docker system prune -a -f --volumes'
+
+# More alias from https://hackernoon.com/handy-docker-aliases-4bd85089a3b8
+alias dk='docker'
+alias dks='docker service'
+alias dkrm='docker rm'
+alias dkl='docker logs'
+alias dklf='docker logs -f'
+alias dkflush='docker rm `docker ps --no-trunc -aq`'
+alias dkflush2='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
+
+# More
+dkln() {
+    docker logs -f $(docker ps | grep $1 | awk '{print $1}')
+}
+
+dke() {
+    docker exec -it $1 /bin/sh
+}
+
+dkexe() {
+    docker exec -it $1 $2
+}
+
+dkreboot() {
+    osascript -e 'quit app "Docker"'
+    countdown 2
+    open -a Docker
+    echo "Restarting Docker engine"
+    countdown 120
+}
+
+# }}}
+# Section: Docker old {{{2
+# --------------------------------------------------------------------------
 #============================== Docker old ===============================
 #export DOCKER_HOST=tcp://192.168.59.103:2375
 #unset DOCKER_HOST
 #unset DOCKER_CERT_PATH
 #unset DOCKER_TLS_VERIFY
+# }}}
 
 # Section: Local wildfly {{{1
 # --------------------------------------------------------------------------
@@ -552,7 +637,7 @@ alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
 alias notes="mvim ~/repo/Notes/CLojure.md"
 
 # Cheatsheet
-alias cidea='cat /Users/chuan.du/repo/DotFiles/vim/ideavim-cheatsheet | grep $@'
+alias cidea='cat ~/repo/DotFiles/vim/ideavim-cheatsheet | grep $@'
 
 alias py='python'
 alias rmt='/bin/rm'
@@ -575,6 +660,12 @@ alias sql="echo 'psql to localhost' && ee \"export PAGER='less -SF' && psql -h '
 export repodir="/Users/chuan.du/repo/"
 c() {cd $repodir$1}
 compctl -g $repodir'*(:t:r)' c
+
+# CD to any directory with auto complete
+export repodir_p_r="/Users/chuan.du/repo/cenx-platform/"
+export repodir_p="/Users/chuan.du/repo/cenx-platform/cenx-"
+p() {cd $repodir_p_r$1}
+compctl -g $repodir_p'*(:t:r)' p
 
 export repodir2="/opt/cenx/application/"
 opt() {cd $repodir2$1}
@@ -815,7 +906,7 @@ spaceship_config() {
     SPACESHIP_GIT_STATUS_BEHIND="⇣"
     SPACESHIP_GIT_STATUS_DIVERGED="⇕"
 
-    SPACESHIP_PROMPT_ORDER=(time user host git_branch git_status power_version hg package node ruby elixir xcode swift golang php haskell julia aws venv conda pyenv dotnet ember kubecontext exec_time line_sep dir battery vi_mode jobs exit_code char)
+    SPACESHIP_PROMPT_ORDER=(time user host git_branch git_status power_version hg package node ruby elixir xcode swift golang php haskell julia aws venv conda pyenv dotnet ember docker kubecontext exec_time line_sep dir battery vi_mode jobs exit_code char)
 }
 
 # }}}

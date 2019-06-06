@@ -247,6 +247,7 @@ nnoremap \k    :action Stop<CR>
 nnoremap \q    :nohlsearch<CR>
 nnoremap \R    :action Run<CR>
 nnoremap \r    :action RunClass<CR>
+nnoremap \D    :action Debug<CR>
 nnoremap \w    :action EditorGutterToggleGlobalSoftWraps<CR>
 
 "map \\    :action GuiDesigner.ExpandSelection<CR>
