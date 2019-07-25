@@ -23,11 +23,11 @@ export ZPROF_TRACK=0
 # PATH: Global PATH {{{2
 # --------------------------------------------------------------------------
 export PATH=$HOME/bin:/usr/local/sbin:$HOME/script-tool:/usr/local/bin:$PATH
-export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 # export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
 export PATH="./node_modules/.bin:$PATH"
-### Added by the Heroku Toolbelt
+export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 export PATH="/usr/local/heroku/bin:$PATH"
+export PATH="/usr/local/opt/ruby/bin:$PATH"
 
 export KAFKA_HOME=/usr/local/kafka
 export KAFKA=$KAFKA_HOME/bin
@@ -36,8 +36,6 @@ export PATH=$KAFKA:$PATH
 
 # export is required for python path
 export NODE_PATH=/usr/lib/node_modules
-# Tmuxinator
-export EDITOR='vim'
 
 [[ $ZPROF_TRACK -eq "1" ]] && zmodload zsh/zprof
 [[ $LOADING_BAR -eq "1" ]] && revolver --style "bouncingBar" start "Loading zsh config"
@@ -51,7 +49,7 @@ export TERM="xterm-256color"
 export ZSH_LOADING_LOG=~/.startup.log
 export MESSAGE_CACHE_BEFORE_PRINT=~/.startup_all.log
 export WELCOME_MESSAGE=~/.welcome_message.log
-export HIST_STAMPS="yyyy-mm-dd" # ZSH History time format
+
 # }}}
 
 # Section: pre script {{{1
@@ -110,10 +108,16 @@ async_load() {
     local ANTIGEN_BUNDLES=~/.antigen/bundles
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
     source $ANTIGEN_BUNDLES/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
+    # antigen bundle zsh-users/zsh-syntax-highlighting # Async load
     source $ANTIGEN_BUNDLES/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
+    # antigen bundle zdharma/fast-syntax-highlighting
+    source $ANTIGEN_BUNDLES/zdharma/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
     source $ANTIGEN_BUNDLES/zdharma/history-search-multi-word/history-search-multi-word.plugin.zsh
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/mvn/mvn.plugin.zsh
+
+    # antigen bundle seletskiy/zsh-fuzzy-search-and-edit
+    source $ANTIGEN_BUNDLES/seletskiy/zsh-fuzzy-search-and-edit/plugin.zsh
     source /Users/chuan.du/github/kafka-zsh-completions/kafka.zsh
 
     # tmux
@@ -121,15 +125,45 @@ async_load() {
     ZSH_TMUX_ITERM2=true
     ZSH_TMUX_AUTOCONNECT=true
 
+    # Tmuxinator
+    export EDITOR='vim'
+
     alias tmuxt='unset ZSH_PLUGIN_LOADED && /usr/local/bin/tmux'
     alias tca='tmux -CC attach -t'
     alias tcad='tmux -CC attach -d -t' #Detach other client
     alias tcs='tmux -CC new-session -s'
 
-    # mux
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmuxinator/tmuxinator.plugin.zsh
-    # Auto completion
     source /Users/chuan.du/github/tmuxinator/completion/tmuxinator.zsh
+
+    # load fzf ^R ^T
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+    # Auto jump tool
+    # autojump 'j'
+    # antigen bundle qoomon/zjump 'j'
+    # load fzf before this
+    # zz is similar to ^G
+    #antigen bundle rupa/z         #'z' '_z'
+    #antigen bundle changyuheng/fz #'z' '_fz' zz
+    #antigen bundle hschne/fzf-git
+    #antigen bundle andrewferrier/fzf-z
+
+    # fzf vs fzy and fzf win
+
+    source $ANTIGEN_BUNDLES/rupa/z/z.sh
+    source $ANTIGEN_BUNDLES/changyuheng/fz/fz.plugin.zsh         # z zz
+    source $ANTIGEN_BUNDLES/andrewferrier/fzf-z/fzf-z.plugin.zsh #
+
+    # antigen bundle 'wfxr/forgit'
+    source $ANTIGEN_BUNDLES/wfxr/forgit/forgit.plugin.zsh
+
+    # Doesn't work very well. Conflict with git oh-my-zsh plugin
+    # source $ANTIGEN_BUNDLES/hschne/fzf-git/fzf-git.plugin.zsh      # gco **
+
+    # antigen bundle aperezdc/zsh-fzy
+    # source $ANTIGEN_BUNDLES/aperezdc/zsh-fzy/zsh-fzy.plugin.zsh
+    # bindkey '^o'  fzy-proc-widget
 
     # Antibody load
     # source ~/.zsh_plugins.sh
@@ -146,7 +180,8 @@ async_load() {
         # compinit -c
         compinit -C
     fi
-    # compdef _tmuxinator tmuxinator mux
+    # This line make auto complate for mux working
+    compdef _tmuxinator tmuxinator mux
 
     ## Disable async loader to test theme
     async_stop_worker lazyloader
@@ -250,11 +285,12 @@ load_Antigen() {
     antigen bundle shayneholmes/zsh-iterm2colors # Iterm2 Color "0.01"
     antigen bundle paulmelnikow/zsh-startup-timer
     antigen bundle djui/alias-tips # Alias helper
+    antigen bundle sei40kr/zsh-fzf-docker
+    # antigen bundle sei40kr/zsh-fast-alias-tips
 
     # antigen bundle gretzky/auto-color-ls             # Async load
     # antigen bundle johanhaleby/kubetail              # Lazy load
 
-    # antigen bundle zsh-users/zsh-syntax-highlighting # Async load
     # antigen bundle zsh-users/zsh-autosuggestions     # 0.02  Async load
     # antigen bundle zdharma/history-search-multi-word # 0.02s Async load
 
@@ -263,11 +299,15 @@ load_Antigen() {
     # Async prompt
     antigen theme maximbaz/spaceship-prompt
 
+    # Auto jump tool
+    # antigen bundle rupa/z         #'z' '_z' # Lazy load
+    # antigen bundle changyuheng/fz #'z' '_fz' # Lazy load
+    # antigen bundle hschne/fzf-git # Lazy load
+
     # echo "THEME: pure"
     # antigen bundle mafredri/zsh-async
     # antigen bundle sindresorhus/pure
     # }}}
-
     antigen apply
 
     # Lazy load bundles {{{2
@@ -352,7 +392,18 @@ color-test() {
     cat /Users/chuan.du/script-tool/iterm-syntax-test.txt
 }
 
-# Tool: B {{{2
+c-bash() {
+    if [ $# -eq 0 ]; then
+        echo "Create Bash Script"
+        return
+    fi
+    touch $1
+    chmod +x $1
+    echo "#!/bin/bash\n" >>$1
+
+}
+
+# Tool: B Deprecated {{{2
 # --------------------------------------------------------------------------
 #========================= Other helper script ================================
 #
@@ -374,7 +425,7 @@ color-test() {
 # Section: Dev small and Docker {{{1
 # --------------------------------------------------------------------------
 # TODO Use tput cols to determine images info
-#Section: Docker functions {{{2
+#S ection: Docker functions {{{2
 # --------------------------------------------------------------------------
 # Docker ps pretty
 docker-ps() {
@@ -636,6 +687,12 @@ alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
 alias notes="mvim ~/repo/Notes/CLojure.md"
 
+alias -g Gc=' --color=always | grep -i'
+alias -g G='| grep -i'
+alias -g F='| fzf | pbcopy && pbpaste'
+alias -g C='| pbcopy && pbpaste'
+alias dirs='dirs -v'
+
 # Cheatsheet
 alias cidea='cat ~/repo/DotFiles/vim/ideavim-cheatsheet | grep $@'
 
@@ -657,23 +714,33 @@ alias sql="echo 'psql to localhost' && ee \"export PAGER='less -SF' && psql -h '
 
 #============= Dir alias =============
 # CD to any directory with auto complete
-export repodir="/Users/chuan.du/repo/"
-c() {cd $repodir$1}
-compctl -g $repodir'*(:t:r)' c
+local _repodir="/Users/chuan.du/repo/"
+c() {cd $_repodir$1}
+compctl -/ -W $_repodir c
 
 # CD to any directory with auto complete
-export repodir_p_r="/Users/chuan.du/repo/cenx-platform/"
-export repodir_p="/Users/chuan.du/repo/cenx-platform/cenx-"
+local repodir_p_r="/Users/chuan.du/repo/cenx-platform/"
+local repodir_p="/Users/chuan.du/repo/cenx-platform/cenx-"
 p() {cd $repodir_p_r$1}
 compctl -g $repodir_p'*(:t:r)' p
 
-export repodir2="/opt/cenx/application/"
+# Use *(:t:r) to auto complete
+local repodir2="/opt/cenx/application/"
 opt() {cd $repodir2$1}
 compctl -g $repodir2'*(:t:r)' opt
 
-export repodir3="/Users/chuan.du/github/"
-gh() {cd $repodir3$1}
-compctl -g $repodir3'*(:t:r)' gh
+local _gh_dir="/Users/chuan.du/github/"
+gh() {cd $_gh_dir$1}
+compctl -/ -W $_gh_dir gh
+
+local _cenx_dir="/Users/chuan.du/repo/cenx/"
+ce() {cd $_cenx_dir$1}
+compctl -/ -W $_cenx_dir ce
+
+# Test compctl
+mm() {echo $1}
+# compctl -/ -W "(/opt/ /Users/chuan.du/repo/cenx-platform)" mm
+compctl -/ -W "(/Users/chuan.du/repo/cenx-platform)" mm
 
 #============= Powerful and Common alias =============
 alias cpwd='echo "copy currenty directory" && pwd |pbcopy'
@@ -699,11 +766,13 @@ alias gbc="echo 'Copy current branch name' && git rev-parse --abbrev-ref HEAD |p
 alias gb-update-five-one="git fetch -p && git merge origin/r/5.1.x"
 alias gbu51=gb-update-five-one
 alias gbui="echo 'git branch update with integration' && git fetch -p && git merge origin/integration"
+alias gbud="echo 'git branch update with develop' && git fetch -p && git merge origin/develop"
 alias gbu60x="git fetch -p && git merge origin/r/6.0.x"
 alias gbu800="git fetch -p && git merge origin/r/8.0.0.x"
 alias gbu810="git fetch -p && git merge origin/r/8.1.0.x"
 
 alias gcoi="git checkout integration && git pull"
+alias gcod="git checkout develop && git pull"
 alias gcoip="git checkout integration && git pull"
 alias gco51="git fetch -p && git checkout r/5.1.x && git pull"
 alias gco61="git fetch -p && git checkout r/6.1.0.x && git pull"
@@ -958,6 +1027,12 @@ plugin_config() {
 
     bindkey '^k' autosuggest-accept
     bindkey '^\n' autosuggest-execute
+    bindkey "^R" history-search-multi-word # Use multi word. fzf is too aggressive
+    bindkey '^G' fzf-cd-widget             # Search and goto
+    # Not best keybinding but just for testing
+    bindkey "^B" fzfz-file-widget
+
+    # bindkey "^R" fzf-history-widget
     # bindkey "^R" history-incremental-search-backward
     # bindkey "^S" history-incremental-search-forward
 
@@ -974,6 +1049,42 @@ plugin_config() {
 spaceship_power_version_init
 spaceship_config
 source ~/.zshrc-local.sh
+
+# Section: ZSH History {{{1
+# --------------------------------------------------------------------------
+# ZSH History
+# https://unix.stackexchange.com/questions/273861/unlimited-history-in-zsh
+# http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-HISTSIZE
+export HIST_STAMPS="yyyy-mm-dd" # ZSH History time format
+export HISTSIZE=100000          #The maximum number of events stored in the internal history list.
+export SAVEHIST=10000000        #The maximum number of history events to save in the history file.
+
+setopt EXTENDED_HISTORY       # Write the history file in the ":start:elapsed;command" format.
+setopt INC_APPEND_HISTORY     # Write to the history file immediately, not when the shell exits.
+setopt SHARE_HISTORY          # Share history between all sessions.
+setopt HIST_EXPIRE_DUPS_FIRST # Expire duplicate entries first when trimming history.
+setopt HIST_IGNORE_DUPS       # Don't record an entry that was just recorded again.
+setopt HIST_IGNORE_ALL_DUPS   # Delete old recorded entry if new entry is a duplicate.
+setopt HIST_FIND_NO_DUPS      # Do not display a line previously found.
+setopt HIST_IGNORE_SPACE      # Don't record an entry starting with a space.
+setopt HIST_SAVE_NO_DUPS      # Don't write duplicate entries in the history file.
+setopt HIST_REDUCE_BLANKS     # Remove superfluous blanks before recording entry.
+setopt HIST_VERIFY            # Don't execute immediately upon history expansion.
+
+zsh_history_bk() {
+    mkdir -p ~/.zsh_history_bk
+    cp ~/.zsh_history ~/.zsh_history_bk/.zsh_history-$(date +%Y-%m-%d-%H)
+}
+
+alias history='zsh_history_bk && omz_history -i'
+alias hist-c='zsh_history_bk && vi ~/.zsh_history'
+uuu() {
+    echo "Clean last command from history"
+    ZSH_HISTORY_TEMP="zsh_history_temp"
+    ghead -n -2 $HISTFILE >$ZSH_HISTORY_TEMP
+    cp $ZSH_HISTORY_TEMP $HISTFILE
+    rm $ZSH_HISTORY_TEMP
+}
 
 # Section: After Load {{{1
 # --------------------------------------------------------------------------
