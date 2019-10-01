@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: pps
+# key: pps
+# --
+(->> ["xxx" $0] (clojure.string/join " ") clojure.pprint/pprint)

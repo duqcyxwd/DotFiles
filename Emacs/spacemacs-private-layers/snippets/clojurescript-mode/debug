@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: cljs debug
+# key: debug
+# --
+(js/eval "debugger")

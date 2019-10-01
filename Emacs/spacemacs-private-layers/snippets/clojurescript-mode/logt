@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: log table
+# key: logt
+# --
+(->> $1 clj->js (#(.table js/console %)))

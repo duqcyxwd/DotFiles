@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: log error
+# key: loge
+# --
+(->> $1 clj->js (#(.error js/console %)))

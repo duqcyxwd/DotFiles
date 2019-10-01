@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: loga log with assert
+# key: loga
+# --
+(->> $1 clj->js (#(.assert js/console (first %) (second %))))

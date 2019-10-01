@@ -1,0 +1,6 @@
+# -*- mode: snippet -*-
+# name: console time
+# key: ctime
+# --
+(.time js/console)
+(.timeEnd js/console)

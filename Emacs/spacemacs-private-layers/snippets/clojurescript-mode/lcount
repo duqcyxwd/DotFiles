@@ -1,0 +1,5 @@
+# -*- mode: snippet -*-
+# name: log count
+# key: lcount
+# --
+(->> $1 clj->js (#(.count js/console %)))
