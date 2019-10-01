@@ -317,3 +317,13 @@
   'ctrl-g': 'narrow:close'
   # 'ctrl-cmd-i': 'narrow:focus-prompt'
   'cmd-k cmd-u': 'find-and-replace:select-undo'
+
+'atom-text-editor[data-grammar~="clojure"], atom-text-editor[data-grammar~="lisp"], atom-text-editor[data-grammar~="newlisp"], atom-text-editor[data-grammar~="racket"], atom-text-editor[data-grammar~="scheme"]':
+  'ctrl-left': 'lisp-paredit:barf-forwards'
+  'ctrl-right':         'lisp-paredit:slurp-forwards'
+  # 'ctrl-alt-<':         'lisp-paredit:slurp-backwards'
+  # 'ctrl-alt->':         'lisp-paredit:barf-backwards'
+  'ctrl-k':         'lisp-paredit:kill-sexp-forwards'
+  'cmd-up':        'lisp-paredit:splice-backwards'
+  'cmd-down':      'lisp-paredit:splice-forwards'
+  'alt-down':          'lisp-paredit:down-sexp'

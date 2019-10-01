@@ -34,6 +34,8 @@ export KAFKA=$KAFKA_HOME/bin
 export KAFKA_CONFIG=$KAFKA_HOME/config
 export PATH=$KAFKA:$PATH
 
+export KUBECONFIG=default-config:todd007:config-demo
+
 # export is required for python path
 export NODE_PATH=/usr/lib/node_modules
 
@@ -107,11 +109,15 @@ async_load() {
     # Manully async load bundles that installed by antigen
     local ANTIGEN_BUNDLES=~/.antigen/bundles
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
+    # brew install git-extras
+    source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git-extras
     source $ANTIGEN_BUNDLES/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
+
     # antigen bundle zsh-users/zsh-syntax-highlighting # Async load
-    source $ANTIGEN_BUNDLES/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
+    # source $ANTIGEN_BUNDLES/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
     # antigen bundle zdharma/fast-syntax-highlighting
     source $ANTIGEN_BUNDLES/zdharma/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
+
     source $ANTIGEN_BUNDLES/zdharma/history-search-multi-word/history-search-multi-word.plugin.zsh
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/mvn/mvn.plugin.zsh
@@ -136,6 +142,7 @@ async_load() {
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmuxinator/tmuxinator.plugin.zsh
     source /Users/chuan.du/github/tmuxinator/completion/tmuxinator.zsh
 
+    # fzf20190730181606
     # load fzf ^R ^T
     [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
@@ -144,10 +151,11 @@ async_load() {
     # antigen bundle qoomon/zjump 'j'
     # load fzf before this
     # zz is similar to ^G
+
     #antigen bundle rupa/z         #'z' '_z'
     #antigen bundle changyuheng/fz #'z' '_fz' zz
     #antigen bundle hschne/fzf-git
-    #antigen bundle andrewferrier/fzf-z
+    #antigen bundle andrewferrier/fzf-z # ^B
 
     # fzf vs fzy and fzf win
 
@@ -157,9 +165,6 @@ async_load() {
 
     # antigen bundle 'wfxr/forgit'
     source $ANTIGEN_BUNDLES/wfxr/forgit/forgit.plugin.zsh
-
-    # Doesn't work very well. Conflict with git oh-my-zsh plugin
-    # source $ANTIGEN_BUNDLES/hschne/fzf-git/fzf-git.plugin.zsh      # gco **
 
     # antigen bundle aperezdc/zsh-fzy
     # source $ANTIGEN_BUNDLES/aperezdc/zsh-fzy/zsh-fzy.plugin.zsh
@@ -180,6 +185,7 @@ async_load() {
         # compinit -c
         compinit -C
     fi
+
     # This line make auto complate for mux working
     compdef _tmuxinator tmuxinator mux
 
@@ -285,8 +291,10 @@ load_Antigen() {
     antigen bundle shayneholmes/zsh-iterm2colors # Iterm2 Color "0.01"
     antigen bundle paulmelnikow/zsh-startup-timer
     antigen bundle djui/alias-tips # Alias helper
-    antigen bundle sei40kr/zsh-fzf-docker
     # antigen bundle sei40kr/zsh-fast-alias-tips
+
+    # Somehow this affect spaceship
+    # antigen bundle sei40kr/zsh-fzf-docker
 
     # antigen bundle gretzky/auto-color-ls             # Async load
     # antigen bundle johanhaleby/kubetail              # Lazy load
@@ -298,11 +306,6 @@ load_Antigen() {
     # antigen theme denysdovhan/spaceship-prompt
     # Async prompt
     antigen theme maximbaz/spaceship-prompt
-
-    # Auto jump tool
-    # antigen bundle rupa/z         #'z' '_z' # Lazy load
-    # antigen bundle changyuheng/fz #'z' '_fz' # Lazy load
-    # antigen bundle hschne/fzf-git # Lazy load
 
     # echo "THEME: pure"
     # antigen bundle mafredri/zsh-async
@@ -318,13 +321,7 @@ load_Antigen() {
             $0 "$@"
         }
     fi
-    gst() {
-        unfunction "$0"
-        antigen bundle git
-        antigen bundle git-extras
-        $0 "$@"
-    }
-    # mvn() { unfunction "$0" && antigen bundle mvn && $0 "$@" }
+
     npm() {
         unfunction "$0" && antigen bundle npm && $0 "$@"
     }
@@ -337,6 +334,16 @@ load_Antigen() {
     lein() {
         unfunction "$0" && antigen bundle lein && $0 "$@"
     }
+
+    nvm() {
+        unfunction "$0"
+        export NVM_DIR="$HOME/.nvm"
+        # lazy load for nvm. Take 1.5 second to load
+        [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"                   # This loads nvm
+        [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+        $0 "$@"
+    }
+
     # tmuxinator() {
     #     unfunction "$0" && antigen bundle tmuxinator && $0 "$@"
     # }
@@ -402,6 +409,10 @@ c-bash() {
     echo "#!/bin/bash\n" >>$1
 
 }
+
+# grep -Eo '"[^"]*" *(: *([0-9]*|"[^"]*")[^{}\["]*|,)?|[^"\]\[\}\{]*|\{|\},?|\[|\],?|[0-9 ]*,?' | awk '{if ($0 ~ /^[}\]]/ ) offset-=4; printf "%*c%s\n", offset, " ", $0; if ($0 ~ /^[{\[]/) offset+=4}
+
+# alias -G PJSON='grep -Eo \'"[^"]*" *(: *([0-9]*|"[^"]*")[^{}\["]*|,)?|[^"\]\[\}\{]*|\{|\},?|\[|\],?|[0-9 ]*,?' | awk '{if ($0 ~ /^[}\]]/ ) offset-=4; printf "%*c%s\n", offset, " ", $0; if ($0 ~ /^[{\[]/) offset+=4}'
 
 # Tool: B Deprecated {{{2
 # --------------------------------------------------------------------------
@@ -779,9 +790,12 @@ alias gco61="git fetch -p && git checkout r/6.1.0.x && git pull"
 
 alias gfco='git fetch -p && git checkout'
 
+alias gitf='open -a GitFiend --args $(git rev-parse --show-toplevel)'
+
 #=== Special Git Tool  ====
 get_git_current_branch() { git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'; }
 
+# gb --show-current
 get_current_branch() { git branch 2>/dev/null | sed -e "/^[^*]/d" -e "s/* \(.*\)/\1/"; }
 
 git_create_branch() {
@@ -810,10 +824,17 @@ gitopen-current-branch() {
     ee "gitopen -b $(get_current_branch)"
 }
 
+alias groot="cd $(git root)"
+git-blame() {
+    ruby ~/repo/DotFiles/otherTool/git-blame-colored $1 | less -R
+}
+
 alias gcob="ee 'gco -b'"
 alias gbrr="ee 'gbr |grep r/'"
-# alias gcobr='echo "Create branch and remote branch| Stop using this one, use push remote instead. Try ggsup"'
+alias gcobr='echo "Create branch and remote branch| Stop using this one, use push remote instead. Try ggsup or git create-branch -r <development> "'
+# git create-branch -r development
 alias gcobr='echo "Create branch and remote branch| Stop using this one, use push remote instead" & git_create_branch'
+alias gcobr2='git create-branch -r development'
 
 # git recent branch
 alias gre="ee 'git recent | head'"
@@ -845,9 +866,6 @@ alias gdi='echo "git diff current branch to integration;" && ee "git diff origin
 alias gitxdi="ee 'git diff origin/integration..$get_git_current_branch | gitx'"
 alias gdi-gitx=gitxdi
 alias gds="ee 'git diff -w --stat'"
-
-#pretty git one line git log with time and author(should use glog)
-alias glogt="ee 'git log --pretty=tformat:\"%h %ad | %s%d [%an]\" --graph --date=short'"
 
 #show all git aliases
 alias galias='alias|grep git'
@@ -959,6 +977,7 @@ spaceship_config() {
 
     # SPACESHIP_PROMPT_ORDER=(time user host dir git hg package node ruby elixir xcode swift golang php rust haskell julia aws venv conda pyenv dotnet ember kubecontext power_version exec_time line_sep battery vi_mode jobs exit_code char )
     # maximbaz/spaceship-prompt
+
     SPACESHIP_DIR_PREFIX=""
     SPACESHIP_GIT_STATUS_SHOW=true
     SPACESHIP_GIT_STATUS_PREFIX="["
@@ -1004,7 +1023,7 @@ plugin_config() {
 
     alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
 
-    alias exa='/usr/local/bin/exa --time-style=long-iso --git --group-directories-first'
+    alias exa='/usr/local/bin/exa --time-style=long-iso --group-directories-first'
     alias e=exa
     alias l=exa
 
@@ -1013,7 +1032,9 @@ plugin_config() {
     alias ll=el
     alias ela='exa -l -a'
     alias la=ela
-    alias laa='el .?* -d'
+    alias lag=ela --git
+    # Show hidden files
+    alias laa='exa -l .?* -d'
 
     alias lta='exa --git --group-directories-first -lT'
     alias lt1='exa --git --group-directories-first -lT -L 1'
@@ -1027,8 +1048,11 @@ plugin_config() {
 
     bindkey '^k' autosuggest-accept
     bindkey '^\n' autosuggest-execute
+
+    # bindkey "^T" fzf-file-widget # fzf files
     bindkey "^R" history-search-multi-word # Use multi word. fzf is too aggressive
-    bindkey '^G' fzf-cd-widget             # Search and goto
+    bindkey '^G' fzf-cd-widget             # Search and goto fzf
+
     # Not best keybinding but just for testing
     bindkey "^B" fzfz-file-widget
 
@@ -1108,3 +1132,11 @@ export IS_ASYNC=0
 
 [[ $ZPROF_TRACK -eq "1" ]] && zprof # bottom of .zshrc
 # }}}
+
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"                   # This loads nvm
+# [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+
+source <(gpg --quiet --decrypt ~/.shadow-cljs/credentials.gpg)
+
+alias zkcli0=/usr/local/Cellar/zookeeper/3.4.13/bin/zkCli

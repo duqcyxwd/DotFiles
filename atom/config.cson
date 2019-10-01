@@ -4,14 +4,16 @@
       beautify_on_save: true
       indent_size: 4
     js:
-      beautify_on_save: true
+      default_beautifier: "Prettier"
       end_with_newline: true
     json:
-      beautify_on_save: true
+      beautify_on_save: false
+      default_beautifier: "Prettier"
       end_with_newline: true
     jsx:
       disabled: true
-    markdown: {}
+    markdown:
+      disabled: true
   "atom-ctags":
     buildTimeout: 30000
   "atom-focus-mode":
@@ -51,7 +53,17 @@
       "symbol-gen"
       "atom-ctags"
       "tester"
+      "document-outline"
+      "markdown-table-formatter"
       "tester-mocha"
+      "pigments"
+      "linter-jshint"
+      "language-babel"
+      "Hydrogen"
+      "TabNine"
+      "timecop"
+      "test-tt"
+      "atom-beautify"
     ]
     excludeVcsIgnoredPaths: false
     ignoredNames: [
@@ -84,6 +96,10 @@
       "one-dark-ui"
       "one-dark-vivid-syntax"
     ]
+    versionPinnedPackages: [
+      "ink"
+      "proto-repl"
+    ]
   editor:
     fontSize: 17
     scrollPastEnd: true
@@ -110,11 +126,13 @@
     gitDiagnostics: true
     performanceToConsole: true
   linter: {}
+  "linter-eslint": {}
   "linter-jshint":
     jshintFileName: "/Users/chuan.du/repo/sidekit/resources/.jshintrc"
   "linter-ui-default":
     panelHeight: 180
     panelRepresents: "Entire Project"
+    showPanel: true
     statusBarClickBehavior: "Jump to next issue"
   "markdown-preview":
     liveUpdate: false
@@ -128,11 +146,14 @@
   pigments: {}
   "prettier-atom":
     formatOnSaveOptions:
+      enabled: true
       showInStatusBar: true
     useEslint: true
     useStylelint: true
   "project-manager":
     sortBy: "last modified"
+  "proto-repl":
+    leinPath: "/Users/chuan.du/bin/lein"
   sidekit:
     customizationApiUrl: "http://med25.cenx.localnet:8080/customization/"
     lintScope: "Entire Project"

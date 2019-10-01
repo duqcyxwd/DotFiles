@@ -223,7 +223,7 @@ nnoremap <leader>[ :action GotoSuperMethod<cr>
 
 " Fold and unfold
 nnoremap <CR> zc
-vnoremap <CR> zo
+" vnoremap <CR> zo
 
 
 " nnoremap <leader>gg :action Switcher<cr>
@@ -245,10 +245,11 @@ nnoremap \C    :action Compile<CR>
 nnoremap \c    :action RunClass<CR>
 nnoremap \k    :action Stop<CR>
 nnoremap \q    :nohlsearch<CR>
-nnoremap \R    :action Run<CR>
-nnoremap \r    :action RunClass<CR>
+nnoremap \R    :action RunClass<CR>
+nnoremap \r    :action Run<CR>
 nnoremap \D    :action Debug<CR>
-nnoremap \w    :action EditorGutterToggleGlobalSoftWraps<CR>
+nnoremap \d    :action Debug<CR>
+nnoremap \w    :action EditorToggleUseSoftWraps<CR>
 
 "map \\    :action GuiDesigner.ExpandSelection<CR>
 
@@ -263,6 +264,8 @@ nnoremap <leader>mrD :action com.github.setial.intellijjavadocs.action.JavaDocsG
 
 noremap <leader>rrr :action Refactorings.QuickListPopupAction<CR>
 
+noremap <leader>ee :action :cursive.repl.actions/run-top-sexp<CR>
+noremap <leader>ec :action :cursive.repl.actions/run-last-sexp<CR>
 
 
 " code refactoring
@@ -272,5 +275,6 @@ noremap <leader>rrr :action Refactorings.QuickListPopupAction<CR>
 "https://github.com/saaguero/ideavimrc/blob/master/.ideavimrc
 "https://github.com/rekendahl/dotfiles/blob/master/.ideavimrc
 "Action List https://gist.github.com/zchee/9c78f91cc5ad771c1f5d
+"
 
 }}}
