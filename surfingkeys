@@ -1,6 +1,9 @@
 // an example to create a new mapping `ctrl-y`
 
 Hints.characters = "asdfgqwertvbn";
+// Hints.numericHints = true;
+// settings.richHintsForKeystroke = 10;
+
 
 mapkey('<Ctrl-y>', 'Show me the money', function() {
     Front.showPopup('a well-known phrase uttered by characters in the 1996 film Jerry Maguire (Escape to close).');
@@ -34,7 +37,7 @@ Hints.style('border: solid 2px #ff79c6;padding: 1px; color: #e2e3e7; font-size: 
 // -----------------------------------------------------------------------------------------------------------------------
 // Change search marks and cursor
 // -----------------------------------------------------------------------------------------------------------------------
-// Visual.style('marks', 'background-color: #f1fa8c;');
+Visual.style('marks', 'background-color: #f1fa8c;');
 // Visual.style('marks', 'color: #; font-size: 10px; text-shadow: none; background: #383c4a; border: 0.25em solid #383c4a; border-radius: 0.68em; box-shadow: 0em 0.1em 0.6em 0.1em rgba(0, 0, 0, 0.4); ');
 Visual.style('cursor', 'background-color: #6272a4; color: #f8f8f2');
 
