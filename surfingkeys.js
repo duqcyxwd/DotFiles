@@ -76,14 +76,6 @@ settings.scrollStepSize = 130;
 // Section: Help functions {{{1
 //  --------------------------------------------------------------------------
 
-var openLink = (url, { newTab = false, active = true } = {}) => () => {
-  if (newTab) {
-    RUNTIME("openLink", { tab: { tabbed: true, active }, url });
-    return;
-  }
-  window.location.assign(url);
-};
-
 function getElementsByText(str, tag = "a") {
   return Array.prototype.slice
     .call(document.getElementsByTagName(tag))
@@ -566,29 +558,30 @@ div.sk_arrow[dir=up]>div:nth-of-type(2) {
 // Section: Atlassian JIRA {{{1
 //  --------------------------------------------------------------------------
 
+let devDomain = /(localnet|localhost|8080|\/client\/)/i
 mapkey(
-  ",dr",
+  ",,r",
   "Related",
   function() {
     document.querySelectorAll(".network-list .network-view-card")[0].click();
   },
   {
-    // domain: /localhost/i
+    domain: devDomain
   }
 );
 mapkey(
-  ",df",
+  ",,f",
   "Select first",
   function() {
     document.querySelectorAll(".network-view-card")[0].click();
   },
   {
-    // domain: /localhost/i
+    domain: devDomain
   }
 );
 
 mapkey(
-  ",dc",
+  ",,c",
   "Clean all notification",
   function() {
     document
@@ -596,23 +589,23 @@ mapkey(
       .forEach(e => e.click());
   },
   {
-    // domain: /localhost/i
+    domain: devDomain
   }
 );
 
 mapkey(
-  ",db",
+  ",,b",
   "Net Back",
   function() {
     document.querySelectorAll(".network-back-btn").forEach(e => e.click());
   },
   {
-    // domain: /localhost/i
+    domain: devDomain
   }
 );
 
 mapkey(
-  ",dd",
+  ",,d",
   "debug",
   function() {
     debugger;
@@ -620,22 +613,22 @@ mapkey(
   {}
 );
 
-
 mapkey(
   ",,u",
   "Gitlab: go one level up",
   function() {
-    let repoTree = document.querySelectorAll(".breadcrumb.repo-breadcrumb .breadcrumb-item>a")
+    let repoTree = document.querySelectorAll(
+      ".breadcrumb.repo-breadcrumb .breadcrumb-item>a"
+    );
     console.log(repoTree);
-    if (repoTree.length > 0){
+    if (repoTree.length > 0) {
       repoTree[repoTree.length - 2].click();
     }
   },
   {
-     domain: /gitlab/i
+    domain: /gitlab/i
   }
 );
-
 
 // }}}
 
