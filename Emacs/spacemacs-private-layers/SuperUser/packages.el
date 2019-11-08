@@ -89,7 +89,7 @@
 
   (evil-leader/set-key "sn" 'helm-yas-visit-snippet-file)
 
-  (global-set-key (kbd "M-`") 'other-frame-or-window)
+  ;; (global-set-key (kbd "M-`") 'other-frame-or-window)
 
   (define-key evil-normal-state-map "gn" 'find-next-full-wordds)
   (define-key evil-normal-state-map "gp" 'find-prev-full-wordds)
@@ -253,6 +253,7 @@
   ;; (set-face-attribute 'default nil :font "Menlo 10")
   ;; (set-face-attribute 'default nil :font "Monaco 13")
   ;; (set-face-attribute 'default nil :font "Monospace 14")
+  ;; (set-face-attribute 'default nil :font "Consolas 14")
   ;; (set-face-attribute 'default nil :font "Courier 14")
 
   (balance-windows))

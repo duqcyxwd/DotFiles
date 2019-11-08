@@ -2,4 +2,4 @@
 # name: log clojure data
 # key: logc
 # --
-(->> $1 clj->js (#(.log js/console %)))
+(->> $1 clj->js ((fn [msg] (.log js/console msg))))

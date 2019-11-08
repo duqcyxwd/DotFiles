@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name: ct console time
+# key: ct
+# --
+
+(let [_ (.time js/console "$1")
+      res $2
+      _ (.timeEnd js/console "$1")]
+  res)

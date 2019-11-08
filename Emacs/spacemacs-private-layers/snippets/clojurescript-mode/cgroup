@@ -2,5 +2,6 @@
 # name: cgroup console group
 # key: cgroup
 # --
-(.group js/console $1)
-(.groupEnd js/console $1)
+(do (.group js/console "$1")
+    $2
+    (.groupEnd js/console "$1"))

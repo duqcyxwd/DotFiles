@@ -1,0 +1,7 @@
+# -*- mode: snippet -*-
+# name: cg cgroup console group
+# key: cg
+# --
+(do (.group js/console "$1")
+    $2
+    (.groupEnd js/console "$1"))
