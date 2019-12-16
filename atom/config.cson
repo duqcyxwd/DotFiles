@@ -4,7 +4,8 @@
       beautify_on_save: true
       indent_size: 4
     js:
-      default_beautifier: "Prettier"
+      beautify_on_save: false
+      default_beautifier: "ESLint Fixer"
       end_with_newline: true
     json:
       beautify_on_save: false
@@ -55,14 +56,16 @@
       "tester"
       "document-outline"
       "markdown-table-formatter"
-      "tester-mocha"
-      "pigments"
       "linter-jshint"
       "language-babel"
       "Hydrogen"
       "TabNine"
       "timecop"
       "test-tt"
+      "parinfer"
+      "pigments"
+      "tester-mocha"
+      "ask-stack"
       "atom-beautify"
     ]
     excludeVcsIgnoredPaths: false
@@ -93,7 +96,7 @@
     ]
     telemetryConsent: "no"
     themes: [
-      "one-dark-ui"
+      "nord-atom-ui"
       "one-dark-vivid-syntax"
     ]
     versionPinnedPackages: [
@@ -101,7 +104,7 @@
       "proto-repl"
     ]
   editor:
-    fontSize: 17
+    fontSize: 16
     scrollPastEnd: true
     showIndentGuide: true
     showInvisibles: true
@@ -147,7 +150,8 @@
   "prettier-atom":
     formatOnSaveOptions:
       enabled: true
-      showInStatusBar: true
+    prettierEslintOptions:
+      prettierLast: true
     useEslint: true
     useStylelint: true
   "project-manager":
@@ -197,6 +201,7 @@
   "toggle-packages":
     togglePackages: [
       "atom-beautify"
+      "prettier-atom"
       "pigments"
       "tester-mocha"
     ]

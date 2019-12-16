@@ -1,5 +1,4 @@
-(setq evil-little-word-packages '((evil-little-word :location local)
-                                  ))
+(setq evil-little-word-packages '((evil-little-word :location local)))
 
 
 (defun evil-little-word/init-evil-little-word ()

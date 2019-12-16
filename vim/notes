@@ -1,0 +1,8 @@
+space vim config stores in 
+
+/Users/chuan.du/.SpaceVim.d/autoload/myspacevim.vim
+
+Triggered by: 
+    bootstrap_before = "myspacevim#before"
+    bootstrap_after  = "myspacevim#after"
+

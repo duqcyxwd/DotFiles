@@ -43,6 +43,7 @@
   # 'ctrl-x': 'paner:exchange-pane-stay'
   'ctrl-c': 'move-panes:move-next'
   'ctrl-shift-c': 'paner:move-pane-item-stay'
+  'cmd-k cmd-u': 'find-and-replace:select-undo'
 
 'atom-workspace:not(.has-narrow) atom-text-editor.vim-mode-plus:not(.insert-mode)':
   'cmd-e': 'narrow:search-by-current-word'
@@ -230,7 +231,6 @@
 'atom-text-editor.vim-mode-plus.insert-mode':
 
   'ctrl-f': 'emmet:expand-abbreviation'
-  'j j': 'vim-mode-plus:activate-normal-mode'
   'ctrl-y': 'clip-history:paste'
   # 'cmd-y': 'clip-history:paste-last'
   'ctrl-Y': 'clip-history:paste-newer'
@@ -316,7 +316,6 @@
 'atom-workspace.has-narrow atom-text-editor':
   'ctrl-g': 'narrow:close'
   # 'ctrl-cmd-i': 'narrow:focus-prompt'
-  'cmd-k cmd-u': 'find-and-replace:select-undo'
 
 'atom-text-editor[data-grammar~="clojure"], atom-text-editor[data-grammar~="lisp"], atom-text-editor[data-grammar~="newlisp"], atom-text-editor[data-grammar~="racket"], atom-text-editor[data-grammar~="scheme"]':
   'ctrl-left': 'lisp-paredit:barf-forwards'

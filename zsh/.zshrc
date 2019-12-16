@@ -34,7 +34,7 @@ export KAFKA=$KAFKA_HOME/bin
 export KAFKA_CONFIG=$KAFKA_HOME/config
 export PATH=$KAFKA:$PATH
 
-export KUBECONFIG=default-config:todd007:config-demo
+export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
 
 # export is required for python path
 export NODE_PATH=/usr/lib/node_modules
@@ -121,6 +121,8 @@ async_load() {
     source $ANTIGEN_BUNDLES/zdharma/history-search-multi-word/history-search-multi-word.plugin.zsh
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/mvn/mvn.plugin.zsh
+
+    source $ANTIGEN_BUNDLES/psprint/zsh-cmd-architect/zsh-cmd-architect.plugin.zsh
 
     # antigen bundle seletskiy/zsh-fuzzy-search-and-edit
     source $ANTIGEN_BUNDLES/seletskiy/zsh-fuzzy-search-and-edit/plugin.zsh
@@ -302,6 +304,8 @@ load_Antigen() {
     # antigen bundle zsh-users/zsh-autosuggestions     # 0.02  Async load
     # antigen bundle zdharma/history-search-multi-word # 0.02s Async load
 
+    # antigen bundle psprint/zsh-cmd-architect
+
     # echo "THEME: spaceship"
     # antigen theme denysdovhan/spaceship-prompt
     # Async prompt
@@ -436,7 +440,7 @@ c-bash() {
 # Section: Dev small and Docker {{{1
 # --------------------------------------------------------------------------
 # TODO Use tput cols to determine images info
-#S ection: Docker functions {{{2
+# Section: Docker functions {{{2
 # --------------------------------------------------------------------------
 # Docker ps pretty
 docker-ps() {
@@ -539,7 +543,7 @@ docker-stats-peek() {
 }
 
 ### }}}
-#Section: Docker Alias {{{2
+# Section: Docker Alias {{{2
 # --------------------------------------------------------------------------
 
 alias dps=docker-ps
@@ -658,7 +662,7 @@ f() {echo 'find . -iname "*'$1'*" '${@:2} && find . -iname "*$1*" ${@:2} }
 r-old() {echo ' grep "'$1'" '${@:2}' -R .' && grep "$1" ${@:2} -R . }
 r() {echo 'Replaced with ag'}
 
-# Watch function
+# Watch function, replaced by watch
 mywatch() {
     while :; do
         a=$($@)
@@ -667,6 +671,15 @@ mywatch() {
         sleep 2
     done
 }
+
+mywatch-no-clean() {
+    while :; do
+        a=$($@)
+        echo "$a"
+        sleep 2
+    done
+}
+
 #watch-zookeeper {while :; do clear; echo "$(date)\n\n$(echo stat |nc localhost 2181)"; sleep 1;  done}
 #watch-zookeeper2 {while :; a=$@; do clear; echo "$(date)\n\n$(echo stat |nc $a 2181)"; sleep 1;  done}
 #watch-zookeeper-cnumber {while :; do clear; echo "$(date)\n\n$(echo stat | nc localhost 2181 |grep 127.0.0.1 |wc -l)"; sleep 1;  done}
@@ -697,6 +710,12 @@ alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 
 alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
 alias notes="mvim ~/repo/Notes/CLojure.md"
+
+alias kafka21="cd /usr/local/kafka_2.12-2.1.0"
+alias kafka08="cd /usr/local/kafka_2.9.1-0.8.2.2"
+
+alias kafka21="cd /usr/local && ln -s kafka_2.12-2.1.0 kafka"
+alias kafka08="cd /usr/local && ln -s kafka_2.9.1-0.8.2.2 kafka"
 
 alias -g Gc=' --color=always | grep -i'
 alias -g G='| grep -i'
@@ -760,10 +779,16 @@ cpath() {greadlink -f $1 | tr -d '\n' | pbcopy }
 alias cf='pbpaste | pbcopy' # clean format of clipboard
 alias dir='dirs -v'
 
+alias kexecit='kubectl exec -it'
+# kgpn() {
+#   kubectl get pods $2 $3| grep $1 | cut -d ' ' -f1 | print
+# }
+
 # Section: Git {{{1
 # --------------------------------------------------------------------------
 #============================= Git alias =================================
 git config --global color.ui true
+
 alias git-tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
 alias git-hidden="git ls-files -v | grep '^[a-z]' | cut -c3-"
 alias git-hide='ee "git update-index --assume-unchanged"'
@@ -772,6 +797,7 @@ alias git-update-all='find . -type d -depth 1 -exec git --git-dir={}/.git --work
 
 #======================= Git Alias for work  =========================================
 
+alias gaa="git add"
 alias gu="git add project.clj && git commit -m 'Upversion'"
 alias gbc="echo 'Copy current branch name' && git rev-parse --abbrev-ref HEAD |pbcopy && git branch"
 alias gb-update-five-one="git fetch -p && git merge origin/r/5.1.x"
@@ -824,10 +850,11 @@ gitopen-current-branch() {
     ee "gitopen -b $(get_current_branch)"
 }
 
-alias groot="cd $(git root)"
 git-blame() {
     ruby ~/repo/DotFiles/otherTool/git-blame-colored $1 | less -R
 }
+
+groot() {cd $(git root)}
 
 alias gcob="ee 'gco -b'"
 alias gbrr="ee 'gbr |grep r/'"
@@ -1053,6 +1080,10 @@ plugin_config() {
     bindkey "^R" history-search-multi-word # Use multi word. fzf is too aggressive
     bindkey '^G' fzf-cd-widget             # Search and goto fzf
 
+    bindkey "^F" zca-widget # Zsh Command Architect
+    # bindkey "^T" fzf-file-widget
+    # "^B" fzfz-file-widget
+
     # Not best keybinding but just for testing
     bindkey "^B" fzfz-file-widget
 
@@ -1136,7 +1167,5 @@ export IS_ASYNC=0
 # export NVM_DIR="$HOME/.nvm"
 # [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"                   # This loads nvm
 # [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-
-source <(gpg --quiet --decrypt ~/.shadow-cljs/credentials.gpg)
 
 alias zkcli0=/usr/local/Cellar/zookeeper/3.4.13/bin/zkCli

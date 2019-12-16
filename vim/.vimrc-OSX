@@ -40,6 +40,18 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'rbgrouleff/bclose.vim'
 
+" Plugins supported by spacevim
+Plugin 'airblade/vim-gitgutter'
+" Plugin 'easymotion/vim-easymotion'
+" Plugin 'kien/ctrlp.vim'
+Plugin 'mbbill/undotree'
+Plugin 'rking/ag.vim'
+" Plugin 'scrooloose/nerdtree'
+Plugin 'shougo/unite.vim'
+Plugin 'szw/vim-maximizer'
+Plugin 'tpope/vim-commentary'
+" Plugin 'tpope/vim-fugitive'
+
 
 " Undo tree
 Plugin 'sjl/gundo.vim'
@@ -54,9 +66,31 @@ Plugin 'terryma/vim-multiple-cursors'
 "Clojure
 "Plugin 'tpope/vim-fireplace'
 "Plugin 'guns/vim-clojure-static'
-"Plugin 'oblitum/rainbow'
+Plugin 'oblitum/rainbow'
 "Plugin 'guns/vim-slamhound'
-"Plugin 'vim-scripts/paredit.vim'
+Plugin 'vim-scripts/paredit.vim'
+
+"Spacevim
+" Plugin 'jimmay5469/vim-spacemacs'
+" Plugin 'SpaceVim/SpaceVim'
+" Plugin 'hecal3/vim-leader-guide'
+Plugin 'liuchengxu/vim-which-key'
+nnoremap <silent> <leader> :WhichKey '<Space>'<CR>
+" By default timeoutlen is 1000 ms
+set timeoutlen=500
+
+let g:spacemacs#plugins = [
+  \ 'airblade/vim-gitgutter',
+  \ 'easymotion/vim-easymotion',
+  \ 'kien/ctrlp.vim',
+  \ 'mbbill/undotree',
+  \ 'rking/ag.vim',
+  \ 'scrooloose/nerdtree',
+  \ 'shougo/unite.vim',
+  \ 'szw/vim-maximizer',
+  \ 'tpope/vim-commentary',
+  \ 'tpope/vim-fugitive',
+\ ]
 
 " The sparkup vim script is in a subdirectory of this repo called vim.
 " Pass the path to set the runtimepath properly.
@@ -97,6 +131,7 @@ nmap \c :TlistToggle<CR>
 nmap \d :%!perltidy<CR>
 nmap \e :NERDTreeToggle<CR>
 nmap \g :Gstatus<CR>
+nmap \I :PluginInstall<CR>
 nmap \n :setlocal number!<CR>:setlocal number?<CR>
 nmap \l :set foldcolumn=0<CR>
 nmap \L :set foldcolumn=2<CR>
@@ -104,6 +139,7 @@ nmap \o :set paste!<CR>:set paste?<CR>
 nmap \q :nohlsearch<CR>
 nmap \h :nohlsearch<CR>
 nmap \r :%Eval<CR>
+nmap \R :so $MYVIMRC<CR>
 nmap \t :noh<CR>
 " nmap \s :cpp<CR>
 " nmap \s :setlocal invspell<CR>
@@ -173,8 +209,6 @@ cnoremap <C-g>  <C-c>
 " Why not use the space or return keys to toggle folds?
 " nnoremap <space> za
 nnoremap <CR> za
-" vnoremap <space> zf
-nmap <leader>fs :w<CR>
 
 " Swap implementations of ` and ' jump to markers
 " By default, ' jumps to the marked line, ` jumps to the marked line and
@@ -263,7 +297,6 @@ nnoremap k gk
 map Q <silent>
 map q: <silent>
 map K <silent>
-"map q <silent>
 
 " Make the cursor stay on the same line when window switching {{{2
 function! KeepCurrentLine(motion)
@@ -413,7 +446,7 @@ function! StripWhitespace()
         call setpos('.', save_cursor)
         call setreg('/', old_query)
 endfunction
-noremap <leader>ss :call StripWhitespace()<CR>
+" noremap <leader>ss :call StripWhitespace()<CR>
 
 
 " Automatic commands
@@ -468,42 +501,34 @@ let g:rainbow_active = 1
 "--------------------------------------------------------------------------
 
 " Helper to initialize Zenburn colors in 256-color mode.
-" let g:solarized_termcolors=256
 set background=dark
 syntax on
-" colorscheme solarized
 
-" colorscheme desert
-" function! ColorTermZenburn()
-"   colorscheme zenburn
-"   highlight Normal ctermbg=234
-"   let g:zenburn_high_Contrast = 1
-" endfunction
+if !has('gui_running')
+  if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
+    set t_Co=256
+    let &t_ti = "\<Esc>[?47h"
+    let &t_te = "\<Esc>[?47l"
+  elseif has("terminfo")
+    colorscheme default
+    set t_Co=8
+    let &t_ti = "\<Esc>[?47h"
+    let &t_te = "\<Esc>[?47l"
+    set t_Sf=[3%p1%dm
+    set t_Sb=[4%p1%dm
+  else
+    colorscheme default
+    set t_Co=8
+    let &t_ti = "\<Esc>[?47h"
+    let &t_te = "\<Esc>[?47l"
+    set t_Sf=[3%dm
+    set t_Sb=[4%dm
+  endif
+else
+    let g:solarized_termcolors=256
+    colorscheme solarized
+endif
 
-" Make sure colored syntax mode is on, and make it Just Work with newer 256
-" color terminals like iTerm2.
-" if !has('gui_running')
-"   if $TERM == "xterm-256color" || $TERM == "screen-256color" || $COLORTERM == "gnome-terminal"
-"     set t_Co=256
-"     let &t_ti = "\<Esc>[?47h"
-"     let &t_te = "\<Esc>[?47l"
-"     call ColorTermZenburn()
-"   elseif has("terminfo")
-"     colorscheme default
-"     set t_Co=8
-"     let &t_ti = "\<Esc>[?47h"
-"     let &t_te = "\<Esc>[?47l"
-"     set t_Sf=[3%p1%dm
-"     set t_Sb=[4%p1%dm
-"   else
-"     colorscheme default
-"     set t_Co=8
-"     let &t_ti = "\<Esc>[?47h"
-"     let &t_te = "\<Esc>[?47l"
-"     set t_Sf=[3%dm
-"     set t_Sb=[4%dm
-"   endif
-" endif
 
 " window splits & ruler were too bright - change to white on grey
 " (shouldn't change GUI or non-color term appearance)

@@ -35,9 +35,8 @@
                                (evil-helper :location local)
                                ;;(cider-helper :location local)
                                evil-cleverparens
-                               clojure
                                cider
-                               auto-indent-mode
+                               ;; auto-indent-mode
                                paredit))
 ;; (setq SuperUser-packages '(auto-indent-mode))
 ;; TODO pretty symbol mode set up
@@ -53,16 +52,17 @@
   ;;   (add-hook 'cider-repl-mode-hook (lambda () (paredit-mode 1))))
   )
 
-(defun SuperUser/init-auto-indent-mode ()
-  (use-package auto-indent-mode
-    :ensure t
-    :init (progn (message "Loading: init auto-ident-mode")
-                 (setq auto-indent-on-save-file t
-                       auto-indent-blank-lines-on-move nil
-                       auto-indent-delete-trailing-whitespace-on-save-file t
-                       auto-indent-untabify-on-save-file t
-                       auto-indent-indent-style 'aggressive))
-    :config (auto-indent-global-mode)))
+;; Maybe replaced with clojure-indent-style with aggressive-indent-mode
+;; (defun SuperUser/init-auto-indent-mode ()
+;;   (use-package auto-indent-mode
+;;     :ensure t
+;;     :init (progn (message "Loading: init auto-ident-mode")
+;;                  (setq auto-indent-on-save-file t
+;;                        auto-indent-blank-lines-on-move nil
+;;                        auto-indent-delete-trailing-whitespace-on-save-file t
+;;                        auto-indent-untabify-on-save-file t
+;;                        auto-indent-indent-style 'aggressive))
+;;     :config (auto-indent-global-mode)))
 
 (defun SuperUser/init-evil-helper ()
   (use-package evil-helper
@@ -91,8 +91,9 @@
 
   ;; (global-set-key (kbd "M-`") 'other-frame-or-window)
 
-  (define-key evil-normal-state-map "gn" 'find-next-full-wordds)
-  (define-key evil-normal-state-map "gp" 'find-prev-full-wordds)
+  ;; Replaced with g# or *
+  ;; (define-key evil-normal-state-map "gn" 'find-next-full-wordds)
+  ;; (define-key evil-normal-state-map "gp" 'find-prev-full-wordds)
 
   (define-key evil-normal-state-map "gh" 'evil-window-left)
   (define-key evil-normal-state-map "gl" 'evil-window-right)

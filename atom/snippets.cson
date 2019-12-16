@@ -52,9 +52,12 @@
   'log':
     'prefix': 'log'
     'body': 'console.log(${2:"${1:Hi}"});$0${5: // REMOVETAG}'
-  'log remove later':
-    'prefix': 'logr'
-    'body': 'console.log(${2:"${1:Hi$3}"});$0 // REMOVETAG'
+  'log group':
+    'prefix': 'logg'
+    'body': 'console.group("$1");\nconsole.log(${3:"${2:Hi}"});$0 // REMOVETAG\nconsole.groupEnd();'
+  'log group collapsed':
+    'prefix': 'loggc'
+    'body': 'console.groupCollapsed("$1");\nconsole.log(${3:"${2:Hi}"});$0 // REMOVETAG\nconsole.groupEnd();'
   'log variable type':
     'prefix': 'logt'
     'body': 'console.log(typeof ${1:Hi});$0'

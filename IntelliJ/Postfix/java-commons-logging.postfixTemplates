@@ -1,0 +1,30 @@
+## Templates for Apache commons-logging ##
+
+.logDebug : log debug message
+	java.lang.String    [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.debug($expr$);
+	java.lang.Throwable [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.debug("$message$", $expr$);
+
+.logError : log error message
+	java.lang.String    [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.error($expr$);
+	java.lang.Throwable [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.error("$message$", $expr$);
+
+.logFatal : log fatal message
+	java.lang.String    [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.fatal($expr$);
+	java.lang.Throwable [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.fatal("$message$", $expr$);
+
+.logInfo : log info message
+	java.lang.String    [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.info($expr$);
+	java.lang.Throwable [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.info("$message$", $expr$);
+
+.logTrace : log trace message
+	java.lang.String    [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.trace($expr$);
+	java.lang.Throwable [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.trace("$message$", $expr$);
+
+.logWarn : log warn message
+	java.lang.String    [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.warn($expr$);
+	java.lang.Throwable [org.apache.commons.logging.Log]  →  $logger*:variableOfType("org.apache.commons.logging.Log"):"logger"$.warn("$message$", $expr$);
+
+
+.getLog : get log
+	java.lang.Class  [org.apache.commons.logging.LogFactory]  →  org.apache.commons.logging.LogFactory.getLog($expr$);
+  java.lang.String [org.apache.commons.logging.LogFactory]  →  org.apache.commons.logging.LogFactory.getLog($expr$);

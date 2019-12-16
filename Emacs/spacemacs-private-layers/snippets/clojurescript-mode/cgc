@@ -3,5 +3,4 @@
 # key: cgc
 # --
 (do (.groupCollapsed js/console "$1")
-    $2
-    (.groupEnd js/console "$1"))
+    $2(.groupEnd js/console "$1"))
