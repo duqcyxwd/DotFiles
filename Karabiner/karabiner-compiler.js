@@ -91,7 +91,8 @@ var amethystMode = {
   map: {
     y: {
       key_code: "y",
-      modifiers: ["left_control", "left_alt"]
+      modifiers: ["left_control", "left_alt"],
+      note: "Change main window"
     },
     p: {
       key_code: "p",
@@ -121,6 +122,14 @@ var amethystMode = {
       key_code: "t",
       modifiers: ["left_control", "left_alt"]
     },
+    m: {
+      key_code: "m",
+      modifiers: ["left_control", "left_alt"]
+    },
+    c: {
+      key_code: "c",
+      modifiers: ["left_control", "left_alt"]
+    },
     spacebar: {
       key_code: "spacebar",
       modifiers: ["left_control", "left_alt"]
@@ -141,12 +150,12 @@ var amethystMode = {
       key_code: "comma",
       modifiers: ["left_control", "left_alt"]
     },
-    delete_or_backs: {
-      key_code: "delete_or_backs",
+    period: {
+      key_code: "period",
       modifiers: ["left_control", "left_alt"]
     },
-    c: {
-      key_code: "c",
+    delete_or_backs: {
+      key_code: "delete_or_backs",
       modifiers: ["left_control", "left_alt"]
     }
   }
