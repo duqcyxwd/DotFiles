@@ -7,6 +7,15 @@
 #
 #  My .zshrc to save some coffee time and keep my hair on my head
 
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  echo "instant prompt"
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
 # Section: Init {{{1
 # --------------------------------------------------------------------------
 # Display a loading sign for zshrc
@@ -22,7 +31,9 @@ export ZPROF_TRACK=0
 # --------------------------------------------------------------------------
 # PATH: Global PATH {{{2
 # --------------------------------------------------------------------------
-export PATH=$HOME/bin:/usr/local/sbin:$HOME/script-tool:/usr/local/bin:$PATH
+export PATH=$HOME/bin:/usr/local/sbin:/usr/local/bin:$PATH
+export PATH="$HOME/script:$PATH"
+export PATH="$HOME/my_script:$PATH"
 # export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
 export PATH="./node_modules/.bin:$PATH"
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
@@ -84,9 +95,9 @@ echoAndEval() { echo $@ && eval $@; }
 
 alias -g ee=echoAndEval
 alias -g timeElapsed="pv -F 'Elapsed time: %t'"
-alias v='py /Users/chuan.du/script-tool/version.py ./'
+alias v='py ~/my_script/version.py ./'
 power_v() {
-    python /Users/chuan.du/script-tool/version.py ./ powermode
+    python ~/my_script/version.py ./ powermode
 }
 
 noti() {
@@ -124,9 +135,7 @@ async_load() {
 
     source $ANTIGEN_BUNDLES/psprint/zsh-cmd-architect/zsh-cmd-architect.plugin.zsh
 
-    # antigen bundle seletskiy/zsh-fuzzy-search-and-edit
-    source $ANTIGEN_BUNDLES/seletskiy/zsh-fuzzy-search-and-edit/plugin.zsh
-    source /Users/chuan.du/github/kafka-zsh-completions/kafka.zsh
+    source ~/script/kafka-zsh-completions/kafka.zsh
 
     # tmux
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmux/tmux.plugin.zsh
@@ -142,43 +151,39 @@ async_load() {
     alias tcs='tmux -CC new-session -s'
 
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmuxinator/tmuxinator.plugin.zsh
-    source /Users/chuan.du/github/tmuxinator/completion/tmuxinator.zsh
+    source ~/script/tmuxinator/completion/tmuxinator.zsh
 
+    # fzf
     # fzf20190730181606
-    # load fzf ^R ^T
+    # fzf load load fzf ^R ^T
+    # bindkey '^T' fzf-file-widget
+    # bindkey '\ec' fzf-cd-widget
+    # bindkey '^R' fzf-history-widget
     [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-    # Auto jump tool
-    # autojump 'j'
-    # antigen bundle qoomon/zjump 'j'
-    # load fzf before this
-    # zz is similar to ^G
-
+    #antigen bundle Aloxaf/fzf-tab
     #antigen bundle rupa/z         #'z' '_z'
-    #antigen bundle changyuheng/fz #'z' '_fz' zz
+    #antigen bundle changyuheng/fz #'z' '_fz' zz '_fzz'
     #antigen bundle hschne/fzf-git
     #antigen bundle andrewferrier/fzf-z # ^B
 
     # fzf vs fzy and fzf win
-
-    source $ANTIGEN_BUNDLES/rupa/z/z.sh
-    source $ANTIGEN_BUNDLES/changyuheng/fz/fz.plugin.zsh         # z zz
-    source $ANTIGEN_BUNDLES/andrewferrier/fzf-z/fzf-z.plugin.zsh #
+    # source $ANTIGEN_BUNDLES/Aloxaf/fzf-tab/fzf-tab.plugin.zsh        # tab, c-spc multi select
+    source $ANTIGEN_BUNDLES/rupa/z/z.sh                                # z jump around
+    source $ANTIGEN_BUNDLES/changyuheng/fz/fz.plugin.zsh               # z zz  with fzf search
+    source $ANTIGEN_BUNDLES/andrewferrier/fzf-z/fzf-z.plugin.zsh       # require auto jump
 
     # antigen bundle 'wfxr/forgit'
     source $ANTIGEN_BUNDLES/wfxr/forgit/forgit.plugin.zsh
-
-    # antigen bundle aperezdc/zsh-fzy
-    # source $ANTIGEN_BUNDLES/aperezdc/zsh-fzy/zsh-fzy.plugin.zsh
-    # bindkey '^o'  fzy-proc-widget
 
     # Antibody load
     # source ~/.zsh_plugins.sh
     plugin_config
 
-    if [ $commands[autojump] ]; then
-        [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
-    fi
+    # Decide to use z jump instead of auto jump
+    # if [ $commands[autojump] ]; then
+    #     [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+    # fi
 
     autoload -Uz compinit
     if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
@@ -197,7 +202,7 @@ async_load() {
 }
 # }}}
 # async_cust_init {{{2
-source /Users/chuan.du/github/zsh-async/async.zsh
+source ~/script/zsh-async/async.zsh
 async_cust_init() {
 
     async_init
@@ -268,19 +273,19 @@ load_POWERLEVEL9K() {
 load_Antigen0() {
     echo "THEME: spaceship"
     if ! type "antigen" >/dev/null; then
-        source ~/antigen.zsh
+        source ~/script/antigen.zsh
         # Load the oh-my-zsh's library. It will conflict with other theme
         antigen use oh-my-zsh
     fi
-    antigen theme denysdovhan/spaceship-prompt
-    antigen bundle paulmelnikow/zsh-startup-timer
+    # antigen theme denysdovhan/spaceship-prompt
+    # antigen bundle paulmelnikow/zsh-startup-timer
     antigen apply
 }
 
 load_Antigen() {
     mlog "PlUGIN ENGINE: Antigen"
     if ! type "antigen" >/dev/null; then
-        source ~/antigen.zsh
+        source ~/script/antigen.zsh
         # Load the oh-my-zsh's library. It will conflict with other theme
         # echo "load oh-my-zsh"
         antigen use oh-my-zsh
@@ -288,10 +293,10 @@ load_Antigen() {
     # Antigen loading package {{{2
 
     antigen bundle vi-mode
-    antigen bundle iterm2                        # Iterm2 profile, color
+    antigen bundle iterm2 # Iterm2 profile, color
 
     antigen bundle shayneholmes/zsh-iterm2colors # Iterm2 Color "0.01"
-    antigen bundle paulmelnikow/zsh-startup-timer
+    # antigen bundle paulmelnikow/zsh-startup-timer
     antigen bundle djui/alias-tips # Alias helper
     # antigen bundle sei40kr/zsh-fast-alias-tips
 
@@ -309,8 +314,15 @@ load_Antigen() {
     # echo "THEME: spaceship"
     # antigen theme denysdovhan/spaceship-prompt
     # Async prompt
-    antigen theme maximbaz/spaceship-prompt
+    # antigen theme maximbaz/spaceship-prompt
 
+    # Max suggest to switch to powerlevel10k, I will give it a try
+    # I like it, it is fast
+    antigen theme romkatv/powerlevel10k
+
+    # fzf-tab need to work here
+    antigen bundle Aloxaf/fzf-tab
+ 
     # echo "THEME: pure"
     # antigen bundle mafredri/zsh-async
     # antigen bundle sindresorhus/pure
@@ -392,15 +404,9 @@ fi
 # this might work as well: iterm2_profile Performance
 alias performance='echo -e "\033]50;SetProfile=Performance\x7"'
 
-# Convert CD to markdown format
-cc() {
-    res=$(pbpaste | sed -e :a -e '$!N; s/\n//; ta' | sed 's/\(CD-[0-9]*\)/[[\1]](https:\/\/cenx-cf.atlassian.net\/browse\/\1) /')
-    echo $res
-}
-
 color-test() {
     clear
-    cat /Users/chuan.du/script-tool/iterm-syntax-test.txt
+    cat ${HOME}/script-tool/iterm-syntax-test.txt
 }
 
 c-bash() {
@@ -413,6 +419,7 @@ c-bash() {
     echo "#!/bin/bash\n" >>$1
 
 }
+alias cbash=c-bash
 
 # grep -Eo '"[^"]*" *(: *([0-9]*|"[^"]*")[^{}\["]*|,)?|[^"\]\[\}\{]*|\{|\},?|\[|\],?|[0-9 ]*,?' | awk '{if ($0 ~ /^[}\]]/ ) offset-=4; printf "%*c%s\n", offset, " ", $0; if ($0 ~ /^[{\[]/) offset+=4}
 
@@ -614,14 +621,15 @@ dkreboot() {
 
 pre-wildfly() {
     echo "export JBOSS_HOME"
-    export JBOSS_HOME=/Users/chuan.du/Downloads/wildfly-10.1.0.Final
+    export JBOSS_HOME=${HOME}/Downloads/wildfly-10.1.0.Final
     ## export PATH=${PATH}:${JBOSS_HOME}/bin
     export WILDFLY_DEPLOY=${JBOSS_HOME}/standalone/deployments
 }
 
-# export WILDFLY_HOME=/Users/chuan.du/CENX/wildfly-10.1.0.Final
+# export WILDFLY_HOME=${HOME}/CENX/wildfly-10.1.0.Final
 # Wildfly created by Eclipse
-export WILDFLY_HOME=/Users/chuan.du/wildfly-10.0.0.Final
+export WILDFLY_HOME=~/Applications/wildfly-10.1.0.Final
+# export WILDFLY_HOME=~/Applications/wildfly-12.0.0.Final
 export WILDFLY_DEPLOY=${WILDFLY_HOME}/standalone/deployments
 export WILDFLY_BIN=${WILDFLY_HOME}/bin
 
@@ -684,15 +692,6 @@ mywatch-no-clean() {
 #watch-zookeeper2 {while :; a=$@; do clear; echo "$(date)\n\n$(echo stat |nc $a 2181)"; sleep 1;  done}
 #watch-zookeeper-cnumber {while :; do clear; echo "$(date)\n\n$(echo stat | nc localhost 2181 |grep 127.0.0.1 |wc -l)"; sleep 1;  done}
 
-clean-terminal() {
-    /bin/rm /var/log/cenx-alarm-pp/*
-    /bin/rm ~/temp/*
-    /bin/rm -rf /Users/chuan.du/.m2/repository/cenx/cenx-*
-    docker-cleanup-deep
-    /bin/rm -rf /usr/local/kafka_2.9.1-0.8.2.2/logs/*
-
-}
-
 # Section: Alias {{{1
 # --------------------------------------------------------------------------
 
@@ -705,8 +704,8 @@ alias rs='source ~/.zshrc'
 alias rst='unset ZSH_PLUGIN_LOADED && source ~/.zshrc'
 alias mz='vim ~/.zshrc && shfmt -i 4 -s -w -ci ~/.zshrc'
 alias ca="less ~/.zshrc"
-alias sch="qlmanage -p /Users/SuperiMan/Documents/2014\ Fall\ Time\ table.png"
-alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+
+alias mvimdiff="mvim -d"
 
 alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
 alias notes="mvim ~/repo/Notes/CLojure.md"
@@ -717,23 +716,25 @@ alias kafka08="cd /usr/local/kafka_2.9.1-0.8.2.2"
 alias kafka21="cd /usr/local && ln -s kafka_2.12-2.1.0 kafka"
 alias kafka08="cd /usr/local && ln -s kafka_2.9.1-0.8.2.2 kafka"
 
+#============= Global =============
 alias -g Gc=' --color=always | grep -i'
 alias -g G='| grep -i'
 alias -g F='| fzf | pbcopy && pbpaste'
 alias -g C='| pbcopy && pbpaste'
-alias dirs='dirs -v'
+
+#============= Applications =============
+alias copen='open -a Google\ Chrome'
+alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+alias ems='open -a /Applications/Emacs.app $@'
+alias em='ems'
+alias zkcli0=/usr/local/Cellar/zookeeper/3.4.13/bin/zkCli
 
 # Cheatsheet
-alias cidea='cat ~/repo/DotFiles/vim/ideavim-cheatsheet | grep $@'
+alias cidea='cat ~/duqcyxwd/DotFiles/vim/ideavim-cheatsheet | grep $@'
 
 alias py='python'
 alias rmt='/bin/rm'
 alias rm="trash"
-alias ems='open -a /Applications/Emacs.app $@'
-alias em='ems'
-
-alias sourcetree='open -a SourceTree'
-alias st='sourcetree'
 
 # Alias for echo done
 alias tf='echo "Task finished"'
@@ -744,33 +745,13 @@ alias sql="echo 'psql to localhost' && ee \"export PAGER='less -SF' && psql -h '
 
 #============= Dir alias =============
 # CD to any directory with auto complete
-local _repodir="/Users/chuan.du/repo/"
+local _repodir="${HOME}/code/"
 c() {cd $_repodir$1}
 compctl -/ -W $_repodir c
 
-# CD to any directory with auto complete
-local repodir_p_r="/Users/chuan.du/repo/cenx-platform/"
-local repodir_p="/Users/chuan.du/repo/cenx-platform/cenx-"
-p() {cd $repodir_p_r$1}
-compctl -g $repodir_p'*(:t:r)' p
-
-# Use *(:t:r) to auto complete
-local repodir2="/opt/cenx/application/"
-opt() {cd $repodir2$1}
-compctl -g $repodir2'*(:t:r)' opt
-
-local _gh_dir="/Users/chuan.du/github/"
+local _gh_dir="${HOME}/github/"
 gh() {cd $_gh_dir$1}
 compctl -/ -W $_gh_dir gh
-
-local _cenx_dir="/Users/chuan.du/repo/cenx/"
-ce() {cd $_cenx_dir$1}
-compctl -/ -W $_cenx_dir ce
-
-# Test compctl
-mm() {echo $1}
-# compctl -/ -W "(/opt/ /Users/chuan.du/repo/cenx-platform)" mm
-compctl -/ -W "(/Users/chuan.du/repo/cenx-platform)" mm
 
 #============= Powerful and Common alias =============
 alias cpwd='echo "copy currenty directory" && pwd |pbcopy'
@@ -779,7 +760,28 @@ cpath() {greadlink -f $1 | tr -d '\n' | pbcopy }
 alias cf='pbpaste | pbcopy' # clean format of clipboard
 alias dir='dirs -v'
 
+#============= Kubernetes alias =============
 alias kexecit='kubectl exec -it'
+if [ -f $HOME/.kube/KUBE_NS ]; then
+    export KUBE_NS=$(cat $HOME/.kube/KUBE_NS)
+fi
+
+# Set k8s ns
+set_ns() {
+    echo $1 >$HOME/.kube/KUBE_NS
+    export KUBE_NS=$1
+    echo "kubectl config set-context --current --namespace=$KUBE_NS"
+    kubectl config set-context --current --namespace=$KUBE_NS
+}
+
+# helm ls | grep chuan-dev | cut -f1
+# helm ls | grep $KUBE_NS | cut -f1 | hpurge && kdns $KUBE_NS
+hpurge() {
+    while read data; do
+        helm del --purge $data
+    done
+}
+
 # kgpn() {
 #   kubectl get pods $2 $3| grep $1 | cut -d ' ' -f1 | print
 # }
@@ -797,25 +799,17 @@ alias git-update-all='find . -type d -depth 1 -exec git --git-dir={}/.git --work
 
 #======================= Git Alias for work  =========================================
 
+alias ga="git add"
 alias gaa="git add"
-alias gu="git add project.clj && git commit -m 'Upversion'"
 alias gbc="echo 'Copy current branch name' && git rev-parse --abbrev-ref HEAD |pbcopy && git branch"
-alias gb-update-five-one="git fetch -p && git merge origin/r/5.1.x"
-alias gbu51=gb-update-five-one
 alias gbui="echo 'git branch update with integration' && git fetch -p && git merge origin/integration"
 alias gbud="echo 'git branch update with develop' && git fetch -p && git merge origin/develop"
-alias gbu60x="git fetch -p && git merge origin/r/6.0.x"
-alias gbu800="git fetch -p && git merge origin/r/8.0.0.x"
-alias gbu810="git fetch -p && git merge origin/r/8.1.0.x"
 
 alias gcoi="git checkout integration && git pull"
 alias gcod="git checkout develop && git pull"
 alias gcoip="git checkout integration && git pull"
-alias gco51="git fetch -p && git checkout r/5.1.x && git pull"
-alias gco61="git fetch -p && git checkout r/6.1.0.x && git pull"
 
 alias gfco='git fetch -p && git checkout'
-
 alias gitf='open -a GitFiend --args $(git rev-parse --show-toplevel)'
 
 #=== Special Git Tool  ====
@@ -902,6 +896,13 @@ alias galias='alias|grep git'
 #clean -dxf will wipe everything requiring user to source gitenv again
 #alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
 
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status
+git config --global alias.a add
+git config --global alias.root "rev-parse --show-toplevel"
+
 # Section: Some Autocompletion {{{1
 # --------------------------------------------------------------------------
 # Autocompletion for teamocil
@@ -949,7 +950,7 @@ fi
 # fi
 # }}}
 
-# Section: plugin_config {{{1
+# Section: ZSH plugins and powerline {{{1
 # --------------------------------------------------------------------------
 # spaceship_power_version_init {{{2
 
@@ -1032,7 +1033,7 @@ plugin_config() {
 
     # zsh-iterm2colors
     alias ac=_iterm2colors_apply
-    alias acl='echo $_iterm2colors_current'
+    alias acc='echo $_iterm2colors_current'
     alias acr=_iterm2colors_apply_random
     alias ac-light='ac "ayu_light"'
     alias ac-darkside='ac "Darkside"'
@@ -1049,19 +1050,23 @@ plugin_config() {
     }
 
     alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
-
-    alias exa='/usr/local/bin/exa --time-style=long-iso --group-directories-first'
+    alias exa='/usr/local/bin/exa --time-style=long-iso --group-directories-first -F'
     alias e=exa
-    alias l=exa
-
     alias ea='exa -a'
-    alias el='exa -l'
-    alias ll=el
-    alias ela='exa -l -a'
-    alias la=ela
-    alias lag=ela --git
+    alias eaa='exa .?* -d'
+
+    alias lag=exa --git
+    alias l='exa -lbF'                                               # list, size, type, git
+    alias ll='exa -lbGF'                                             # long list
+    alias lls='exa -lbGF -s ext'                                     # long list
+    alias lla='exa -lbGFa'                                           # long list
+    alias lx='exa -lbhHigUmuSa --time-style=long-iso --color-scale'  # all list
+    alias lxaa='lx .?* -d -G'                                        # all list
+    alias la='exa -lbhHigUmuSa@ --time-style=long-iso --color-scale' # all + extended list
+
     # Show hidden files
-    alias laa='exa -l .?* -d'
+    alias laa='exa .?* -d'
+    alias llaa='lla .?* -d' # long list
 
     alias lta='exa --git --group-directories-first -lT'
     alias lt1='exa --git --group-directories-first -lT -L 1'
@@ -1070,26 +1075,17 @@ plugin_config() {
     alias lt4='exa --git --group-directories-first -lT -L 4'
     alias lt=lt2
 
-    alias lc='colorls -l --sd --gs'
-    alias lca='colorls -lA --sd --gs'
-
     bindkey '^k' autosuggest-accept
     bindkey '^\n' autosuggest-execute
-
-    # bindkey "^T" fzf-file-widget # fzf files
     bindkey "^R" history-search-multi-word # Use multi word. fzf is too aggressive
+
+    # Fzf related
+    bindkey "^T" fzf-file-widget           # fzf files
     bindkey '^G' fzf-cd-widget             # Search and goto fzf
-
-    bindkey "^F" zca-widget # Zsh Command Architect
-    # bindkey "^T" fzf-file-widget
-    # "^B" fzfz-file-widget
-
-    # Not best keybinding but just for testing
     bindkey "^B" fzfz-file-widget
 
-    # bindkey "^R" fzf-history-widget
-    # bindkey "^R" history-incremental-search-backward
-    # bindkey "^S" history-incremental-search-forward
+    bindkey "^F" zca-widget # Zsh Command Architect
+
 
     # Vi-mode
     export KEYTIMEOUT=1
@@ -1103,7 +1099,9 @@ plugin_config() {
 # Section: Load local config && plugin config
 spaceship_power_version_init
 spaceship_config
-source ~/.zshrc-local.sh
+if [ -f ~/.zshrc-local.sh ]; then
+    source ~/.zshrc-local.sh
+fi
 
 # Section: ZSH History {{{1
 # --------------------------------------------------------------------------
@@ -1169,3 +1167,8 @@ export IS_ASYNC=0
 # [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
 alias zkcli0=/usr/local/Cellar/zookeeper/3.4.13/bin/zkCli
+
+# Overwrite iterm setting for tab color and brightness
+echo -e "\033]6;1;bg;red;brightness;40\a" 1>/dev/null
+echo -e "\033]6;1;bg;green;brightness;44\a" 1>/dev/null
+echo -e "\033]6;1;bg;blue;brightness;52\a" 1>/dev/null
