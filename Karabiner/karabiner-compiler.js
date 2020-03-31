@@ -93,6 +93,10 @@ var amethystMode = {
       key_code: 'c',
       modifiers: ['left_alt', 'left_control']
     },
+    d: {
+      key_code: 'd',
+      modifiers: ['left_alt', 'left_control']
+    },
     f: {
       key_code: 'f',
       modifiers: ['left_alt', 'left_control']
