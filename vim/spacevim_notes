@@ -2,6 +2,7 @@ space vim config stores in
 
 /Users/chuan.du/.SpaceVim.d/autoload/myspacevim.vim
 
+ To enable them you need to add bootstrap_before = "myspacevim#before" and/or bootstrap_after = "myspacevim#after" to [options] section in file .SpaceVim.d/init.toml
 Triggered by: 
     bootstrap_before = "myspacevim#before"
     bootstrap_after  = "myspacevim#after"

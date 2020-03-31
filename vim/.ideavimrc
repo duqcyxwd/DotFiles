@@ -241,13 +241,11 @@ nnoremap <CR> zc
 " nnoremap \c :action CheckStyleCurrentFileAction<cr>
 
 nnoremap \a    :action RunAnything<CR>
-nnoremap \C    :action Compile<CR>
-nnoremap \c    :action RunClass<CR>
+nnoremap \c    :action Compile<CR>
 nnoremap \k    :action Stop<CR>
 nnoremap \q    :nohlsearch<CR>
 nnoremap \R    :action RunClass<CR>
 nnoremap \r    :action Run<CR>
-nnoremap \D    :action Debug<CR>
 nnoremap \d    :action Debug<CR>
 nnoremap \w    :action EditorToggleUseSoftWraps<CR>
 
@@ -262,7 +260,8 @@ vnoremap <leader>Rs    <Esc>:action ChooseRunConfiguration<CR>
 nnoremap <leader>mrd :action com.github.setial.intellijjavadocs.action.JavaDocGenerateActionOnEditor<CR>
 nnoremap <leader>mrD :action com.github.setial.intellijjavadocs.action.JavaDocsGenerateActionOnEditor<CR>
 
-noremap <leader>rrr :action Refactorings.QuickListPopupAction<CR>
+noremap <leader>mR :action Refactorings.QuickListPopupAction<CR>
+noremap <leader>rrr:action Refactorings.QuickListPopupAction<CR>
 
 noremap <leader>ee :action :cursive.repl.actions/run-top-sexp<CR>
 noremap <leader>ec :action :cursive.repl.actions/run-last-sexp<CR>
