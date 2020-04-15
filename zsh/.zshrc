@@ -12,20 +12,21 @@
 # confirmations, etc.) must go above this block; everything else may go below.
 
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  echo "instant prompt"
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+
+
 
 # Section: Init {{{1
 # --------------------------------------------------------------------------
 # Display a loading sign for zshrc
 
 # ASYNC only support loading startup message
-export IS_ASYNC=1
+export IS_ASYNC=0
 export START_MESSAGE=0
 export LOADING_BAR=0
 export ZPROF_TRACK=0
-# export ZSH_PLUGIN_LOADED=1 # Disable ZSH PLUGIN # unset ZSH_PLUGIN_LOADED
+# export ZSH_PLUGIN_LOADED=0 # Disable ZSH PLUGIN # unset ZSH_PLUGIN_LOADED
 
 # Section: PATH {{{1
 # --------------------------------------------------------------------------
@@ -120,8 +121,11 @@ async_load() {
     # Manully async load bundles that installed by antigen
     local ANTIGEN_BUNDLES=~/.antigen/bundles
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
+    export GIT_AUTO_FETCH_INTERVAL=1200
+    # source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git-auto-fetch/git-auto-fetch.plugin.zsh
     # brew install git-extras
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git-extras
+
     source $ANTIGEN_BUNDLES/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
 
     # antigen bundle zsh-users/zsh-syntax-highlighting # Async load
@@ -154,17 +158,58 @@ async_load() {
     source ~/script/tmuxinator/completion/tmuxinator.zsh
 
     # fzf
-    # fzf20190730181606
+    # fzf junegunn/fzf
     # fzf load load fzf ^R ^T
     # bindkey '^T' fzf-file-widget
     # bindkey '\ec' fzf-cd-widget
     # bindkey '^R' fzf-history-widget
     [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+    # {{{ fzf settings
+    export FZF_TMUX_HEIGHT=70
+    # Overwrite fzf filte widget so it will show preview as well
+    __fsel() {
+      local cmd="${FZF_CTRL_T_COMMAND:-"command find -L . -mindepth 1 \\( -path '*/\\.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
+        -o -type f -print \
+        -o -type d -print \
+        -o -type l -print 2> /dev/null | cut -b3-"}"
+              setopt localoptions pipefail no_aliases 2> /dev/null
+              eval "$cmd" | FZF_DEFAULT_OPTS="--preview \"bat --style=numbers --color=always {} | head -500\" --height ${FZF_TMUX_HEIGHT:-100%} --reverse $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS --color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899' --border" $(__fzfcmd) -m "$@" | while read item; do
+              echo -n "${(q)item} "
+            done
+            local ret=$?
+            echo
+            return $ret
+          }
+    # Setting fd as the default source for fzf
+    if [ $commands[fd] ]; then
+      export FZF_DEFAULT_COMMAND='fd --type f'
+      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    fi
+    # Use ~~ as the trigger sequence instead of the default **
+    export FZF_COMPLETION_TRIGGER='~~'
+
+    # Options to fzf command
+    export FZF_COMPLETION_OPTS='+c -x'
+
+    # Use fd (https://github.com/sharkdp/fd) instead of the default find
+    # command for listing path candidates.
+    # - The first argument to the function ($1) is the base path to start traversal
+    # - See the source code (completion.{bash,zsh}) for the details.
+    _fzf_compgen_path() {
+      fd --hidden --follow --exclude ".git" . "$1"
+    }
+    
+    # Use fd to generate the list for directory completion
+    _fzf_compgen_dir() {
+      fd --type d --hidden --follow --exclude ".git" . "$1"
+    }
+
+    #}}}
+    
     #antigen bundle Aloxaf/fzf-tab
     #antigen bundle rupa/z         #'z' '_z'
     #antigen bundle changyuheng/fz #'z' '_fz' zz '_fzz'
-    #antigen bundle hschne/fzf-git
     #antigen bundle andrewferrier/fzf-z # ^B
 
     # fzf vs fzy and fzf win
@@ -174,7 +219,19 @@ async_load() {
     source $ANTIGEN_BUNDLES/andrewferrier/fzf-z/fzf-z.plugin.zsh       # require auto jump
 
     # antigen bundle 'wfxr/forgit'
+    export FORGIT_NO_ALIASES=true
     source $ANTIGEN_BUNDLES/wfxr/forgit/forgit.plugin.zsh
+    # {{{ Forgit alias
+    alias fga='forgit::add'
+    alias fgrh='forgit::reset::head'
+    alias fgl='forgit::log'
+    alias fgd='forgit::diff'
+    alias fgi='forgit::ignore'
+    alias fgcf='forgit::restore'
+    alias fgc='forgit::restore'
+    alias fgclean='forgit::clean'
+    alias fgss='forgit::stash::show'
+    # }}}
 
     # Antibody load
     # source ~/.zsh_plugins.sh
@@ -230,7 +287,9 @@ async_cust_init() {
 # }}}
 
 ### }}}
+
 [[ $IS_ASYNC -eq "1" ]] && async_cust_init
+
 # Section: Theme Config {{{1
 # --------------------------------------------------------------------------
 # Set name of the theme to load.
@@ -239,6 +298,7 @@ async_cust_init() {
 # ZSH_THEME="agnoster"
 # ZSH_THEME="powerlevel9k/powerlevel9k"
 
+# powerline 9k {{{2
 load_POWERLEVEL9K() {
     power-version() {
         local color='%F{yellow}'
@@ -266,7 +326,82 @@ load_POWERLEVEL9K() {
 
     alias signs="open https://github.com/bhilburn/powerlevel9k#vcs-symbols"
 }
+# }}}
+# spaceship_power_version_init {{{2
 
+spaceship_power_version_init() {
+    SPACESHIP_POWER_VERSION_SHOW="${SPACESHIP_POWER_VERSION_SHOW=true}"
+    SPACESHIP_POWER_VERSION_PREFIX="${SPACESHIP_POWER_VERSION_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
+    SPACESHIP_POWER_VERSION_SUFFIX="${SPACESHIP_POWER_VERSION_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
+    SPACESHIP_POWER_VERSION_SYMBOL="${SPACESHIP_POWER_VERSION_SYMBOL="🍷 "}"
+    SPACESHIP_POWER_VERSION_COLOR="${SPACESHIP_POWER_VERSION_COLOR="white"}"
+
+    # ------------------------------------------------------------------------------
+    # Section power_version
+    # ------------------------------------------------------------------------------
+    spaceship_async_job_load_power_version() {
+        [[ $SPACESHIP_POWER_VERSION_SHOW == false ]] && return
+        async_job spaceship spaceship_async_job_power_version
+    }
+    spaceship_async_job_power_version() {
+        # echo "spaceship_async_job_power_version" >> ~/temp/temp.log
+        local version=$(power_v)
+        # echo $version >> ~/temp/temp.log
+        [[ -z $version ]] && return
+        echo "$version"
+    }
+    spaceship_power_version() {
+        [[ -z ${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]} ]] && return
+        spaceship::section \
+            "$SPACESHIP_POWER_VERSION_COLOR" \
+            "$SPACESHIP_POWER_VERSION_PREFIX" \
+            "${SPACESHIP_POWER_VERSION_SYMBOL}${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]}" \
+            "$SPACESHIP_POWER_VERSION_SUFFIX"
+    }
+
+    # Sync way to load power version
+    # spaceship_power_version() {
+    #     [[ $SPACESHIP_POWER_VERSION_SHOW == false ]] && return
+    #     spaceship::exists power_v || return
+    #     [[ -f pom.xml || -n *.xml(#qN^/) ]] || return
+    #     local version=$(power_v)
+    #     spaceship::section \
+    #         "$SPACESHIP_POWER_VERSION_COLOR" \
+    #         "$SPACESHIP_POWER_VERSION_PREFIX" \
+    #         "$SPACESHIP_POWER_VERSION_SYMBOL$version" \
+    #         "$SPACESHIP_POWER_VERSION_SUFFIX"
+    #     }
+}
+
+spaceship_config() {
+    # Spaceship
+    SPACESHIP_TIME_SHOW=true
+    SPACESHIP_EXEC_TIME_ELAPSED=1
+
+    # SPACESHIP_PROMPT_ORDER=(time user host dir git hg package node ruby elixir xcode swift golang php rust haskell julia aws venv conda pyenv dotnet ember kubecontext power_version exec_time line_sep battery vi_mode jobs exit_code char )
+    # maximbaz/spaceship-prompt
+
+    SPACESHIP_DIR_PREFIX=""
+    SPACESHIP_GIT_STATUS_SHOW=true
+    SPACESHIP_GIT_STATUS_PREFIX="["
+    SPACESHIP_GIT_STATUS_SUFFIX="] "
+    SPACESHIP_GIT_STATUS_COLOR="red"
+    SPACESHIP_GIT_STATUS_UNTRACKED="?"
+    SPACESHIP_GIT_STATUS_ADDED="+"
+    SPACESHIP_GIT_STATUS_MODIFIED="!"
+    SPACESHIP_GIT_STATUS_RENAMED="»"
+    SPACESHIP_GIT_STATUS_DELETED="✘"
+    SPACESHIP_GIT_STATUS_STASHED="$"
+    SPACESHIP_GIT_STATUS_UNMERGED="="
+    SPACESHIP_GIT_STATUS_AHEAD="⇡"
+    SPACESHIP_GIT_STATUS_BEHIND="⇣"
+    SPACESHIP_GIT_STATUS_DIVERGED="⇕"
+
+    SPACESHIP_PROMPT_ORDER=(time user host git_branch git_status power_version hg package node ruby elixir xcode swift golang php haskell julia aws venv conda pyenv dotnet ember docker kubecontext exec_time line_sep dir battery vi_mode jobs exit_code char)
+}
+
+# }}}2
+# }}}1
 # Section: Antigen {{{1
 # --------------------------------------------------------------------------
 # Load very basic plugins
@@ -320,8 +455,11 @@ load_Antigen() {
     # I like it, it is fast
     antigen theme romkatv/powerlevel10k
 
+    # antigen bundle git-extras
+
     # fzf-tab need to work here
     antigen bundle Aloxaf/fzf-tab
+    # give a preview of directory by exa when completing cd
  
     # echo "THEME: pure"
     # antigen bundle mafredri/zsh-async
@@ -680,6 +818,15 @@ mywatch() {
     done
 }
 
+mywatch2() {
+    while :; do
+        a=$($@)
+        clear
+        echo "$(date)\n\n$a"
+        sleep 4
+    done
+}
+
 mywatch-no-clean() {
     while :; do
         a=$($@)
@@ -719,7 +866,10 @@ alias kafka08="cd /usr/local && ln -s kafka_2.9.1-0.8.2.2 kafka"
 #============= Global =============
 alias -g Gc=' --color=always | grep -i'
 alias -g G='| grep -i'
-alias -g F='| fzf | pbcopy && pbpaste'
+alias -g WC='| wc -l'
+alias -g TF='| tail -f'
+alias -g F='| fzf | tr -d "\n" | pbcopy && pbpaste'
+alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'
 alias -g C='| pbcopy && pbpaste'
 
 #============= Applications =============
@@ -788,30 +938,20 @@ hpurge() {
 
 # Section: Git {{{1
 # --------------------------------------------------------------------------
-#============================= Git alias =================================
+# Git config {{{2
 git config --global color.ui true
+git config --global alias.co checkout
+git config --global alias.br branch
+git config --global alias.ci commit
+git config --global alias.st status
+git config --global alias.a add
+git config --global alias.root "rev-parse --show-toplevel"
+# Configure git as my personal repo
+alias config-git-local="ee \"git config --local user.name 'Yongqinchuan Du' && git config --local user.email 'duqcyxwd@gmail.com'\""
 
-alias git-tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
-alias git-hidden="git ls-files -v | grep '^[a-z]' | cut -c3-"
-alias git-hide='ee "git update-index --assume-unchanged"'
-alias git-unhide-all='ee "git update-index --really-refresh"'
-alias git-update-all='find . -type d -depth 1 -exec git --git-dir={}/.git --work-tree=$PWD/{} pull origin master \;'
 
-#======================= Git Alias for work  =========================================
-
-alias ga="git add"
-alias gaa="git add"
-alias gbc="echo 'Copy current branch name' && git rev-parse --abbrev-ref HEAD |pbcopy && git branch"
-alias gbui="echo 'git branch update with integration' && git fetch -p && git merge origin/integration"
-alias gbud="echo 'git branch update with develop' && git fetch -p && git merge origin/develop"
-
-alias gcoi="git checkout integration && git pull"
-alias gcod="git checkout develop && git pull"
-alias gcoip="git checkout integration && git pull"
-
-alias gfco='git fetch -p && git checkout'
-alias gitf='open -a GitFiend --args $(git rev-parse --show-toplevel)'
-
+# Git functions {{{2
+# --------------------------------------------------------------------------
 #=== Special Git Tool  ====
 get_git_current_branch() { git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'; }
 
@@ -848,18 +988,74 @@ git-blame() {
     ruby ~/repo/DotFiles/otherTool/git-blame-colored $1 | less -R
 }
 
-groot() {cd $(git root)}
+cd-git-root() {cd $(git root)}
 
-alias gcob="ee 'gco -b'"
-alias gbrr="ee 'gbr |grep r/'"
-alias gcobr='echo "Create branch and remote branch| Stop using this one, use push remote instead. Try ggsup or git create-branch -r <development> "'
-# git create-branch -r development
+
+# Delete local and remote branch
+git-branch-delete-remote-current-branch() {
+  local branch="$(get_current_branch)"
+  git checkout -
+  ee "git branch -d $branch"
+  ee "git push -d $branch"
+}
+
+git-branch-delete-remote() {
+  local branch="$1"
+  ee "git branch -d $branch"
+  ee "git push -d origin $branch"
+}
+# Git Alias {{{2
+# --------------------------------------------------------------------------
+
+# Git log
+# o -> one line, 
+alias glg='git log --stat'
+alias glgp='git log --stat -p'
+alias glgg='git log --graph'
+alias glgga='git log --graph --decorate --all'
+alias glgm='git log --graph --max-count=10'
+alias glo='git log --oneline --decorate'
+alias glol="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+alias glols="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --stat"
+alias glod="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset'"
+alias glods="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short"
+alias glola="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all"
+alias glog='git log --oneline --decorate --graph'
+alias gloga='git log --oneline --decorate --graph --all'
+
+alias git-tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
+alias git-hidden="git ls-files -v | grep '^[a-z]' | cut -c3-"
+alias git-hide='ee "git update-index --assume-unchanged"'
+alias git-unhide-all='ee "git update-index --really-refresh"'
+alias git-update-all='find . -type d -depth 1 -exec git --git-dir={}/.git --work-tree=$PWD/{} pull origin master \;'
+
+
+alias gbcopy="echo 'Copy current branch name' && git rev-parse --abbrev-ref HEAD |pbcopy && git branch"
+
+alias gbc="git create-branch"
+
+# Create cust gco for cust completion
+git_checkout_branch_cust() { git checkout $@ }
+alias gcob=git_checkout_branch_cust
+alias gbrr="ee 'gbr |grep r/'"                                      # ggsup or gpsup  git create-branch -r development
 alias gcobr='echo "Create branch and remote branch| Stop using this one, use push remote instead" & git_create_branch'
 alias gcobr2='git create-branch -r development'
 
-# git recent branch
 alias gre="ee 'git recent | head'"
 alias grec="ee 'git recent | grep -i chuan | grep -v gone'"
+alias groot=cd-git-root
+
+#======================= Git Alias for work  =========================================
+
+alias gbui="echo 'git branch update with integration' && git fetch -p && git merge origin/integration"
+alias gbud="echo 'git branch update with develop' && git fetch -p && git merge origin/develop"
+
+alias gcoi="git checkout integration && git pull"
+alias gcod="git checkout develop && git pull"
+
+alias gfco='git fetch -p && git checkout'
+alias gitf='open -a GitFiend --args $(git rev-parse --show-toplevel)'
+
 
 #===== Branch clean up ======
 # Check branch
@@ -867,17 +1063,12 @@ alias gb-merged-remote="git for-each-ref --merged HEAD --sort=-committerdate ref
 alias gb-merged-remote-by-me='ee "gb-merged-remote |grep Chuan"'
 alias gb-merged='git branch --merged'
 
+alias gbddc=git-branch-delete-remote-current-branch
+alias gbdd=git-branch-delete-remote
+
 # Clean merged Branch
 alias gbd-merged-branch-local='git branch --merged | grep -v "\*" | xargs -n 1 git branch -d'
 alias gbd-remote='ee "git push -d origin"'
-
-# Delete all branchs excep current branch
-# alias gbdelete-all='gb | grep "f/CD" | grep -v "\*" |xargs -n 1 git branch -D'
-
-# Configure git as my personal repo
-alias config-git-local="ee \"git config --local user.name 'Yongqinchuan Du' && git config --local user.email 'duqcyxwd@gmail.com'\""
-
-#===== Git alist =====
 
 # run gitk
 alias gk="ee 'gitk --all&'"
@@ -888,20 +1079,17 @@ alias gitxdi="ee 'git diff origin/integration..$get_git_current_branch | gitx'"
 alias gdi-gitx=gitxdi
 alias gds="ee 'git diff -w --stat'"
 
-#show all git aliases
-alias galias='alias|grep git'
+
+# Delete all branchs excep current branch
+# alias gbdelete-all='gb | grep "f/CD" | grep -v "\*" |xargs -n 1 git branch -D'
+
+# }}}}
+
 
 # git clean up
 #clean all but the stuff the stuff that we would like preserved like .ccache, xmls catalog etc
 #clean -dxf will wipe everything requiring user to source gitenv again
 #alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
-
-git config --global alias.co checkout
-git config --global alias.br branch
-git config --global alias.ci commit
-git config --global alias.st status
-git config --global alias.a add
-git config --global alias.root "rev-parse --show-toplevel"
 
 # Section: Some Autocompletion {{{1
 # --------------------------------------------------------------------------
@@ -952,80 +1140,6 @@ fi
 
 # Section: ZSH plugins and powerline {{{1
 # --------------------------------------------------------------------------
-# spaceship_power_version_init {{{2
-
-spaceship_power_version_init() {
-    SPACESHIP_POWER_VERSION_SHOW="${SPACESHIP_POWER_VERSION_SHOW=true}"
-    SPACESHIP_POWER_VERSION_PREFIX="${SPACESHIP_POWER_VERSION_PREFIX="$SPACESHIP_PROMPT_DEFAULT_PREFIX"}"
-    SPACESHIP_POWER_VERSION_SUFFIX="${SPACESHIP_POWER_VERSION_SUFFIX="$SPACESHIP_PROMPT_DEFAULT_SUFFIX"}"
-    SPACESHIP_POWER_VERSION_SYMBOL="${SPACESHIP_POWER_VERSION_SYMBOL="🍷 "}"
-    SPACESHIP_POWER_VERSION_COLOR="${SPACESHIP_POWER_VERSION_COLOR="white"}"
-
-    # ------------------------------------------------------------------------------
-    # Section power_version
-    # ------------------------------------------------------------------------------
-    spaceship_async_job_load_power_version() {
-        [[ $SPACESHIP_POWER_VERSION_SHOW == false ]] && return
-        async_job spaceship spaceship_async_job_power_version
-    }
-    spaceship_async_job_power_version() {
-        # echo "spaceship_async_job_power_version" >> ~/temp/temp.log
-        local version=$(power_v)
-        # echo $version >> ~/temp/temp.log
-        [[ -z $version ]] && return
-        echo "$version"
-    }
-    spaceship_power_version() {
-        [[ -z ${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]} ]] && return
-        spaceship::section \
-            "$SPACESHIP_POWER_VERSION_COLOR" \
-            "$SPACESHIP_POWER_VERSION_PREFIX" \
-            "${SPACESHIP_POWER_VERSION_SYMBOL}${SPACESHIP_ASYNC_RESULTS[spaceship_async_job_power_version]}" \
-            "$SPACESHIP_POWER_VERSION_SUFFIX"
-    }
-
-    # Sync way to load power version
-    # spaceship_power_version() {
-    #     [[ $SPACESHIP_POWER_VERSION_SHOW == false ]] && return
-    #     spaceship::exists power_v || return
-    #     [[ -f pom.xml || -n *.xml(#qN^/) ]] || return
-    #     local version=$(power_v)
-    #     spaceship::section \
-    #         "$SPACESHIP_POWER_VERSION_COLOR" \
-    #         "$SPACESHIP_POWER_VERSION_PREFIX" \
-    #         "$SPACESHIP_POWER_VERSION_SYMBOL$version" \
-    #         "$SPACESHIP_POWER_VERSION_SUFFIX"
-    #     }
-}
-
-spaceship_config() {
-    # Spaceship
-    SPACESHIP_TIME_SHOW=true
-    SPACESHIP_EXEC_TIME_ELAPSED=1
-
-    # SPACESHIP_PROMPT_ORDER=(time user host dir git hg package node ruby elixir xcode swift golang php rust haskell julia aws venv conda pyenv dotnet ember kubecontext power_version exec_time line_sep battery vi_mode jobs exit_code char )
-    # maximbaz/spaceship-prompt
-
-    SPACESHIP_DIR_PREFIX=""
-    SPACESHIP_GIT_STATUS_SHOW=true
-    SPACESHIP_GIT_STATUS_PREFIX="["
-    SPACESHIP_GIT_STATUS_SUFFIX="] "
-    SPACESHIP_GIT_STATUS_COLOR="red"
-    SPACESHIP_GIT_STATUS_UNTRACKED="?"
-    SPACESHIP_GIT_STATUS_ADDED="+"
-    SPACESHIP_GIT_STATUS_MODIFIED="!"
-    SPACESHIP_GIT_STATUS_RENAMED="»"
-    SPACESHIP_GIT_STATUS_DELETED="✘"
-    SPACESHIP_GIT_STATUS_STASHED="$"
-    SPACESHIP_GIT_STATUS_UNMERGED="="
-    SPACESHIP_GIT_STATUS_AHEAD="⇡"
-    SPACESHIP_GIT_STATUS_BEHIND="⇣"
-    SPACESHIP_GIT_STATUS_DIVERGED="⇕"
-
-    SPACESHIP_PROMPT_ORDER=(time user host git_branch git_status power_version hg package node ruby elixir xcode swift golang php haskell julia aws venv conda pyenv dotnet ember docker kubecontext exec_time line_sep dir battery vi_mode jobs exit_code char)
-}
-
-# }}}
 # plugin_config {{{2
 plugin_config() {
     # Some good keybind is overwrite by plugins or oh-my-zsh
@@ -1057,7 +1171,9 @@ plugin_config() {
 
     alias lag=exa --git
     alias l='exa -lbF'                                               # list, size, type, git
+    alias lg='exa -lbFg'                                             # list, size, type, git
     alias ll='exa -lbGF'                                             # long list
+    alias llg='exa -lbGF --git'                                      # long list
     alias lls='exa -lbGF -s ext'                                     # long list
     alias lla='exa -lbGFa'                                           # long list
     alias lx='exa -lbhHigUmuSa --time-style=long-iso --color-scale'  # all list
@@ -1068,11 +1184,11 @@ plugin_config() {
     alias laa='exa .?* -d'
     alias llaa='lla .?* -d' # long list
 
-    alias lta='exa --git --group-directories-first -lT'
-    alias lt1='exa --git --group-directories-first -lT -L 1'
-    alias lt2='exa --git --group-directories-first -lT -L 2'
-    alias lt3='exa --git --group-directories-first -lT -L 3'
-    alias lt4='exa --git --group-directories-first -lT -L 4'
+    alias lta='exa --group-directories-first -lT'
+    alias lt1='exa --group-directories-first -lT -L 1'
+    alias lt2='exa --group-directories-first -lT -L 2'
+    alias lt3='exa --group-directories-first -lT -L 3'
+    alias lt4='exa --group-directories-first -lT -L 4'
     alias lt=lt2
 
     bindkey '^k' autosuggest-accept
@@ -1084,7 +1200,10 @@ plugin_config() {
     bindkey '^G' fzf-cd-widget             # Search and goto fzf
     bindkey "^B" fzfz-file-widget
 
-    bindkey "^F" zca-widget # Zsh Command Architect
+    bindkey '^F' toggle-fzf-tab
+    bindkey "^O" zca-widget                # Zsh Command Architect zsh-cmd-architect
+    # Notes "^I" is reserved for suggestion complete
+    # ^M for enter
 
 
     # Vi-mode
@@ -1096,12 +1215,7 @@ plugin_config() {
 # }}}
 # }}}
 
-# Section: Load local config && plugin config
-spaceship_power_version_init
-spaceship_config
-if [ -f ~/.zshrc-local.sh ]; then
-    source ~/.zshrc-local.sh
-fi
+[ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
 
 # Section: ZSH History {{{1
 # --------------------------------------------------------------------------
@@ -1146,6 +1260,7 @@ if [ "$IS_ASYNC" -eq "1" ]; then
     # No need stop worker
     # async_stop_worker my_worker
 else
+    async_load
     if [ "$START_MESSAGE" -eq "1" ]; then
         prepare_start_message
     fi
@@ -1162,13 +1277,53 @@ export IS_ASYNC=0
 [[ $ZPROF_TRACK -eq "1" ]] && zprof # bottom of .zshrc
 # }}}
 
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"                   # This loads nvm
-# [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion
 
-alias zkcli0=/usr/local/Cellar/zookeeper/3.4.13/bin/zkCli
+# source ~/.iterm2_shell_integration.zsh
 
-# Overwrite iterm setting for tab color and brightness
+# Overwrite iterm2 setting for tab color and brightness
 echo -e "\033]6;1;bg;red;brightness;40\a" 1>/dev/null
 echo -e "\033]6;1;bg;green;brightness;44\a" 1>/dev/null
 echo -e "\033]6;1;bg;blue;brightness;52\a" 1>/dev/null
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Installing dependencies for zsh: ncurses and pcre
+# ncurses is keg-only, which means it was not symlinked into /usr/local,
+# because macOS already provides this software and installing another version in
+# parallel can cause all kinds of trouble.
+# 
+# If you need to have ncurses first in your PATH run:
+#   echo 'export PATH="/usr/local/opt/ncurses/bin:$PATH"' >> ~/.zshrc
+# 
+# For compilers to find ncurses you may need to set:
+#   export LDFLAGS="-L/usr/local/opt/ncurses/lib"
+#   export CPPFLAGS="-I/usr/local/opt/ncurses/include"
+
+# hello completion example
+hello() {
+    printf 'Hello world.\n'
+}
+
+hello2() {
+    printf 'Hello world 2.\n'
+}
+
+
+hello3() {
+    printf 'Hello world 3.\n'
+}
+
+
+git2() {
+    printf 'Git 2\n'
+}
+ 
+export fpath=($fpath ~/.zsh)
+
+zstyle ":completion:*:descriptions" format "---- %d ----"
+
+# compsys initialization
+# autoload -U compinit
+# compinit
+
