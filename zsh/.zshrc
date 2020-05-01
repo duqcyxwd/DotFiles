@@ -12,12 +12,10 @@
 # confirmations, etc.) must go above this block; everything else may go below.
 
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  [[ $VS_TERM -ne "1" ]] && source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-
-
-# Section: Init {{{1
+# Section: Pre Init {{{1
 # --------------------------------------------------------------------------
 # Display a loading sign for zshrc
 
@@ -27,6 +25,9 @@ export START_MESSAGE=0
 export LOADING_BAR=0
 export ZPROF_TRACK=0
 # export ZSH_PLUGIN_LOADED=0 # Disable ZSH PLUGIN # unset ZSH_PLUGIN_LOADED
+# export VS_TERM = 0         # ENV to determine running env
+#
+# [[ $IS_ASYNC -ne "1" ]] && echo "synchronous load "
 
 # Section: PATH {{{1
 # --------------------------------------------------------------------------
@@ -35,11 +36,13 @@ export ZPROF_TRACK=0
 export PATH=$HOME/bin:/usr/local/sbin:/usr/local/bin:$PATH
 export PATH="$HOME/script:$PATH"
 export PATH="$HOME/my_script:$PATH"
+export PATH="$HOME/my_script/zsh:$PATH"
 # export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
 export PATH="./node_modules/.bin:$PATH"
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 export PATH="/usr/local/heroku/bin:$PATH"
 export PATH="/usr/local/opt/ruby/bin:$PATH"
+export PATH=$PATH:$HOME/.SpaceVim/bin
 
 export KAFKA_HOME=/usr/local/kafka
 export KAFKA=$KAFKA_HOME/bin
@@ -54,7 +57,10 @@ export NODE_PATH=/usr/lib/node_modules
 [[ $ZPROF_TRACK -eq "1" ]] && zmodload zsh/zprof
 [[ $LOADING_BAR -eq "1" ]] && revolver --style "bouncingBar" start "Loading zsh config"
 
-# PATH: Default PATH Parameter {{{2
+# bat
+export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+# PATH: Global Parameter {{{2
 # --------------------------------------------------------------------------
 
 # Path to your oh-my-zsh installation.
@@ -63,9 +69,9 @@ export TERM="xterm-256color"
 export ZSH_LOADING_LOG=~/.startup.log
 export MESSAGE_CACHE_BEFORE_PRINT=~/.startup_all.log
 export WELCOME_MESSAGE=~/.welcome_message.log
+export NVIM_LISTEN_ADDRESS=/tmp/spacevim_nvim_server
 
 # }}}
-
 # Section: pre script {{{1
 # Script Before loading
 # --------------------------------------------------------------------------
@@ -112,6 +118,9 @@ noti() {
 # --------------------------------------------------------------------------
 # Async_load {{{2
 async_load() {
+}
+async_load0() {
+    # Quick Antigen plugins loading {{{3
     # Something very interesting. callback is working
     # Async works with alias but not tab_complete
 
@@ -119,7 +128,7 @@ async_load() {
     # source /Users/chuan.du/.antigen/bundles/robbyrussell/oh-my-zsh/oh-my-zsh.sh
 
     # Manully async load bundles that installed by antigen
-    local ANTIGEN_BUNDLES=~/.antigen/bundles
+    export ANTIGEN_BUNDLES=~/.antigen/bundles
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
     export GIT_AUTO_FETCH_INTERVAL=1200
     # source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git-auto-fetch/git-auto-fetch.plugin.zsh
@@ -132,22 +141,24 @@ async_load() {
     # source $ANTIGEN_BUNDLES/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.plugin.zsh
     # antigen bundle zdharma/fast-syntax-highlighting
     source $ANTIGEN_BUNDLES/zdharma/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh
-
     source $ANTIGEN_BUNDLES/zdharma/history-search-multi-word/history-search-multi-word.plugin.zsh
-    source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
+    # source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/kubectl/kubectl.plugin.zsh
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/mvn/mvn.plugin.zsh
-
     source $ANTIGEN_BUNDLES/psprint/zsh-cmd-architect/zsh-cmd-architect.plugin.zsh
+
+    # source $ANTIGEN_BUNDLES/Aloxaf/fzf-tab/fzf-tab.plugin.zsh        # tab, c-spc multi select
+    source $ANTIGEN_BUNDLES/rupa/z/z.sh                                # z jump around
+    source $ANTIGEN_BUNDLES/changyuheng/fz/fz.plugin.zsh               # z zz  with fzf search
 
     source ~/script/kafka-zsh-completions/kafka.zsh
 
-    # tmux
+    # tmux {{{3
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmux/tmux.plugin.zsh
     ZSH_TMUX_ITERM2=true
     ZSH_TMUX_AUTOCONNECT=true
 
     # Tmuxinator
-    export EDITOR='vim'
+    export EDITOR='nvim'
 
     alias tmuxt='unset ZSH_PLUGIN_LOADED && /usr/local/bin/tmux'
     alias tca='tmux -CC attach -t'
@@ -157,7 +168,8 @@ async_load() {
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmuxinator/tmuxinator.plugin.zsh
     source ~/script/tmuxinator/completion/tmuxinator.zsh
 
-    # fzf
+    # fzf settings {{{3
+    # -------------------------------------------------------
     # fzf junegunn/fzf
     # fzf load load fzf ^R ^T
     # bindkey '^T' fzf-file-widget
@@ -165,32 +177,38 @@ async_load() {
     # bindkey '^R' fzf-history-widget
     [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-    # {{{ fzf settings
-    export FZF_TMUX_HEIGHT=70
-    # Overwrite fzf filte widget so it will show preview as well
-    __fsel() {
-      local cmd="${FZF_CTRL_T_COMMAND:-"command find -L . -mindepth 1 \\( -path '*/\\.*' -o -fstype 'sysfs' -o -fstype 'devfs' -o -fstype 'devtmpfs' -o -fstype 'proc' \\) -prune \
-        -o -type f -print \
-        -o -type d -print \
-        -o -type l -print 2> /dev/null | cut -b3-"}"
-              setopt localoptions pipefail no_aliases 2> /dev/null
-              eval "$cmd" | FZF_DEFAULT_OPTS="--preview \"bat --style=numbers --color=always {} | head -500\" --height ${FZF_TMUX_HEIGHT:-100%} --reverse $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS --color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899' --border" $(__fzfcmd) -m "$@" | while read item; do
-              echo -n "${(q)item} "
-            done
-            local ret=$?
-            echo
-            return $ret
-          }
+
+    local FZF_BORDER_COLOR_SCHEMA="--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899' --border"
+    local FZF_COLOR_SCHEMA2="--color=dark --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7"
+
+    local FZF_PREVIEW_DIR='exa --level 2 --tree --color=always --group-directories-first {}'
+    local FZF_PREVIEW_FILE='bat --style=numbers --color=always {} -r 0:200| head -200'
+    export FZF_AG_BAT_PREVIEW="echo {} | cut -d ":" -f1 | head -1| xargs -I% bat --color always --pager never %"
+
+    export FZF_TMUX_HEIGHT=40         #Aslo been used by fzf-tab
+    export FZF_DEFAULT_OPTS="--reverse --ansi -m --bind '?:toggle-preview'"
+    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA2"
+
+
+    # TODO Try coderay for preview
+    export FZF_FILE_WIDGET_HEIGHT=70
+    export FZF_CTRL_T_OPTS="--preview \"${FZF_PREVIEW_FILE}\" $FZF_BORDER_COLOR_SCHEMA " #fzf file
+    export FZF_ALT_C_OPTS="--preview \"${FZF_PREVIEW_DIR}\""                                                      #fzf cd Folder
+
     # Setting fd as the default source for fzf
     if [ $commands[fd] ]; then
-      export FZF_DEFAULT_COMMAND='fd --type f'
+      # Use fd (https://github.com/sharkdp/fd) instead of the default find
+      export FZF_DEFAULT_COMMAND="fd --type file --color=always"
+      export FZF_ALT_C_COMMAND="fd --type d --color=always"
       export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
     fi
+
     # Use ~~ as the trigger sequence instead of the default **
-    export FZF_COMPLETION_TRIGGER='~~'
+    # export FZF_COMPLETION_TRIGGER='~~'
 
     # Options to fzf command
-    export FZF_COMPLETION_OPTS='+c -x'
+    # export FZF_COMPLETION_OPTS='+c -x'
+
 
     # Use fd (https://github.com/sharkdp/fd) instead of the default find
     # command for listing path candidates.
@@ -199,42 +217,127 @@ async_load() {
     _fzf_compgen_path() {
       fd --hidden --follow --exclude ".git" . "$1"
     }
-    
+
     # Use fd to generate the list for directory completion
     _fzf_compgen_dir() {
       fd --type d --hidden --follow --exclude ".git" . "$1"
     }
 
+
+    # fzf with ag {{{
+    fag() {
+      if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+    
+      # ctrl-m is same as enter
+      # | awk -F: '{printf "%s \n+%s\n", $1, $2}' | xargs -I{} nsvc {}
+      # --bind=\"ctrl-e:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% nsvc % )\"
+      # --bind=\"ctrl-m:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% mvim --remote % )\"
+      # --bind=\"ctrl-m:execute-silent(echo {} | agmvim_open )\"
+      # --bind=\"ctrl-o:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% code % )\"
+      
+      local FZF_BIND_OPTS=" --bind=\"enter:execute($FZF_AG_BAT_PREVIEW | LESS='-R' less)\"
+        --bind=\"ctrl-e:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% mvim --remote % )\"
+        --bind=\"ctrl-n:execute-silent(echo {} | agvim_open )\"
+        --bind=\"ctrl-o:execute-silent(echo {} | agcode_open )\"
+        --bind=\"ctrl-l:execute-silent(echo {} | pbcopy )\"
+        --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1,2 | xargs | tr -d '\\\n' | pbcopy )\"
+        --header \"ctrl-o:VSCode, ctrl-e:mvim, ctrl-n:neovim, ctrl-y:pbcopy, ctrl-l:copy whole line\"
+      "
+
+      # -0 exit when no match
+      # -1 Automatically select the only match 
+      ag --nobreak --noheading $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_BORDER_COLOR_SCHEMA $FZF_BIND_OPTS"  fzf-tmux -0 --preview "agbat {}" 
+
+    }
+
+    # Problem when keep search index, simple and do not need external script
+    vg() {
+      if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+    
+      while out=$(ag --nobreak --noheading $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_BORDER_COLOR_SCHEMA"  fzf-tmux -0 --preview "agbat {}" --exit-0 --expect=ctrl-o,ctrl-e,ctrl-c,enter --print-query --header "enter to edit in vim, ctrl-o to open in VSCode, ctrl-e to view, ctrl-c to copy file path" );
+      do
+        searchTerm=$(head -1 <<< "$out"| tail -1) 
+        key=$(head -2 <<< "$out"| tail -1)
+        input=$(head -3 <<< "$out"| tail -1)
+
+        file=$(echo $input | cut -d ":" -f1)
+        line=$(echo $input | cut -d ":" -f2)
+
+        if [[ "$key" == 'ctrl-e' ]]; then
+          bat --style=numbers --color=always $file
+        elif [[ "$key" == 'ctrl-o' ]]; then
+          code -g $file:$line
+          break;
+        elif [[ "$key" == 'ctrl-c' ]]; then
+          echo $file | pbcopy
+        else
+          vim $file +$line
+        fi
+      done
+    }
+    
     #}}}
+
+    
+    #antigen bundle Aloxaf/fzf-tab
+    #antigen bundle rupa/z         #'z' '_z'
+    #antigen bundle rupa/z         #'z' '_z'
     
     #antigen bundle Aloxaf/fzf-tab
     #antigen bundle rupa/z         #'z' '_z'
     #antigen bundle changyuheng/fz #'z' '_fz' zz '_fzz'
-    #antigen bundle andrewferrier/fzf-z # ^B
 
-    # fzf vs fzy and fzf win
-    # source $ANTIGEN_BUNDLES/Aloxaf/fzf-tab/fzf-tab.plugin.zsh        # tab, c-spc multi select
-    source $ANTIGEN_BUNDLES/rupa/z/z.sh                                # z jump around
-    source $ANTIGEN_BUNDLES/changyuheng/fz/fz.plugin.zsh               # z zz  with fzf search
-    source $ANTIGEN_BUNDLES/andrewferrier/fzf-z/fzf-z.plugin.zsh       # require auto jump
-
+    # Forgit {{{3
+    # --------------------------------------------------------------------------
+    # Unalias {{{
+    unalias -m glg
+    unalias -m glgp
+    unalias -m glgg
+    unalias -m glgga
+    unalias -m glgm
+    unalias -m glo
+    unalias -m glol
+    unalias -m glols
+    unalias -m glod
+    unalias -m glods
+    unalias -m glola
+    unalias -m glog
+    unalias -m gloga
+    unalias -m glp
+    # }}}
     # antigen bundle 'wfxr/forgit'
     export FORGIT_NO_ALIASES=true
     source $ANTIGEN_BUNDLES/wfxr/forgit/forgit.plugin.zsh
-    # {{{ Forgit alias
+
     alias fga='forgit::add'
+    alias fgcf='forgit::restore'
+    alias fgclean='forgit::clean'
+    alias fgd='forgit::diff'
     alias fgrh='forgit::reset::head'
     alias fgl='forgit::log'
-    alias fgd='forgit::diff'
     alias fgi='forgit::ignore'
-    alias fgcf='forgit::restore'
-    alias fgc='forgit::restore'
-    alias fgclean='forgit::clean'
     alias fgss='forgit::stash::show'
-    # }}}
 
-    # Antibody load
-    # source ~/.zsh_plugins.sh
+    alias fa=fga
+    alias fdd=fgd
+    alias frh=fgrh
+    alias fl=fgl
+    alias fcf=fgcf
+    alias fgc=fgcf
+    alias fclean=fgclean
+    alias fss=fgss
+
+    alias glo=fgl
+    alias glos=fgl --stat
+    alias gloa=fgl --all
+    alias glgg='git log --graph'
+    alias gloo="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+    alias glog='git log --oneline --decorate --graph'
+    alias gke='\gitk --all $(git log -g --pretty=%h)'
+    alias glof='git log --follow -p --'
+
+
+    # Others {{{3
     plugin_config
 
     # Decide to use z jump instead of auto jump
@@ -254,12 +357,12 @@ async_load() {
     compdef _tmuxinator tmuxinator mux
 
     ## Disable async loader to test theme
-    async_stop_worker lazyloader
+    [[ $ZSH_PLUGIN_LOADED -eq "1" ]] && async_stop_worker lazyloader
     ac_my_colors
 }
-# }}}
+# }}}2
 # async_cust_init {{{2
-source ~/script/zsh-async/async.zsh
+[[ $IS_ASYNC -eq "1" ]] && source ~/script/zsh-async/async.zsh
 async_cust_init() {
 
     async_init
@@ -284,9 +387,9 @@ async_cust_init() {
         async_worker_eval my_worker _async_start_message
     fi
 }
-# }}}
+# }}}2
 
-### }}}
+### }}}1
 
 [[ $IS_ASYNC -eq "1" ]] && async_cust_init
 
@@ -402,22 +505,27 @@ spaceship_config() {
 
 # }}}2
 # }}}1
-# Section: Antigen {{{1
+# Section: ZSH plugin {{{1
 # --------------------------------------------------------------------------
 # Load very basic plugins
-load_Antigen0() {
-    echo "THEME: spaceship"
+# Section: Antigen {{{2
+# antigen-1{{{3
+__load_antigen0() {
+    echo "theme: spaceship"
     if ! type "antigen" >/dev/null; then
         source ~/script/antigen.zsh
-        # Load the oh-my-zsh's library. It will conflict with other theme
+        # load the oh-my-zsh's library. it will conflict with other theme
         antigen use oh-my-zsh
     fi
     # antigen theme denysdovhan/spaceship-prompt
     # antigen bundle paulmelnikow/zsh-startup-timer
     antigen apply
 }
+#}}}
 
+# source ~/script/antigen.zsh
 load_Antigen() {
+    echo "Load antigen"
     mlog "PlUGIN ENGINE: Antigen"
     if ! type "antigen" >/dev/null; then
         source ~/script/antigen.zsh
@@ -425,7 +533,7 @@ load_Antigen() {
         # echo "load oh-my-zsh"
         antigen use oh-my-zsh
     fi
-    # Antigen loading package {{{2
+    # Antigen loading package {{{3
 
     antigen bundle vi-mode
     antigen bundle iterm2 # Iterm2 profile, color
@@ -438,7 +546,6 @@ load_Antigen() {
     # Somehow this affect spaceship
     # antigen bundle sei40kr/zsh-fzf-docker
 
-    # antigen bundle gretzky/auto-color-ls             # Async load
     # antigen bundle johanhaleby/kubetail              # Lazy load
 
     # antigen bundle zsh-users/zsh-autosuggestions     # 0.02  Async load
@@ -453,7 +560,7 @@ load_Antigen() {
 
     # Max suggest to switch to powerlevel10k, I will give it a try
     # I like it, it is fast
-    antigen theme romkatv/powerlevel10k
+    # antigen theme romkatv/powerlevel10k
 
     # antigen bundle git-extras
 
@@ -465,9 +572,7 @@ load_Antigen() {
     # antigen bundle mafredri/zsh-async
     # antigen bundle sindresorhus/pure
     # }}}
-    antigen apply
-
-    # Lazy load bundles {{{2
+    # Lazy load bundles {{{3
     if ! type "kubetail" >/dev/null; then
         kubetail() {
             unfunction "$0"
@@ -502,11 +607,11 @@ load_Antigen() {
     #     unfunction "$0" && antigen bundle tmuxinator && $0 "$@"
     # }
     # }}}
+    antigen apply
 }
-# }}}
-# Section: Antibody {{{1
+# Section: Antibody {{{2
 # --------------------------------------------------------------------------
-load_Antibody() {
+__load_Antibody() {
     mlog "Use antibody"
     # No matter what I try, this is super slow
     autoload -Uz compinit && compinit
@@ -521,18 +626,13 @@ load_Antibody() {
     # antibody bundle denysdovhan/spaceship-prompt
     # antibody bundle maximbaz/spaceship-prompt
 }
-# }}}
-# Section: ZSH Plugin Loading {{{1
-# --------------------------------------------------------------------------
 
-# echo "ZSH_PLUGIN_LOADED $ZSH_PLUGIN_LOADED (1 for loaded)"
-if [[ ! -v ZSH_PLUGIN_LOADED ]]; then
-    # load_Antigen0>>$ZSH_LOADING_LOG
-    load_Antigen
-    # load_Antigen >>$ZSH_LOADING_LOG
-    # load_Antigen_init>>$ZSH_LOADING_LOG
-    # load_Antibody >>$ZSH_LOADING_LOG
-fi
+# }}}
+
+# }}}1
+# load_Antigen
+# [[ $ZSH_PLUGIN_LOADED -ne "1" ]] && load_Antigen
+source ~/github/powerlevel10k/powerlevel10k.zsh-theme
 
 # Section: Script Tools {{{1
 # --------------------------------------------------------------------------
@@ -541,6 +641,7 @@ fi
 # Change iTerm2 Profile
 # this might work as well: iterm2_profile Performance
 alias performance='echo -e "\033]50;SetProfile=Performance\x7"'
+alias noperformance='echo -e "\033]50;SetProfile=Empty Default\x7"'
 
 color-test() {
     clear
@@ -559,9 +660,107 @@ c-bash() {
 }
 alias cbash=c-bash
 
-# grep -Eo '"[^"]*" *(: *([0-9]*|"[^"]*")[^{}\["]*|,)?|[^"\]\[\}\{]*|\{|\},?|\[|\],?|[0-9 ]*,?' | awk '{if ($0 ~ /^[}\]]/ ) offset-=4; printf "%*c%s\n", offset, " ", $0; if ($0 ~ /^[{\[]/) offset+=4}
 
-# alias -G PJSON='grep -Eo \'"[^"]*" *(: *([0-9]*|"[^"]*")[^{}\["]*|,)?|[^"\]\[\}\{]*|\{|\},?|\[|\],?|[0-9 ]*,?' | awk '{if ($0 ~ /^[}\]]/ ) offset-=4; printf "%*c%s\n", offset, " ", $0; if ($0 ~ /^[{\[]/) offset+=4}'
+sample_function() {
+    if [ $# -eq 0 ]; then
+        echo "Sample function"
+        return
+    fi
+    echo $@
+    echo $1
+    echo $2
+}
+
+
+
+# fzf with Brew {{{
+# Install (one or multiple) selected application(s)
+# using "brew search" as source input
+# mnemonic [B]rew [I]nstall [P]lugin
+bip() {
+  local inst=$(brew search | fzf -m)
+
+  if [[ $inst ]]; then
+    for prog in $(echo $inst);
+    do; brew install $prog; done;
+  fi
+}
+# Update (one or multiple) selected application(s)
+# mnemonic [B]rew [U]pdate [P]lugin
+bup() {
+  local upd=$(brew leaves | fzf -m)
+
+  if [[ $upd ]]; then
+    for prog in $(echo $upd);
+    do; brew upgrade $prog; done;
+  fi
+}
+# Delete (one or multiple) selected application(s)
+# mnemonic [B]rew [C]lean [P]lugin (e.g. uninstall)
+bcp() {
+  local uninst=$(brew leaves | fzf -m)
+
+  if [[ $uninst ]]; then
+    for prog in $(echo $uninst);
+    do; brew uninstall $prog; done;
+  fi
+}
+
+#}}}
+
+# alternative using ripgrep-all (rga) combined with fzf-tmux preview
+# implementation below makes use of "open" on macOS, which can be replaced by other commands if needed.
+# allows to search in PDFs, E-Books, Office documents, zip, tar.gz, etc. (see https://github.com/phiresky/ripgrep-all)
+# find-in-file - usage: fif <searchTerm> or fif "string with spaces" or fif "regex"
+fif() {
+    if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+    local file
+    file="$(rga --max-count=1 --ignore-case --files-with-matches --no-messages "$@" | fzf-tmux +m --preview="rga --ignore-case --pretty --context 10 '"$@"' {}")" && open "$file"
+}
+
+# using ripgrep combined with preview
+# find-in-file - usage: fif <searchTerm>
+fif0() {
+  if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+  rg --files-with-matches --no-messages "$1" | fzf --preview "highlight -O ansi -l {} 2> /dev/null | rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$1' || rg --ignore-case --pretty --context 10 '$1' {}"
+}
+
+# fkill - kill processes - list only the ones you can kill. Modified the earlier script.
+fkilll() {
+    local pid
+    if [ "$UID" != "0" ]; then
+        pid=$(ps -f -u $UID | sed 1d | fzf -m | awk '{print $2}')
+    else
+        pid=$(ps -ef | sed 1d | fzf -m | awk '{print $2}')
+    fi
+
+    if [ "x$pid" != "x" ]
+    then
+        echo $pid | xargs kill -${1:-9}
+    fi
+}
+
+fbr() {
+  local branches branch
+  branches=$(git --no-pager branch -vv) &&
+  branch=$(echo "$branches" | fzf +m) &&
+  git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
+}
+
+fco_preview() {
+  local tags branches target
+  branches=$(
+    git --no-pager branch --all \
+      --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
+    | sed '/^$/d') || return
+  tags=$(
+    git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
+  target=$(
+    (echo "$branches"; echo "$tags") |
+    fzf --no-hscroll --no-multi -n 2 \
+        --ansi --preview="git --no-pager log -150 --pretty=format:%s '..{2}'") || return
+  git checkout $(awk '{print $2}' <<<"$target" )
+}
 
 # Tool: B Deprecated {{{2
 # --------------------------------------------------------------------------
@@ -691,6 +890,10 @@ docker-stats-peek() {
 # Section: Docker Alias {{{2
 # --------------------------------------------------------------------------
 
+alias mvimr='mvim --remote'
+alias vi='nvim'
+alias vim='nvim'
+alias vimdiff="nvim -d"
 alias dps=docker-ps
 alias dpsa='dps -a'
 alias dpss=docker-ps-more
@@ -843,13 +1046,14 @@ mywatch-no-clean() {
 # --------------------------------------------------------------------------
 
 # Alias
-alias vi='/usr/local/bin/vim'
+# alias vi='/usr/local/bin/vim'
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
 # alias rs="ee 'source ~/.zshrc'"
 alias rs='source ~/.zshrc'
-alias rst='unset ZSH_PLUGIN_LOADED && source ~/.zshrc'
-alias mz='vim ~/.zshrc && shfmt -i 4 -s -w -ci ~/.zshrc'
+alias rsl='source ~/.zshrc-local.sh'
+alias rst='unset ZSH_PLUGIN_LOADED && zsh'
+alias mz='nvim ~/.zshrc && shfmt -i 4 -s -w -ci ~/.zshrc'
 alias ca="less ~/.zshrc"
 
 alias mvimdiff="mvim -d"
@@ -863,7 +1067,7 @@ alias kafka08="cd /usr/local/kafka_2.9.1-0.8.2.2"
 alias kafka21="cd /usr/local && ln -s kafka_2.12-2.1.0 kafka"
 alias kafka08="cd /usr/local && ln -s kafka_2.9.1-0.8.2.2 kafka"
 
-#============= Global =============
+#============= Global alias =============
 alias -g Gc=' --color=always | grep -i'
 alias -g G='| grep -i'
 alias -g WC='| wc -l'
@@ -929,6 +1133,17 @@ set_ns() {
 hpurge() {
     while read data; do
         helm del --purge $data
+    done
+}
+
+# t='build/scripts/npm.sh:40:  run_qualifier_updates'
+agbat_pip() {
+    while read data; do
+        fn=$(echo $data | cut -f 1 -d ":")
+        line=$(echo $data | cut -f 2 -d ":")
+        echo "$fn"
+        echo "$line"
+        bat $fn -r $line:$(($line+200))
     done
 }
 
@@ -1004,24 +1219,53 @@ git-branch-delete-remote() {
   ee "git branch -d $branch"
   ee "git push -d origin $branch"
 }
+
+# fbr - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
+fbr_disable() {
+  local branches branch
+  branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
+  branch=$(echo "$branches" |
+           fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
+  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
+}
+
+# fco - checkout git branch/tag
+fco() {
+  local tags branches target
+  branches=$(
+    git --no-pager branch --all \
+      --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
+    | sed '/^$/d') || return
+  tags=$(
+    git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
+  target=$(
+    (echo "$branches"; echo "$tags") |
+    fzf --no-hscroll --no-multi -n 2 \
+        --ansi) || return
+  git checkout $(awk '{print $2}' <<<"$target" )
+}
+
+
+# fco_preview - checkout git branch/tag, with a preview showing the commits between the tag/branch and HEAD
+fco_preview() {
+  local tags branches target
+  branches=$(
+    git --no-pager branch --all \
+      --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
+    | sed '/^$/d') || return
+  tags=$(
+    git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
+  target=$(
+    (echo "$branches"; echo "$tags") |
+    fzf --no-hscroll --no-multi -n 2 \
+        --ansi --preview="git --no-pager log -150 --pretty=format:%s '..{2}'") || return
+  git checkout $(awk '{print $2}' <<<"$target" )
+}
+
+
 # Git Alias {{{2
 # --------------------------------------------------------------------------
 
-# Git log
-# o -> one line, 
-alias glg='git log --stat'
-alias glgp='git log --stat -p'
-alias glgg='git log --graph'
-alias glgga='git log --graph --decorate --all'
-alias glgm='git log --graph --max-count=10'
-alias glo='git log --oneline --decorate'
-alias glol="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
-alias glols="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --stat"
-alias glod="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset'"
-alias glods="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%ad) %C(bold blue)<%an>%Creset' --date=short"
-alias glola="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --all"
-alias glog='git log --oneline --decorate --graph'
-alias gloga='git log --oneline --decorate --graph --all'
 
 alias git-tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
 alias git-hidden="git ls-files -v | grep '^[a-z]' | cut -c3-"
@@ -1196,11 +1440,10 @@ plugin_config() {
     bindkey "^R" history-search-multi-word # Use multi word. fzf is too aggressive
 
     # Fzf related
-    bindkey "^T" fzf-file-widget           # fzf files
+    bindkey "^F" fzf-file-widget           # fzf files
     bindkey '^G' fzf-cd-widget             # Search and goto fzf
-    bindkey "^B" fzfz-file-widget
 
-    bindkey '^F' toggle-fzf-tab
+    bindkey '^T' toggle-fzf-tab
     bindkey "^O" zca-widget                # Zsh Command Architect zsh-cmd-architect
     # Notes "^I" is reserved for suggestion complete
     # ^M for enter
@@ -1260,7 +1503,8 @@ if [ "$IS_ASYNC" -eq "1" ]; then
     # No need stop worker
     # async_stop_worker my_worker
 else
-    async_load
+    # TODO
+    # [[ $ZSH_PLUGIN_LOADED -ne "1" ]] && async_load
     if [ "$START_MESSAGE" -eq "1" ]; then
         prepare_start_message
     fi
@@ -1270,14 +1514,15 @@ fi
 [[ $START_MESSAGE -eq "1" ]] && print_start_message
 
 # Only load omz and theme once
-export ZSH_PLUGIN_LOADED=1
+# export ZSH_PLUGIN_LOADED=1
 export IS_ASYNC=0
 # unset ZSH_PLUGIN_LOADED && unset IS_ASYNC
 
 [[ $ZPROF_TRACK -eq "1" ]] && zprof # bottom of .zshrc
 # }}}
 
-
+# Section: Random after {{{1
+# --------------------------------------------------------------------------
 # source ~/.iterm2_shell_integration.zsh
 
 # Overwrite iterm2 setting for tab color and brightness
@@ -1287,6 +1532,8 @@ echo -e "\033]6;1;bg;blue;brightness;52\a" 1>/dev/null
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+alias signs="open https://github.com/romkatv/powerlevel10k#what-do-different-symbols-in-git-status-mean"
 
 # Installing dependencies for zsh: ncurses and pcre
 # ncurses is keg-only, which means it was not symlinked into /usr/local,
@@ -1326,4 +1573,3 @@ zstyle ":completion:*:descriptions" format "---- %d ----"
 # compsys initialization
 # autoload -U compinit
 # compinit
-

@@ -1,0 +1,55 @@
+#!/bin/bash
+# ------------------------------------------------------------------
+# [Author] Title
+#          Description
+# ------------------------------------------------------------------
+
+VERSION=0.1.0
+USAGE="Usage: command -vht VARIABLE"
+
+# --- Options processing -------------------------------------------
+if [ $# == 0 ] ; then
+    echo $USAGE
+    exit 1;
+fi
+
+while getopts ":t:m:vh" optname
+  do
+    case "$optname" in
+      "v")
+        echo "Version $VERSION"
+        exit 0;
+        ;;
+      "o")
+        echo "Message Number: $OPTARG"
+        option=$OPTARG
+        ;;
+      "h")
+        echo $USAGE
+        exit 0;
+        ;;
+      "?")
+        echo "Unknown option $OPTARG"
+        exit 0;
+        ;;
+      ":")
+        echo "No argument value for option $OPTARG"
+        exit 0;
+        ;;
+      *)
+        echo "Unknown error while processing options"
+        exit 0;
+        ;;
+    esac
+  done
+
+shift $(($OPTIND - 1))
+
+param1=$1
+param2=$2
+
+
+# --- Body --------------------------------------------------------
+echo $param1
+echo $param2
+

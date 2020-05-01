@@ -1,0 +1,19 @@
+#!/bin/bash
+
+echo "agmvim open"
+# Example input data
+# t='path/npm.sh:40:  fetchResult'
+data=$@
+
+echo '--' >> /Users/EYONDUU/work_credential/temp/2020-04-24-zsh-test/2020-04-24-temp
+
+while read line; do
+  echo $line >>  /Users/EYONDUU/work_credential/temp/2020-04-24-zsh-test/2020-04-24-temp
+  # echo $line | awk -F: '{printf "%s \n+%s\n", $1, $2}' | tr -d '\n' >>  /Users/EYONDUU/work_credential/temp/2020-04-24-zsh-test/2020-04-24-temp
+  echo $line | awk -F: '{printf "%s \n+%s\n", $1, $2}' >>  /Users/EYONDUU/work_credential/temp/2020-04-24-zsh-test/2020-04-24-temp
+  echo '-' >> /Users/EYONDUU/work_credential/temp/2020-04-24-zsh-test/2020-04-24-temp
+  echo $line | cut -d ':' -f1 | head -1 >>  /Users/EYONDUU/work_credential/temp/2020-04-24-zsh-test/2020-04-24-temp
+  # echo $line | awk -F: '{printf "%s \n+%s\n", $1, $2}' | xargs -I%  mvim --remote %
+  echo $Line | cut -d ':' -f1 | head -1 | xargs -I% mvim %
+done
+

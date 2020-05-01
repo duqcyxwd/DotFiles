@@ -1,0 +1,122 @@
+{
+  "jvm-npm print": {
+    "prefix": "pr",
+    "body": "print(${1:\"crash\"});$2 //REMOVETAG",
+    "description": "jvm-npm print"
+  },
+  "jvm-npm print + JSONLOG": {
+    "prefix": "prj",
+    "body": "print(JSON.stringify(${1:\"crash\"}, null, 2));$2 //REMOVETAG",
+    "description": "jvm-npm print + JSONLOG"
+  },
+  "define var": {
+    "prefix": "var",
+    "body": "var ${1:temp} = ${2:\"test\"};$3",
+    "description": "define var"
+  },
+  "JSON parser": {
+    "prefix": "jsonp",
+    "body": "JSON.parse(${1:\"JSON\"})${2:}$3",
+    "description": "JSON parser"
+  },
+  "JSON stringify": {
+    "prefix": "jsons",
+    "body": "JSON.stringify(${1:\"JSON\"})${2:}$3",
+    "description": "JSON stringify"
+  },
+  "JSON stringify beautiful": {
+    "prefix": "jsonsb",
+    "body": "JSON.stringify(${1:\"JSON\"}, null, ${2:2})${3:}$4",
+    "description": "JSON stringify beautiful"
+  },
+  "Object keys": {
+    "prefix": "objk",
+    "body": "Object.keys($1)",
+    "description": "Object keys"
+  },
+  "message log": {
+    "prefix": "logm",
+    "body": "util.message.log(${2:\"${1:Hi$3}\"});$0",
+    "description": "message log"
+  },
+  "log": {
+    "prefix": "log",
+    "body": "console.log(${2:\"${1:Hi}\"});$0${5: // REMOVETAG}",
+    "description": "log"
+  },
+  "log group": {
+    "prefix": "logg",
+    "body": "console.group(\"$1\");\nconsole.log(${3:\"${2:Hi}\"});$0 // REMOVETAG\nconsole.groupEnd();",
+    "description": "log group"
+  },
+  "log group collapsed": {
+    "prefix": "loggc",
+    "body": "console.groupCollapsed(\"$1\");\nconsole.log(${3:\"${2:Hi}\"});$0 // REMOVETAG\nconsole.groupEnd();",
+    "description": "log group collapsed"
+  },
+  "log variable type": {
+    "prefix": "logt",
+    "body": "console.log(typeof ${1:Hi});$0",
+    "description": "log variable type"
+  },
+  "log variable type with string": {
+    "prefix": "logts",
+    "body": "console.log(\"type of ${1:Object}: \" + typeof ${2:${1:Object}});$0",
+    "description": "log variable type with string"
+  },
+  "typeof check": {
+    "prefix": "typec",
+    "body": "typeof ${1:Object} !== '${2:undefined}'",
+    "description": "typeof check"
+  },
+  "promise then": {
+    "prefix": "then",
+    "body": ".then($1)$2",
+    "description": "promise then"
+  },
+  "promise catch": {
+    "prefix": "catch",
+    "body": ".catch(${1:console.log})$2",
+    "description": "promise catch"
+  },
+  "return": {
+    "prefix": "r",
+    "body": "return $1",
+    "description": "return"
+  },
+  "var statement": {
+    "prefix": "v",
+    "body": "var ${1:name};",
+    "description": "var statement"
+  },
+  "var assignment": {
+    "prefix": "ve",
+    "body": "var ${1:name} = ${2:value};",
+    "description": "var assignment"
+  },
+  "let statement": {
+    "prefix": "l",
+    "body": "let ${1:name};",
+    "description": "let statement"
+  },
+  "let assignment": {
+    "prefix": "le",
+    "body": "let ${1:name} = ${2:value};",
+    "description": "let assignment"
+  },
+  "const statement": {
+    "prefix": "co",
+    "body": "const ${1:name};",
+    "description": "const statement"
+  },
+  "const assignment": {
+    "prefix": "coe",
+    "body": "const ${1:name} = ${2:value};",
+    "description": "const assignment"
+  },
+  "const symbol": {
+    "prefix": "cos",
+    "body": "const ${1:name} = Symbol('${1:name}');",
+    "description": "const symbol"
+  }
+}

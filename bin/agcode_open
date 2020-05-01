@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo "agcode open"
+# Example input data
+# t='path/npm.sh:40:  fetchResult'
+data=$@
+
+echo '--' >> /Users/EYONDUU/work_credential/temp/2020-04-24-zsh-test/2020-04-24-temp
+echo $data >> /Users/EYONDUU/work_credential/temp/2020-04-24-zsh-test/2020-04-24-temp
+
+while read line; do
+  echo $line >>  /Users/EYONDUU/work_credential/temp/2020-04-24-zsh-test/2020-04-24-temp
+  echo $line | awk -F: '{printf "%s:%s\n", $1, $2}' >>  /Users/EYONDUU/work_credential/temp/2020-04-24-zsh-test/2020-04-24-temp
+  echo $line | awk -F: '{printf "%s:%s\n", $1, $2}' | tr -d '\n' | xargs -I%  code -g %
+done
