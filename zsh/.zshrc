@@ -136,6 +136,7 @@ __tmux_config() {
 # {{{3
 async_load() {
 }
+# Deprecated
 async_load0() {
     # Quick Antigen plugins loading {{{3
     # Something very interesting. callback is working
@@ -175,16 +176,11 @@ async_load0() {
     if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
         compinit
     else
-        # compinit -c
         compinit -C
     fi
 
-    # This line make auto complate for mux working
-    compdef _tmuxinator tmuxinator mux
-
     ## Disable async loader to test theme
     [[ $ZSH_PLUGIN_LOADED -eq "1" ]] && async_stop_worker lazyloader
-    ac_my_colors
 }
 # }}}2
 # async_cust_init {{{2
@@ -473,6 +469,15 @@ zinit_load() {
     OMZ::plugins/vi-mode/vi-mode.plugin.zsh \
     OMZ::plugins/kubectl/kubectl.plugin.zsh
 
+  zinit light zdharma/history-search-multi-word
+  zinit light  shayneholmes/zsh-iterm2colors
+  zinit light psprint/zsh-cmd-architect
+  zinit light rupa/z
+  zinit light changyuheng/fz
+  zinit light wfxr/forgit
+  zinit light vim/vim
+  zinit light Dabz/kafka-zsh-completions
+
   # autoload -Uz compinit; compinit # zinit 用户这里可能是 zpcompinit; zpcdreplay
   zpcompinit; zpcdreplay
 
@@ -481,22 +486,11 @@ zinit_load() {
   zinit load Aloxaf/fzf-tab
   # zinit snippet https://raw.githubusercontent.com/lincheney/fzf-tab-completion/master/zsh/fzf-zsh-completion.sh
   
-  zinit light zdharma/history-search-multi-word
-  zinit light  shayneholmes/zsh-iterm2colors
-  zinit light psprint/zsh-cmd-architect
-  zinit light rupa/z
-  zinit light changyuheng/fz
-  zinit light vim/vim
-
   zinit light zsh-users/zsh-autosuggestions
   zinit light zdharma/fast-syntax-highlighting
-  zinit light paulmelnikow/zsh-startup-timer
 }
 # }}}2
 # }}}1
-# load_Antigen
-# [[ $ZSH_PLUGIN_LOADED -ne "1" ]] && load_Antigen
-
 # Section: Script Tools {{{1
 # --------------------------------------------------------------------------
 # Tool: A {{{2
@@ -1034,7 +1028,7 @@ alias config-git-local="ee \"git config --local user.name 'Yongqinchuan Du' && g
 get_git_current_branch() { git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'; }
 
 # gb --show-current
-get_current_branch() { git branch 2>/dev/null | sed -e "/^[^*]/d" -e "s/* \(.*\)/\1/"; }
+get_current_branch() { git rev-parse --abbrev-ref HEAD }
 
 git_create_branch() {
     if [ -z "$1" ]; then
@@ -1181,9 +1175,8 @@ alias gbd-remote='ee "git push -d origin"'
 alias gk="ee 'gitk --all&'"
 
 # git diff
-alias gdi='echo "git diff current branch to integration;" && ee "git diff origin/integration..$get_git_current_branch"'
-alias gitxdi="ee 'git diff origin/integration..$get_git_current_branch | gitx'"
-alias gdi-gitx=gitxdi
+alias gdd="git diff origin/develop..${get_current_branch}"
+alias gitxdd="git diff origin/develop..${get_current_branch} | gitx"
 alias gds="ee 'git diff -w --stat'"
 
 
@@ -1392,6 +1385,10 @@ __forgit_config(){
     alias fclean=fgclean
     alias fss=fgss
 
+    alias gai=fga
+    alias gdi=fgd
+    alias gloi=fgl
+
     alias glo=fgl
     alias glos=fgl --stat
     alias gloa=fgl --all
@@ -1409,8 +1406,6 @@ plugin_config() {
     # Some good keybind is overwrite by plugins or oh-my-zsh
     # Also includes plugin variables
     
-    source ~/script/kafka-zsh-completions/kafka.zsh
-
     # Others {{{3
     # Others {{{3
     __fzf_config
@@ -1486,7 +1481,6 @@ plugin_config() {
 # }}}2
 # }}}1
 
-# [ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
 
 # Section: ZSH History {{{1
 # --------------------------------------------------------------------------
@@ -1551,12 +1545,14 @@ export IS_ASYNC=0
 # compinit
 
 # async_load0
-# ac_my_colors
 # load_Antigen
 zinit_load
 source ~/github/powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 plugin_config
+ac_my_colors
+
+[ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
 
 # Section: Random after {{{1
 # --------------------------------------------------------------------------
