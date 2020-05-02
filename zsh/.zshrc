@@ -1232,7 +1232,7 @@ __fzf_config() {
     export FZF_AG_BAT_PREVIEW="echo {} | cut -d ":" -f1 | head -1| xargs -I% bat --color always --pager never %"
 
     export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
-    export FZF_DEFAULT_OPTS="--reverse --ansi -m --bind '?:toggle-preview'"
+    export FZF_DEFAULT_OPTS="--reverse --ansi -m --bind '?:toggle-preview' --bind 'right:toggle' --bind 'tab:down' --bind 'btab:up' --cycle"
     export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA2"
 
     export FZF_CTRL_T_OPTS="--preview \"${FZF_PREVIEW_FILE}\" $FZF_BORDER_COLOR_SCHEMA "                          #fzf file
@@ -1568,3 +1568,6 @@ git2() {
 export fpath=($fpath ~/.zsh)
 zstyle ":completion:*:descriptions" format "---- %d ----"
 
+_fzf_complete_gcob2() {
+  _fzf_complete --multi --reverse --prompt="doge> " -- "$@ xxx" < <(git branch)
+}
