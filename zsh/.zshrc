@@ -117,6 +117,23 @@ noti() {
 # Section: ZSH ASYNC PATH {{{1
 # --------------------------------------------------------------------------
 # Async_load {{{2
+#
+# tmux {{{3
+__tmux_config() {
+    ZSH_TMUX_ITERM2=true
+    ZSH_TMUX_AUTOCONNECT=true
+
+    # Tmuxinator
+    export EDITOR='nvim'
+
+    alias tmuxt='unset ZSH_PLUGIN_LOADED && /usr/local/bin/tmux'
+    alias tca='tmux -CC attach -t'
+    alias tcad='tmux -CC attach -d -t' #Detach other client
+    alias tcs='tmux -CC new-session -s'
+
+    source ~/script/tmuxinator/completion/tmuxinator.zsh        #tmuxinator
+}
+# {{{3
 async_load() {
 }
 async_load0() {
@@ -130,11 +147,12 @@ async_load0() {
     # Manully async load bundles that installed by antigen
     export ANTIGEN_BUNDLES=~/.antigen/bundles
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git/git.plugin.zsh
-    export GIT_AUTO_FETCH_INTERVAL=1200
+    source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmux/tmux.plugin.zsh
+    source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmuxinator/tmuxinator.plugin.zsh
+    # export GIT_AUTO_FETCH_INTERVAL=1200
     # source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git-auto-fetch/git-auto-fetch.plugin.zsh
     # brew install git-extras
     source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/git-extras
-
     source $ANTIGEN_BUNDLES/zsh-users/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
 
     # antigen bundle zsh-users/zsh-syntax-highlighting # Async load
@@ -149,201 +167,9 @@ async_load0() {
     # source $ANTIGEN_BUNDLES/Aloxaf/fzf-tab/fzf-tab.plugin.zsh        # tab, c-spc multi select
     source $ANTIGEN_BUNDLES/rupa/z/z.sh                                # z jump around
     source $ANTIGEN_BUNDLES/changyuheng/fz/fz.plugin.zsh               # z zz  with fzf search
-
-    source ~/script/kafka-zsh-completions/kafka.zsh
-
-    # tmux {{{3
-    source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmux/tmux.plugin.zsh
-    ZSH_TMUX_ITERM2=true
-    ZSH_TMUX_AUTOCONNECT=true
-
-    # Tmuxinator
-    export EDITOR='nvim'
-
-    alias tmuxt='unset ZSH_PLUGIN_LOADED && /usr/local/bin/tmux'
-    alias tca='tmux -CC attach -t'
-    alias tcad='tmux -CC attach -d -t' #Detach other client
-    alias tcs='tmux -CC new-session -s'
-
-    source $ANTIGEN_BUNDLES/robbyrussell/oh-my-zsh/plugins/tmuxinator/tmuxinator.plugin.zsh
-    source ~/script/tmuxinator/completion/tmuxinator.zsh
-
-    # fzf settings {{{3
-    # -------------------------------------------------------
-    # fzf junegunn/fzf
-    # fzf load load fzf ^R ^T
-    # bindkey '^T' fzf-file-widget
-    # bindkey '\ec' fzf-cd-widget
-    # bindkey '^R' fzf-history-widget
-    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-
-    local FZF_BORDER_COLOR_SCHEMA="--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899' --border"
-    local FZF_COLOR_SCHEMA2="--color=dark --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7"
-
-    local FZF_PREVIEW_DIR='exa --level 2 --tree --color=always --group-directories-first {}'
-    local FZF_PREVIEW_FILE='bat --style=numbers --color=always {} -r 0:200| head -200'
-    export FZF_AG_BAT_PREVIEW="echo {} | cut -d ":" -f1 | head -1| xargs -I% bat --color always --pager never %"
-
-    export FZF_TMUX_HEIGHT=40         #Aslo been used by fzf-tab
-    export FZF_DEFAULT_OPTS="--reverse --ansi -m --bind '?:toggle-preview'"
-    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA2"
-
-
-    # TODO Try coderay for preview
-    export FZF_FILE_WIDGET_HEIGHT=70
-    export FZF_CTRL_T_OPTS="--preview \"${FZF_PREVIEW_FILE}\" $FZF_BORDER_COLOR_SCHEMA " #fzf file
-    export FZF_ALT_C_OPTS="--preview \"${FZF_PREVIEW_DIR}\""                                                      #fzf cd Folder
-
-    # Setting fd as the default source for fzf
-    if [ $commands[fd] ]; then
-      # Use fd (https://github.com/sharkdp/fd) instead of the default find
-      export FZF_DEFAULT_COMMAND="fd --type file --color=always"
-      export FZF_ALT_C_COMMAND="fd --type d --color=always"
-      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
-    fi
-
-    # Use ~~ as the trigger sequence instead of the default **
-    # export FZF_COMPLETION_TRIGGER='~~'
-
-    # Options to fzf command
-    # export FZF_COMPLETION_OPTS='+c -x'
-
-
-    # Use fd (https://github.com/sharkdp/fd) instead of the default find
-    # command for listing path candidates.
-    # - The first argument to the function ($1) is the base path to start traversal
-    # - See the source code (completion.{bash,zsh}) for the details.
-    _fzf_compgen_path() {
-      fd --hidden --follow --exclude ".git" . "$1"
-    }
-
-    # Use fd to generate the list for directory completion
-    _fzf_compgen_dir() {
-      fd --type d --hidden --follow --exclude ".git" . "$1"
-    }
-
-
-    # fzf with ag {{{
-    fag() {
-      if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-    
-      # ctrl-m is same as enter
-      # | awk -F: '{printf "%s \n+%s\n", $1, $2}' | xargs -I{} nsvc {}
-      # --bind=\"ctrl-e:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% nsvc % )\"
-      # --bind=\"ctrl-m:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% mvim --remote % )\"
-      # --bind=\"ctrl-m:execute-silent(echo {} | agmvim_open )\"
-      # --bind=\"ctrl-o:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% code % )\"
-      
-      local FZF_BIND_OPTS=" --bind=\"enter:execute($FZF_AG_BAT_PREVIEW | LESS='-R' less)\"
-        --bind=\"ctrl-e:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% mvim --remote % )\"
-        --bind=\"ctrl-n:execute-silent(echo {} | agvim_open )\"
-        --bind=\"ctrl-o:execute-silent(echo {} | agcode_open )\"
-        --bind=\"ctrl-l:execute-silent(echo {} | pbcopy )\"
-        --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1,2 | xargs | tr -d '\\\n' | pbcopy )\"
-        --header \"ctrl-o:VSCode, ctrl-e:mvim, ctrl-n:neovim, ctrl-y:pbcopy, ctrl-l:copy whole line\"
-      "
-
-      # -0 exit when no match
-      # -1 Automatically select the only match 
-      ag --nobreak --noheading $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_BORDER_COLOR_SCHEMA $FZF_BIND_OPTS"  fzf-tmux -0 --preview "agbat {}" 
-
-    }
-
-    # Problem when keep search index, simple and do not need external script
-    vg() {
-      if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-    
-      while out=$(ag --nobreak --noheading $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_BORDER_COLOR_SCHEMA"  fzf-tmux -0 --preview "agbat {}" --exit-0 --expect=ctrl-o,ctrl-e,ctrl-c,enter --print-query --header "enter to edit in vim, ctrl-o to open in VSCode, ctrl-e to view, ctrl-c to copy file path" );
-      do
-        searchTerm=$(head -1 <<< "$out"| tail -1) 
-        key=$(head -2 <<< "$out"| tail -1)
-        input=$(head -3 <<< "$out"| tail -1)
-
-        file=$(echo $input | cut -d ":" -f1)
-        line=$(echo $input | cut -d ":" -f2)
-
-        if [[ "$key" == 'ctrl-e' ]]; then
-          bat --style=numbers --color=always $file
-        elif [[ "$key" == 'ctrl-o' ]]; then
-          code -g $file:$line
-          break;
-        elif [[ "$key" == 'ctrl-c' ]]; then
-          echo $file | pbcopy
-        else
-          vim $file +$line
-        fi
-      done
-    }
-    
-    #}}}
-
-    
-    #antigen bundle Aloxaf/fzf-tab
-    #antigen bundle rupa/z         #'z' '_z'
-    #antigen bundle rupa/z         #'z' '_z'
-    
-    #antigen bundle Aloxaf/fzf-tab
-    #antigen bundle rupa/z         #'z' '_z'
-    #antigen bundle changyuheng/fz #'z' '_fz' zz '_fzz'
-
-    # Forgit {{{3
-    # --------------------------------------------------------------------------
-    # Unalias {{{
-    unalias -m glg
-    unalias -m glgp
-    unalias -m glgg
-    unalias -m glgga
-    unalias -m glgm
-    unalias -m glo
-    unalias -m glol
-    unalias -m glols
-    unalias -m glod
-    unalias -m glods
-    unalias -m glola
-    unalias -m glog
-    unalias -m gloga
-    unalias -m glp
-    # }}}
-    # antigen bundle 'wfxr/forgit'
-    export FORGIT_NO_ALIASES=true
     source $ANTIGEN_BUNDLES/wfxr/forgit/forgit.plugin.zsh
 
-    alias fga='forgit::add'
-    alias fgcf='forgit::restore'
-    alias fgclean='forgit::clean'
-    alias fgd='forgit::diff'
-    alias fgrh='forgit::reset::head'
-    alias fgl='forgit::log'
-    alias fgi='forgit::ignore'
-    alias fgss='forgit::stash::show'
-
-    alias fa=fga
-    alias fdd=fgd
-    alias frh=fgrh
-    alias fl=fgl
-    alias fcf=fgcf
-    alias fgc=fgcf
-    alias fclean=fgclean
-    alias fss=fgss
-
-    alias glo=fgl
-    alias glos=fgl --stat
-    alias gloa=fgl --all
-    alias glgg='git log --graph'
-    alias gloo="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
-    alias glog='git log --oneline --decorate --graph'
-    alias gke='\gitk --all $(git log -g --pretty=%h)'
-    alias glof='git log --follow -p --'
-
-
-    # Others {{{3
     plugin_config
-
-    # Decide to use z jump instead of auto jump
-    # if [ $commands[autojump] ]; then
-    #     [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
-    # fi
 
     autoload -Uz compinit
     if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
@@ -391,7 +217,8 @@ async_cust_init() {
 
 ### }}}1
 
-[[ $IS_ASYNC -eq "1" ]] && async_cust_init
+# [[ $IS_ASYNC -eq "1" ]] && async_cust_init
+
 
 # Section: Theme Config {{{1
 # --------------------------------------------------------------------------
@@ -565,7 +392,7 @@ load_Antigen() {
     # antigen bundle git-extras
 
     # fzf-tab need to work here
-    antigen bundle Aloxaf/fzf-tab
+    antigen bundle Aloxaf/fzf-tab 
     # give a preview of directory by exa when completing cd
  
     # echo "THEME: pure"
@@ -628,11 +455,47 @@ __load_Antibody() {
 }
 
 # }}}
+# Section: Zinit {{{2
+zinit_load() {
+  source ~/.zinit/bin/zinit.zsh
 
+  autoload -Uz _zinit
+  (( ${+_comps} )) && _comps[zinit]=_zinit
+
+  zinit for \
+    OMZ::lib/git.zsh \
+    OMZ::lib/history.zsh \
+    OMZ::lib/directories.zsh \
+    OMZ::plugins/git-extras/git-extras.plugin.zsh \
+    OMZ::plugins/systemd/systemd.plugin.zsh \
+    OMZ::plugins/git/git.plugin.zsh \
+    OMZ::plugins/iterm2/iterm2.plugin.zsh \
+    OMZ::plugins/vi-mode/vi-mode.plugin.zsh \
+    OMZ::plugins/kubectl/kubectl.plugin.zsh
+
+  # autoload -Uz compinit; compinit # zinit 用户这里可能是 zpcompinit; zpcdreplay
+  zpcompinit; zpcdreplay
+
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+  zinit load Aloxaf/fzf-tab
+  # zinit snippet https://raw.githubusercontent.com/lincheney/fzf-tab-completion/master/zsh/fzf-zsh-completion.sh
+  
+  zinit light zdharma/history-search-multi-word
+  zinit light  shayneholmes/zsh-iterm2colors
+  zinit light psprint/zsh-cmd-architect
+  zinit light rupa/z
+  zinit light changyuheng/fz
+  zinit light vim/vim
+
+  zinit light zsh-users/zsh-autosuggestions
+  zinit light zdharma/fast-syntax-highlighting
+  zinit light paulmelnikow/zsh-startup-timer
+}
+# }}}2
 # }}}1
 # load_Antigen
 # [[ $ZSH_PLUGIN_LOADED -ne "1" ]] && load_Antigen
-source ~/github/powerlevel10k/powerlevel10k.zsh-theme
 
 # Section: Script Tools {{{1
 # --------------------------------------------------------------------------
@@ -1068,13 +931,13 @@ alias kafka21="cd /usr/local && ln -s kafka_2.12-2.1.0 kafka"
 alias kafka08="cd /usr/local && ln -s kafka_2.9.1-0.8.2.2 kafka"
 
 #============= Global alias =============
-alias -g Gc=' --color=always | grep -i'
-alias -g G='| grep -i'
-alias -g WC='| wc -l'
-alias -g TF='| tail -f'
-alias -g F='| fzf | tr -d "\n" | pbcopy && pbpaste'
+# alias -g Gc=' --color=always | grep -i'
+# alias -g G='| grep -i'
+# alias -g WC='| wc -l'
+# alias -g TF='| tail -f'
+# alias -g F='| fzf | tr -d "\n" | pbcopy && pbpaste'
 alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'
-alias -g C='| pbcopy && pbpaste'
+# alias -g C='| pbcopy && pbpaste'
 
 #============= Applications =============
 alias copen='open -a Google\ Chrome'
@@ -1339,6 +1202,7 @@ alias gds="ee 'git diff -w --stat'"
 # --------------------------------------------------------------------------
 # Autocompletion for teamocil
 compctl -g '~/.teamocil/*(:t:r)' itermocil
+
 # }}}
 # Section: Lazy Plugin Load {{{1
 # --------------------------------------------------------------------------
@@ -1384,10 +1248,174 @@ fi
 
 # Section: ZSH plugins and powerline {{{1
 # --------------------------------------------------------------------------
+# fzf config {{{2
+# -------------------------------------------------------
+__fzf_config() {
+    # require fzf junegunn/fzf
+
+    local FZF_BORDER_COLOR_SCHEMA="--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899' --border"
+    local FZF_COLOR_SCHEMA2="--color=dark --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7"
+
+    local FZF_PREVIEW_DIR='exa --level 2 --tree --color=always --group-directories-first {}'
+    local FZF_PREVIEW_FILE='bat --style=numbers --color=always {} -r 0:200| head -200'
+    export FZF_AG_BAT_PREVIEW="echo {} | cut -d ":" -f1 | head -1| xargs -I% bat --color always --pager never %"
+
+    export FZF_TMUX_HEIGHT=40         #Aslo been used by fzf-tab
+    export FZF_DEFAULT_OPTS="--reverse --ansi -m --bind '?:toggle-preview'"
+    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA2"
+
+
+    # TODO Try coderay for preview
+    export FZF_FILE_WIDGET_HEIGHT=70
+    export FZF_CTRL_T_OPTS="--preview \"${FZF_PREVIEW_FILE}\" $FZF_BORDER_COLOR_SCHEMA " #fzf file
+    export FZF_ALT_C_OPTS="--preview \"${FZF_PREVIEW_DIR}\""                                                      #fzf cd Folder
+
+    # Setting fd as the default source for fzf
+    if [ $commands[fd] ]; then
+      # Use fd (https://github.com/sharkdp/fd) instead of the default find
+      export FZF_DEFAULT_COMMAND="fd --type file --color=always"
+      export FZF_ALT_C_COMMAND="fd --type d --color=always"
+      export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+    fi
+
+    # Use ~~ as the trigger sequence instead of the default **
+    # export FZF_COMPLETION_TRIGGER='~~'
+
+    # Options to fzf command
+    # export FZF_COMPLETION_OPTS='+c -x'
+
+
+    # Use fd (https://github.com/sharkdp/fd) instead of the default find
+    # command for listing path candidates.
+    # - The first argument to the function ($1) is the base path to start traversal
+    # - See the source code (completion.{bash,zsh}) for the details.
+    _fzf_compgen_path() {
+      fd --hidden --follow --exclude ".git" . "$1"
+    }
+
+    # Use fd to generate the list for directory completion
+    _fzf_compgen_dir() {
+      fd --type d --hidden --follow --exclude ".git" . "$1"
+    }
+    # fzf with ag {{{
+    fag() {
+      if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+    
+      # ctrl-m is same as enter
+      # | awk -F: '{printf "%s \n+%s\n", $1, $2}' | xargs -I{} nsvc {}
+      # --bind=\"ctrl-e:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% nsvc % )\"
+      # --bind=\"ctrl-m:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% mvim --remote % )\"
+      # --bind=\"ctrl-m:execute-silent(echo {} | agmvim_open )\"
+      # --bind=\"ctrl-o:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% code % )\"
+      
+      local FZF_BIND_OPTS=" --bind=\"enter:execute($FZF_AG_BAT_PREVIEW | LESS='-R' less)\"
+        --bind=\"ctrl-e:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% mvim --remote % )\"
+        --bind=\"ctrl-n:execute-silent(echo {} | agvim_open )\"
+        --bind=\"ctrl-o:execute-silent(echo {} | agcode_open )\"
+        --bind=\"ctrl-l:execute-silent(echo {} | pbcopy )\"
+        --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1,2 | xargs | tr -d '\\\n' | pbcopy )\"
+        --header \"ctrl-o:VSCode, ctrl-e:mvim, ctrl-n:neovim, ctrl-y:pbcopy, ctrl-l:copy whole line\"
+      "
+
+      # -0 exit when no match
+      # -1 Automatically select the only match 
+      ag --nobreak --noheading $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_BORDER_COLOR_SCHEMA $FZF_BIND_OPTS"  fzf-tmux -0 --preview "agbat {}" 
+
+    }
+
+    # Problem when keep search index, simple and do not need external script
+    vg() {
+      if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+    
+      while out=$(ag --nobreak --noheading $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_BORDER_COLOR_SCHEMA"  fzf-tmux -0 --preview "agbat {}" --exit-0 --expect=ctrl-o,ctrl-e,ctrl-c,enter --print-query --header "enter to edit in vim, ctrl-o to open in VSCode, ctrl-e to view, ctrl-c to copy file path" );
+      do
+        searchTerm=$(head -1 <<< "$out"| tail -1) 
+        key=$(head -2 <<< "$out"| tail -1)
+        input=$(head -3 <<< "$out"| tail -1)
+
+        file=$(echo $input | cut -d ":" -f1)
+        line=$(echo $input | cut -d ":" -f2)
+
+        if [[ "$key" == 'ctrl-e' ]]; then
+          bat --style=numbers --color=always $file
+        elif [[ "$key" == 'ctrl-o' ]]; then
+          code -g $file:$line
+          break;
+        elif [[ "$key" == 'ctrl-c' ]]; then
+          echo $file | pbcopy
+        else
+          vim $file +$line
+        fi
+      done
+    }
+    
+    #}}}
+
+} # }}}2
+# forgit config {{{2
+__forgit_config(){
+    # --------------------------------------------------------------------------
+    # Unalias {{{
+    unalias -m glg
+    unalias -m glgp
+    unalias -m glgg
+    unalias -m glgga
+    unalias -m glgm
+    unalias -m glo
+    unalias -m glol
+    unalias -m glols
+    unalias -m glod
+    unalias -m glods
+    unalias -m glola
+    unalias -m glog
+    unalias -m gloga
+    unalias -m glp
+    # }}}
+    # antigen bundle 'wfxr/forgit'
+    export FORGIT_NO_ALIASES=true
+
+    alias fga='forgit::add'
+    alias fgcf='forgit::restore'
+    alias fgclean='forgit::clean'
+    alias fgd='forgit::diff'
+    alias fgrh='forgit::reset::head'
+    alias fgl='forgit::log'
+    alias fgi='forgit::ignore'
+    alias fgss='forgit::stash::show'
+
+    alias fa=fga
+    alias fdd=fgd
+    alias frh=fgrh
+    alias fl=fgl
+    alias fcf=fgcf
+    alias fgc=fgcf
+    alias fclean=fgclean
+    alias fss=fgss
+
+    alias glo=fgl
+    alias glos=fgl --stat
+    alias gloa=fgl --all
+    alias glgg='git log --graph'
+    alias gloo="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+    alias glog='git log --oneline --decorate --graph'
+    alias gke='\gitk --all $(git log -g --pretty=%h)'
+    alias glof='git log --follow -p --'
+
+
+}
+# }}}2
 # plugin_config {{{2
 plugin_config() {
     # Some good keybind is overwrite by plugins or oh-my-zsh
     # Also includes plugin variables
+    
+    source ~/script/kafka-zsh-completions/kafka.zsh
+
+    # Others {{{3
+    # Others {{{3
+    __fzf_config
+    __forgit_config
+    __tmux_config
 
     # zsh-iterm2colors
     alias ac=_iterm2colors_apply
@@ -1455,10 +1483,10 @@ plugin_config() {
     ## Fun
     alias test-passed='if [ "$?" -eq "0" ]; then lolcat ~/.tp -a -s 40 -d 2; fi;'
 }
-# }}}
-# }}}
+# }}}2
+# }}}1
 
-[ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
+# [ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
 
 # Section: ZSH History {{{1
 # --------------------------------------------------------------------------
@@ -1496,14 +1524,11 @@ uuu() {
     rm $ZSH_HISTORY_TEMP
 }
 
+
 # Section: After Load {{{1
 # --------------------------------------------------------------------------
 
-if [ "$IS_ASYNC" -eq "1" ]; then
-    # No need stop worker
-    # async_stop_worker my_worker
-else
-    # TODO
+if [ "$IS_ASYNC" -ne "1" ]; then
     # [[ $ZSH_PLUGIN_LOADED -ne "1" ]] && async_load
     if [ "$START_MESSAGE" -eq "1" ]; then
         prepare_start_message
@@ -1521,6 +1546,18 @@ export IS_ASYNC=0
 [[ $ZPROF_TRACK -eq "1" ]] && zprof # bottom of .zshrc
 # }}}
 
+# compsys initialization
+# autoload -U compinit
+# compinit
+
+# async_load0
+# ac_my_colors
+# load_Antigen
+zinit_load
+source ~/github/powerlevel10k/powerlevel10k.zsh-theme
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+plugin_config
+
 # Section: Random after {{{1
 # --------------------------------------------------------------------------
 # source ~/.iterm2_shell_integration.zsh
@@ -1531,6 +1568,7 @@ echo -e "\033]6;1;bg;green;brightness;44\a" 1>/dev/null
 echo -e "\033]6;1;bg;blue;brightness;52\a" 1>/dev/null
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+source ~/github/powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 alias signs="open https://github.com/romkatv/powerlevel10k#what-do-different-symbols-in-git-status-mean"
@@ -1567,9 +1605,5 @@ git2() {
 }
  
 export fpath=($fpath ~/.zsh)
-
 zstyle ":completion:*:descriptions" format "---- %d ----"
 
-# compsys initialization
-# autoload -U compinit
-# compinit
