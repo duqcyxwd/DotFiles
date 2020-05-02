@@ -31,8 +31,8 @@ export ZPROF_TRACK=0
 
 # Section: PATH {{{1
 # --------------------------------------------------------------------------
-# PATH: Global PATH {{{2
-# --------------------------------------------------------------------------
+  # PATH: Global PATH {{{2
+  # --------------------------------------------------------------------------
 export PATH=$HOME/bin:/usr/local/sbin:/usr/local/bin:$PATH
 export PATH="$HOME/script:$PATH"
 export PATH="$HOME/my_script:$PATH"
@@ -48,6 +48,10 @@ export KAFKA_HOME=/usr/local/kafka
 export KAFKA=$KAFKA_HOME/bin
 export KAFKA_CONFIG=$KAFKA_HOME/config
 export PATH=$KAFKA:$PATH
+# /Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home
+export JAVA_HOME=$(/usr/libexec/java_home)
+export PATH=$PATH:$JAVA_HOME/bin:$DSE_BIN
+
 
 export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
 
@@ -60,8 +64,8 @@ export NODE_PATH=/usr/lib/node_modules
 # bat
 export MANPAGER="sh -c 'col -bx | bat -l man -p'"
 
-# PATH: Global Parameter {{{2
-# --------------------------------------------------------------------------
+  # PATH: Global Parameter {{{2
+  # --------------------------------------------------------------------------
 
 # Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
@@ -117,22 +121,6 @@ noti() {
 # Section: ZSH ASYNC PATH {{{1
 # --------------------------------------------------------------------------
 # Async_load {{{2
-#
-# tmux {{{3
-__tmux_config() {
-    ZSH_TMUX_ITERM2=true
-    ZSH_TMUX_AUTOCONNECT=true
-
-    # Tmuxinator
-    export EDITOR='nvim'
-
-    alias tmuxt='unset ZSH_PLUGIN_LOADED && /usr/local/bin/tmux'
-    alias tca='tmux -CC attach -t'
-    alias tcad='tmux -CC attach -d -t' #Detach other client
-    alias tcs='tmux -CC new-session -s'
-
-    source ~/script/tmuxinator/completion/tmuxinator.zsh        #tmuxinator
-}
 # {{{3
 async_load() {
 }
@@ -212,10 +200,6 @@ async_cust_init() {
 # }}}2
 
 ### }}}1
-
-# [[ $IS_ASYNC -eq "1" ]] && async_cust_init
-
-
 # Section: Theme Config {{{1
 # --------------------------------------------------------------------------
 # Set name of the theme to load.
@@ -493,7 +477,7 @@ zinit_load() {
 # }}}1
 # Section: Script Tools {{{1
 # --------------------------------------------------------------------------
-# Tool: A {{{2
+# Tool: Random {{{2
 # --------------------------------------------------------------------------
 # Change iTerm2 Profile
 # this might work as well: iterm2_profile Performance
@@ -528,6 +512,41 @@ sample_function() {
     echo $2
 }
 
+# FileSearch
+f() {echo 'find . -iname "*'$1'*" '${@:2} && find . -iname "*$1*" ${@:2} }
+r-old() {echo ' grep "'$1'" '${@:2}' -R .' && grep "$1" ${@:2} -R . }
+r() {echo 'Replaced with ag'}
+
+# Watch function, replaced by watch
+mywatch() {
+    while :; do
+        a=$($@)
+        clear
+        echo "$(date)\n\n$a"
+        sleep 2
+    done
+}
+
+mywatch2() {
+    while :; do
+        a=$($@)
+        clear
+        echo "$(date)\n\n$a"
+        sleep 4
+    done
+}
+
+mywatch-no-clean() {
+    while :; do
+        a=$($@)
+        echo "$a"
+        sleep 2
+    done
+}
+
+#watch-zookeeper {while :; do clear; echo "$(date)\n\n$(echo stat |nc localhost 2181)"; sleep 1;  done}
+#watch-zookeeper2 {while :; a=$@; do clear; echo "$(date)\n\n$(echo stat |nc $a 2181)"; sleep 1;  done}
+#watch-zookeeper-cnumber {while :; do clear; echo "$(date)\n\n$(echo stat | nc localhost 2181 |grep 127.0.0.1 |wc -l)"; sleep 1;  done}
 
 
 # fzf with Brew {{{
@@ -638,9 +657,8 @@ fco_preview() {
 # test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh"
 #}}}
 
-# Section: Dev small and Docker {{{1
+# Section: Dev functions/tools {{{1
 # --------------------------------------------------------------------------
-# TODO Use tput cols to determine images info
 # Section: Docker functions {{{2
 # --------------------------------------------------------------------------
 # Docker ps pretty
@@ -810,8 +828,7 @@ dkreboot() {
 #unset DOCKER_CERT_PATH
 #unset DOCKER_TLS_VERIFY
 # }}}
-
-# Section: Local wildfly {{{1
+# Section: Local wildfly {{{2
 # --------------------------------------------------------------------------
 # Unfinished
 ## export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
@@ -846,59 +863,6 @@ alias wildfly-standalone-restart='$WILDFLY_BIN/jboss-cli.sh -c --command=":shutd
 
 alias wfsstart=wildfly-standalone
 
-# Section: lein Java funcion {{{1
-# --------------------------------------------------------------------------
-
-#========== Clojure Repl ===========
-alias lr="lein do clean, repl"
-alias lcr="echo 'lein do clean, repl' && lein do clean, repl"
-alias lci="echo 'lein do clean, install' && lein do clean, install"
-
-# ================================
-#
-# Configuration only with local computer
-# /Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home
-export JAVA_HOME=$(/usr/libexec/java_home)
-# export JAVA_HOME=/Library/Java/JavaVirtualMachines/jdk1.7.0_79.jdk/Contents/Home/
-export DSE_BIN=/Users/chuan.du/CENX/dse/bin
-export PATH=$PATH:$JAVA_HOME/bin:$DSE_BIN
-
-# FileSearch
-f() {echo 'find . -iname "*'$1'*" '${@:2} && find . -iname "*$1*" ${@:2} }
-r-old() {echo ' grep "'$1'" '${@:2}' -R .' && grep "$1" ${@:2} -R . }
-r() {echo 'Replaced with ag'}
-
-# Watch function, replaced by watch
-mywatch() {
-    while :; do
-        a=$($@)
-        clear
-        echo "$(date)\n\n$a"
-        sleep 2
-    done
-}
-
-mywatch2() {
-    while :; do
-        a=$($@)
-        clear
-        echo "$(date)\n\n$a"
-        sleep 4
-    done
-}
-
-mywatch-no-clean() {
-    while :; do
-        a=$($@)
-        echo "$a"
-        sleep 2
-    done
-}
-
-#watch-zookeeper {while :; do clear; echo "$(date)\n\n$(echo stat |nc localhost 2181)"; sleep 1;  done}
-#watch-zookeeper2 {while :; a=$@; do clear; echo "$(date)\n\n$(echo stat |nc $a 2181)"; sleep 1;  done}
-#watch-zookeeper-cnumber {while :; do clear; echo "$(date)\n\n$(echo stat | nc localhost 2181 |grep 127.0.0.1 |wc -l)"; sleep 1;  done}
-
 # Section: Alias {{{1
 # --------------------------------------------------------------------------
 
@@ -924,13 +888,12 @@ alias kafka08="cd /usr/local/kafka_2.9.1-0.8.2.2"
 alias kafka21="cd /usr/local && ln -s kafka_2.12-2.1.0 kafka"
 alias kafka08="cd /usr/local && ln -s kafka_2.9.1-0.8.2.2 kafka"
 
-#============= Global alias =============
+#============= Global alias is danger =============
 # alias -g Gc=' --color=always | grep -i'
 # alias -g G='| grep -i'
 # alias -g WC='| wc -l'
 # alias -g TF='| tail -f'
 # alias -g F='| fzf | tr -d "\n" | pbcopy && pbpaste'
-alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'
 # alias -g C='| pbcopy && pbpaste'
 
 #============= Applications =============
@@ -1239,8 +1202,23 @@ fi
 # fi
 # }}}
 
-# Section: ZSH plugins and powerline {{{1
+# Section: ZSH plugin config {{{1
 # --------------------------------------------------------------------------
+# tmux config{{{2
+__tmux_config() {
+    ZSH_TMUX_ITERM2=true
+    ZSH_TMUX_AUTOCONNECT=true
+
+    # Tmuxinator
+    export EDITOR='nvim'
+
+    alias tmuxt='unset ZSH_PLUGIN_LOADED && /usr/local/bin/tmux'
+    alias tca='tmux -CC attach -t'
+    alias tcad='tmux -CC attach -d -t' #Detach other client
+    alias tcs='tmux -CC new-session -s'
+
+    source ~/script/tmuxinator/completion/tmuxinator.zsh        #tmuxinator
+}
 # fzf config {{{2
 # -------------------------------------------------------
 __fzf_config() {
@@ -1253,14 +1231,11 @@ __fzf_config() {
     local FZF_PREVIEW_FILE='bat --style=numbers --color=always {} -r 0:200| head -200'
     export FZF_AG_BAT_PREVIEW="echo {} | cut -d ":" -f1 | head -1| xargs -I% bat --color always --pager never %"
 
-    export FZF_TMUX_HEIGHT=40         #Aslo been used by fzf-tab
+    export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
     export FZF_DEFAULT_OPTS="--reverse --ansi -m --bind '?:toggle-preview'"
     export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA2"
 
-
-    # TODO Try coderay for preview
-    export FZF_FILE_WIDGET_HEIGHT=70
-    export FZF_CTRL_T_OPTS="--preview \"${FZF_PREVIEW_FILE}\" $FZF_BORDER_COLOR_SCHEMA " #fzf file
+    export FZF_CTRL_T_OPTS="--preview \"${FZF_PREVIEW_FILE}\" $FZF_BORDER_COLOR_SCHEMA "                          #fzf file
     export FZF_ALT_C_OPTS="--preview \"${FZF_PREVIEW_DIR}\""                                                      #fzf cd Folder
 
     # Setting fd as the default source for fzf
@@ -1407,19 +1382,10 @@ plugin_config() {
     # Also includes plugin variables
     
     # Others {{{3
-    # Others {{{3
     __fzf_config
     __forgit_config
     __tmux_config
 
-    # zsh-iterm2colors
-    alias ac=_iterm2colors_apply
-    alias acc='echo $_iterm2colors_current'
-    alias acr=_iterm2colors_apply_random
-    alias ac-light='ac "ayu_light"'
-    alias ac-darkside='ac "Darkside"'
-    alias ac-ocean='ac "OceanicMaterial"'
-    alias ac-sd='ac "Solarized Darcula"'
 
     ac_my_colors() {
         # Light Theme "ayu_light"
@@ -1430,7 +1396,17 @@ plugin_config() {
         mlog "COLOR THEME: " $_iterm2colors_current
     }
 
+    # zsh-iterm2colors
+    alias ac=_iterm2colors_apply
+    alias acc='echo $_iterm2colors_current'
+    alias acr=_iterm2colors_apply_random
+    alias ac-light='ac "ayu_light"'
+    alias ac-darkside='ac "Darkside"'
+    alias ac-ocean='ac "OceanicMaterial"'
+    alias ac-sd='ac "Solarized Darcula"'
     alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
+
+
     alias exa='/usr/local/bin/exa --time-style=long-iso --group-directories-first -F'
     alias e=exa
     alias ea='exa -a'
@@ -1440,8 +1416,9 @@ plugin_config() {
     alias l='exa -lbF'                                               # list, size, type, git
     alias lg='exa -lbFg'                                             # list, size, type, git
     alias ll='exa -lbGF'                                             # long list
+    alias lll='exa '                                                 # long list
     alias llg='exa -lbGF --git'                                      # long list
-    alias lls='exa -lbGF -s ext'                                     # long list
+    alias lls='exa -lbGF -s ext'                                     # long list sort
     alias lla='exa -lbGFa'                                           # long list
     alias lx='exa -lbhHigUmuSa --time-style=long-iso --color-scale'  # all list
     alias lxaa='lx .?* -d -G'                                        # all list
@@ -1457,6 +1434,9 @@ plugin_config() {
     alias lt3='exa --group-directories-first -lT -L 3'
     alias lt4='exa --group-directories-first -lT -L 4'
     alias lt=lt2
+
+
+    alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'
 
     bindkey '^k' autosuggest-accept
     bindkey '^\n' autosuggest-execute
@@ -1480,8 +1460,13 @@ plugin_config() {
 }
 # }}}2
 # }}}1
+# Section: iTerm2 {{{1
+# source ~/.iterm2_shell_integration.zsh
 
-
+# Overwrite iterm2 setting for tab color and brightness
+echo -e "\033]6;1;bg;red;brightness;40\a" 1>/dev/null
+echo -e "\033]6;1;bg;green;brightness;44\a" 1>/dev/null
+echo -e "\033]6;1;bg;blue;brightness;52\a" 1>/dev/null
 # Section: ZSH History {{{1
 # --------------------------------------------------------------------------
 # ZSH History
@@ -1540,46 +1525,26 @@ export IS_ASYNC=0
 [[ $ZPROF_TRACK -eq "1" ]] && zprof # bottom of .zshrc
 # }}}
 
-# compsys initialization
-# autoload -U compinit
-# compinit
-
+# [[ $IS_ASYNC -eq "1" ]] && async_cust_init
 # async_load0
 # load_Antigen
 zinit_load
-source ~/github/powerlevel10k/powerlevel10k.zsh-theme
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-plugin_config
-ac_my_colors
-
-[ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
-
-# Section: Random after {{{1
-# --------------------------------------------------------------------------
-# source ~/.iterm2_shell_integration.zsh
-
-# Overwrite iterm2 setting for tab color and brightness
-echo -e "\033]6;1;bg;red;brightness;40\a" 1>/dev/null
-echo -e "\033]6;1;bg;green;brightness;44\a" 1>/dev/null
-echo -e "\033]6;1;bg;blue;brightness;52\a" 1>/dev/null
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 source ~/github/powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+plugin_config
+
+ac_my_colors
+
+[ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
+
+echo "zshrc loaded" >> ~/temp/zsh/log
+
+# Section: Random after {{{1
+# --------------------------------------------------------------------------
 
 alias signs="open https://github.com/romkatv/powerlevel10k#what-do-different-symbols-in-git-status-mean"
-
-# Installing dependencies for zsh: ncurses and pcre
-# ncurses is keg-only, which means it was not symlinked into /usr/local,
-# because macOS already provides this software and installing another version in
-# parallel can cause all kinds of trouble.
-# 
-# If you need to have ncurses first in your PATH run:
-#   echo 'export PATH="/usr/local/opt/ncurses/bin:$PATH"' >> ~/.zshrc
-# 
-# For compilers to find ncurses you may need to set:
-#   export LDFLAGS="-L/usr/local/opt/ncurses/lib"
-#   export CPPFLAGS="-I/usr/local/opt/ncurses/include"
 
 # hello completion example
 hello() {
