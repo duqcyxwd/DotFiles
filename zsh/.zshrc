@@ -444,14 +444,19 @@ zinit_load() {
 
   zinit for \
     OMZ::lib/git.zsh \
+    OMZ::lib/functions.zsh \
     OMZ::lib/history.zsh \
     OMZ::lib/directories.zsh \
+    OMZ::plugins/git/git.plugin.zsh \
     OMZ::plugins/git-extras/git-extras.plugin.zsh \
     OMZ::plugins/systemd/systemd.plugin.zsh \
-    OMZ::plugins/git/git.plugin.zsh \
     OMZ::plugins/iterm2/iterm2.plugin.zsh \
-    OMZ::plugins/vi-mode/vi-mode.plugin.zsh \
-    OMZ::plugins/kubectl/kubectl.plugin.zsh
+    OMZ::plugins/kubectl/kubectl.plugin.zsh \
+    OMZ::plugins/vi-mode/vi-mode.plugin.zsh
+
+  # sudo chmod 777 /private/tmp
+  # sudo chmod +t /private/tmp
+  # This solves problem in Catalina
 
   zinit light zdharma/history-search-multi-word
   zinit light  shayneholmes/zsh-iterm2colors
@@ -475,6 +480,12 @@ zinit_load() {
 }
 # }}}2
 # }}}1
+
+# [[ $IS_ASYNC -eq "1" ]] && async_cust_init
+# async_load0
+# load_Antigen
+zinit_load
+
 # Section: Script Tools {{{1
 # --------------------------------------------------------------------------
 # Tool: Random {{{2
@@ -1267,7 +1278,7 @@ __fzf_config() {
     }
     # fzf with ag {{{
     fag() {
-      if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+      if [ ! "$#" -gt 0 ]; then echo "Fzf ag search need a input string"; return 1; fi
     
       # ctrl-m is same as enter
       # | awk -F: '{printf "%s \n+%s\n", $1, $2}' | xargs -I{} nsvc {}
@@ -1276,18 +1287,26 @@ __fzf_config() {
       # --bind=\"ctrl-m:execute-silent(echo {} | agmvim_open )\"
       # --bind=\"ctrl-o:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% code % )\"
       
-      local FZF_BIND_OPTS=" --bind=\"enter:execute($FZF_AG_BAT_PREVIEW | LESS='-R' less)\"
-        --bind=\"ctrl-e:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% mvim --remote % )\"
+      local FZF_BIND_OPTS=" 
+        --bind=\"ctrl-p:execute($FZF_AG_BAT_PREVIEW | LESS='-R' less)\"
+        --bind=\"ctrl-v:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% mvim --remote % )\"
         --bind=\"ctrl-n:execute-silent(echo {} | agvim_open )\"
         --bind=\"ctrl-o:execute-silent(echo {} | agcode_open )\"
         --bind=\"ctrl-l:execute-silent(echo {} | pbcopy )\"
         --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1,2 | xargs | tr -d '\\\n' | pbcopy )\"
-        --header \"ctrl-o:VSCode, ctrl-e:mvim, ctrl-n:neovim, ctrl-y:pbcopy, ctrl-l:copy whole line\"
+        --header \"ctrl-o:VSCode, ctrl-v:mvim, ctrl-n:neovim, ctrl-y:pbcopy, ctrl-l:copy whole line\"
       "
 
       # -0 exit when no match
       # -1 Automatically select the only match 
-      ag --nobreak --noheading $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_BORDER_COLOR_SCHEMA $FZF_BIND_OPTS"  fzf-tmux -0 --preview "agbat {}" 
+      out=$(ag --nobreak --noheading $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_BORDER_COLOR_SCHEMA $FZF_BIND_OPTS"  fzf-tmux -0 --preview "agbat {}")
+
+      file=$(echo $out | cut -d ":" -f1)
+      line=$(echo $out | cut -d ":" -f2)
+
+      if [[ "$file" != "" ]]; then
+        vim $file +$line
+      fi
 
     }
 
@@ -1407,26 +1426,31 @@ plugin_config() {
     alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
 
 
-    alias exa='/usr/local/bin/exa --time-style=long-iso --group-directories-first -F'
+    alias exa='/usr/local/bin/exa --time-style=long-iso --group-directories-first -F --icons'
     alias e=exa
     alias ea='exa -a'
     alias eaa='exa .?* -d'
 
-    alias lag=exa --git
-    alias l='exa -lbF'                                               # list, size, type, git
-    alias lg='exa -lbFg'                                             # list, size, type, git
-    alias ll='exa -lbGF'                                             # long list
-    alias lll='exa '                                                 # long list
-    alias llg='exa -lbGF --git'                                      # long list
-    alias lls='exa -lbGF -s ext'                                     # long list sort
-    alias lla='exa -lbGFa'                                           # long list
-    alias lx='exa -lbhHigUmuSa --time-style=long-iso --color-scale'  # all list
-    alias lxaa='lx .?* -d -G'                                        # all list
-    alias la='exa -lbhHigUmuSa@ --time-style=long-iso --color-scale' # all + extended list
+    # g git, a, all
+    alias l='exa -lhbF'                                                # list, size, type, git
+    alias lg='l --git'                                                 # list, size, type, git
+    alias lss='l -s ext'                                               # list, size, type, git
 
-    # Show hidden files
-    alias laa='exa .?* -d'
-    alias llaa='lla .?* -d' # long list
+    alias la='exa -lbFa'                     
+    alias laa='la .?* -d'                                              # Show hidden files only
+    alias lag=la --git
+
+    alias ll='l -G'                                                    # long list
+    alias lls='ll -s ext'                                              # long list sort
+    alias llg='ll --git'                                               # long list
+
+    alias lla='ll -a'                                                  # long list
+    alias llag='lla --git'                                             # long list
+    alias llaa='lla .?* -d'                                            # long list
+
+    alias lx='exa -lbhHigUmuSa --time-style=long-iso --color-scale'    # all list
+    alias lxaa='lx .?* -d'                                            
+
 
     alias lta='exa --group-directories-first -lT'
     alias lt1='exa --group-directories-first -lT -L 1'
@@ -1451,6 +1475,8 @@ plugin_config() {
     # Notes "^I" is reserved for suggestion complete
     # ^M for enter
 
+    export GREP_COLOR='1;33'
+    alias grep='grep --color=always'
 
     # Vi-mode
     export KEYTIMEOUT=1
@@ -1503,6 +1529,9 @@ uuu() {
     rm $ZSH_HISTORY_TEMP
 }
 
+# ZSH AUTO CD into directories
+setopt AUTO_CD
+
 
 # Section: After Load {{{1
 # --------------------------------------------------------------------------
@@ -1525,10 +1554,6 @@ export IS_ASYNC=0
 [[ $ZPROF_TRACK -eq "1" ]] && zprof # bottom of .zshrc
 # }}}
 
-# [[ $IS_ASYNC -eq "1" ]] && async_cust_init
-# async_load0
-# load_Antigen
-zinit_load
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 source ~/github/powerlevel10k/powerlevel10k.zsh-theme
