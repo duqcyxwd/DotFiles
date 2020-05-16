@@ -458,6 +458,9 @@ zinit_load() {
   # sudo chmod +t /private/tmp
   # This solves problem in Catalina
 
+  # Disabled because of permission error in Catalina
+  #  OMZ::plugins/kubectl/kubectl.plugin.zsh
+
   zinit light zdharma/history-search-multi-word
   zinit light  shayneholmes/zsh-iterm2colors
   zinit light psprint/zsh-cmd-architect
@@ -959,13 +962,42 @@ set_ns() {
     kubectl config set-context --current --namespace=$KUBE_NS
 }
 
-# helm ls | grep chuan-dev | cut -f1
-# helm ls | grep $KUBE_NS | cut -f1 | hpurge && kdns $KUBE_NS
-hpurge() {
-    while read data; do
-        helm del --purge $data
-    done
+set_nsi() {
+    set_ns $(kgns | awk 'NR>1' | fzf | awk '{print $1}')
 }
+
+# helm ls | grep $KUBE_NS | cut -f1 | hpurge && kdns $KUBE_NS
+hpurge() { while read data; do; helm del --purge $data; done; }
+
+ns_clean() {
+    if [ $# -eq 0 ]; then
+        echo "Require namespace"
+        return
+    fi
+    helm ls --namespace $1 | /usr/bin/grep $1 | cut -f1 | hpurge && kubectl delete namespace $1 
+}
+
+function kube-toggle() {
+  if (( ${+POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND} )); then
+    unset POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND
+  else
+    POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito'
+  fi
+  p10k reload
+  if zle; then
+    zle push-input
+    zle accept-line
+  fi
+}
+
+# ns_clean dev
+
+# Or
+# KUBE_NS=dev
+# hpurge() { while read data; do; helm del --purge $data; done; }
+# helm ls --namespace $KUBE_NS | /usr/bin/grep $KUBE_NS | cut -f1 | hpurge && kubectl delete namespace $KUBE_NS 
+
+alias hdelp='helm del --purge'
 
 # t='build/scripts/npm.sh:40:  run_qualifier_updates'
 agbat_pip() {
@@ -1052,6 +1084,7 @@ git-branch-delete-remote() {
 }
 
 # fbr - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
+# Replaced by gcob
 fbr_disable() {
   local branches branch
   branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
@@ -1059,6 +1092,7 @@ fbr_disable() {
            fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
   git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
 }
+alias gcobi=fbr_disable
 
 # fco - checkout git branch/tag
 fco() {
@@ -1097,6 +1131,10 @@ fco_preview() {
 # Git Alias {{{2
 # --------------------------------------------------------------------------
 
+# git pull --rebase is shorthand for a fetch and a rebase!
+# Use git rebase instead of git merge
+# https://learngitbranching.js.org/
+alias gl="git pull rebase"
 
 alias git-tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
 alias git-hidden="git ls-files -v | grep '^[a-z]' | cut -c3-"
@@ -1108,6 +1146,7 @@ alias git-update-all='find . -type d -depth 1 -exec git --git-dir={}/.git --work
 alias gbcopy="echo 'Copy current branch name' && git rev-parse --abbrev-ref HEAD |pbcopy && git branch"
 
 alias gbc="git create-branch"
+gbcd() { git fetch origin develop:$@ }
 
 # Create cust gco for cust completion
 git_checkout_branch_cust() { git checkout $@ }
@@ -1122,10 +1161,10 @@ alias groot=cd-git-root
 
 #======================= Git Alias for work  =========================================
 
-alias gbui="echo 'git branch update with integration' && git fetch -p && git merge origin/integration"
-alias gbud="echo 'git branch update with develop' && git fetch -p && git merge origin/develop"
+# alias gbui="echo 'git branch update with integration' && git fetch -p && git merge origin/integration"
+alias gbud="echo 'git branch update with develop' && git pull origin develop"
 
-alias gcoi="git checkout integration && git pull"
+# alias gcoi="git checkout integration && git pull"
 alias gcod="git checkout develop && git pull"
 
 alias gfco='git fetch -p && git checkout'
@@ -1144,6 +1183,7 @@ alias gbdd=git-branch-delete-remote
 # Clean merged Branch
 alias gbd-merged-branch-local='git branch --merged | grep -v "\*" | xargs -n 1 git branch -d'
 alias gbd-remote='ee "git push -d origin"'
+alias git-house-clean="echo gbd-merged-branch-local \ngb-merged-remote-by-me\n"
 
 # run gitk
 alias gk="ee 'gitk --all&'"
@@ -1243,7 +1283,8 @@ __fzf_config() {
     export FZF_AG_BAT_PREVIEW="echo {} | cut -d ":" -f1 | head -1| xargs -I% bat --color always --pager never %"
 
     export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
-    export FZF_DEFAULT_OPTS="--reverse --ansi -m --bind '?:toggle-preview' --bind 'right:toggle' --bind 'tab:down' --bind 'btab:up' --cycle"
+    export FZF_DEFAULT_OPTS="--reverse --ansi -m --bind '?:toggle-preview' --bind 'right:toggle+down' --bind 'tab:down' --bind 'btab:up' --cycle"
+    # export FZF_DEFAULT_OPTS="--reverse --ansi -m --bind '?:toggle-preview' --bind 'tab:toggle' --bind 'btab:up' --cycle"
     export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA2"
 
     export FZF_CTRL_T_OPTS="--preview \"${FZF_PREVIEW_FILE}\" $FZF_BORDER_COLOR_SCHEMA "                          #fzf file
@@ -1276,6 +1317,9 @@ __fzf_config() {
     _fzf_compgen_dir() {
       fd --type d --hidden --follow --exclude ".git" . "$1"
     }
+    # fzfpreview
+    alias fzfp="fzf $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
+
     # fzf with ag {{{
     fag() {
       if [ ! "$#" -gt 0 ]; then echo "Fzf ag search need a input string"; return 1; fi
@@ -1362,26 +1406,28 @@ __forgit_config(){
     export FORGIT_NO_ALIASES=true
 
     alias fga='forgit::add'
-    alias fgcf='forgit::restore'
+    alias fgrs='forgit::restore'
     alias fgclean='forgit::clean'
     alias fgd='forgit::diff'
-    alias fgrh='forgit::reset::head'
     alias fgl='forgit::log'
-    alias fgi='forgit::ignore'
     alias fgss='forgit::stash::show'
+    alias fgrh='forgit::reset::head'
+    alias fgi='forgit::ignore'
+
+    alias gai=fga
+    alias gcleani=fgclean
+    alias grsi=fgrs
+    alias gdi=fgd
+    alias gloi=fgl
+    alias gstsi=fgss
+    alias grhi=fgrh
 
     alias fa=fga
     alias fdd=fgd
     alias frh=fgrh
     alias fl=fgl
-    alias fcf=fgcf
-    alias fgc=fgcf
     alias fclean=fgclean
     alias fss=fgss
-
-    alias gai=fga
-    alias gdi=fgd
-    alias gloi=fgl
 
     alias glo=fgl
     alias glos=fgl --stat
@@ -1392,7 +1438,9 @@ __forgit_config(){
     alias gke='\gitk --all $(git log -g --pretty=%h)'
     alias glof='git log --follow -p --'
 
-
+    FORGIT_STASH_FZF_OPTS='
+    --bind="ctrl-d:reload(git stash drop $(cut -d: -f1 <<<{}) 1>/dev/null && git stash list)"
+    '
 }
 # }}}2
 # plugin_config {{{2
@@ -1431,10 +1479,13 @@ plugin_config() {
     alias ea='exa -a'
     alias eaa='exa .?* -d'
 
+    alias ls='e'
+
     # g git, a, all
-    alias l='exa -lhbF'                                                # list, size, type, git
+    alias l='exa -lhbF'                                                # list, size, type
+    alias ld='exa -lhbFD'                                              # list, size, type
     alias lg='l --git'                                                 # list, size, type, git
-    alias lss='l -s ext'                                               # list, size, type, git
+    alias lss='l -s ext'                                               # list, size, type
 
     alias la='exa -lbFa'                     
     alias laa='la .?* -d'                                              # Show hidden files only
@@ -1566,6 +1617,17 @@ ac_my_colors
 
 echo "zshrc loaded" >> ~/temp/zsh/log
 
+_weekly_upgrade() {
+  git -C  ~/github/powerlevel10k pull
+  zinit self-update
+  zini delete --clean
+  zinit update --all
+  brew update            # update brew
+  brew upgrade           # update formula
+  git -C ~/powerlevel10k pull
+
+}
+
 # Section: Random after {{{1
 # --------------------------------------------------------------------------
 
@@ -1596,3 +1658,5 @@ zstyle ":completion:*:descriptions" format "---- %d ----"
 _fzf_complete_gcob2() {
   _fzf_complete --multi --reverse --prompt="doge> " -- "$@ xxx" < <(git branch)
 }
+
+

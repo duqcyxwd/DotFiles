@@ -2,7 +2,7 @@
 # Based on romkatv/powerlevel10k/config/p10k-lean.zsh, checksum 50246.
 # Wizard options: nerdfont-complete + powerline, small icons, unicode, lean, 24h time,
 # 2 lines, solid, full frame, lightest-ornaments, sparse, many icons, concise,
-# transient_prompt.
+# instant_prompt=verbose.
 # Type `p10k configure` to generate another config.
 #
 # Config for Powerlevel10k with lean prompt style. Type `p10k configure` to generate
@@ -33,13 +33,12 @@
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
     # os_icon                 # os identifier
-    # dir                     # current directory
     time
     vcs                     # git status
     kubecontext             # current kubernetes context (https://kubernetes.io/)
     # =========================[ Line #2 ]=========================
     newline                 # \n
-    dir
+    dir                     # current directory
     prompt_char             # prompt symbol
   )
 
@@ -94,19 +93,19 @@
     # vpn_ip                # virtual private network indicator
     # load                  # CPU load
     # disk_usage            # disk usage
-    # ram                   # free RAM
-    # swap                  # used swap
-    todo                    # todo items (https://github.com/todotxt/todo.txt-cli)
+    ram                   # free RAM
+    swap                  # used swap
+    battery               # internal battery
+    # todo                    # todo items (https://github.com/todotxt/todo.txt-cli)
     timewarrior             # timewarrior tracking status (https://timewarrior.net/)
     taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
     # time                    # current time
     # =========================[ Line #2 ]=========================
     newline
-    # ip                    # ip address and bandwidth usage for a specified network interface
+    ip                    # ip address and bandwidth usage for a specified network interface
     # public_ip             # public IP address
     # proxy                 # system-wide http/https/ftp proxy
-    # battery               # internal battery
-    # wifi                  # wifi speed
+    wifi                  # wifi speed
     # example               # example user-defined segment (see prompt_example function below)
   )
 
@@ -140,13 +139,16 @@
   typeset -g POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
 
   # Connect left prompt lines with these symbols.
-  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX='%244F╭─'
-  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX='%244F├─'
-  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX='%244F╰─'
+  # typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX='%240F╭─'
+  # typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX='%240F├─'
+  # typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX='%240F╰─'
+  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=''
+  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX=''
+  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX=''
   # Connect right prompt lines with these symbols.
-  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX='%244F─╮'
-  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX='%244F─┤'
-  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX='%244F─╯'
+  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX='%240F─╮'
+  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX='%240F─┤'
+  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX='%240F─╯'
 
   # The left end of left prompt.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=' '
@@ -158,7 +160,7 @@
   # POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_CHAR=' ' below.
   typeset -g POWERLEVEL9K_SHOW_RULER=false
   typeset -g POWERLEVEL9K_RULER_CHAR='─'        # reasonable alternative: '·'
-  typeset -g POWERLEVEL9K_RULER_FOREGROUND=244
+  typeset -g POWERLEVEL9K_RULER_FOREGROUND=240
 
   # Filler between left and right prompt on the first prompt line. You can set it to '·' or '─'
   # to make it easier to see the alignment between left and right prompt and to separate prompt
@@ -169,7 +171,7 @@
   typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_CHAR='─'
   if [[ $POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_CHAR != ' ' ]]; then
     # The color of the filler.
-    typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_FOREGROUND=244
+    typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_GAP_FOREGROUND=240
     # Add a space between the end of left prompt and the filler.
     typeset -g POWERLEVEL9K_LEFT_PROMPT_LAST_SEGMENT_END_SYMBOL=' '
     # Add a space between the filler and the start of right prompt.
@@ -250,9 +252,9 @@
   # matching $POWERLEVEL9K_SHORTEN_FOLDER_MARKER. For example, when the current directory is
   # /foo/bar/git_repo/baz, prompt will display git_repo/baz. This assumes that /foo/bar/git_repo
   # contains a marker (.git) and other directories don't.
-  typeset -g POWERLEVEL9K_DIR_TRUNCATE_BEFORE_MARKER=false
+  typeset -g POWERLEVEL9K_DIR_TRUNCATE_BEFORE_MARKER=true
   # Don't shorten this many last directory segments. They are anchors.
-  typeset -g POWERLEVEL9K_SHORTEN_DIR_LENGTH=1
+  typeset -g POWERLEVEL9K_SHORTEN_DIR_LENGTH=2
   # Shorten directory if it's longer than this even if there is space for it. The value can
   # be either absolute (e.g., '80') or a percentage of terminal width (e.g, '50%'). If empty,
   # directory will be shortened only when prompt doesn't fit or when other parameters demand it
@@ -1335,12 +1337,14 @@
   #   P9K_IP_TX_BYTES   | total number of bytes sent
   #   P9K_IP_RX_RATE    | receive rate (since last prompt)
   #   P9K_IP_TX_RATE    | send rate (since last prompt)
-  typeset -g POWERLEVEL9K_IP_CONTENT_EXPANSION='$P9K_IP_IP${P9K_IP_RX_RATE:+ %70F⇣$P9K_IP_RX_RATE}${P9K_IP_TX_RATE:+ %215F⇡$P9K_IP_TX_RATE}'
+  # typeset -g POWERLEVEL9K_IP_CONTENT_EXPANSION='$P9K_IP_IP${P9K_IP_RX_RATE:+ %70F⇣$P9K_IP_RX_RATE}${P9K_IP_TX_RATE:+ %215F⇡$P9K_IP_TX_RATE}'
+  typeset -g POWERLEVEL9K_IP_CONTENT_EXPANSION='${P9K_IP_RX_RATE:+ %70F⇣$P9K_IP_RX_RATE}${P9K_IP_TX_RATE:+ %215F⇡$P9K_IP_TX_RATE} $P9K_IP_IP'
   # Show information for the first network interface whose name matches this regular expression.
   # Run `ifconfig` or `ip -4 a show` to see the names of all network interfaces.
   typeset -g POWERLEVEL9K_IP_INTERFACE='e.*'
   # Custom icon.
   # typeset -g POWERLEVEL9K_IP_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_IP_VISUAL_IDENTIFIER_EXPANSION=''
 
   #########################[ proxy: system-wide http/https/ftp proxy ]##########################
   # Proxy color.
@@ -1435,7 +1439,7 @@
     # Since prompt_example always makes the same `p10k segment` calls, we can call it from
     # instant_prompt_example. This will give us the same `example` prompt segment in the instant
     # and regular prompts.
-    prompt_example
+    # prompt_example
   }
 
   # User-defined prompt segments can be customized the same way as built-in segments.
@@ -1461,7 +1465,7 @@
   #   - verbose: Enable instant prompt and print a warning when detecting console output during
   #              zsh initialization. Choose this if you've never tried instant prompt, haven't
   #              seen the warning, or if you are unsure what this all means.
-  typeset -g POWERLEVEL9K_INSTANT_PROMPT=off
+  typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
   # Hot reload allows you to change POWERLEVEL9K options after Powerlevel10k has been initialized.
   # For example, you can type POWERLEVEL9K_BACKGROUND=red and see your prompt turn red. Hot reload
