@@ -1,3 +1,5 @@
+/*jshint esversion: 9 */
+
 //     _____             __ _             _  __                 _____      _   _   _
 //    / ____|           / _(_)           | |/ /                / ____|    | | | | (_)
 //   | (___  _   _ _ __| |_ _ _ __   __ _| ' / ___ _   _ ___  | (___   ___| |_| |_ _ _ __   __ _ ___
@@ -7,6 +9,7 @@
 //                                   __/ |          __/ |                                   __/ |
 //                                  |___/          |___/                                   |___/
 //
+//    Chuan's super awesome suring key setting
 
 var cleanAlias = function() {
   removeSearchAliasX('g');
@@ -396,6 +399,7 @@ let gitlabToggleSidebar = function() {
 mapkey(',,u', 'Gitlab: go one level up', gitlabOneLevelUp, gitlabDomain);
 mapkey(',,s', 'Gitlab: toggle sidebar', gitlabToggleSidebar, gitlabDomain);
 mapkey(',,m', 'Gitlab: go to mr', elementClick('.shortcuts-merge_requests'), gitlabDomain);
+mapkey(',,p', 'Gitlab: ', elementClick('.shortcuts-merge_requests'), gitlabDomain);
 
 //  --------------------------------------------------------------------------
 // }}}
