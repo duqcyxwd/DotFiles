@@ -54,6 +54,8 @@ export PATH=$PATH:$JAVA_HOME/bin:$DSE_BIN
 
 
 export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
+# export KUBECONFIG=$HOME/.kube/config2
+# export KUBECONFIG=$HOME/.kube/config3
 
 # export is required for python path
 export NODE_PATH=/usr/lib/node_modules
@@ -471,6 +473,14 @@ zinit_load() {
   zinit light Dabz/kafka-zsh-completions
   zinit light djui/alias-tips
 
+  zinit light AdrieanKhisbe/diractions
+  zinit light zpm-zsh/template
+
+  # zinit ice wait "0" ver"dev"
+  # zinit light zsh-vi-more/evil-registers
+  # ZSH_EVIL_COPY_HANDLERS[+]="pbcopy"
+  # ZSH_EVIL_PASTE_HANDLERS[+]="pbpaste"
+  # "+p
 
   zinit light b4b4r07/enhancd
   
@@ -965,16 +975,38 @@ fi
 set-ns() {
     echo $1 >$HOME/.kube/KUBE_NS
     export KUBE_NS=$1
-    echo "kubectl config set-context --current --namespace=$KUBE_NS"
+    # echo "kubectl config set-context --current --namespace=$KUBE_NS"
     kubectl config set-context --current --namespace=$KUBE_NS
+    echo "Current Namespace: " $KUBE_NS
 }
 
-set_nsi() {
-    set_ns $(kgns | awk 'NR>1' | fzf | awk '{print $1}')
+set-nsi() {
+    set-ns $(kgns | awk 'NR>1' | fzf | awk '{print $1}')
 }
+
+set-context() {
+  local context=$@
+  kubectl config use-context $context &&
+  local ns=$(kubectl config view --minify | grep namespace | awk '{print $2}') &&
+  set-ns $ns &&
+  kube_env_update&
+}
+
+set-contexti() {
+  # kubectl config use-context $(kubectl config get-contexts  | awk 'NR>1' | fzf | awk '{print $2}')
+  
+  set-context $(kubectl config get-contexts  | awk 'NR>1' | fzf | awk '{print $2}')
+}
+
+# ns_clean dev
 
 # helm ls | grep $KUBE_NS | cut -f1 | hpurge && kdns $KUBE_NS
-hpurge() { while read data; do; helm del --purge $data; done; }
+hpurge() { 
+  while read data; 
+  do; 
+    helm del --purge $data; 
+  done; 
+}
 
 ns-clean() {
     if [ $# -eq 0 ]; then
@@ -984,7 +1016,18 @@ ns-clean() {
     helm ls --namespace $1 | /usr/bin/grep $1 | cut -f1 | hpurge && kubectl delete namespace $1 && kubectl get pods --namespace $1
 }
 
+ns-cleani() {
+  local KUBE_NS_TO_DELTE="$(kubectl get namespaces | awk 'NR>1' | fzf | awk '{print $1}')" 
+  [[ ! -z "$KUBE_NS_TO_DELTE" ]] && ns-clean $KUBE_NS_TO_DELTE
 }
+
+
+# Or
+# KUBE_NS=dev
+# hpurge() { while read data; do; helm del --purge $data; done; }
+# helm ls --namespace $KUBE_NS | /usr/bin/grep $KUBE_NS | cut -f1 | hpurge && kubectl delete namespace $KUBE_NS 
+
+alias hdelp='helm del --purge'
 
 function kube-toggle() {
   if (( ${+POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND} )); then
@@ -1134,6 +1177,7 @@ fco_preview() {
 # git pull --rebase is shorthand for a fetch and a rebase!
 # Use git rebase instead of git merge
 # https://learngitbranching.js.org/
+# alias gl="git pull rebase" Not working for develop branch
 alias gl="git pull rebase"
 
 alias git-tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
@@ -1189,8 +1233,9 @@ alias git-house-clean="echo gbd-merged-branch-local \ngb-merged-remote-by-me\n"
 alias gk="ee 'gitk --all&'"
 
 # git diff
-alias gdd="git diff origin/develop..${get_current_branch}"
-alias gitxdd="git diff origin/develop..${get_current_branch} | gitx"
+git_pager=$(git config core.pager || echo 'cat')
+alias gdd="{git diff --stat --color origin/develop.. && git diff --color origin/develop.. } | ${git_pager}"
+alias gitxdd="git diff origin/develop.. | gitx"
 alias gds="ee 'git diff -w --stat'"
 
 
@@ -1285,19 +1330,31 @@ __tmux_config() {
 __fzf_config() {
     # require fzf junegunn/fzf
 
-    local FZF_BORDER_COLOR_SCHEMA="--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899' --border"
-    local FZF_COLOR_SCHEMA2="--color=dark --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7"
+    local FZF_COLOR_SCHEMA_BORDER="--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899' --border"
+    local FZF_COLOR_SCHEMA_CLEAN="--color=dark --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7"
 
-    local FZF_PREVIEW_DIR='exa --level 2 --tree --color=always --group-directories-first {}'
+    local FZF_PREVIEW_DIR='exa --group-directories-first -F --icons --group-directories-first -T -lh -L 2 --color=always {}'
     local FZF_PREVIEW_FILE='bat --style="numbers,changes" --color=always {} -r 0:200| head -200'
     export FZF_AG_BAT_PREVIEW="echo {} | cut -d ":" -f1 | head -1| xargs -I% bat --color always --pager never %"
 
     export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
-    export FZF_DEFAULT_OPTS="--reverse --ansi -m --bind '?:toggle-preview' --bind 'right:toggle+down' --bind 'tab:down' --bind 'btab:up' --cycle"
-    # export FZF_DEFAULT_OPTS="--reverse --ansi -m --bind '?:toggle-preview' --bind 'tab:toggle' --bind 'btab:up' --cycle"
-    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA2"
+    export FZF_DEFAULT_OPTS_WITHOUT_COLOR="
+    --reverse 
+    --ansi 
+    -m 
+    --cycle 
+    --bind '?:toggle-preview' 
+    --bind 'right:toggle+down' 
+    --bind 'tab:down' 
+    --bind 'btab:up' 
+    --bind='ctrl-k:preview-up'
+    --bind='ctrl-j:preview-down'
+    --bind='ctrl-s:toggle-sort' 
+    --bind='ctrl-w:toggle-preview-wrap'"
 
-    export FZF_CTRL_T_OPTS="--preview \"${FZF_PREVIEW_FILE}\" $FZF_BORDER_COLOR_SCHEMA "                          #fzf file
+    export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS_WITHOUT_COLOR $FZF_COLOR_SCHEMA_CLEAN"
+
+    export FZF_CTRL_T_OPTS="--preview \"${FZF_PREVIEW_FILE}\" $FZF_COLOR_SCHEMA_BORDER "                          #fzf file
     export FZF_ALT_C_OPTS="--preview \"${FZF_PREVIEW_DIR}\""                                                      #fzf cd Folder
 
     # Setting fd as the default source for fzf
@@ -1307,9 +1364,6 @@ __fzf_config() {
       export FZF_ALT_C_COMMAND="fd --type d --color=always"
       export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
     fi
-
-    # Use ~~ as the trigger sequence instead of the default **
-    # export FZF_COMPLETION_TRIGGER='~~'
 
     # Options to fzf command
     # export FZF_COMPLETION_OPTS='+c -x'
@@ -1326,12 +1380,10 @@ __fzf_config() {
     _fzf_compgen_dir() {
       fd --type d --hidden --follow --exclude ".git" . "$1"
     }
-    # fzfpreview
-    export FZF_PREVIEW_ALL_PREVIEW_OPTION="--preview \"quick-preview {}\" $FZF_BORDER_COLOR_SCHEMA "
-    alias fzfpp="fzf $FZF_DEFAULT_OPTS $FZF_PREVIEW_ALL_PREVIEW_OPTION"
 
+  # fzf with ls fzfpreview  {{{
+  # fd_search_cur_dir{{{
     export FD_SEARCH_CUR_DIR_DEPTH=1
-
     fd_search_cur_dir_dir() {
       fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type file
     }
@@ -1344,73 +1396,106 @@ __fzf_config() {
       # fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always
       { fd_search_cur_dir_file && fd_search_cur_dir_dir}
     }
+  # }}}
 
+  # short_pwd{{{
+    SHORT_PWD_LENGTH=38
+    short_pwd() {
+      local pwd_str="$(pwd)"
+      if [[ ${#pwd_str} -gt $SHORT_PWD_LENGTH ]]; then
+        echo $pwd_str | awk -v len=${SHORT_PWD_LENGTH} '{print "..."substr($0,length($0)-len,len+1)"/"}'
+      else
+        echo "${pwd_str}/"
+      fi
+    }
+  # }}}
+  # ls-fuzzy-preview {{{
+    ls-fuzzy-preview() {
+      while out=$( fd_search_cur_dir | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS_WITHOUT_COLOR $FZF_COLOR_SCHEMA_BORDER" fzf-tmux -0 --preview "quick-preview {}" --exit-0 --expect=ctrl-i,ctrl-o,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down --print-query --header "[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" --preview-window right:50% --height ${FZF_TMUX_HEIGHT:-100%});
+      do
+        echo $out
+        searchTerm=$(head -1 <<< "$out"| tail -1)
+        key=$(head -2 <<< "$out"| tail -1)
+        input=$(head -3 <<< "$out"| tail -1)
 
-    # fzf with ag {{{
+        if [[ "$key" == 'alt-left' ]]; then
+          cd ../
+        elif [[ "$key" == 'alt-right' ]] || [[ "$key" == 'alt-down' ]]; then
+          pushd -1 1>/dev/null;
+        elif [[ "$key" == 'alt-up' ]]; then
+          pushd +0 1>/dev/null;
+        elif [[ "$key" == 'ctrl-i' ]]; then
+          FD_SEARCH_CUR_DIR_DEPTH=$(expr $FD_SEARCH_CUR_DIR_DEPTH + 1)
+        elif [[ "$key" == 'ctrl-o' ]]; then
+          local new_dept=$(expr $FD_SEARCH_CUR_DIR_DEPTH - 1)
+          if [[ "$new_dept" -ge "1" ]];then
+            FD_SEARCH_CUR_DIR_DEPTH=$new_dept
+          fi
+        elif [[ "$key" == 'ctrl-space' ]] || ; then
+          if [[ -d "${input}" ]] ; then
+            cd "${input}"
+          elif [[ -f "${input}" ]]; then
+            nvim $input
+          fi
+        elif [[ "$key" == 'enter' ]]; then
+          fzf-exec $input
+          exit
+        fi
+      done
+      FD_SEARCH_CUR_DIR_DEPTH=1
+    }
+  # }}}
+
+    export FZF_PREVIEW_ALL_PREVIEW_OPTION="--preview \"quick-preview {}\" $FZF_COLOR_SCHEMA_BORDER "
+    alias fzfpp="fzf $FZF_DEFAULT_OPTS $FZF_PREVIEW_ALL_PREVIEW_OPTION"
+    alias lf0="fd_search_cur_dir | fzfpp"
+
+    alias lf=ls-fuzzy-preview
+    alias fp=lf
+    # }}}
+
+  # fzf with ag {{{
     fag() {
-      if [ ! "$#" -gt 0 ]; then echo "Fzf ag search need a input string"; return 1; fi
+      if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
+      # --bind=\"ctrl-o:execute-silent(echo {} | agcode_open )\"
+        # --bind=\"ctrl-l:execute-silent(echo {} | pbcopy )\"
     
-      # ctrl-m is same as enter
-      # | awk -F: '{printf "%s \n+%s\n", $1, $2}' | xargs -I{} nsvc {}
-      # --bind=\"ctrl-e:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% nsvc % )\"
-      # --bind=\"ctrl-m:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% mvim --remote % )\"
-      # --bind=\"ctrl-m:execute-silent(echo {} | agmvim_open )\"
-      # --bind=\"ctrl-o:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% code % )\"
-      
-      local FZF_BIND_OPTS=" 
-        --bind=\"ctrl-p:execute($FZF_AG_BAT_PREVIEW | LESS='-R' less)\"
-        --bind=\"ctrl-v:execute-silent(echo {} | cut -d ':' -f1 | head -1 | xargs -I% mvim --remote % )\"
-        --bind=\"ctrl-n:execute-silent(echo {} | agvim_open )\"
-        --bind=\"ctrl-o:execute-silent(echo {} | agcode_open )\"
-        --bind=\"ctrl-l:execute-silent(echo {} | pbcopy )\"
+      local FZF_BIND_OPTS=" --bind=\"ctrl-space:execute($FZF_AG_BAT_PREVIEW | LESS='-R' less)\"
+        --bind=\"ctrl-v:execute(echo {} | agnvim_open )\"
+        --bind=\"ctrl-o:execute( fzf-exec {} )\"
         --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1,2 | xargs | tr -d '\\\n' | pbcopy )\"
-        --header \"ctrl-o:VSCode, ctrl-v:mvim, ctrl-n:neovim, ctrl-y:pbcopy, ctrl-l:copy whole line\"
+        --header \"ctrl-o:fzfexec, ctrl-v:mvim, ctrl-n:neovim, ctrl-y:pbcopy, ctrl-l:copy whole line\"
       "
 
       # -0 exit when no match
       # -1 Automatically select the only match 
-      out=$(ag --nobreak --noheading $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_BORDER_COLOR_SCHEMA $FZF_BIND_OPTS"  fzf-tmux -0 --preview "agbat {}")
-
-      file=$(echo $out | cut -d ":" -f1)
-      line=$(echo $out | cut -d ":" -f2)
-
-      if [[ "$file" != "" ]]; then
-        vim $file +$line
-      fi
+      ag --nobreak --noheading $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA_BORDER $FZF_BIND_OPTS"  fzf-tmux -0 --preview "agbat {}"
 
     }
 
-    # Problem when keep search index, simple and do not need external script
-    vg() {
-      if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-    
-      while out=$(ag --nobreak --noheading $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_BORDER_COLOR_SCHEMA"  fzf-tmux -0 --preview "agbat {}" --exit-0 --expect=ctrl-o,ctrl-e,ctrl-c,enter --print-query --header "enter to edit in vim, ctrl-o to open in VSCode, ctrl-e to view, ctrl-c to copy file path" );
+
+    # We can't simplely launch vim with fzf keybinding that is why we need a wrapper fn
+    # Same as fag except enter will open in vim and keep the search
+    vag() {
+      while out=$(fag $@)
       do
-        searchTerm=$(head -1 <<< "$out"| tail -1) 
-        key=$(head -2 <<< "$out"| tail -1)
-        input=$(head -3 <<< "$out"| tail -1)
-
-        file=$(echo $input | cut -d ":" -f1)
-        line=$(echo $input | cut -d ":" -f2)
-
-        if [[ "$key" == 'ctrl-e' ]]; then
-          bat --style=numbers --color=always $file
-        elif [[ "$key" == 'ctrl-o' ]]; then
-          code -g $file:$line
-          break;
-        elif [[ "$key" == 'ctrl-c' ]]; then
-          echo $file | pbcopy
-        else
+        echo $out
+        file=$(echo $out | cut -d ":" -f1)
+        line=$(echo $out | cut -d ":" -f2)
+  
+        if [[ "$file" != "" ]]; then
           vim $file +$line
         fi
+  
       done
     }
-    
+
     #}}}
 
-} # }}}2
-# forgit config {{{2
-__forgit_config(){
+} 
+# }}}2
+# fzf_git_config {{{2
+__fzf_git_config(){
     # --------------------------------------------------------------------------
     # Unalias {{{
     unalias -m glg
@@ -1429,24 +1514,41 @@ __forgit_config(){
     unalias -m glp
     # }}}
     # antigen bundle 'wfxr/forgit'
-    export FORGIT_NO_ALIASES=true
 
+
+    __git_pager=$(git config core.pager || echo 'cat')                           # to use diff-so-fancy
+
+    forgit::stash::show_cust() {
+      forgit::inside_work_tree || return 1
+      local cmd opts
+      cmd="echo {} |cut -d: -f1 |xargs -I% fzf_preview_git_stash % |$__git_pager"
+      opts="
+          $FORGIT_FZF_DEFAULT_OPTS
+          +s +m -0 --tiebreak=index --bind=\"enter:execute($cmd)\"
+          $FORGIT_STASH_FZF_OPTS
+      "
+      git stash list | FZF_DEFAULT_OPTS="$opts" fzf --preview="$cmd"
+    }
+
+    export FORGIT_NO_ALIASES=true
+  # Fzf alias {{{
     alias fga='forgit::add'
     alias fgrs='forgit::restore'
     alias fgclean='forgit::clean'
     alias fgd='forgit::diff'
     alias fgl='forgit::log'
-    alias fgss='forgit::stash::show'
+    # alias fgss='forgit::stash::show'
     alias fgrh='forgit::reset::head'
     alias fgi='forgit::ignore'
 
-    alias gai=fga
+    alias gai=forgit::add
     alias gcleani=fgclean
-    alias grsi=fgrs
-    alias gdi=fgd
-    alias gloi=fgl
-    alias gstsi=fgss
-    alias grhi=fgrh
+    alias grsi=forgit::restore
+    alias gdi=forgit::diff
+    alias glopi=forgit::log
+    # alias gstsi=forgit::stash::show
+    alias gstsi=forgit::stash::show_cust
+    alias grhi=forgit::reset::head
 
     alias fa=fga
     alias fdd=fgd
@@ -1454,19 +1556,61 @@ __forgit_config(){
     alias fl=fgl
     alias fclean=fgclean
     alias fss=fgss
-
-    alias glo=fgl
-    alias glos=fgl --stat
-    alias gloa=fgl --all
-    alias glgg='git log --graph'
+    # }}}
+    
+    alias glop=glopi
+    alias glos='git log --stat'
+    alias glog='git log --graph'
     alias gloo="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
-    alias glog='git log --oneline --decorate --graph'
+    alias glogg='git log --oneline --decorate --graph'
+
     alias gke='\gitk --all $(git log -g --pretty=%h)'
     alias glof='git log --follow -p --'
+
+    __git_commit_preview_cmd="echo {} |grep -Eo '[a-f0-9]+' | head -1 |xargs -I% fzf_preview_git_commit % |$__git_pager | LESS='-R' less"
+    __git_fzf_opts=" -0" # $FZF_DEFAULT_OPTS is used by default 
+    __git_fzf_opts="$FZF_DEFAULT_OPTS -m -0
+    --bind=\"ctrl-space:execute($__git_commit_preview_cmd)\"
+    --bind=\"ctrl-y:execute-silent(echo {} |grep -Eo '[a-f0-9]+' | head -1 | tr -d '\n' | pbcopy)\"
+    " # $FZF_DEFAULT_OPTS is used by default 
+
+
+    git_log_interactive_preview(){
+      git log --graph --color=always --format='%C(auto)%h%d %s %C(black)%C(bold)%cr' $@  \
+        | FZF_DEFAULT_OPTS="$__git_fzf_opts" fzf --preview="$__git_commit_preview_cmd" \
+    }
+
+    git_log_interactive_select(){
+      git log --graph --color=always --format='%C(auto)%h%d %s %C(black)%C(bold)%cr' $@  \
+        | FZF_DEFAULT_OPTS="$__git_fzf_opts" fzf --preview="$__git_commit_preview_cmd" \
+        | /usr/bin/grep -Eo '[a-f0-9]{7,41}'
+    }
+
+    git_revert_interactive() {
+      git_log_interactive_select | xargs git revert $@
+    }  
+
+    git_reset_interactive(){
+      git_log_interactive_select | xargs git reset $@
+    }
+
+    alias gloi=git_log_interactive_select
+    alias gcsi=git_log_interactive_select
+    alias glop=git_log_interactive_preview
+    alias gch='$(git_log_interactive_select)' #git commit hash tag
+    alias glo=git_log_interactive_select
+    alias glois='git_log_interactive_select |/usr/bin/grep -Eo "[a-f0-9]{7,41}" | xargs git show | head -1 | cut -d" " -f2'
+
+    alias grevi=git_revert_interactive
+    alias greseti=git_reset_interactive
 
     FORGIT_STASH_FZF_OPTS='
     --bind="ctrl-d:reload(git stash drop $(cut -d: -f1 <<<{}) 1>/dev/null && git stash list)"
     '
+
+  __git_stash_preview() {
+    git stash show --color=always --ext-diff $@
+  }
 }
 # }}}2
 # plugin_config {{{2
@@ -1476,7 +1620,7 @@ plugin_config() {
     
     # Others {{{3
     __fzf_config
-    __forgit_config
+    __fzf_git_config
     __tmux_config
 
 
@@ -1539,21 +1683,26 @@ plugin_config() {
 
     alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'
 
-    bindkey '^k' autosuggest-accept
-    bindkey '^\n' autosuggest-execute
-    bindkey "^R" history-search-multi-word # Use multi word. fzf is too aggressive
+    bindkey '^k'      autosuggest-accept
+    bindkey '^\n'     autosuggest-execute
+    bindkey "^R"      history-search-multi-word # Use multi word. fzf is too aggressive
 
     # Fzf related
-    bindkey "^F" fzf-file-widget           # fzf files
-    bindkey '^G' fzf-cd-widget             # Search and goto fzf
+    bindkey "^F"      fzf-file-widget           # fzf files
+    bindkey '^G'      fzf-cd-widget             # Search and goto fzf
 
-    bindkey '^T' toggle-fzf-tab
-    bindkey "^O" zca-widget                # Zsh Command Architect zsh-cmd-architect
+    bindkey '^T'      toggle-fzf-tab
+    bindkey "^O"      zca-widget                # Zsh Command Architect zsh-cmd-architect
+
+    function my-expand() { zle _expand_alias || zle .expand-word || true }
+
+    zle -N my-expand
+    bindkey '^ '      my-expand                           # ctrl+space expand alias/glob/parameter
     # Notes "^I" is reserved for suggestion complete
     # ^M for enter
 
     export GREP_COLOR='1;33'
-    alias grep='grep --color=always'
+    # alias grep='grep --color=always'
 
     # Vi-mode
     export KEYTIMEOUT=1
@@ -1631,9 +1780,9 @@ export IS_ASYNC=0
 [[ $ZPROF_TRACK -eq "1" ]] && zprof # bottom of .zshrc
 # }}}
 
-
+# source /Users/EYONDUU/github/enhancd/init.sh
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-source ~/github/powerlevel10k/powerlevel10k.zsh-theme
+# source ~/github/powerlevel10k/powerlevel10k.zsh-theme
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 plugin_config
 
@@ -1643,15 +1792,17 @@ ac_my_colors
 
 echo "zshrc loaded" >> ~/temp/zsh/log
 
+# https://superuser.com/questions/1092033/how-can-i-make-zsh-tab-completion-fix-capitalization-errors-for-directorys-and
+# ZSH case insensitive completion
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+
 _weekly_upgrade() {
-  git -C  ~/github/powerlevel10k pull
+  # git -C  ~/github/powerlevel10k pull #moved to zinit
   zinit self-update
   zini delete --clean
   zinit update --all
   brew update            # update brew
   brew upgrade           # update formula
-  git -C ~/powerlevel10k pull
-
 }
 
 # Section: Random after {{{1
@@ -1685,4 +1836,5 @@ _fzf_complete_gcob2() {
   _fzf_complete --multi --reverse --prompt="doge> " -- "$@ xxx" < <(git branch)
 }
 
+# crontab crontab-config
 
