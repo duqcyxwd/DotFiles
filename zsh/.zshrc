@@ -462,14 +462,18 @@ zinit_load() {
   #  OMZ::plugins/kubectl/kubectl.plugin.zsh
 
   zinit light zdharma/history-search-multi-word
-  zinit light  shayneholmes/zsh-iterm2colors
+  zinit light shayneholmes/zsh-iterm2colors
   zinit light psprint/zsh-cmd-architect
   zinit light rupa/z
   zinit light changyuheng/fz
   zinit light wfxr/forgit
   zinit light vim/vim
   zinit light Dabz/kafka-zsh-completions
+  zinit light djui/alias-tips
 
+
+  zinit light b4b4r07/enhancd
+  
   # autoload -Uz compinit; compinit # zinit 用户这里可能是 zpcompinit; zpcdreplay
   zpcompinit; zpcdreplay
 
@@ -480,6 +484,8 @@ zinit_load() {
   
   zinit light zsh-users/zsh-autosuggestions
   zinit light zdharma/fast-syntax-highlighting
+
+  zinit ice depth=1; zinit light romkatv/powerlevel10k
 }
 # }}}2
 # }}}1
@@ -881,6 +887,7 @@ alias wfsstart=wildfly-standalone
 # --------------------------------------------------------------------------
 
 # Alias
+alias helm3=/usr/local/Cellar/helm/3.2.1/bin/helm
 # alias vi='/usr/local/bin/vim'
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
@@ -955,7 +962,7 @@ if [ -f $HOME/.kube/KUBE_NS ]; then
 fi
 
 # Set k8s ns
-set_ns() {
+set-ns() {
     echo $1 >$HOME/.kube/KUBE_NS
     export KUBE_NS=$1
     echo "kubectl config set-context --current --namespace=$KUBE_NS"
@@ -969,12 +976,14 @@ set_nsi() {
 # helm ls | grep $KUBE_NS | cut -f1 | hpurge && kdns $KUBE_NS
 hpurge() { while read data; do; helm del --purge $data; done; }
 
-ns_clean() {
+ns-clean() {
     if [ $# -eq 0 ]; then
         echo "Require namespace"
         return
     fi
-    helm ls --namespace $1 | /usr/bin/grep $1 | cut -f1 | hpurge && kubectl delete namespace $1 
+    helm ls --namespace $1 | /usr/bin/grep $1 | cut -f1 | hpurge && kubectl delete namespace $1 && kubectl get pods --namespace $1
+}
+
 }
 
 function kube-toggle() {
@@ -989,15 +998,6 @@ function kube-toggle() {
     zle accept-line
   fi
 }
-
-# ns_clean dev
-
-# Or
-# KUBE_NS=dev
-# hpurge() { while read data; do; helm del --purge $data; done; }
-# helm ls --namespace $KUBE_NS | /usr/bin/grep $KUBE_NS | cut -f1 | hpurge && kubectl delete namespace $KUBE_NS 
-
-alias hdelp='helm del --purge'
 
 # t='build/scripts/npm.sh:40:  run_qualifier_updates'
 agbat_pip() {
@@ -1234,6 +1234,16 @@ if [ $commands[kubectl] ]; then
     }
 fi
 
+
+nvm() {
+  unfunction "$0"
+  export NVM_DIR="$HOME/.nvm"
+  # lazy load for nvm. Take 1.5 second to load
+  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"                   # This loads nvm
+  [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion
+  $0 "$@"
+}
+
 # Lazy load example {{{2
 # if [ $commands[kubectl] ]; then
 #
@@ -1279,7 +1289,7 @@ __fzf_config() {
     local FZF_COLOR_SCHEMA2="--color=dark --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7"
 
     local FZF_PREVIEW_DIR='exa --level 2 --tree --color=always --group-directories-first {}'
-    local FZF_PREVIEW_FILE='bat --style=numbers --color=always {} -r 0:200| head -200'
+    local FZF_PREVIEW_FILE='bat --style="numbers,changes" --color=always {} -r 0:200| head -200'
     export FZF_AG_BAT_PREVIEW="echo {} | cut -d ":" -f1 | head -1| xargs -I% bat --color always --pager never %"
 
     export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
@@ -1304,7 +1314,6 @@ __fzf_config() {
     # Options to fzf command
     # export FZF_COMPLETION_OPTS='+c -x'
 
-
     # Use fd (https://github.com/sharkdp/fd) instead of the default find
     # command for listing path candidates.
     # - The first argument to the function ($1) is the base path to start traversal
@@ -1318,7 +1327,24 @@ __fzf_config() {
       fd --type d --hidden --follow --exclude ".git" . "$1"
     }
     # fzfpreview
-    alias fzfp="fzf $FZF_DEFAULT_OPTS $FZF_CTRL_T_OPTS"
+    export FZF_PREVIEW_ALL_PREVIEW_OPTION="--preview \"quick-preview {}\" $FZF_BORDER_COLOR_SCHEMA "
+    alias fzfpp="fzf $FZF_DEFAULT_OPTS $FZF_PREVIEW_ALL_PREVIEW_OPTION"
+
+    export FD_SEARCH_CUR_DIR_DEPTH=1
+
+    fd_search_cur_dir_dir() {
+      fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type file
+    }
+
+    fd_search_cur_dir_file() {
+      fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type directory
+    }
+
+    fd_search_cur_dir() {
+      # fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always
+      { fd_search_cur_dir_file && fd_search_cur_dir_dir}
+    }
+
 
     # fzf with ag {{{
     fag() {
