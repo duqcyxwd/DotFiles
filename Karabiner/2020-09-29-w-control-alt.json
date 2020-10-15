@@ -1,9 +1,63 @@
 {
-  "title": "AmethystMode",
+  "title": "QuickKeyMode",
   "rules": [
     {
-      "description": "Amethyst Mode All in one",
+      "description": "Quick Key mode",
       "manipulators": [
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "0",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "0",
+              "modifiers": [
+                "left_control",
+                "left_alt"
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "type": "variable_if",
+              "name": "QuickKeyMode",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "1",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "1",
+              "modifiers": [
+                "left_control",
+                "left_alt"
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "type": "variable_if",
+              "name": "QuickKeyMode",
+              "value": 1
+            }
+          ]
+        },
         {
           "type": "basic",
           "from": {
@@ -26,7 +80,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -53,7 +107,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -80,7 +134,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -107,7 +161,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -134,7 +188,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -161,7 +215,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -188,7 +242,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -215,7 +269,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -242,7 +296,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -269,7 +323,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -296,7 +350,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -323,7 +377,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -350,7 +404,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -377,7 +431,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -404,7 +458,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -431,7 +485,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -458,7 +512,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -485,7 +539,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -512,7 +566,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -539,7 +593,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -566,7 +620,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -593,7 +647,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -620,7 +674,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -647,7 +701,61 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "semicolon",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "semicolon",
+              "modifiers": [
+                "left_control",
+                "left_alt"
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "type": "variable_if",
+              "name": "QuickKeyMode",
+              "value": 1
+            }
+          ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "key_code": "quote",
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "quote",
+              "modifiers": [
+                "left_control",
+                "left_alt"
+              ]
+            }
+          ],
+          "conditions": [
+            {
+              "type": "variable_if",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -674,7 +782,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -701,7 +809,7 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
@@ -728,10 +836,106 @@
           "conditions": [
             {
               "type": "variable_if",
-              "name": "AmethystMode",
+              "name": "QuickKeyMode",
               "value": 1
             }
           ]
+        },
+        {
+          "type": "basic",
+          "from": {
+            "simultaneous": [
+              {
+                "key_code": "w"
+              },
+              {
+                "key_code": "0"
+              }
+            ],
+            "simultaneous_options": {
+              "key_down_order": "strict",
+              "key_up_order": "strict_inverse",
+              "to_after_key_up": [
+                {
+                  "set_variable": {
+                    "name": "QuickKeyMode",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "set_variable": {
+                "name": "QuickKeyMode",
+                "value": 1
+              }
+            },
+            {
+              "key_code": "0",
+              "modifiers": [
+                "left_control",
+                "left_alt"
+              ]
+            }
+          ],
+          "parameters": {
+            "basic.simultaneous_threshold_milliseconds": 500
+          }
+        },
+        {
+          "type": "basic",
+          "from": {
+            "simultaneous": [
+              {
+                "key_code": "w"
+              },
+              {
+                "key_code": "1"
+              }
+            ],
+            "simultaneous_options": {
+              "key_down_order": "strict",
+              "key_up_order": "strict_inverse",
+              "to_after_key_up": [
+                {
+                  "set_variable": {
+                    "name": "QuickKeyMode",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "set_variable": {
+                "name": "QuickKeyMode",
+                "value": 1
+              }
+            },
+            {
+              "key_code": "1",
+              "modifiers": [
+                "left_control",
+                "left_alt"
+              ]
+            }
+          ],
+          "parameters": {
+            "basic.simultaneous_threshold_milliseconds": 500
+          }
         },
         {
           "type": "basic",
@@ -750,7 +954,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -765,7 +969,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -798,7 +1002,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -813,7 +1017,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -846,7 +1050,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -861,7 +1065,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -894,7 +1098,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -909,7 +1113,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -942,7 +1146,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -957,7 +1161,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -990,7 +1194,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1005,7 +1209,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1038,7 +1242,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1053,7 +1257,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1086,7 +1290,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1101,7 +1305,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1134,7 +1338,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1149,7 +1353,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1182,7 +1386,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1197,7 +1401,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1230,7 +1434,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1245,7 +1449,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1278,7 +1482,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1293,7 +1497,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1326,7 +1530,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1341,7 +1545,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1374,7 +1578,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1389,7 +1593,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1422,7 +1626,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1437,7 +1641,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1470,7 +1674,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1485,7 +1689,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1518,7 +1722,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1533,7 +1737,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1566,7 +1770,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1581,7 +1785,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1614,7 +1818,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1629,7 +1833,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1662,7 +1866,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1677,7 +1881,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1710,7 +1914,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1725,7 +1929,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1758,7 +1962,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1773,7 +1977,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1806,7 +2010,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1821,7 +2025,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1854,7 +2058,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1869,12 +2073,108 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
             {
               "key_code": "close_bracket",
+              "modifiers": [
+                "left_control",
+                "left_alt"
+              ]
+            }
+          ],
+          "parameters": {
+            "basic.simultaneous_threshold_milliseconds": 500
+          }
+        },
+        {
+          "type": "basic",
+          "from": {
+            "simultaneous": [
+              {
+                "key_code": "w"
+              },
+              {
+                "key_code": "semicolon"
+              }
+            ],
+            "simultaneous_options": {
+              "key_down_order": "strict",
+              "key_up_order": "strict_inverse",
+              "to_after_key_up": [
+                {
+                  "set_variable": {
+                    "name": "QuickKeyMode",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "set_variable": {
+                "name": "QuickKeyMode",
+                "value": 1
+              }
+            },
+            {
+              "key_code": "semicolon",
+              "modifiers": [
+                "left_control",
+                "left_alt"
+              ]
+            }
+          ],
+          "parameters": {
+            "basic.simultaneous_threshold_milliseconds": 500
+          }
+        },
+        {
+          "type": "basic",
+          "from": {
+            "simultaneous": [
+              {
+                "key_code": "w"
+              },
+              {
+                "key_code": "quote"
+              }
+            ],
+            "simultaneous_options": {
+              "key_down_order": "strict",
+              "key_up_order": "strict_inverse",
+              "to_after_key_up": [
+                {
+                  "set_variable": {
+                    "name": "QuickKeyMode",
+                    "value": 0
+                  }
+                }
+              ]
+            },
+            "modifiers": {
+              "optional": [
+                "any"
+              ]
+            }
+          },
+          "to": [
+            {
+              "set_variable": {
+                "name": "QuickKeyMode",
+                "value": 1
+              }
+            },
+            {
+              "key_code": "quote",
               "modifiers": [
                 "left_control",
                 "left_alt"
@@ -1902,7 +2202,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1917,7 +2217,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1950,7 +2250,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -1965,7 +2265,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },
@@ -1998,7 +2298,7 @@
               "to_after_key_up": [
                 {
                   "set_variable": {
-                    "name": "AmethystMode",
+                    "name": "QuickKeyMode",
                     "value": 0
                   }
                 }
@@ -2013,7 +2313,7 @@
           "to": [
             {
               "set_variable": {
-                "name": "AmethystMode",
+                "name": "QuickKeyMode",
                 "value": 1
               }
             },

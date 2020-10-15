@@ -1,3 +1,13 @@
 find *.js | entr -s 'node karabiner-compiler.js'
 
 cp 2020-03-Amethyst.json ~/.config/karabiner/assets/complex_modifications
+
+cp 2020-09-29-w-control-alt.json ~/.config/karabiner/assets/complex_modificationsw
+
+
+3. Open karabiner and delete old one and enbale new one
+
+
+
+Rectangle
+defaults write com.knollsoft.Rectangle sizeOffset -float 100

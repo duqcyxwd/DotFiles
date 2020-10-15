@@ -42,6 +42,7 @@ export PATH="./node_modules/.bin:$PATH"
 export PATH="/usr/local/opt/gnu-sed/libexec/gnubin:$PATH"
 export PATH="/usr/local/heroku/bin:$PATH"
 export PATH="/usr/local/opt/ruby/bin:$PATH"
+export PATH="$HOME/.gem/ruby/2.7.0/bin:$PATH"
 export PATH=$PATH:$HOME/.SpaceVim/bin
 
 export KAFKA_HOME=/usr/local/kafka
@@ -51,6 +52,9 @@ export PATH=$KAFKA:$PATH
 # /Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home
 export JAVA_HOME=$(/usr/libexec/java_home)
 export PATH=$PATH:$JAVA_HOME/bin:$DSE_BIN
+
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
 
 export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
@@ -509,11 +513,6 @@ zinit_load
 # --------------------------------------------------------------------------
 # Tool: Random {{{2
 # --------------------------------------------------------------------------
-# Change iTerm2 Profile
-# this might work as well: iterm2_profile Performance
-alias performance='echo -e "\033]50;SetProfile=Performance\x7"'
-alias noperformance='echo -e "\033]50;SetProfile=Empty Default\x7"'
-
 color-test() {
     clear
     cat ${HOME}/script-tool/iterm-syntax-test.txt
@@ -644,28 +643,6 @@ fkilll() {
     then
         echo $pid | xargs kill -${1:-9}
     fi
-}
-
-fbr() {
-  local branches branch
-  branches=$(git --no-pager branch -vv) &&
-  branch=$(echo "$branches" | fzf +m) &&
-  git checkout $(echo "$branch" | awk '{print $1}' | sed "s/.* //")
-}
-
-fco_preview() {
-  local tags branches target
-  branches=$(
-    git --no-pager branch --all \
-      --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
-    | sed '/^$/d') || return
-  tags=$(
-    git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
-  target=$(
-    (echo "$branches"; echo "$tags") |
-    fzf --no-hscroll --no-multi -n 2 \
-        --ansi --preview="git --no-pager log -150 --pretty=format:%s '..{2}'") || return
-  git checkout $(awk '{print $2}' <<<"$target" )
 }
 
 # Tool: B Deprecated {{{2
@@ -893,11 +870,11 @@ alias wildfly-standalone-restart='$WILDFLY_BIN/jboss-cli.sh -c --command=":shutd
 
 alias wfsstart=wildfly-standalone
 
+# }}}1
 # Section: Alias {{{1
 # --------------------------------------------------------------------------
 
 # Alias
-alias helm3=/usr/local/Cellar/helm/3.2.1/bin/helm
 # alias vi='/usr/local/bin/vim'
 alias zshconfig="vim ~/.zshrc"
 alias ohmyzsh="vim ~/.oh-my-zsh"
@@ -929,24 +906,25 @@ alias kafka08="cd /usr/local && ln -s kafka_2.9.1-0.8.2.2 kafka"
 
 #============= Applications =============
 alias copen='open -a Google\ Chrome'
-alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
 alias ems='open -a /Applications/Emacs.app $@'
-alias em='ems'
-alias zkcli0=/usr/local/Cellar/zookeeper/3.4.13/bin/zkCli
-
-# Cheatsheet
-alias cidea='cat ~/duqcyxwd/DotFiles/vim/ideavim-cheatsheet | grep $@'
-
 alias py='python'
 alias rmt='/bin/rm'
 alias rm="trash"
 
-# Alias for echo done
-alias tf='echo "Task finished"'
+alias em='ems'
+alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
+# Cheatsheet
+alias cidea='cat ~/duqcyxwd/DotFiles/vim/ideavim-cheatsheet | grep $@'
 
-#============= Database =============
 #alias sql="echo 'psql to localhost' && psql -h 'localhost' -U 'postgres'"
 alias sql="echo 'psql to localhost' && ee \"export PAGER='less -SF' && psql -h 'localhost' -U 'postgres'\""
+
+#============= Services =============
+alias zkcli0=/usr/local/Cellar/zookeeper/3.4.13/bin/zkCli
+
+
+# Alias for echo done
+alias tf='echo "Task finished"'
 
 #============= Dir alias =============
 # CD to any directory with auto complete
@@ -978,24 +956,30 @@ set-ns() {
     # echo "kubectl config set-context --current --namespace=$KUBE_NS"
     kubectl config set-context --current --namespace=$KUBE_NS
     echo "Current Namespace: " $KUBE_NS
+    kube_env_update&
 }
 
 set-nsi() {
-    set-ns $(kgns | awk 'NR>1' | fzf | awk '{print $1}')
+    set-ns $(kubectl get namespaces | awk 'NR>1' | fzf -0 | awk '{print $1}')
 }
 
 set-context() {
-  local context=$@
-  kubectl config use-context $context &&
-  local ns=$(kubectl config view --minify | grep namespace | awk '{print $2}') &&
-  set-ns $ns &&
-  kube_env_update&
+    if [ $# -eq 0 ]; then
+        echo "Require cluster"
+        return
+    fi
+
+    echo "Will change context to $@"
+    local context=$@
+    kubectl config use-context $context &&
+      local ns=$(kubectl config view --minify | grep namespace | awk '{print $2}') &&
+      set-ns $ns
+    # kube_env_update&
 }
 
 set-contexti() {
   # kubectl config use-context $(kubectl config get-contexts  | awk 'NR>1' | fzf | awk '{print $2}')
-  
-  set-context $(kubectl config get-contexts  | awk 'NR>1' | fzf | awk '{print $2}')
+  set-context $(kubectl config get-contexts  | awk 'NR>1' | fzf -0 | awk '{print $2}')
 }
 
 # ns_clean dev
@@ -1013,11 +997,13 @@ ns-clean() {
         echo "Require namespace"
         return
     fi
-    helm ls --namespace $1 | /usr/bin/grep $1 | cut -f1 | hpurge && kubectl delete namespace $1 && kubectl get pods --namespace $1
+    echo "Will clean namespace $1"
+    # helm ls --namespace $1 | /usr/bin/grep $1 | cut -f1 | hpurge && kubectl delete namespace $1 && kubectl get pods --namespace $1
+    kubectl delete namespace $1 && kubectl get pods --namespace $1
 }
 
 ns-cleani() {
-  local KUBE_NS_TO_DELTE="$(kubectl get namespaces | awk 'NR>1' | fzf | awk '{print $1}')" 
+  local KUBE_NS_TO_DELTE="$(kubectl get namespaces | awk 'NR>1' | fzf -0 | awk '{print $1}')"
   [[ ! -z "$KUBE_NS_TO_DELTE" ]] && ns-clean $KUBE_NS_TO_DELTE
 }
 
@@ -1033,7 +1019,7 @@ function kube-toggle() {
   if (( ${+POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND} )); then
     unset POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND
   else
-    POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito'
+    POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm2|helm|kubens|kubectx|oc|istioctl|kogito'
   fi
   p10k reload
   if zle; then
@@ -1042,7 +1028,6 @@ function kube-toggle() {
   fi
 }
 
-# t='build/scripts/npm.sh:40:  run_qualifier_updates'
 agbat_pip() {
     while read data; do
         fn=$(echo $data | cut -f 1 -d ":")
@@ -1052,10 +1037,6 @@ agbat_pip() {
         bat $fn -r $line:$(($line+200))
     done
 }
-
-# kgpn() {
-#   kubectl get pods $2 $3| grep $1 | cut -d ' ' -f1 | print
-# }
 
 # Section: Git {{{1
 # --------------------------------------------------------------------------
@@ -1109,11 +1090,13 @@ git-blame() {
     ruby ~/repo/DotFiles/otherTool/git-blame-colored $1 | less -R
 }
 
-cd-git-root() {cd $(git root)}
-
 
 # Delete local and remote branch
 git-branch-delete-remote-current-branch() {
+  if [ $# -eq 0 ]; then
+    echo "Require branch"
+    return
+  fi
   local branch="$(get_current_branch)"
   git checkout -
   ee "git branch -d $branch"
@@ -1121,53 +1104,14 @@ git-branch-delete-remote-current-branch() {
 }
 
 git-branch-delete-remote() {
+  if [ $# -eq 0 ]; then
+    echo "Require branch"
+    return
+  fi
   local branch="$1"
-  ee "git branch -d $branch"
+  echo "deleting $branch"
+  sleep 2
   ee "git push -d origin $branch"
-}
-
-# fbr - checkout git branch (including remote branches), sorted by most recent commit, limit 30 last branches
-# Replaced by gcob
-fbr_disable() {
-  local branches branch
-  branches=$(git for-each-ref --count=30 --sort=-committerdate refs/heads/ --format="%(refname:short)") &&
-  branch=$(echo "$branches" |
-           fzf-tmux -d $(( 2 + $(wc -l <<< "$branches") )) +m) &&
-  git checkout $(echo "$branch" | sed "s/.* //" | sed "s#remotes/[^/]*/##")
-}
-alias gcobi=fbr_disable
-
-# fco - checkout git branch/tag
-fco() {
-  local tags branches target
-  branches=$(
-    git --no-pager branch --all \
-      --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
-    | sed '/^$/d') || return
-  tags=$(
-    git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
-  target=$(
-    (echo "$branches"; echo "$tags") |
-    fzf --no-hscroll --no-multi -n 2 \
-        --ansi) || return
-  git checkout $(awk '{print $2}' <<<"$target" )
-}
-
-
-# fco_preview - checkout git branch/tag, with a preview showing the commits between the tag/branch and HEAD
-fco_preview() {
-  local tags branches target
-  branches=$(
-    git --no-pager branch --all \
-      --format="%(if)%(HEAD)%(then)%(else)%(if:equals=HEAD)%(refname:strip=3)%(then)%(else)%1B[0;34;1mbranch%09%1B[m%(refname:short)%(end)%(end)" \
-    | sed '/^$/d') || return
-  tags=$(
-    git --no-pager tag | awk '{print "\x1b[35;1mtag\x1b[m\t" $1}') || return
-  target=$(
-    (echo "$branches"; echo "$tags") |
-    fzf --no-hscroll --no-multi -n 2 \
-        --ansi --preview="git --no-pager log -150 --pretty=format:%s '..{2}'") || return
-  git checkout $(awk '{print $2}' <<<"$target" )
 }
 
 
@@ -1178,7 +1122,7 @@ fco_preview() {
 # Use git rebase instead of git merge
 # https://learngitbranching.js.org/
 # alias gl="git pull rebase" Not working for develop branch
-alias gl="git pull rebase"
+alias gl="echo 'use gupv for feature branch update' && git pull --ff-only"
 
 alias git-tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
 alias git-hidden="git ls-files -v | grep '^[a-z]' | cut -c3-"
@@ -1199,9 +1143,13 @@ alias gbrr="ee 'gbr |grep r/'"                                      # ggsup or g
 alias gcobr='echo "Create branch and remote branch| Stop using this one, use push remote instead" & git_create_branch'
 alias gcobr2='git create-branch -r development'
 
+alias gcam='git commit --amend'
+
 alias gre="ee 'git recent | head'"
 alias grec="ee 'git recent | grep -i chuan | grep -v gone'"
-alias groot=cd-git-root
+alias gstau='git stash -u'
+alias gstaa='echo "Tip: use gstp instead\n git stash apply" && git stash apply'
+alias gru="ee 'git remote update origin --prune'"
 
 #======================= Git Alias for work  =========================================
 
@@ -1209,20 +1157,20 @@ alias groot=cd-git-root
 alias gbud="echo 'git branch update with develop' && git pull origin develop"
 
 # alias gcoi="git checkout integration && git pull"
-alias gcod="git checkout develop && git pull"
+alias gcod="git checkout develop && git merge origin/develop --ff-only"
+# The following way will remove my unstashed change
+# alias gcod="git checkout develop && git reset origin/develop --hard"
 
+alias gf='git fetch --prune'
 alias gfco='git fetch -p && git checkout'
 alias gitf='open -a GitFiend --args $(git rev-parse --show-toplevel)'
 
 
 #===== Branch clean up ======
 # Check branch
-alias gb-merged-remote="git for-each-ref --merged HEAD --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)'"
-alias gb-merged-remote-by-me='ee "gb-merged-remote |grep Chuan"'
+alias gb-merged-remote="git for-each-ref --merged HEAD --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
+alias gb-merged-remote-by-me='ee "gb-merged-remote |grep chuan"'
 alias gb-merged='git branch --merged'
-
-alias gbddc=git-branch-delete-remote-current-branch
-alias gbdd=git-branch-delete-remote
 
 # Clean merged Branch
 alias gbd-merged-branch-local='git branch --merged | grep -v "\*" | xargs -n 1 git branch -d'
@@ -1261,6 +1209,10 @@ compctl -g '~/.teamocil/*(:t:r)' itermocil
 
 # Helm completion
 # source <(helm completion zsh | sed -E 's/\["(.+)"\]/\[\1\]/g')
+
+# alias helm3="/usr/local/Cellar/helm/3.2.1/bin/helm"
+alias helm2="/usr/local/Cellar/helm@2/2.16.7/bin/helm"
+
 if [ $commands[helm] ]; then
     helm() {
         unfunction "$0"
@@ -1447,7 +1399,7 @@ __fzf_config() {
   # }}}
 
     export FZF_PREVIEW_ALL_PREVIEW_OPTION="--preview \"quick-preview {}\" $FZF_COLOR_SCHEMA_BORDER "
-    alias fzfpp="fzf $FZF_DEFAULT_OPTS $FZF_PREVIEW_ALL_PREVIEW_OPTION"
+    alias fzfpp='eval "fzf $FZF_DEFAULT_OPTS $FZF_PREVIEW_ALL_PREVIEW_OPTION"'
     alias lf0="fd_search_cur_dir | fzfpp"
 
     alias lf=ls-fuzzy-preview
@@ -1464,7 +1416,7 @@ __fzf_config() {
         --bind=\"ctrl-v:execute(echo {} | agnvim_open )\"
         --bind=\"ctrl-o:execute( fzf-exec {} )\"
         --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1,2 | xargs | tr -d '\\\n' | pbcopy )\"
-        --header \"ctrl-o:fzfexec, ctrl-v:mvim, ctrl-n:neovim, ctrl-y:pbcopy, ctrl-l:copy whole line\"
+        --header \"ctrl-o:fzfexec, ctrl-v:nvim, ctrl-y:pbcopy, ctrl-l:copy whole line\"
       "
 
       # -0 exit when no match
@@ -1536,16 +1488,15 @@ __fzf_git_config(){
     alias fgrs='forgit::restore'
     alias fgclean='forgit::clean'
     alias fgd='forgit::diff'
-    alias fgl='forgit::log'
+    # alias fgl='forgit::log'
     # alias fgss='forgit::stash::show'
     alias fgrh='forgit::reset::head'
     alias fgi='forgit::ignore'
 
     alias gai=forgit::add
     alias gcleani=fgclean
-    alias grsi=forgit::restore
     alias gdi=forgit::diff
-    alias glopi=forgit::log
+    # alias glopi=forgit::log           # replaced with my git log
     # alias gstsi=forgit::stash::show
     alias gstsi=forgit::stash::show_cust
     alias grhi=forgit::reset::head
@@ -1558,14 +1509,19 @@ __fzf_git_config(){
     alias fss=fgss
     # }}}
     
-    alias glop=glopi
     alias glos='git log --stat'
     alias glog='git log --graph'
-    alias gloo="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset'"
+    # git log with author
+    alias gloo="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(black)%C(bold)%cr%Creset'"
     alias glogg='git log --oneline --decorate --graph'
 
     alias gke='\gitk --all $(git log -g --pretty=%h)'
     alias glof='git log --follow -p --'
+
+    # glo oneline for fzf select
+    _glo_one_line() {
+      git log --graph --color=always --format='%C(auto)%h%d %s %C(black)%C(bold)%cr' $@
+    }
 
     __git_commit_preview_cmd="echo {} |grep -Eo '[a-f0-9]+' | head -1 |xargs -I% fzf_preview_git_commit % |$__git_pager | LESS='-R' less"
     __git_fzf_opts=" -0" # $FZF_DEFAULT_OPTS is used by default 
@@ -1574,14 +1530,13 @@ __fzf_git_config(){
     --bind=\"ctrl-y:execute-silent(echo {} |grep -Eo '[a-f0-9]+' | head -1 | tr -d '\n' | pbcopy)\"
     " # $FZF_DEFAULT_OPTS is used by default 
 
-
     git_log_interactive_preview(){
-      git log --graph --color=always --format='%C(auto)%h%d %s %C(black)%C(bold)%cr' $@  \
-        | FZF_DEFAULT_OPTS="$__git_fzf_opts" fzf --preview="$__git_commit_preview_cmd" \
+      _glo_one_line $@  \
+        | FZF_DEFAULT_OPTS="$__git_fzf_opts" fzf --preview="$__git_commit_preview_cmd"
     }
-
+    # get git commit SHA1 short
     git_log_interactive_select(){
-      git log --graph --color=always --format='%C(auto)%h%d %s %C(black)%C(bold)%cr' $@  \
+      _glo_one_line $@  \
         | FZF_DEFAULT_OPTS="$__git_fzf_opts" fzf --preview="$__git_commit_preview_cmd" \
         | /usr/bin/grep -Eo '[a-f0-9]{7,41}'
     }
@@ -1594,23 +1549,81 @@ __fzf_git_config(){
       git_log_interactive_select | xargs git reset $@
     }
 
+    # alias glop=glopi
     alias gloi=git_log_interactive_select
-    alias gcsi=git_log_interactive_select
-    alias glop=git_log_interactive_preview
-    alias gch='$(git_log_interactive_select)' #git commit hash tag
     alias glo=git_log_interactive_select
+    # get git commit SHA1 long
     alias glois='git_log_interactive_select |/usr/bin/grep -Eo "[a-f0-9]{7,41}" | xargs git show | head -1 | cut -d" " -f2'
 
+    # TODO Add git rebase interactive
     alias grevi=git_revert_interactive
     alias greseti=git_reset_interactive
+    alias grsi=forgit::restore
 
+
+    # Git branch
+
+    # TODO update preview 
+    # --bind='ctrl-space:execute($__git_commit_preview_cmd)'
+    __git_branch_fzf_opts="$FZF_DEFAULT_OPTS -m -0
+    --bind=\"ctrl-y:execute-silent(echo {} | cut -c3-1000 | head -1 | tr -d '\n' | pbcopy)\"
+    --preview-window right:70%
+    " # $FZF_DEFAULT_OPTS is used by default 
+
+    __git_branch_commit_preview_cmd="xargs -I% fzf_preview_git_commit % |$__git_pager | LESS='-R' less"
+    __git_branch_history_preview_cmd="xargs -I$$  git log -100 --graph --color=always --format='%C(auto)%d %s %C(bold blue)<%an>%Creset %C(black)%C(bold)%cr%Creset' $$  |$__git_pager | LESS='-R' less"
+
+    alias fzf_gb_commit='FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | $__git_branch_commit_preview_cmd" '
+    alias fzf_gb_history='FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | cut -c3-1000 | $__git_branch_history_preview_cmd" '
+
+    git_branch_interactive(){
+      local format='%(HEAD) %(align:60,left)%(color:yellow)%(refname:short)%(color:reset)%(end) - %(align:15,left)%(authorname)%(end) %(align:19,right)%(color:black)%(committerdate:relative)%(color:reset)%(end) %(color:red)%(objectname:short)%(color:reset)' 
+      git branch --format="$format" --sort=-committerdate --color=always $@ \
+        | FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | cut -c3-1000 | cut -f1 -d' ' | $__git_branch_history_preview_cmd" | cut -c3-1000 | cut -f1 -d' '
+    }
+
+    # A, input, B parse selection and preview, C, output
+
+    # Sam as function but function can take parameter
+    # alias gbi="git branch --sort=-committerdate --color=always | fzf_gb_history"
+    alias gbic="git branch --sort=-committerdate --color=always | fzf_gb_commit"
+    alias gbi=git_branch_interactive
+
+    
+    alias gbdi="gbi | xargs -n 1 git branch -d "
+    alias gbDi="gbi | xargs -n 1 git branch -D "
+
+    # git branch remote + delete + by me
+    git_branch_remote_interactive(){
+      local remotes="git for-each-ref --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
+      eval "$remotes $@" \
+        | FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | cut -d ' ' -f6 | $__git_branch_history_preview_cmd" \
+        | cut -d ' ' -f4 | cut -c8-1000
+    }
+    alias gbri=git_branch_remote_interactive
+    alias gbrdi='git-branch-delete-remote $(gbri)'
+    alias gcobri='git checkout $(gbri)'
+
+    #gbr merged
+    alias gbrmi="gb-merged-remote | fzf | cut -d ' ' -f6 | cut -c8-1000"
+    alias gbrmmi="gb-merged-remote-by-me | fzf | cut -d ' ' -f6 | cut -c8-1000"
+
+    # This might not working
+    alias gbrmmdi='git-branch-delete-remote $(gbrmmi)'
+
+    # alias gcobi='git checkout $(gbi)'                   #Buggy
+    alias gcobi='git_branch_interactive | xargs git checkout'
+
+
+  # Git stash
     FORGIT_STASH_FZF_OPTS='
     --bind="ctrl-d:reload(git stash drop $(cut -d: -f1 <<<{}) 1>/dev/null && git stash list)"
     '
+    __git_stash_preview() {
+      git stash show --color=always --ext-diff $@
+    }
 
-  __git_stash_preview() {
-    git stash show --color=always --ext-diff $@
-  }
+
 }
 # }}}2
 # plugin_config {{{2
@@ -1702,13 +1715,18 @@ plugin_config() {
     # ^M for enter
 
     export GREP_COLOR='1;33'
-    # alias grep='grep --color=always'
+    alias grepc='grep --color=always'
+    alias cgrep='grep --color=always'
 
     # Vi-mode
     export KEYTIMEOUT=1
 
     ## Fun
     alias test-passed='if [ "$?" -eq "0" ]; then lolcat ~/.tp -a -s 40 -d 2; fi;'
+
+
+    # b4b4r07/enhancd
+    ENHANCD_HYPHEN_NUM=100
 }
 # }}}2
 # }}}1
@@ -1719,6 +1737,29 @@ plugin_config() {
 echo -e "\033]6;1;bg;red;brightness;40\a" 1>/dev/null
 echo -e "\033]6;1;bg;green;brightness;44\a" 1>/dev/null
 echo -e "\033]6;1;bg;blue;brightness;52\a" 1>/dev/null
+
+# Change iTerm2 Profile
+# this might work as well: iterm2_profile Performance
+alias performance='echo -e "\033]50;SetProfile=Performance\x7"'
+alias noperformance='echo -e "\033]50;SetProfile=Empty Default\x7"'
+
+function title {
+  local name=$*
+  source ~/.iterm2_shell_integration.zsh
+  # Change iterm2 tab title
+  echo -ne "\033]0;"$name"\007"
+  
+  iterm2_set_user_var badge $name
+}
+
+# Change iterm2 panel badge
+function badge {
+  local name=$*
+  source ~/.iterm2_shell_integration.zsh
+  iterm2_set_user_var badge $name
+}
+
+
 # Section: ZSH History {{{1
 # --------------------------------------------------------------------------
 # ZSH History

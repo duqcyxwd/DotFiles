@@ -7,9 +7,9 @@ var template = {
   rules: [
     {
       description: '',
-      manipulators: []
-    }
-  ]
+      manipulators: [],
+    },
+  ],
 };
 
 function populateInitManipulator(k, to, mode) {
@@ -18,11 +18,11 @@ function populateInitManipulator(k, to, mode) {
     from: {
       simultaneous: [
         {
-          key_code: mode.leadKey
+          key_code: mode.leadKey,
         },
         {
-          key_code: k
-        }
+          key_code: k,
+        },
       ],
       simultaneous_options: {
         key_down_order: 'strict',
@@ -31,30 +31,30 @@ function populateInitManipulator(k, to, mode) {
           {
             set_variable: {
               name: mode.mode,
-              value: 0
-            }
-          }
-        ]
+              value: 0,
+            },
+          },
+        ],
       },
       modifiers: {
-        optional: ['any']
-      }
+        optional: ['any'],
+      },
     },
     to: [
       {
         set_variable: {
           name: mode.mode,
-          value: 1
-        }
+          value: 1,
+        },
       },
       {
         key_code: to.key_code,
-        modifiers: to.modifiers
-      }
+        modifiers: to.modifiers,
+      },
     ],
     parameters: {
-      'basic.simultaneous_threshold_milliseconds': 500
-    }
+      'basic.simultaneous_threshold_milliseconds': 500,
+    },
   };
   return initKey;
 }
@@ -64,133 +64,157 @@ function populateManipulator(k, to, mode) {
     from: {
       key_code: k,
       modifiers: {
-        optional: ['any']
-      }
+        optional: ['any'],
+      },
     },
     to: [
       {
         key_code: to.key_code,
-        modifiers: to.modifiers
-      }
+        modifiers: to.modifiers,
+      },
     ],
     conditions: [
       {
         type: 'variable_if',
         name: mode.mode,
-        value: 1
-      }
-    ]
+        value: 1,
+      },
+    ],
   };
   return kTemplate;
 }
 
 var amethystMode = {
-  mode: 'AmethystMode',
-  description: 'Amethyst Mode All in one',
+  mode: 'QuickKeyMode',
+  description: 'Quick Key mode',
   leadKey: 'w',
   map: {
     c: {
       key_code: 'c',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     d: {
       key_code: 'd',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     f: {
       key_code: 'f',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     h: {
       key_code: 'h',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     i: {
       key_code: 'i',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     j: {
       key_code: 'j',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     k: {
       key_code: 'k',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     l: {
       key_code: 'l',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     m: {
       key_code: 'm',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     o: {
       key_code: 'o',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     p: {
       key_code: 'p',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     t: {
       key_code: 't',
-      modifiers: ['left_alt', 'left_control']
+      modifiers: ['left_alt', 'left_control'],
     },
     y: {
       key_code: 'y',
       modifiers: ['left_alt', 'left_control'],
-      note: 'Change main window'
+      note: 'Change main window',
     },
     spacebar: {
       key_code: 'spacebar',
-      modifiers: ['left_control', 'left_alt']
+      modifiers: ['left_control', 'left_alt'],
     },
     return_or_enter: {
       key_code: 'return_or_enter',
-      modifiers: ['left_control', 'left_alt']
+      modifiers: ['left_control', 'left_alt'],
     },
     left_arrow: {
       key_code: 'left_arrow',
-      modifiers: ['left_control', 'left_alt']
+      modifiers: ['left_control', 'left_alt'],
     },
     right_arrow: {
       key_code: 'right_arrow',
-      modifiers: ['left_control', 'left_alt']
+      modifiers: ['left_control', 'left_alt'],
+    },
+    up_arrow: {
+      key_code: 'up_arrow',
+      modifiers: ['left_control', 'left_alt'],
+    },
+    down_arrow: {
+      key_code: 'down_arrow',
+      modifiers: ['left_control', 'left_alt'],
     },
     comma: {
       key_code: 'comma',
-      modifiers: ['left_control', 'left_alt']
+      modifiers: ['left_control', 'left_alt'],
     },
     period: {
       key_code: 'period',
-      modifiers: ['left_control', 'left_alt']
+      modifiers: ['left_control', 'left_alt'],
     },
     delete_or_backs: {
       key_code: 'delete_or_backs',
-      modifiers: ['left_control', 'left_alt']
+      modifiers: ['left_control', 'left_alt'],
     },
     open_bracket: {
       key_code: 'open_bracket',
-      modifiers: ['left_control', 'left_alt']
+      modifiers: ['left_control', 'left_alt'],
     },
     close_bracket: {
       key_code: 'close_bracket',
-      modifiers: ['left_control', 'left_alt']
+      modifiers: ['left_control', 'left_alt'],
+    },
+    semicolon: {
+      key_code: 'semicolon',
+      modifiers: ['left_control', 'left_alt'],
+    },
+    quote: {
+      key_code: 'quote',
+      modifiers: ['left_control', 'left_alt'],
     },
     backslash: {
       key_code: 'backslash',
-      modifiers: ['left_control', 'left_alt']
+      modifiers: ['left_control', 'left_alt'],
+    },
+    1: {
+      key_code: '1',
+      modifiers: ['left_control', 'left_alt'],
+    },
+    0: {
+      key_code: '0',
+      modifiers: ['left_control', 'left_alt'],
     },
     equal_sign: {
       key_code: 'equal_sign',
-      modifiers: ['left_control', 'left_alt']
+      modifiers: ['left_control', 'left_alt'],
     },
     hyphen: {
       key_code: 'hyphen',
-      modifiers: ['left_control', 'left_alt']
-    }
-  }
+      modifiers: ['left_control', 'left_alt'],
+    },
+  },
 };
 
 function populateConfig(mode) {
@@ -199,8 +223,8 @@ function populateConfig(mode) {
   t.rules[0].description = mode.description;
 
   let keys = Object.keys(mode.map);
-  ms = keys.map(k => populateManipulator(k, mode.map[k], mode));
-  msi = keys.map(k => populateInitManipulator(k, mode.map[k], mode));
+  ms = keys.map((k) => populateManipulator(k, mode.map[k], mode));
+  msi = keys.map((k) => populateInitManipulator(k, mode.map[k], mode));
 
   t.rules[0].manipulators = ms.concat(msi);
 
@@ -209,7 +233,7 @@ function populateConfig(mode) {
 
 var result = populateConfig(amethystMode);
 
-fs.writeFile('2020-03-Amethyst.json', result, err => {
+fs.writeFile('2020-09-29-w-control-alt.json', result, (err) => {
   // throws an error, you could also catch it here
   if (err) throw err;
 
