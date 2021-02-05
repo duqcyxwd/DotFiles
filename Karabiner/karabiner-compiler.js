@@ -1,4 +1,4 @@
-console.log('Hi2'); // REMOVETAG
+/*jshint esversion: 6 */
 
 const fs = require('fs');
 
@@ -30,20 +30,20 @@ function populateInitManipulator(k, to, mode) {
         to_after_key_up: [
           {
             set_variable: {
-              name: mode.mode,
+              name: mode.name,
               value: 0,
             },
           },
         ],
       },
       modifiers: {
-        optional: ['any'],
+        // optional: ['any'],
       },
     },
     to: [
       {
         set_variable: {
-          name: mode.mode,
+          name: mode.name,
           value: 1,
         },
       },
@@ -64,7 +64,7 @@ function populateManipulator(k, to, mode) {
     from: {
       key_code: k,
       modifiers: {
-        optional: ['any'],
+        // optional: ['any'],
       },
     },
     to: [
@@ -76,7 +76,7 @@ function populateManipulator(k, to, mode) {
     conditions: [
       {
         type: 'variable_if',
-        name: mode.mode,
+        name: mode.name,
         value: 1,
       },
     ],
@@ -84,10 +84,30 @@ function populateManipulator(k, to, mode) {
   return kTemplate;
 }
 
-var amethystMode = {
-  mode: 'QuickKeyMode',
-  description: 'Quick Key mode',
+var populateSingleRule = (mode) => {
+  let rule = {};
+  rule.description = mode.description;
+
+  let keys = Object.keys(mode.map);
+  ms = keys.map((k) => populateManipulator(k, mode.map[k], mode));
+  msi = keys.map((k) => populateInitManipulator(k, mode.map[k], mode));
+
+  rule.manipulators = ms.concat(msi);
+
+  return rule;
+};
+
+var errorFn = (err) => {
+  // throws an error, you could also catch it here
+  if (err) throw err;
+  // success case, the file was saved
+  console.log('File saved!');
+};
+
+var WKeyMode = {
+  description: 'W: Universal Key for window shortcut',
   leadKey: 'w',
+  name: 'W_Mode',
   map: {
     c: {
       key_code: 'c',
@@ -174,8 +194,8 @@ var amethystMode = {
       key_code: 'period',
       modifiers: ['left_control', 'left_alt'],
     },
-    delete_or_backs: {
-      key_code: 'delete_or_backs',
+    delete_or_backspace: {
+      key_code: 'delete_or_backspace',
       modifiers: ['left_control', 'left_alt'],
     },
     open_bracket: {
@@ -217,26 +237,200 @@ var amethystMode = {
   },
 };
 
-function populateConfig(mode) {
-  let t = template;
-  t.title = mode.mode;
-  t.rules[0].description = mode.description;
+var SKeyMode = {
+  description: 'S: Enable directional key mode',
+  leadKey: 's',
+  name: 'S_Mode',
+  map: {
+    h: {
+      key_code: 'left_arrow',
+    },
+    l: {
+      key_code: 'right_arrow',
+    },
+    k: {
+      key_code: 'up_arrow',
+    },
+    j: {
+      key_code: 'down_arrow',
+    },
+  },
+};
 
-  let keys = Object.keys(mode.map);
-  ms = keys.map((k) => populateManipulator(k, mode.map[k], mode));
-  msi = keys.map((k) => populateInitManipulator(k, mode.map[k], mode));
+var ZKeyMode = {
+  description: 'Z: Enable numberPad mode with',
+  leadKey: 'z',
+  name: 'Z_Mode',
+  map: {
+    m: {
+      key_code: '1',
+    },
+    comma: {
+      key_code: '2',
+    },
+    period: {
+      key_code: '3',
+    },
+    j: {
+      key_code: '4',
+    },
+    k: {
+      key_code: '5',
+    },
+    l: {
+      key_code: '6',
+    },
+    u: {
+      key_code: '7',
+    },
+    i: {
+      key_code: '8',
+    },
+    o: {
+      key_code: '9',
+    },
+    spacebar: {
+      key_code: 'keypad_0',
+    },
+  },
+};
 
-  t.rules[0].manipulators = ms.concat(msi);
+var custRule = {
+  description: "User's cust rule",
+  manipulators: [
+    // {
+    //   from: {
+    //     key_code: 'left_control',
+    //     modifiers: {
+    //       optional: ['caps_lock'],
+    //     },
+    //   },
+    //   parameters: {
+    //     'basic.to_if_alone_timeout_milliseconds': 250,
+    //     'basic.to_if_held_down_threshold_milliseconds': 250,
+    //   },
+    //   to_if_alone: [
+    //     {
+    //       key_code: 'escape',
+    //     },
+    //   ],
+    //   to_if_held_down: [
+    //     {
+    //       shell_command: "open -a 'iTerm.app'",
+    //     },
+    //   ],
+    //   type: 'basic',
+    // },
+    // Don't use, it cause typing delay
+    //   {
+    //     from: {
+    //       key_code: 'i',
+    //       modifiers: {
+    //         optional: [],
+    //       },
+    //     },
+    //     parameters: {
+    //       'basic.to_if_alone_timeout_milliseconds': 250,
+    //       'basic.to_if_held_down_threshold_milliseconds': 250,
+    //     },
+    //     to_if_alone: [
+    //       {
+    //         key_code: 'i',
+    //       },
+    //     ],
+    //     to_if_held_down: [
+    //       {
+    //         shell_command: "open -a 'iTerm.app'",
+    //       },
+    //     ],
+    //     type: 'basic',
+    //   },
+    //   {
+    //     from: {
+    //       key_code: 'i',
+    //       modifiers: {
+    //         mandatory: ['shift'],
+    //       },
+    //     },
+    //     parameters: {
+    //       'basic.to_if_alone_timeout_milliseconds': 250,
+    //       'basic.to_if_held_down_threshold_milliseconds': 250,
+    //     },
+    //     to_if_alone: [
+    //       {
+    //         key_code: 'I',
+    //       },
+    //     ],
+    //     to_if_held_down: [
+    //       {
+    //         key_code: 'i',
+    //         modifiers: ['left_command', 'left_control'],
+    //       },
+    //     ],
+    //     type: 'basic',
+    //   },
+  ],
+};
+function populateChuanPackage(modes) {
+  let t = {
+    title: '2020-10-16 Chuan Ergonomic mode',
+    rules: [],
+  };
+
+  modes.forEach((mode) => {
+    t.rules.push(populateSingleRule(mode));
+  });
+
+  t.rules.push(custRule);
 
   return JSON.stringify(t, null, 2);
 }
+let file = '2020-10-16-chuan-package.json';
+fs.writeFile(file, populateChuanPackage([SKeyMode, WKeyMode, ZKeyMode]), errorFn);
 
-var result = populateConfig(amethystMode);
+console.log(` rm ~/.config/karabiner/assets/complex_modifications/${file}`); // REMOVETAG
+console.log(` cp ${file} ~/.config/karabiner/assets/complex_modifications`); // REMOVETAG
 
-fs.writeFile('2020-09-29-w-control-alt.json', result, (err) => {
-  // throws an error, you could also catch it here
-  if (err) throw err;
+// {
+//   "type": "basic",
+//   "from": {
+//     "key_code": "a",
+//     "modifiers": {
+//       "mandatory": [
+//         "right_shift"
+//       ],
+//       "optional": [
+//         "caps_lock"
+//       ]
+//     }
+//   },
+//   "to": [
+//     {
+//       "shell_command": "open '/Applications/Utilities/Activity Monitor.app'"
+//     }
+//   ]
+// },
 
-  // success case, the file was saved
-  console.log('File saved!');
-});
+// {
+//   "type": "basic",
+//   "from": {
+//       "key_code": "escape",
+//       "modifiers": {
+//           "optional": ["caps_lock"]
+//       }
+//   },
+//   "parameters": {
+//       "basic.to_if_alone_timeout_milliseconds": 250,
+//       "basic.to_if_held_down_threshold_milliseconds": 250
+//   },
+//   "to_if_alone": [
+//       {
+//           "key_code": "escape"
+//       }
+//   ],
+//   "to_if_held_down": [
+//       {
+//           "shell_command": "open -a 'Alfred 4.app'"
+//       }
+//   ]
+// }

@@ -500,6 +500,9 @@ zinit_load() {
   zinit light zdharma/fast-syntax-highlighting
 
   zinit ice depth=1; zinit light romkatv/powerlevel10k
+
+  # zinit update # Update plugin or snippet
+  # zinit self-update updates zinit
 }
 # }}}2
 # }}}1
@@ -850,8 +853,8 @@ pre-wildfly() {
 
 # export WILDFLY_HOME=${HOME}/CENX/wildfly-10.1.0.Final
 # Wildfly created by Eclipse
-export WILDFLY_HOME=~/Applications/wildfly-10.1.0.Final
-# export WILDFLY_HOME=~/Applications/wildfly-12.0.0.Final
+# export WILDFLY_HOME=~/Applications/wildfly-10.1.0.Final
+export WILDFLY_HOME=~/Applications/wildfly-12.0.0.Final
 export WILDFLY_DEPLOY=${WILDFLY_HOME}/standalone/deployments
 export WILDFLY_BIN=${WILDFLY_HOME}/bin
 
@@ -986,6 +989,7 @@ set-contexti() {
 
 # helm ls | grep $KUBE_NS | cut -f1 | hpurge && kdns $KUBE_NS
 hpurge() { 
+  # Support pipe
   while read data; 
   do; 
     helm del --purge $data; 
@@ -1103,16 +1107,6 @@ git-branch-delete-remote-current-branch() {
   ee "git push -d $branch"
 }
 
-git-branch-delete-remote() {
-  if [ $# -eq 0 ]; then
-    echo "Require branch"
-    return
-  fi
-  local branch="$1"
-  echo "deleting $branch"
-  sleep 2
-  ee "git push -d origin $branch"
-}
 
 
 # Git Alias {{{2
@@ -1139,7 +1133,29 @@ gbcd() { git fetch origin develop:$@ }
 # Create cust gco for cust completion
 git_checkout_branch_cust() { git checkout $@ }
 alias gcob=git_checkout_branch_cust
+
+
+gb_format="%(HEAD) %(align:60,left)%(color:yellow)%(refname:short)%(color:reset)%(end) - %(align:15,left)%(authorname)%(end) %(align:19,right)%(color:black)%(committerdate:relative)%(color:reset)%(end) %(color:red)%(objectname:short)%(color:reset)"
+alias gb="git branch --format=\"$gb_format\" --sort=-committerdate --color=always"
+
+# alias gbr='git branch --remote'
+alias gbr="git for-each-ref --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
 alias gbrr="ee 'gbr |grep r/'"                                      # ggsup or gpsup  git create-branch -r development
+
+
+#===== Branch clean up ======
+# Check branch
+alias gb_merged_remote="git for-each-ref --merged HEAD --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
+alias gb_merged_remote_me='ee "gb_merged_remote |grep chuan"'
+alias gb-merged='git branch --merged'
+
+# Clean merged Branch
+alias gbd-merged-branch-local='git branch --merged | grep -v "\*" | xargs -n 1 git branch -d'
+alias gbd_remote='ee "git push -d origin"'
+alias git-house-clean="echo gbd-merged-branch-local \ngb_merged_remote_me\n"
+
+
+# Others
 alias gcobr='echo "Create branch and remote branch| Stop using this one, use push remote instead" & git_create_branch'
 alias gcobr2='git create-branch -r development'
 
@@ -1164,18 +1180,6 @@ alias gcod="git checkout develop && git merge origin/develop --ff-only"
 alias gf='git fetch --prune'
 alias gfco='git fetch -p && git checkout'
 alias gitf='open -a GitFiend --args $(git rev-parse --show-toplevel)'
-
-
-#===== Branch clean up ======
-# Check branch
-alias gb-merged-remote="git for-each-ref --merged HEAD --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
-alias gb-merged-remote-by-me='ee "gb-merged-remote |grep chuan"'
-alias gb-merged='git branch --merged'
-
-# Clean merged Branch
-alias gbd-merged-branch-local='git branch --merged | grep -v "\*" | xargs -n 1 git branch -d'
-alias gbd-remote='ee "git push -d origin"'
-alias git-house-clean="echo gbd-merged-branch-local \ngb-merged-remote-by-me\n"
 
 # run gitk
 alias gk="ee 'gitk --all&'"
@@ -1448,8 +1452,8 @@ __fzf_config() {
 # }}}2
 # fzf_git_config {{{2
 __fzf_git_config(){
-    # --------------------------------------------------------------------------
     # Unalias {{{
+    # --------------------------------------------------------------------------
     unalias -m glg
     unalias -m glgp
     unalias -m glgg
@@ -1483,6 +1487,7 @@ __fzf_git_config(){
     }
 
     export FORGIT_NO_ALIASES=true
+
   # Fzf alias {{{
     alias fga='forgit::add'
     alias fgrs='forgit::restore'
@@ -1559,9 +1564,11 @@ __fzf_git_config(){
     alias grevi=git_revert_interactive
     alias greseti=git_reset_interactive
     alias grsi=forgit::restore
+    alias gcoi=forgit::restore
 
 
-    # Git branch
+    # Git loves FZF
+    # My bersonal git preivew scripts
 
     # TODO update preview 
     # --bind='ctrl-space:execute($__git_commit_preview_cmd)'
@@ -1573,43 +1580,49 @@ __fzf_git_config(){
     __git_branch_commit_preview_cmd="xargs -I% fzf_preview_git_commit % |$__git_pager | LESS='-R' less"
     __git_branch_history_preview_cmd="xargs -I$$  git log -100 --graph --color=always --format='%C(auto)%d %s %C(bold blue)<%an>%Creset %C(black)%C(bold)%cr%Creset' $$  |$__git_pager | LESS='-R' less"
 
+    # git branch fzf: last commit preview
     alias fzf_gb_commit='FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | $__git_branch_commit_preview_cmd" '
+    # git branch fzf: history preview
     alias fzf_gb_history='FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | cut -c3-1000 | $__git_branch_history_preview_cmd" '
 
+
     git_branch_interactive(){
-      local format='%(HEAD) %(align:60,left)%(color:yellow)%(refname:short)%(color:reset)%(end) - %(align:15,left)%(authorname)%(end) %(align:19,right)%(color:black)%(committerdate:relative)%(color:reset)%(end) %(color:red)%(objectname:short)%(color:reset)' 
-      git branch --format="$format" --sort=-committerdate --color=always $@ \
+      gb $@ \
         | FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | cut -c3-1000 | cut -f1 -d' ' | $__git_branch_history_preview_cmd" | cut -c3-1000 | cut -f1 -d' '
+      # This script is depending on format from gb
+    }
+
+    # git branch remote + delete + by me
+    git_branch_remote_interactive(){
+      gbr $@ \
+        | FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | cut -d ' ' -f6 | $__git_branch_history_preview_cmd" \
+        | cut -d ' ' -f4 | cut -c8-1000
+      # This script is depending on format from gbr
     }
 
     # A, input, B parse selection and preview, C, output
 
     # Sam as function but function can take parameter
     # alias gbi="git branch --sort=-committerdate --color=always | fzf_gb_history"
-    alias gbic="git branch --sort=-committerdate --color=always | fzf_gb_commit"
     alias gbi=git_branch_interactive
-
+    alias gbic="git branch --sort=-committerdate --color=always | fzf_gb_commit"
     
+
+    alias gbri=git_branch_remote_interactive
+    alias gbrdi='gbd_remote $(gbri)'
+    alias gcobri='git checkout $(gbri)'
+
+    # Delete branches
     alias gbdi="gbi | xargs -n 1 git branch -d "
     alias gbDi="gbi | xargs -n 1 git branch -D "
 
-    # git branch remote + delete + by me
-    git_branch_remote_interactive(){
-      local remotes="git for-each-ref --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
-      eval "$remotes $@" \
-        | FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | cut -d ' ' -f6 | $__git_branch_history_preview_cmd" \
-        | cut -d ' ' -f4 | cut -c8-1000
-    }
-    alias gbri=git_branch_remote_interactive
-    alias gbrdi='git-branch-delete-remote $(gbri)'
-    alias gcobri='git checkout $(gbri)'
-
     #gbr merged
-    alias gbrmi="gb-merged-remote | fzf | cut -d ' ' -f6 | cut -c8-1000"
-    alias gbrmmi="gb-merged-remote-by-me | fzf | cut -d ' ' -f6 | cut -c8-1000"
+    alias gbri_merged="gb_merged_remote | fzf | cut -d ' ' -f6 | cut -c8-1000"
+    alias gbri_merged_me="gb_merged_remote_me | fzf | cut -d ' ' -f6 | cut -c8-1000"
+    alias gbri_me="gbr | grep chuan | fzf | cut -d ' ' -f6 | cut -c8-1000"
 
     # This might not working
-    alias gbrmmdi='git-branch-delete-remote $(gbrmmi)'
+    alias gbrmmdi='gbd_remote $(gbri_merged_me)'
 
     # alias gcobi='git checkout $(gbi)'                   #Buggy
     alias gcobi='git_branch_interactive | xargs git checkout'
@@ -1840,10 +1853,24 @@ zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 _weekly_upgrade() {
   # git -C  ~/github/powerlevel10k pull #moved to zinit
   zinit self-update
-  zini delete --clean
+  zinit delete --clean
   zinit update --all
   brew update            # update brew
   brew upgrade           # update formula
+}
+
+# Other Tool: Proxy {{{1
+# --------------------------------------------------------------------------
+
+set-proxy() {
+  export ALL_PROXY=127.0.0.1:1087;
+  export http_proxy=http://127.0.0.1:1087;
+  export https_proxy=http://127.0.0.1:1087;
+}
+unset-proxy() {
+  unset ALL_PROXY
+  unset http_proxy
+  unset https_proxy
 }
 
 # Section: Random after {{{1
