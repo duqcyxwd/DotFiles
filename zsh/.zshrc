@@ -1419,7 +1419,6 @@ __fzf_config() {
     ls_fuzzy_preview() {
       while out=$( fd_search_cur_dir | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS_WITHOUT_COLOR $FZF_COLOR_SCHEMA_BORDER" fzf-tmux -0 --preview "quick-preview {}" --exit-0 --expect=ctrl-i,ctrl-o,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down --print-query --header "[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" --preview-window right:50% --height ${FZF_TMUX_HEIGHT:-100%});
       do
-        echo $out
         searchTerm=$(head -1 <<< "$out"| tail -1)
         key=$(head -2 <<< "$out"| tail -1)
         input=$(head -3 <<< "$out"| tail -1)
