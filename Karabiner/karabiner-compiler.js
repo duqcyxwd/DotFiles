@@ -381,7 +381,7 @@ function populateChuanPackage(modes) {
     t.rules.push(populateSingleRule(mode));
   });
 
-  t.rules.push(custRule);
+  // t.rules.push(custRule);
 
   return JSON.stringify(t, null, 2);
 }

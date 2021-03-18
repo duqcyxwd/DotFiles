@@ -1128,7 +1128,6 @@ alias git-update-all='find . -type d -depth 1 -exec git --git-dir={}/.git --work
 alias gbcopy="echo 'Copy current branch name' && git rev-parse --abbrev-ref HEAD |pbcopy && git branch"
 
 alias gbc="git create-branch"
-gbcd() { git fetch origin develop:$@ }
 
 # Create cust gco for cust completion
 git_checkout_branch_cust() { git checkout $@ }
@@ -1139,7 +1138,8 @@ gb_format="%(HEAD) %(align:60,left)%(color:yellow)%(refname:short)%(color:reset)
 alias gb="git branch --format=\"$gb_format\" --sort=-committerdate --color=always"
 
 # alias gbr='git branch --remote'
-alias gbr="git for-each-ref --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
+alias gbr2="git for-each-ref --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
+alias gbr="git for-each-ref --sort=-committerdate refs/remotes/ --format=\"$gb_format\" --color=always"
 alias gbrr="ee 'gbr |grep r/'"                                      # ggsup or gpsup  git create-branch -r development
 
 
@@ -1149,15 +1149,15 @@ alias gb_merged_remote="git for-each-ref --merged HEAD --sort=-committerdate ref
 alias gb_merged_remote_me='ee "gb_merged_remote |grep chuan"'
 alias gb-merged='git branch --merged'
 
-# Clean merged Branch
+# Clean merged Branch (Delete local branches which are already merged)
 alias gbd-merged-branch-local='git branch --merged | grep -v "\*" | xargs -n 1 git branch -d'
 alias gbd_remote='ee "git push -d origin"'
-alias git-house-clean="echo gbd-merged-branch-local \ngb_merged_remote_me\n"
+# alias git-house-clean="echo gbd-merged-branch-local \ngb_merged_remote_me\n"
 
 
 # Others
 alias gcobr='echo "Create branch and remote branch| Stop using this one, use push remote instead" & git_create_branch'
-alias gcobr2='git create-branch -r development'
+alias gcobr2='git create-branch -r'
 
 alias gcam='git commit --amend'
 
@@ -1595,6 +1595,12 @@ __fzf_git_config(){
     # git branch remote + delete + by me
     git_branch_remote_interactive(){
       gbr $@ \
+        | FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | cut -c3-1000 | cut -f1 -d' ' | $__git_branch_history_preview_cmd" \
+        | cut -c3-1000 | cut -f1 -d' '
+      # This script is depending on format from gbr
+    }
+    git_branch_remote_interactive2(){
+      gbr2 $@ \
         | FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | cut -d ' ' -f6 | $__git_branch_history_preview_cmd" \
         | cut -d ' ' -f4 | cut -c8-1000
       # This script is depending on format from gbr
@@ -1608,7 +1614,9 @@ __fzf_git_config(){
     alias gbic="git branch --sort=-committerdate --color=always | fzf_gb_commit"
     
 
+    # If gbri is working, will deprecate dbri2 later
     alias gbri=git_branch_remote_interactive
+    alias gbri2=git_branch_remote_interactive2
     alias gbrdi='gbd_remote $(gbri)'
     alias gcobri='git checkout $(gbri)'
 
@@ -1616,13 +1624,13 @@ __fzf_git_config(){
     alias gbdi="gbi | xargs -n 1 git branch -d "
     alias gbDi="gbi | xargs -n 1 git branch -D "
 
+    alias gbdri="gbri | xargs -n 1 git push -d origin"
+
     #gbr merged
+    #Can be replaced with gbi --merged
     alias gbri_merged="gb_merged_remote | fzf | cut -d ' ' -f6 | cut -c8-1000"
     alias gbri_merged_me="gb_merged_remote_me | fzf | cut -d ' ' -f6 | cut -c8-1000"
     alias gbri_me="gbr | grep chuan | fzf | cut -d ' ' -f6 | cut -c8-1000"
-
-    # This might not working
-    alias gbrmmdi='gbd_remote $(gbri_merged_me)'
 
     # alias gcobi='git checkout $(gbi)'                   #Buggy
     alias gcobi='git_branch_interactive | xargs git checkout'

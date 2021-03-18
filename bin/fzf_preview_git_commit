@@ -1,0 +1,17 @@
+#!/bin/bash
+
+# echo $@ >> /Users/EYONDUU/work_credential/temp/log/log
+
+# git stash show --stat --color=always $1
+git show --stat --stat-width=80 --color=always --compact-summary $@
+echo ""
+git show --color=always --format=format:"" $@
+
+
+
+# Testing
+# git show --numstat $@
+# git show --color=always --dirstat=lines --relative $@
+# git show --stat --stat-width=80 --color=always --compact-summary --relative $@
+# git show --color=always --compact-summary --stat-name-width=30 $@
+

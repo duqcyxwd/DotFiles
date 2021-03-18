@@ -1,0 +1,7 @@
+#!/bin/bash
+
+echo $@ >> /Users/EYONDUU/work_credential/temp/log/log
+
+# git stash show --stat --color=always $1
+git show --stat --color=always $@
+git stash show --color=always --ext-diff $@

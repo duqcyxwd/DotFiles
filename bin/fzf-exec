@@ -1,0 +1,26 @@
+#!/bin/bash
+
+file=$(echo "$@" | cut -d ':' -f1,2 | head -1 | tr -d '\n')
+
+cmds=("agcode_open" "agnvim_remote_open" "agnvim_open" "agmvim_open" "pbcopy")
+cmd=$( (IFS=$'\n'; echo "${cmds[*]}") | fzf --header "Select command to run")
+
+
+eval "echo $file | $cmd"
+
+  # How to support pip and parameter at same time
+# while read line; do
+# done
+
+# if [[ "$editor" == 'code' ]]; then
+#   eval "$editor $file"
+#   #code $file
+# elif [[ "$editor" == 'nvim' ]]; then
+#   nvim $file
+# elif [[ "$editor" == 'nsvc' ]]; then
+#   nsvc $file
+# elif [[ "$editor" == 'mvim' ]]; then
+#   mvim $file
+# fi
+
+
