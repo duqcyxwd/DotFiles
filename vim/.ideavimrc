@@ -234,6 +234,7 @@ nnoremap <CR> zc
 " nnoremap <leader>tt :action RerunFailedTests<CR>
 " nnoremap <leader>ta :action RunClass<CR>
 " nnoremap <leader>ra :action Run<cr>
+nnoremap <leader>rr :action Run<cr>
 " nnoremap <leader>rr :action RunClass<cr>
 " nnoremap <leader>rc :action Compile<cr>
 " nnoremap \d :action DebugClass<cr>

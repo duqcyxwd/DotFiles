@@ -2,11 +2,18 @@
 
 file=$(echo "$@" | cut -d ':' -f1,2 | head -1 | tr -d '\n')
 
-cmds=("agcode_open" "agnvim_remote_open" "agnvim_open" "agmvim_open" "pbcopy")
-cmd=$( (IFS=$'\n'; echo "${cmds[*]}") | fzf --header "Select command to run")
+cmds=("agcode_open" "agnvim_remote_open" "agnvim_open" "agmvim_open" "pbcopy" "bat" "cat");
+cmd=$( (IFS=$'\n'; echo "${cmds[*]}") | fzf --header "Select command to run");
 
+# eval "echo $file | $cmd"
 
-eval "echo $file | $cmd"
+if [[ "$cmd" == 'bat' ]]; then
+  bat $file
+else
+  eval "echo $file | $cmd"
+fi
+
+# bat $file
 
   # How to support pip and parameter at same time
 # while read line; do
@@ -22,5 +29,3 @@ eval "echo $file | $cmd"
 # elif [[ "$editor" == 'mvim' ]]; then
 #   mvim $file
 # fi
-
-

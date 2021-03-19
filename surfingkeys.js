@@ -243,12 +243,11 @@ addSearchAliasX('L', 'Im feeling lucky', 'https://www.google.com/search?btnI=1&q
 // Section: Domain/Site specific command {{{1
 //  --------------------------------------------------------------------------
 
+// Section: Atlassian JIRA {{{2
+//  --------------------------------------------------------------------------
 const atlassianJIRAMapping = () => {
-  // Section: Atlassian JIRA {{{2
-  //  --------------------------------------------------------------------------
   let domainMap = {
-    // domain: /atlassian\.net\/browse/i,
-    domain: /cenxoss\.seli\.wh\.rnd\.internal\.ericsson\.com\/browse/i,
+    domain: /(cenx.*|jira-.*)/i,
   };
   mapkey(
     ',zm',
@@ -259,14 +258,44 @@ const atlassianJIRAMapping = () => {
     domainMap
   );
   mapkey(
-    ',y',
+    ',,y',
     'Copy JIRA TO MarkDown',
     function () {
       // let header = document.querySelectorAll('h1[data-test-id="issue.views.issue-base.foundation.summary.heading"]')[0].textContent,
       let header = document.querySelectorAll('.editable-field')[0].textContent
         url = window.location.href,
         cd = url.match(/CD-[0-9]*/)[0];
-      md = '[' + cd + ']' + '(' + url + ')' + ' ' + header;
+
+      let type = document.querySelectorAll('#issuedetails .item #type-val')[0], 
+        typeText = "";
+
+      if (type) {
+        typeText = type.textContent.replace(/\n/g, "").replace(/ /g, "");
+
+        switch(typeText) {
+          case "Requirement":
+            cd = "R:" + cd;
+            break;
+          case "Epic":
+            cd = "E:" + cd;
+            break;
+          case "Story":
+            cd = "S:" + cd;
+            break;
+          case "Bug":
+            cd = "B:" + cd;
+            break;
+          default:
+            // code block
+        }
+
+        typeText = typeText + ": ";
+      }
+
+      md = '[' + cd + ']' + '(' + url + ')' + ' ' + typeText + header;
+
+      console.log(typeText);
+      console.log(md);
       Clipboard.write(md);
     },
     domainMap
@@ -281,11 +310,11 @@ const atlassianJIRAMapping = () => {
   );
 };
 
+// Section: Github {{{2
+//  --------------------------------------------------------------------------
+// github default shortcut lists
+// https://help.github.com/articles/using-keyboard-shortcuts/
 const githubMapping = () => {
-  // Section: Github {{{2
-  //  --------------------------------------------------------------------------
-  // github default shortcut lists
-  // https://help.github.com/articles/using-keyboard-shortcuts/
   mapkey(
     ',yg',
     '#7 git clone',
@@ -393,6 +422,7 @@ const gitlabMapping = () => {
   const gitlabDomain = {
     domain: /gitlab/i,
   };
+
   const gitlabOneLevelUp = () => {
     let repoTree = document.querySelectorAll('.breadcrumb.repo-breadcrumb .breadcrumb-item>a');
     console.log(repoTree);
@@ -424,6 +454,39 @@ const gitlabMapping = () => {
     state.scheduleHidden = !state.scheduleHidden;
   };
 
+  const gitlabCopyUrl = () => {
+    let mrTitle = document.querySelectorAll('.title.qa-title')[0],
+      knownPathRegex = /(merge_requests\/\d*|pipelines\/\d*|jobs\/\d*)/,
+      url = window.location.href,
+      path = window.location.pathname,
+      titleText, 
+      linkName,
+      shortPath, 
+      shortPathText;
+
+
+    titleText =  mrTitle ? mrTitle.textContent.replace(/\n/g, "") : "";
+
+    knownPath = url.match(knownPathRegex);
+
+    if (knownPath) {
+      linkName = knownPath[0].replace(/merge_requests\//, "MR: #")
+                          .replace(/pipelines\//, "Pipeline: #")
+                          .replace(/jobs\//, "Job: #");
+    } else {
+      // shortPath = path.match(/\/\w+\/\w+\/?$/);
+      shortPath = path.match(/\/\w+\/[a-zA-Z0-9-_]+\/?$/);
+      linkName = shortPath ? shortPath[0].replace(/^\//, '') : '';
+
+    }
+
+    md = "[" + linkName + '](' + url + ')  ' + titleText;
+
+    console.log(md);
+    Clipboard.write(md);
+  }
+
+  mapkey(',,y', 'Gitlab: copy mr/pipeline link', gitlabCopyUrl, gitlabDomain);
   mapkey(',,c', 'Gitlab: github clean', cleanSchedule, gitlabDomain);
   mapkey(',,u', 'Gitlab: go one level up', gitlabOneLevelUp, gitlabDomain);
   mapkey('\\s', 'Gitlab: toggle sidebar', gitlabToggleSidebar, gitlabDomain);

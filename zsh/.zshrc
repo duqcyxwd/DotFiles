@@ -1338,7 +1338,6 @@ __fzf_config() {
 
     local FZF_PREVIEW_DIR='exa --group-directories-first -F --icons --group-directories-first -T -lh -L 2 --color=always {}'
     local FZF_PREVIEW_FILE='bat --style="numbers,changes" --color=always {} -r 0:200| head -200'
-    export FZF_AG_BAT_PREVIEW="echo {} | cut -d ":" -f1 | head -1| xargs -I% bat --color always --pager never %"
 
     export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
     export FZF_DEFAULT_OPTS_WITHOUT_COLOR="
@@ -1347,15 +1346,62 @@ __fzf_config() {
     -m 
     --cycle 
     --bind '?:toggle-preview' 
-    --bind 'right:toggle+down' 
-    --bind 'tab:down' 
+
+
+    --bind 'tab:toggle+down' 
     --bind 'btab:up' 
+
+    --bind 'ctrl-h:backward-char'
+    --bind 'ctrl-l:forward-char'
+
     --bind='ctrl-k:preview-half-page-up'
     --bind='ctrl-j:preview-half-page-down'
+
     --bind='ctrl-b:half-page-up'
     --bind='ctrl-f:half-page-down'
+
     --bind='ctrl-s:toggle-sort' 
     --bind='ctrl-w:toggle-preview-wrap'"
+
+    # --bind 'right:toggle+down' 
+    # --bind 'left:up' 
+
+    # --bind='ctrl-u:half-page-up'
+    # --bind='ctrl-d:half-page-down'
+    
+    # --bind 'right:toggle+down' 
+    # --bind='ctrl-b:half-page-up'
+    # --bind='ctrl-f:half-page-down'
+    # Need a way to move cursor
+    
+    # Default keybinding
+    # ctrl-n
+    # ctrl-p
+    #
+    # ctrl-e
+    # ctrl-a
+    # ctrl-u
+    # ctrl-w
+    
+    # My fzf shared general keybinding
+    # ctrl-r vim open remote
+    # ctrl-v vim open
+    # ctrl-y copy
+    #
+    # ctrl-o fzf-exec
+    # ctrl-space  bat preview
+    #
+    
+    # Fuzzy preview
+    # enter echo input
+    #
+    # shift-right depth increase
+    # shift-left depth decrease
+    #
+    # alt-up/down/left/right
+    #
+    # fag fzf ag
+    
 
     export FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS_WITHOUT_COLOR $FZF_COLOR_SCHEMA_CLEAN"
 
@@ -1416,37 +1462,60 @@ __fzf_config() {
     }
   # }}}
   # ls_fuzzy_preview {{{
+  # Notes, we can mix use of bind and while loop key 
+  # Can't used execute and while loop key together
     ls_fuzzy_preview() {
-      while out=$( fd_search_cur_dir | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS_WITHOUT_COLOR $FZF_COLOR_SCHEMA_BORDER" fzf-tmux -0 --preview "quick-preview {}" --exit-0 --expect=ctrl-i,ctrl-o,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down --print-query --header "[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" --preview-window right:50% --height ${FZF_TMUX_HEIGHT:-100%});
+
+      local searchTerm=""
+      local FZF_BIND_OPTS=" 
+        --bind=\"ctrl-r:execute-silent(echo {} | agnvim_remote_open )\"
+        --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1 | xargs | tr -d '\\\n' | pbcopy )\"
+      "
+      while out=$( fd_search_cur_dir | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS_WITHOUT_COLOR $FZF_COLOR_SCHEMA_BORDER $FZF_BIND_OPTS" fzf-tmux -0 \
+        --preview "quick-preview {}" --exit-0 \
+        --expect=ctrl-v,ctrl-e,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down,shift-left,shift-right \
+        --print-query --header "[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" \
+        --preview-window right:50% --height ${FZF_TMUX_HEIGHT:-100%} \
+        -q "$searchTerm" \
+        );
       do
         searchTerm=$(head -1 <<< "$out"| tail -1)
         key=$(head -2 <<< "$out"| tail -1)
         input=$(head -3 <<< "$out"| tail -1)
 
+        # echo $input
+        # echo $key
+        # echo $searchTerm
+
         if [[ "$key" == 'alt-left' ]]; then
-          cd ../
+          pushd +0 1>/dev/null;
         elif [[ "$key" == 'alt-right' ]] || [[ "$key" == 'alt-down' ]]; then
           pushd -1 1>/dev/null;
         elif [[ "$key" == 'alt-up' ]]; then
-          pushd +0 1>/dev/null;
-        elif [[ "$key" == 'ctrl-i' ]]; then
+          cd ../
+        elif [[ "$key" == 'shift-right' ]]; then
           FD_SEARCH_CUR_DIR_DEPTH=$(expr $FD_SEARCH_CUR_DIR_DEPTH + 1)
-        elif [[ "$key" == 'ctrl-o' ]]; then
+        elif [[ "$key" == 'shift-left' ]]; then
           local new_dept=$(expr $FD_SEARCH_CUR_DIR_DEPTH - 1)
           if [[ "$new_dept" -ge "1" ]];then
             FD_SEARCH_CUR_DIR_DEPTH=$new_dept
           fi
+
+        elif [[ "$key" == 'ctrl-v' ]]; then
+          nvim $input
+        elif [[ "$key" == 'ctrl-o' ]]; then
+          fzf-exec $input
+          break;
+
         elif [[ "$key" == 'ctrl-space' ]] || ; then
           if [[ -d "${input}" ]] ; then
             cd "${input}"
           elif [[ -f "${input}" ]]; then
-            nvim $input
+            bat --color always --paging always --style full $input
+            # bat --color always --pager always $input | LESS='-R' less
           fi
         elif [[ "$key" == 'enter' ]]; then
-          # fzf-exec not working
-          # fzf-exec $input
           echo $input
-          # exit
           break;
         fi
       done
@@ -1461,24 +1530,24 @@ __fzf_config() {
     fag() {
       if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
     
-      local FZF_BIND_OPTS=" --bind=\"ctrl-space:execute($FZF_AG_BAT_PREVIEW | LESS='-R' less)\"
+      local FZF_BIND_OPTS=" \
+        --bind=\"ctrl-space:execute(bat --style=numbers --color=always --paging always --highlight-line {2} {1} | LESS='-R +{2}' less)\"
+        --bind=\"ctrl-e:execute(echo {} | cut -d ':' -f1 | xargs fzf-exec )\"
         --bind=\"ctrl-v:execute(echo {} | agnvim_open )\"
-        --bind=\"ctrl-o:execute( fzf-exec {} )\"
-        --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1,2 | xargs | tr -d '\\\n' | pbcopy )\"
-        --header \"ctrl-o:fzfexec, ctrl-v:nvim, ctrl-y:pbcopy, ctrl-l:copy whole line\"
+        --bind=\"ctrl-r:execute-silent(echo {} | agnvim_remote_open )\"
+        --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1 | xargs | tr -d '\\\n' | pbcopy )\"
+        --header \"ctrl-o:fzfexec, ctrl-y:pbcopy, ctrl-r:nvim_remote, ctrl-v:nvim\"
       "
-
       # -0 exit when no match
       # -1 Automatically select the only match 
       # ag --nobreak --noheading --color $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA_BORDER $FZF_BIND_OPTS"  fzf-tmux -0 --preview "agbat {}"
       #
       # Use new fzf build feature to replace agbat
-
       ag --nobreak --noheading --color $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA_BORDER $FZF_BIND_OPTS"  \
         fzf-tmux -0 --delimiter : \
         --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
-        --preview-window +{2}
-
+        --preview-window +{2} 
+        # | cut -d ':' -f1 | xargs fzf-exec   # This is not working with ctrl-v, anything command launches other script
     }
 
 
@@ -1866,7 +1935,7 @@ function iterm_badge {
 # https://unix.stackexchange.com/questions/273861/unlimited-history-in-zsh
 # http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-HISTSIZE
 export HIST_STAMPS="yyyy-mm-dd" # ZSH History time format
-export HISTSIZE=1000000          #The maximum number of events stored in the internal history list.
+export HISTSIZE=10000000          #The maximum number of events stored in the internal history list.
 export SAVEHIST=10000000        #The maximum number of history events to save in the history file.
 
 setopt EXTENDED_HISTORY       # Write the history file in the ":start:elapsed;command" format.
