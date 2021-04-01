@@ -25,9 +25,6 @@ export ZPROF_TRACK=0
   fi
 }
 
-echo "\n$(date) : zshrc start loading" >> ~/temp/zsh/log
-cat ~/.zsh_history | wc -l  >> ~/temp/zsh/log
-
 # SECTION: : PATH & VARIABLE {{{1
 # --------------------------------------------------------------------------
 {
@@ -80,6 +77,10 @@ cat ~/.zsh_history | wc -l  >> ~/temp/zsh/log
 # Script Before loading, inlcuding script for prompt
 # --------------------------------------------------------------------------
 #=============================== pre script  ===========================================
+
+mlog() { echo $@ >>$ZSH_LOADING_LOG }
+mlog "\n$(date) : zshrc start loading" 
+
 prepare_start_message() {
     if [[ -v ZSH_PLUGIN_LOADED ]]; then
         # Resource zsh.rc
@@ -94,11 +95,11 @@ prepare_start_message() {
     fi
 }
 
+
 print_start_message() {
     (cat $WELCOME_MESSAGE && (cat $ZSH_LOADING_LOG | boxes -d stone -p a2t1)) | lolcat
 }
 
-mlog() { echo $@ >>$ZSH_LOADING_LOG }
 
 echoAndEval() { echo $@ && eval $@; }
 
@@ -442,6 +443,7 @@ __load_Antibody() {
 # }}}
 # METHOD: : Zinit {{{2
 zinit_load() {
+  # https://zdharma.github.io/zinit/wiki/INTRODUCTION/
   source ~/.zinit/bin/zinit.zsh
 
   autoload -Uz _zinit
@@ -451,43 +453,33 @@ zinit_load() {
   # sudo chmod +t /private/tmp
   # This solves problem in Catalina
 
-  # TRY NEW PLUGINS
-  zinit ice silent wait'!1';
-  zinit light AdrieanKhisbe/diractions
-
   # autoload -Uz compinit; compinit # zinit 用户这里可能是 zpcompinit; zpcdreplay
   # Test if we still need this
   # zpcompinit; zpcdreplay
 
-  # zsh_cust_bindkey
-  zinit ice silent wait'!0' atload"_zsh_autosuggest_start";
-  zinit light zsh-users/zsh-autosuggestions
-
-  # https://zdharma.github.io/zinit/wiki/INTRODUCTION/
-  # atload"_zsh_autosuggest_start"  zsh-users/zsh-autosuggestions \
-  zinit wait lucid light-mode for \
-    atinit"zicompinit; zicdreplay"  zdharma/fast-syntax-highlighting \
-    blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions
-
+  zinit light shayneholmes/zsh-iterm2colors
 
   # No turbo mode
   # fzf-tab: unknow problem
   # zsh-vi-mode: Fast not need
   # zsh-iterm2colors: random color when load complete
+  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
   zinit light-mode for \
-    Aloxaf/fzf-tab \
-    zdharma/history-search-multi-word \
-    psprint/zsh-cmd-architect \
-    jeffreytse/zsh-vi-mode
-      
-    # shayneholmes/zsh-iterm2colors
+    jeffreytse/zsh-vi-mode \
+    Aloxaf/fzf-tab
 
-  zinit light shayneholmes/zsh-iterm2colors
+  # NOTE: fzf-tab needs to be loaded after compinit, but before plugins which will wrap widgets, 
+  # such as zsh-autosuggestions or fast-syntax-highlighting!!
+  # zinit load Aloxaf/fzf-tab
 
-  # zinit ice wait'!0'; zinit light romkatv/powerlevel10k
+  # Load theme
   zinit ice depth=1; zinit light romkatv/powerlevel10k
   [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+  zinit wait lucid light-mode for \
+    zdharma/history-search-multi-word \
+    atinit"zicompinit; zicdreplay"  zdharma/fast-syntax-highlighting \
+    atload"_zsh_autosuggest_start"  zsh-users/zsh-autosuggestions
 
   zinit wait silent load for \
     OMZ::lib/git.zsh \
@@ -496,19 +488,29 @@ zinit_load() {
     OMZ::plugins/git-extras/git-extras.plugin.zsh \
     OMZ::plugins/systemd/systemd.plugin.zsh \
     OMZ::plugins/iterm2/iterm2.plugin.zsh \
-    OMZ::plugins/sudo/sudo.plugin.zsh \
     OMZ::plugins/kubectl/kubectl.plugin.zsh 
 
-
-  zinit wait="1" lucid light-mode for \
-    rupa/z \
-    changyuheng/fz \
+  zinit wait="1" lucid light-mode silent for \
+    blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions \
     wfxr/forgit \
     vim/vim \
     Dabz/kafka-zsh-completions \
+    psprint/zsh-cmd-architect \
+    b4b4r07/enhancd \
+    agkozak/zsh-z \
     djui/alias-tips \
-    zpm-zsh/template \
-    b4b4r07/enhancd
+    zpm-zsh/template
+
+    
+  # zinit load agkozak/zsh-z
+
+  # The last plugin to load need overwrite alias and keybinding
+  # check loading order by zinit time (-m)
+  zinit ice wait="1" atload'__git_alias && zsh_cust_bindkey && my_comp' silent;
+  zinit light zpm-zsh/empty
+
+  # zinit load ~/.zshrc-test
+
 
   # zinit update # Update plugin or snippet
   # zinit self-update updates zinit
@@ -1086,7 +1088,6 @@ alias wfsstart=wildfly-standalone
 __fzf_config() {
    # require fzf junegunn/fzf
    # brew install fzf
-   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
   # FZF KEYBINDING {{{3
     export FZF_MY_KEYBINDING="
@@ -1486,7 +1487,7 @@ git-branch-delete-remote-current-branch() {
 
 # Git Alias {{{2
 # --------------------------------------------------------------------------
-
+__git_alias() {
 # Unalias git log {{{3
 # --------------------------------------------------------------------------
 unalias -m glg
@@ -1544,14 +1545,16 @@ alias gcob=git_checkout_branch_cust
 
 
 _gb_format="%(HEAD) %(align:65,left)%(color:yellow)%(refname:short)%(color:reset)%(end) - %(align:19,left)%(authorname)%(end) %(align:18,left)%(color:black)%(committerdate:relative)%(color:reset)%(end) %(color:red)%(objectname:short)%(color:reset)"
-alias gb="git branch --format=\"$_gb_format\" --sort=-committerdate --color=always"
+# alias gb="git branch --format=\"$_gb_format\" --sort=-committerdate --color=always"
+gb() { git branch --format="$_gb_format" --sort=-committerdate --color=always $@ }
 __gb_clean_cmd_str="sed 's/^\\* /  /' | sed 's/^  //' | cut -f1 -d' '"
 
 
 # alias gbr='git branch --remote'
 alias gbr2="git for-each-ref --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
 
-alias gbr="git for-each-ref --sort=-committerdate refs/remotes/ --format=\"$_gb_format\" --color=always"
+# alias gbr="git for-each-ref --sort=-committerdate refs/remotes/ --format=\"$_gb_format\" --color=always"
+gbr() { git for-each-ref --sort=-committerdate refs/remotes/ --format="$_gb_format" --color=always $@ }
 __gbr_clean_cmd_str=$__gb_clean_cmd_str
 alias gbrr="ee 'gbr |grep r/'"                                      # ggsup or gpsup  git create-branch -r development
 
@@ -1591,7 +1594,7 @@ git_pager=$(git config core.pager || echo 'cat')
 alias gdd="{git diff --stat --color origin/develop.. && git diff --color origin/develop.. } | ${git_pager}"
 alias gitxdd="git diff origin/develop.. | gitx"
 alias gds="ee 'git diff -w --stat'"
-
+}
 
 # Delete all branchs excep current branch
 # alias gbdelete-all='gb | grep "f/CD" | grep -v "\*" |xargs -n 1 git branch -D'
@@ -1603,21 +1606,42 @@ alias gds="ee 'git diff -w --stat'"
 #clean -dxf will wipe everything requiring user to source gitenv again
 #alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
 
-# SECTION: : Some Autocompletion {{{1
+# SECTION: : Autocompletion {{{1
 # --------------------------------------------------------------------------
 # Autocompletion for teamocil
 compctl -g '~/.teamocil/*(:t:r)' itermocil
 
-
-#============= Dir alias =============
-# CD to any directory with auto complete
 local _repodir="${HOME}/code/"
 c() {cd $_repodir$1}
-compctl -/ -W $_repodir c
 
 local _gh_dir="${HOME}/github/"
 gh() {cd $_gh_dir$1}
-compctl -/ -W $_gh_dir gh
+
+local _duqcyxwd_dir="${HOME}/duqcyxwd/"
+d() {cd $_duqcyxwd_dir$1}
+
+
+my_comp() {
+  # https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org
+  _code_directory_completion() {
+    _alternative \
+      "dirs:user directory:($(/bin/ls $_repodir/))" 
+  }
+
+  _gh_directory_completion() {
+    _alternative \
+      "dirs:user directory:($(/bin/ls $_gh_dir/))" 
+  }
+
+  _duqcyxwd_directory_completion() {
+    _alternative \
+      "dirs:user directory:($(/bin/ls $_duqcyxwd_dir/))" 
+  }
+
+  compdef _code_directory_completion c
+  compdef _gh_directory_completion gh
+  compdef _duqcyxwd_directory_completion d
+}
 # }}}
 # SECTION: : CONFIG (FZF, PLUGIN) {{{1
 # --------------------------------------------------------------------------
@@ -1664,26 +1688,38 @@ __fzf_git_config(){
     }
 
     export FORGIT_NO_ALIASES=true
+    # forgit_log=glo
+    # forgit_diff=gd
+    # forgit_add=ga
+    # forgit_reset_head=grh
+    # forgit_ignore=gi
+    # forgit_checkout_file=gcf
+    # forgit_clean=gclean
+    # forgit_stash_show=gss
+    # forgit_cherry_pick=gcp
+    # forgit_rebase=grb
+    # forgit_fixup=gfu
+    # forgit_checkout_branch=gcb
 
   # FZF ALIAS {{{
   # --------------------------------------------------------------------------
-    alias fga='forgit::add'
-    alias fgrs='forgit::restore'
-    alias fgclean='forgit::clean'
-    alias fgd='forgit::diff'
-    # alias fgl='forgit::log'
-    # alias fgss='forgit::stash::show'
-    alias fgrh='forgit::reset::head'
-    alias fgi='forgit::ignore'
+  alias fga='forgit::add'
+  alias fgrs='forgit::restore'
+  alias fgclean='forgit::clean'
+  alias fgd='forgit::diff'
+  # alias fgl='forgit::log'
+  # alias fgss='forgit::stash::show'
+  alias fgrh='forgit::reset::head'
+  alias fgi='forgit::ignore'
 
-    alias gai=forgit::add
-    alias gdi=forgit::diff
-    # alias gstsi=forgit::stash::show
-    alias gstsi=forgit::stash::show_cust
-    alias grhi=forgit::reset::head
+  alias gai=forgit::add
+  alias gdi=forgit::diff
+  alias gstsi0=forgit::stash::show
+  alias gstsi=forgit::stash::show_cust
+  alias grhi=forgit::reset::head
 
     # }}}
-  # FZF: GIT COMMIT: log, git rebase/reset/revert {{{3
+    # FZF: GIT COMMIT: log, git rebase/reset/revert {{{3
   # --------------------------------------------------------------------------
     
     # glo oneline for fzf select
@@ -1739,8 +1775,8 @@ __fzf_git_config(){
   # --------------------------------------------------------------------------
 
     # Restore modified file
-    alias grsi=forgit::restore
-    alias gcoi=forgit::restore
+    alias grsi=forgit::checkout::file
+    alias gcoi=forgit::checkout::file
 
     # Cleanup just untracked file 
     # git clean selector
@@ -1943,9 +1979,9 @@ __fzf_git_config(){
 #   FUNCTION: zsh_plugins_config {{{2
 zsh_plugins_config() {
     
+  __iterm2colors_functions_config() {
     ac_my_colors() {
         # Light Theme "ayu_light"
-        # local MYCOLORS=("Darkside" "OceanicMaterial" "Solarized Darcula" "Broadcast" "Desert" "DotGov" "Misterioso" "Galaxy")
         local MYCOLORS=("Darkside" "OceanicMaterial" "Solarized Darcula" "Broadcast" "Desert" "DotGov" "Misterioso" "Galaxy" "AdventureTime" "AtelierSulphurpool" "Dracula")
         local RANDOM=$$$(gdate +%N)
         local NEW_COLOR=${MYCOLORS[RANDOM % ${#MYCOLORS[@]} + 1]}
@@ -1954,14 +1990,15 @@ zsh_plugins_config() {
     }
 
     # zsh-iterm2colors
-    alias ac=_iterm2colors_apply
-    alias acc='echo $_iterm2colors_current'
-    alias acr=_iterm2colors_apply_random
-    alias ac-light='ac "ayu_light"'
-    alias ac-darkside='ac "Darkside"'
-    alias ac-ocean='ac "OceanicMaterial"'
-    alias ac-sd='ac "Solarized Darcula"'
+    alias ic=_iterm2colors_apply
+    alias icc='echo $_iterm2colors_current'
+    alias icr=_iterm2colors_apply_random
+    alias ic-light='ac "ayu_light"'
+    alias ic-darkside='ac "Darkside"'
+    alias ic-ocean='ac "OceanicMaterial"'
+    alias ic-sd='ac "Solarized Darcula"'
     alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
+  }
 
     alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'
 
@@ -1981,8 +2018,8 @@ zsh_plugins_config() {
   # The plugin will auto execute this zvm_after_init function
   # ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
   function zvm_after_init() {
-    # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-    zsh_cust_bindkey
+    # zsh_cust_bindkey
+    ! (typeset -f ac_my_colors > /dev/null) &&  __iterm2colors_functions_config
     ac_my_colors
   }
 
@@ -2044,7 +2081,7 @@ unset-proxy() {
   unset https_proxy
 }
 
-# SECTION: : ZSH  {{{1
+# SECTION: : ZSH [bindkey] {{{1
 #   SUB-SECTION: : ZSH History {{{2
 { # SECTION: : ZSH History
   # --------------------------------------------------------------------------
@@ -2160,7 +2197,10 @@ zsh_cust_bindkey() {
 
   bindkey '^B' fzf_ls_widget
   
-  bindkey '^I'  fzf-tab-complete
+  # fzf complete 
+  bindkey '^I'  fzf-tab-complete                 # fzf-tab-complete
+  # bindkey '^I' __enhancd::completion::run
+  # bindkey '^I' fzf-completion                  # fzf completion. **
 
 }
 
@@ -2171,12 +2211,14 @@ zsh_cust_bindkey() {
   zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
   
   # zstyle ':fzf-tab:*' prefix '.'
-  # switch group using `,` and `.`
   # zstyle ':fzf-tab:*' switch-group ',' '.'
   zstyle ':fzf-tab:*' show-group full
   zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
   zstyle ':completion:*:descriptions' format '[%d]'
   # zstyle ":completion:*:descriptions" format "---- %d ----"
+  
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+  # zstyle ':fzf-tab:complete:__enhancd::cd:*' fzf-preview 'exa -1 --color=always $realpath'
 }
 
 
@@ -2206,9 +2248,11 @@ apply_my_config
 
 
 [ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
-echo "zshrc loaded" >> ~/temp/zsh/log
+mlog "zshrc loaded"
 
-
+for i in $ZSH_CONFIG_HOME/snippets/*.zsh; do
+    source $i
+done
 
 # SECTION: : ZSH PLAYGROUND {{{1
 # --------------------------------------------------------------------------
@@ -2223,28 +2267,20 @@ _clean_my_cache() {
 
 alias signs="open https://github.com/romkatv/powerlevel10k#what-do-different-symbols-in-git-status-mean"
 
-# hello completion example
-hello() {
-    printf 'Hello world.\n'
-}
 
-hello2() {
-    printf 'Hello world 2.\n'
-}
+# Sample Function
+function zsh_sample_function {
+  local clear list
+  zparseopts -E c=clear l=list
 
-
-hello3() {
-    printf 'Hello world 3.\n'
-}
-
-
-git2() {
-    printf 'Git 2\n'
-}
- 
-
-_fzf_complete_gcob2() {
-  _fzf_complete --multi --reverse --prompt="doge> " -- "$@ xxx" < <(git branch)
+  if [[ -n "$clear" ]]; then
+    echo >&2 file deleted.
+    echo "clear"
+  elif [[ -n "$list" ]]; then
+    echo "list"
+  else
+    echo "else"
+  fi
 }
 
 
@@ -2264,22 +2300,7 @@ fzf_ls_widget() {
 }
 zle -N fzf_ls_widget
 
-
-function zsh_sample_function {
-  local clear list
-  zparseopts -E c=clear l=list
-
-  if [[ -n "$clear" ]]; then
-    echo >&2 file deleted.
-    echo "clear"
-  elif [[ -n "$list" ]]; then
-    echo "list"
-  else
-    echo "else"
-  fi
-}
-
-# fh - repeat history
+# WIP fh - repeat history
 # FZF preview
 function fh() {
   # print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g')
@@ -2320,3 +2341,5 @@ function fh() {
 # crontab crontab-config
 
 # }}}
+
+
