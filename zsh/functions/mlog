@@ -7,6 +7,6 @@ fi
 echo "First time log">>$ZSH_LOADING_LOG 
 echo $@ >>$ZSH_LOADING_LOG
 
-function mlog2() { 
+function mlog() { 
   echo $@ >>$ZSH_LOADING_LOG 
 }

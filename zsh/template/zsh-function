@@ -1,0 +1,15 @@
+#!/bin/sh
+
+function zsh_sample_function {
+  local clear list
+  zparseopts -E c=clear l=list
+
+  if [[ -n "$clear" ]]; then
+    echo "clear"
+  elif [[ -n "$list" ]]; then
+    echo "list"
+  else
+    echo "else"
+  fi
+}
+

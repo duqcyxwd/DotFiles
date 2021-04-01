@@ -5,6 +5,12 @@
 alias mvimr='mvim --remote'
 alias vi='nvim'
 alias vim='nvim'
+# Remote control Neovim processes.
+# TODO auto complete for nvr
+alias vimr='nvr'
+alias vimr='nsvc'
+
+alias history='fc -l 1'
 
 alias vimdiff="nvim -d"
 alias zshconfig="vim ~/.zshrc"

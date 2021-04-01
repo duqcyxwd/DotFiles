@@ -1,6 +1,8 @@
 #!/bin/sh
 
 __zsh_cust_bindkey() {
+  mlog "bindkey.zsh: Update bindkey"
+
   bindkey '^T'      fzf-file-widget
   bindkey '\ec'     fzf-cd-widget
   bindkey '^R'      fzf-history-widget

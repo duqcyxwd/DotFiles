@@ -1,0 +1,29 @@
+#!/bin/sh
+
+if ! typeset -f _iterm2colors_apply > /dev/null; then
+  mlog _iterm2colors_apply not found
+  return
+fi
+
+ac_my_colors() {
+    # Light Theme "ayu_light"
+    local MYCOLORS=("Darkside" "OceanicMaterial" "Solarized Darcula" "Broadcast" "Desert" "DotGov" "Misterioso" "Galaxy" "AdventureTime" "AtelierSulphurpool" "Dracula")
+    local RANDOM=$$$(gdate +%N)
+    local NEW_COLOR=${MYCOLORS[RANDOM % ${#MYCOLORS[@]} + 1]}
+    _iterm2colors_apply $NEW_COLOR
+    mlog "COLOR THEME: " $_iterm2colors_current
+}
+
+# zsh-iterm2colors
+alias ic=_iterm2colors_apply
+alias icc='echo $_iterm2colors_current'
+alias icr=_iterm2colors_apply_random
+alias ic-light='ac "ayu_light"'
+alias ic-darkside='ac "Darkside"'
+alias ic-ocean='ac "OceanicMaterial"'
+alias ic-sd='ac "Solarized Darcula"'
+alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
+    
+
+ac_my_colors
+

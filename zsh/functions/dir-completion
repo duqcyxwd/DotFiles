@@ -1,0 +1,36 @@
+#!/bin/sh
+
+# SECTION: : Autocompletion {{{1
+# --------------------------------------------------------------------------
+# Autocompletion for teamocil
+compctl -g '~/.teamocil/*(:t:r)' itermocil
+
+_comp_dir_repodir="${HOME}/code/"
+c() {cd $_repodir$1}
+
+_comp_dir_gh_dir="${HOME}/github/"
+gh() {cd $_gh_dir$1}
+
+_comp_dir_duqcyxwd_dir="${HOME}/duqcyxwd/"
+d() {cd $_duqcyxwd_dir$1}
+
+
+# https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org
+_code_directory_completion() {
+  _alternative \
+    "dirs:user directory:($(/bin/ls $_comp_dir_repodir/))" 
+}
+
+_gh_directory_completion() {
+  _alternative \
+    "dirs:user directory:($(/bin/ls $_comp_dir_gh_dir/))" 
+}
+
+_duqcyxwd_directory_completion() {
+  _alternative \
+    "dirs:user directory:($(/bin/ls $_comp_dir_duqcyxwd_dir/))" 
+}
+
+compdef _code_directory_completion c
+compdef _gh_directory_completion gh
+compdef _duqcyxwd_directory_completion d
