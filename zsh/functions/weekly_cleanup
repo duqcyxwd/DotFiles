@@ -1,0 +1,11 @@
+#!/bin/sh
+
+zinit self-update
+zinit delete --clean
+zinit update --all
+zinit cclear
+zinit compinit
+
+brew update            # update brew
+brew upgrade           # update formula
+

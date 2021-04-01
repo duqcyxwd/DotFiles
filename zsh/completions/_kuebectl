@@ -1,0 +1,11 @@
+#compdef kubectl
+
+# Example of lazy load
+# Check if 'kubectl' is a command in $PATH
+# if [ $commands[kubectl] ]; then
+#     kubectl() {
+#         unfunction "$0"
+#         source <(kubectl completion zsh)
+#         $0 "$@"
+#     }
+# fi

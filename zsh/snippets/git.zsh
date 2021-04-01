@@ -63,13 +63,7 @@ git-branch-delete-remote-current-branch() {
 }
 
 
-
-
-
-# Git Alias {{{2
-# --------------------------------------------------------------------------
-__git_alias() {
-# Unalias git log {{{3
+# Unalias git log {{{2
 # --------------------------------------------------------------------------
 unalias -m glg
 unalias -m glgp
@@ -85,7 +79,15 @@ unalias -m glola
 unalias -m glog
 unalias -m gloga
 unalias -m glp
+unalias -m gb
+unalias -m gbr
 # }}}
+
+
+
+# Git Alias {{{2
+# --------------------------------------------------------------------------
+__git_alias() {
 
 alias gopen=gitopen
 # Non interactive git log
@@ -127,7 +129,10 @@ alias gcob=git_checkout_branch_cust
 
 _gb_format="%(HEAD) %(align:65,left)%(color:yellow)%(refname:short)%(color:reset)%(end) - %(align:19,left)%(authorname)%(end) %(align:18,left)%(color:black)%(committerdate:relative)%(color:reset)%(end) %(color:red)%(objectname:short)%(color:reset)"
 # alias gb="git branch --format=\"$_gb_format\" --sort=-committerdate --color=always"
-gb() { git branch --format="$_gb_format" --sort=-committerdate --color=always $@ }
+
+gb() { 
+  git branch --format="$_gb_format" --sort=-committerdate --color=always $@ 
+}
 __gb_clean_cmd_str="sed 's/^\\* /  /' | sed 's/^  //' | cut -f1 -d' '"
 
 
@@ -175,6 +180,7 @@ git_pager=$(git config core.pager || echo 'cat')
 alias gdd="{git diff --stat --color origin/develop.. && git diff --color origin/develop.. } | ${git_pager}"
 alias gitxdd="git diff origin/develop.. | gitx"
 alias gds="ee 'git diff -w --stat'"
+
 }
 
 # Delete all branchs excep current branch
@@ -187,4 +193,5 @@ alias gds="ee 'git diff -w --stat'"
 #clean all but the stuff the stuff that we would like preserved like .ccache, xmls catalog etc
 #clean -dxf will wipe everything requiring user to source gitenv again
 #alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
+
 __git_alias

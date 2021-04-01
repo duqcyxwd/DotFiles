@@ -13,3 +13,13 @@ function zsh_sample_function {
   fi
 }
 
+
+function sample_function() {
+    if [ $# -eq 0 ]; then
+        echo "Sample function"
+        return
+    fi
+    echo $@
+    echo $1
+    echo $2
+}

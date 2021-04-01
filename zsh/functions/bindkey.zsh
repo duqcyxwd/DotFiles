@@ -1,5 +1,8 @@
 #!/bin/sh
 
+zle -N _expand_stuff
+function _expand_stuff() { zle _expand_alias || zle .expand-word || true }
+
 __zsh_cust_bindkey() {
   mlog "bindkey.zsh: Update bindkey"
 

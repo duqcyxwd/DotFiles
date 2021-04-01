@@ -1,0 +1,8 @@
+#!/bin/sh
+
+zinit self-update
+zinit delete --clean
+zinit update --all
+zinit cclear
+zinit compinit
+

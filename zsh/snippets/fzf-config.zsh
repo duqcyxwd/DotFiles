@@ -1,7 +1,9 @@
 #!/bin/sh
-mlog fzf-config loaded
 #   DEVTOOL: __fzf_config {{{2
 # -------------------------------------------------------
+
+mlog fzf-config loaded
+
 __fzf_config() {
    # require fzf junegunn/fzf
    # brew install fzf

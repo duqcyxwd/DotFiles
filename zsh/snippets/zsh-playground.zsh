@@ -1,4 +1,6 @@
 #!/bin/sh
+# print ${functions_source[_helm]}
+
 # SECTION: : ZSH PLAYGROUND {{{1
 # --------------------------------------------------------------------------
 _clean_my_cache() {

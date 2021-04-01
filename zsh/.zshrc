@@ -19,8 +19,7 @@ export ZPROF_TRACK=0
 export ZSH_CONFIG_HOME=$HOME/.config/zsh
 
 PATH=$ZSH_CONFIG_HOME/commands:$PATH
-FPATH=$ZSH_CONFIG_HOME/functions:$XDG_CONFIG_HOME/zsh/completions:$FPATH
-FPATH=$FPATH:$HOME/.zsh
+FPATH=$FPATH:$ZSH_CONFIG_HOME/functions:$ZSH_CONFIG_HOME/completions:$ZSH_CONFIG_HOME/.zsh
 
 autoload -Uz $ZSH_CONFIG_HOME/functions/*(:t)
 
@@ -43,7 +42,6 @@ autoload -Uz $ZSH_CONFIG_HOME/functions/*(:t)
   export PATH="$HOME/script:$PATH"
   export PATH="$HOME/my_script:$PATH"
   export PATH="$HOME/my_script/zsh:$PATH"
-  # export PATH="/usr/local/opt/maven@3.3/bin:$PATH"
   export PATH="./node_modules/.bin:$PATH"
   export PATH="/usr/local/heroku/bin:$PATH"
   export PATH="/usr/local/opt/ruby/bin:$PATH"
@@ -275,8 +273,6 @@ async_load0() {
     source $ANTIGEN_BUNDLES/changyuheng/fz/fz.plugin.zsh               # z zz  with fzf search
     source $ANTIGEN_BUNDLES/wfxr/forgit/forgit.plugin.zsh
 
-    apply_my_config
-
     autoload -Uz compinit
     if [ $(date +'%j') != $(/usr/bin/stat -f '%Sm' -t '%j' ${ZDOTDIR:-$HOME}/.zcompdump) ]; then
         compinit
@@ -438,62 +434,6 @@ __load_Antibody() {
 }
 
 # }}}
-# METHOD: : Lazy Plugin Load {{{2
-# --------------------------------------------------------------------------
-
-# Helm completion
-# source <(helm completion zsh | sed -E 's/\["(.+)"\]/\[\1\]/g')
-
-# alias helm3="/usr/local/Cellar/helm/3.2.1/bin/helm"
-alias helm2="/usr/local/Cellar/helm@2/2.16.7/bin/helm"
-
-if [ $commands[helm] ]; then
-    helm() {
-        unfunction "$0"
-        source <(helm completion zsh | sed -E 's/\["(.+)"\]/\[\1\]/g')
-        $0 "$@"
-    }
-fi
-
-# Example of lazy load
-# Check if 'kubectl' is a command in $PATH
-if [ $commands[kubectl] ]; then
-    kubectl() {
-        unfunction "$0"
-        source <(kubectl completion zsh)
-        $0 "$@"
-    }
-fi
-
-
-nvm() {
-  unfunction "$0"
-  export NVM_DIR="$HOME/.nvm"
-  # lazy load for nvm. Take 1.5 second to load
-  [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"                   # This loads nvm
-  [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-  $0 "$@"
-}
-
-# Lazy load example {{{3
-# if [ $commands[kubectl] ]; then
-#
-#   # Placeholder 'kubectl' shell function:
-#   # Will only be executed on the first call to 'kubectl'
-#   kubectl() {
-#
-#     # Remove this function, subsequent calls will execute 'kubectl' directly
-#     unfunction "$0"
-#
-#     # Load auto-completion
-#     source <(kubectl completion zsh)
-#
-#     # Execute 'kubectl' binary
-#     $0 "$@"
-#   }
-# fi
-# }}}
-
 # }}}1
 # SECTION: : Zinit {{{1
 zinit_load() {
@@ -555,27 +495,24 @@ zinit_load() {
     djui/alias-tips \
     zpm-zsh/template
 
-  # zinit load agkozak/zsh-z
-
-  # The last plugin to load need overwrite alias and keybinding
-  # check loading order by zinit time (-m)
-  # zinit light zpm-zsh/empty
-
-
+  # sleep 1
   for snippet in $ZSH_CONFIG_HOME/snippets/*.zsh; do
     # source $snippet
     # NOTES: zinit in for is buggy
     mlog "snippet loading $snippet "
-
-    zinit ice wait="1" silent;
-    zinit snippet $snippet
+    # zinit update $snippet
+    # zinit ice wait="1" silent;
+    # zinit snippet $snippet
   done
   unset snippet
 
-  # Need a trigger to overwrite some setting
+
+  # The last plugin to load need overwrite alias and keybinding
+  # check loading order by zinit time (-m)
   # bindkey.zsh and dir-completion are lazy loading
-  zinit ice wait="1" atload'__git_alias && bindkey.zsh && dir-completion' silent;
-  zinit snippet $ZSH_CONFIG_HOME/snippets/history.zsh
+  # zinit ice wait="1" atload'bindkey.zsh && dir-completion' silent;
+  zinit ice wait="1" atload'load-all-snippets && bindkey.zsh && dir-completion' silent;
+  zinit light zpm-zsh/empty
 
   # zinit update # Update plugin or snippet
   # zinit self-update updates zinit
@@ -584,183 +521,18 @@ zinit_load() {
 
 zinit_load
 
-# SECTION: : SCRIPT TOOLS {{{1
-# --------------------------------------------------------------------------
-#   TOOL: FUNCTION {{{2
-# --------------------------------------------------------------------------
-# FUNCTION: color-test {{{3
-color-test() {
-    clear
-    cat ${HOME}/script-tool/iterm-syntax-test.txt
-}
-
-# FUNCTION: sample_function {{{3
-sample_function() {
-    if [ $# -eq 0 ]; then
-        echo "Sample function"
-        return
-    fi
-    echo $@
-    echo $1
-    echo $2
-}
-
-
-
-# FUNCTION: _weekly_upgrade {{{3
-_weekly_upgrade() {
-  # git -C  ~/github/powerlevel10k pull #moved to zinit
-  zinit self-update
-  zinit delete --clean
-  zinit update --all
-  zinit cclear
-  zinit compinit
-
-  brew update            # update brew
-  brew upgrade           # update formula
-}
-
-
-# }}}2
-#   TOOL: WIDGET {{{2
-# --------------------------------------------------------------------------
-zle -N _expand_stuff
-function _expand_stuff() { zle _expand_alias || zle .expand-word || true }
-
-#   TOOL: FZF RELATED FUNCTIONS {{{2
-# FZF with Brew {{{3
-# Install (one or multiple) selected application(s)
-# using "brew search" as source input
-# mnemonic [B]rew [I]nstall [P]lugin
-bip() {
-  local inst=$(brew search | fzf -m)
-
-  if [[ $inst ]]; then
-    for prog in $(echo $inst);
-    do; brew install $prog; done;
-  fi
-}
-# Update (one or multiple) selected application(s)
-# mnemonic [B]rew [U]pdate [P]lugin
-bup() {
-  local upd=$(brew leaves | fzf -m)
-
-  if [[ $upd ]]; then
-    for prog in $(echo $upd);
-    do; brew upgrade $prog; done;
-  fi
-}
-# Delete (one or multiple) selected application(s)
-# mnemonic [B]rew [C]lean [P]lugin (e.g. uninstall)
-bcp() {
-  local uninst=$(brew leaves | fzf -m)
-
-  if [[ $uninst ]]; then
-    for prog in $(echo $uninst);
-    do; brew uninstall $prog; done;
-  fi
-}
-
-# FZF with File {{{3
-# alternative using ripgrep-all (rga) combined with fzf-tmux preview
-# implementation below makes use of "open" on macOS, which can be replaced by other commands if needed.
-# allows to search in PDFs, E-Books, Office documents, zip, tar.gz, etc. (see https://github.com/phiresky/ripgrep-all)
-# find-in-file - usage: fif <searchTerm> or fif "string with spaces" or fif "regex"
-fif() {
-    if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-    local file
-    file="$(rga --max-count=1 --ignore-case --files-with-matches --no-messages "$@" | fzf-tmux +m --preview="rga --ignore-case --pretty --context 10 '"$@"' {}")" && open "$file"
-}
-
-# FZF with kill {{{3
-# fkill - kill processes - list only the ones you can kill. Modified the earlier script.
-fkilll() {
-    local pid
-    if [ "$UID" != "0" ]; then
-        pid=$(ps -f -u $UID  | fzf -m --header-lines=1 | awk '{print $2}')
-    else
-        pid=$(ps -ef | fzf -m --header-lines=1 | awk '{print $2}')
-    fi
-
-    if [ "x$pid" != "x" ]
-    then
-        echo $pid | xargs kill -${1:-9}
-    fi
-}
-
-
-#}}}
-# SECTION: : DEV TOOL {{{1
-# --------------------------------------------------------------------------
-#   DEVTOOL: : bat {{{2
-{
-    if [ $commands[bat] ]; then
-      export MANPAGER="sh -c 'col -bx | bat -l man -p --color=always'"
-    fi
-}
-#   DEVTOOL: : exa {{{2
-{
-    if [ $commands[exa] ]; then
-      alias exa='/usr/local/bin/exa --time-style=long-iso --group-directories-first -F --icons --color=always'
-      alias e=exa
-      alias ea='exa -a'
-      alias eaa='exa .?* -d'
-
-      alias ls='e'
-
-      # g git, a, all
-      alias l='exa -lhbF'                                                # list, size, type
-      alias ld='exa -lhbFD'                                              # list, size, type
-      alias lg='l --git'                                                 # list, size, type, git
-      alias lss='l -s ext'                                               # list, size, type
-
-      alias la='exa -lbFa'                     
-      alias laa='la .?* -d'                                              # Show hidden files only
-      alias lag=la --git
-
-      alias ll='l -G'                                                    # long list
-      alias lls='ll -s ext'                                              # long list sort
-      alias llg='ll --git'                                               # long list
-
-      alias lla='ll -a'                                                  # long list
-      alias llag='lla --git'                                             # long list
-      alias llaa='lla .?* -d'                                            # long list
-
-      alias lx='exa -lbhHigUmuSa --time-style=long-iso --color-scale'    # all list
-      alias lxaa='lx .?* -d'                                            
-
-
-      alias lta='exa --group-directories-first -lT'
-      alias lt1='exa --group-directories-first -lT -L 1'
-      alias lt2='exa --group-directories-first -lT -L 2'
-      alias lt3='exa --group-directories-first -lT -L 3'
-      alias lt4='exa --group-directories-first -lT -L 4'
-      alias lt=lt2
-    fi
-}
-
-# }}}1 DEV TOOL
-# SECTION: : CONFIG (FZF, PLUGIN) {{{1
-# --------------------------------------------------------------------------
-#   FUNCTION: zsh_plugins_config {{{2
+# SECTION: : zsh_plugins_config {{{1
 zsh_plugins_config() {
 
-    alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'
+  # vi-mode
+  export KEYTIMEOUT=1
 
+  # b4b4r07/enhancd
+  ENHANCD_HYPHEN_NUM=100
+  ENHANCD_DISABLE_HYPHEN=1;
 
-    # vi-mode
-    export KEYTIMEOUT=1
-
-    ## Fun
-    alias test-passed='if [ "$?" -eq "0" ]; then lolcat ~/.tp -a -s 40 -d 2; fi;'
-
-    # b4b4r07/enhancd
-    ENHANCD_HYPHEN_NUM=100
-    ENHANCD_DISABLE_HYPHEN=1;
-
-    # agkozak/zsh-z
-    ZSHZ_CASE=ignore
-
+  # agkozak/zsh-z
+  ZSHZ_CASE=ignore
 
   # zsh-vi-mode
   # The plugin will auto execute this zvm_after_init function
@@ -771,11 +543,8 @@ zsh_plugins_config() {
   }
 
 }
-#   FUNCTION: apply_my_config {{{2
-apply_my_config() {
-  zsh_plugins_config
-}
-# }}}2
+
+zsh_plugins_config
 # }}}1
 # SECTION: : ZSH zstyle {{{1
 { # zstyle
@@ -818,7 +587,6 @@ apply_my_config() {
 }
 # }}}
 
-apply_my_config
 
 [ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
 mlog "zshrc loaded"

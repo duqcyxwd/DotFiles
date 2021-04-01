@@ -13,16 +13,17 @@ alias vimr='nsvc'
 alias history='fc -l 1'
 
 alias vimdiff="nvim -d"
+alias mvimdiff="mvim -d"
+
+
+#============= zshrc config =============
 alias zshconfig="vim ~/.zshrc"
-alias ohmyzsh="vim ~/.oh-my-zsh"
-# alias rs="ee 'source ~/.zshrc'"
 alias rs='source ~/.zshrc'
 alias rsl='source ~/.zshrc-local.sh'
-alias rst='unset ZSH_PLUGIN_LOADED && zsh'
 alias mz='nvim ~/.zshrc && shfmt -i 4 -s -w -ci ~/.zshrc'
-alias ca="less ~/.zshrc"
 
-alias mvimdiff="mvim -d"
+
+alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'
 
 
 alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
@@ -66,7 +67,7 @@ alias grepc='grep --color=always'
 alias cgrep='grep --color=always'
 
 
+## Fun
+alias test-passed='if [ "$?" -eq "0" ]; then lolcat ~/.tp -a -s 40 -d 2; fi;'
+
 # --------------------------------------------------------------------------
-
-
-
