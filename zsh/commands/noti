@@ -1,0 +1,8 @@
+#!/bin/bash
+
+
+# terminal-notifier
+# Can use terminal-notifier if we want icon modification. Can't do noti confirm
+# Buildin noti
+osascript -e "display notification \"$1\" with title \"$2\""
+

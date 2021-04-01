@@ -1,0 +1,158 @@
+#!/bin/sh
+#   DEVTOOL: : Docker functions {{{
+# --------------------------------------------------------------------------
+# Docker ps pretty
+docker-ps() {
+    docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t'
+}
+
+docker-ps-more() {
+    # docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t{{ .Image }}\\t{{.Command}}\\t{{.RunningFor}}'
+    docker ps $@ --format 'table {{ .Names }}\t {{ .ID }}\t {{ .Command }}\t {{ .RunningFor }}\t {{ .Status }}\t {{ .Size }}\t {{ .Mounts }}\t {{.Image}}\t'
+
+}
+
+# Docker ps pretty with port
+docker-ps-port() {
+    docker ps $@ --format 'table{{ .Image }}\t{{ .Names }}\t{{ .Status }}\t{{ .Ports }}' | awk '
+    NR % 2 == 0 {
+      printf "\033[0m";
+    }
+    NR % 2 == 1 {
+      printf "\033[1m";
+    }
+    NR == 1 {
+      PORTSPOS = index($0, "PORTS");
+      PORTS = "PORTS";
+      PORTSPADDING = "\n";
+      for(n = 1; n < PORTSPOS; n++)
+        PORTSPADDING = PORTSPADDING " ";
+    }
+    NR > 1 {
+      PORTS = substr($0, PORTSPOS);
+      gsub(/, /, PORTSPADDING, PORTS);
+    }
+    {
+      printf "%s%s\n", substr($0, 0, PORTSPOS - 1), PORTS;
+    }
+    END {
+      printf "\033[0m";
+    }
+    '
+}
+
+# Print in vertical
+docker-ps-vertical-old() {
+    local FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nSTATUS\t{{.Status}}\nRunningFor\t{{.RunningFor}}\nCOMMAND\t{{.Command}}\nPORTS\t{{.Ports}}\nLABEL\t{{.Labels}}\nMounts\t{{.Mounts}}\nNetworks\t{{.Networks}}\nSize\t{{.Size}}\n\n"
+    docker ps --filter name=$@ -a --format="$FORMAT" --no-trunc
+}
+
+docker-ps-vertical() {
+    local FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nSTATUS\t{{.Status}}\nLIVE\t{{.RunningFor}}\nCOMMAND\t{{.Command}}\nPORTS\t{{.Ports}}\nLABEL\t{{.Labels}}\nMOUNTS\t{{.Mounts}}\nNETS\t{{.Networks}}\nSIZE\t{{.Size}}\n\n"
+    docker ps --filter name=$@ -a --format="$FORMAT" --no-trunc | awk '
+    NR == 1 {
+      PORTSPADDING = "\n";
+      for(n = 1; n < 9; n++)
+          PORTSPADDING = PORTSPADDING " ";
+    }
+    NR > 1 {
+    }
+    {
+        if ($1 ~ "PORT") {
+            POS = index($0, $2);
+            DATA = substr($0, POS);
+            gsub(/, /, PORTSPADDING, DATA);
+            printf "\033[1m%s\033[0m%s\n", substr($0, 0, POS - 1), DATA;
+        } else if ($1 ~ "LABEL" || $1 ~ "MOUNTS") {
+            POS = index($0, $2);
+            DATA = substr($0, POS);
+            gsub(/,/, PORTSPADDING, DATA);
+            printf "\033[1m%s\033[0m%s\n", substr($0, 0, POS - 1), DATA;
+        } else if ($1 ~ "ID" || $1 + "IMAGE") {
+            POS = index($0, $2);
+            printf "\033[1m%s\033[0m\033[4m%s\033[0m\n", substr($0, 0, POS - 1), $2;
+        } else {
+            POS = index($0, $2);
+            printf "\033[1m%s\033[0m%s\n", substr($0, 0, POS - 1), $2;
+        }
+    }
+    END {
+      printf "\033[0m";
+    }
+    '
+}
+
+# Docker exec
+docker-exec-name() {
+    echo "Docker exec -it by name"
+    firstmatch=$(docker ps -q --filter name=$@ | head -1)
+    dpsv -f id=$firstmatch
+    docker exec -it $(docker ps -q --filter name=$@ | head -1) bash
+}
+
+# Docker stats
+docker-stats() { docker stats $@ --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
+
+docker-stats-peek() {
+    if [ $# -eq 0 ]; then
+        docker stats --no-stream
+    else
+        docker stats --no-stream | grep $1
+    fi
+}
+
+### }}}
+#   DEVTOOL: : Docker Alias {{{
+# --------------------------------------------------------------------------
+alias dps=docker-ps
+alias dpsa='dps -a'
+alias dpss=docker-ps-more
+alias dpsv=docker-ps-vertical
+alias dpsp=docker-ps-port
+alias dexec=docker-exec-name
+alias dki='docker images'
+alias dkin='docker inspect'
+alias dstats=docker-stats
+alias dks=docker-stats
+alias dksp=docker-stats-peek
+
+# Docker clean
+alias docker-stop='echo "Docker stop all containers" && docker stop $(docker ps -q)'
+alias dkstop=docker-stop
+alias dkprune='docker system prune -af'
+alias docker-clean='ee "docker system prune"'
+alias docker-clean-unused='ee "docker system prune --all --force --volumes"'
+alias docker-clean-stop-all='docker stop $(docker container ls -a -q) && docker system prune -a -f --volumes'
+
+# More alias from https://hackernoon.com/handy-docker-aliases-4bd85089a3b8
+alias dk='docker'
+alias dks='docker service'
+alias dkrm='docker rm'
+alias dkl='docker logs'
+alias dklf='docker logs -f'
+alias dkflush='docker rm `docker ps --no-trunc -aq`'
+alias dkflush2='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
+
+# More
+dkln() {
+    docker logs -f $(docker ps | grep $1 | awk '{print $1}')
+}
+
+dke() {
+    docker exec -it $1 /bin/sh
+}
+
+dkexe() {
+    docker exec -it $1 $2
+}
+
+dkreboot() {
+    osascript -e 'quit app "Docker"'
+    countdown 2
+    open -a Docker
+    echo "Restarting Docker engine"
+    countdown 120
+}
+
+# }}}
+

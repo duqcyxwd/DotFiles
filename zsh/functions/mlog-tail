@@ -1,0 +1,4 @@
+#!/bin/zsh
+
+tail -f $ZSH_LOADING_LOG
+

@@ -1,0 +1,12 @@
+#!/bin/zsh
+
+if [[ ! -v ZSH_LOADING_LOG ]] ; then
+  ZSH_LOADING_LOG=$HOME/.startup.log
+fi
+
+echo "First time log">>$ZSH_LOADING_LOG 
+echo $@ >>$ZSH_LOADING_LOG
+
+function mlog2() { 
+  echo $@ >>$ZSH_LOADING_LOG 
+}

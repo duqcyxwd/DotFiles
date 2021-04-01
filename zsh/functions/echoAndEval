@@ -1,0 +1,10 @@
+#!/bin/sh
+# echoAndEval
+# alias -g ee=echoAndEval
+ee() { 
+  echo $@ && eval $@; 
+}
+
+ee $@
+
+

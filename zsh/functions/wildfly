@@ -1,0 +1,38 @@
+#!/bin/sh
+echo "Setup wildfly dev environment"
+#   DEVTOOL: : Local wildfly {{{2
+# --------------------------------------------------------------------------
+# Unfinished
+## export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
+## export PATH=${PATH}:${JBOSS_HOME}/bin
+
+pre-wildfly() {
+    echo "export JBOSS_HOME"
+    export JBOSS_HOME=${HOME}/Downloads/wildfly-10.1.0.Final
+    ## export PATH=${PATH}:${JBOSS_HOME}/bin
+    export WILDFLY_DEPLOY=${JBOSS_HOME}/standalone/deployments
+}
+
+# export WILDFLY_HOME=${HOME}/CENX/wildfly-10.1.0.Final
+# Wildfly created by Eclipse
+# export WILDFLY_HOME=~/Applications/wildfly-10.1.0.Final
+export WILDFLY_HOME=~/Applications/wildfly-12.0.0.Final
+export WILDFLY_DEPLOY=${WILDFLY_HOME}/standalone/deployments
+export WILDFLY_BIN=${WILDFLY_HOME}/bin
+
+export ZOOKEEPER_INSTANCES=LOCAL
+export ZOOKEEPER_LOCAL_HOST=LOCALHOST
+export ZOOKEEPER_LOCAL_CLIENT_PORT=2181
+
+alias wildfly-standalone='$WILDFLY_BIN/standalone.sh -b=172.17.0.1'
+alias wildfly-standalone-deploy-clean='echo "Clean wildfly deploy directory" && rm $WILDFLY_DEPLOY/*.war*'
+alias wildfly-standalone-deploy-war="echo 'deploy war' && cp ./*.war $WILDFLY_DEPLOY"
+alias wildfly-standalone-deploy-target-war="echo 'deploy war from target' && cp target/*.war $WILDFLY_DEPLOY"
+alias wildfly-standalone-deploy-all="echo 'deploy war' && cp *.war $WILDFLY_DEPLOY"
+alias wildfly-standalone-deploy-war-enable="echo 'enable app from deployment' && rm $WILDFLY_DEPLOY/*.undeployed && rm $WILDFLY_DEPLOY/*.failed"
+alias wildfly-standalone-deploy-war-disable-all="echo 'disable app from ' $JBOSS_HOME && rm $WILDFLY_DEPLOY/*.deployed"
+alias wildfly-standalone-restart='$WILDFLY_BIN/jboss-cli.sh -c --command=":shutdown(restart=true)"'
+
+alias wfsstart=wildfly-standalone
+
+

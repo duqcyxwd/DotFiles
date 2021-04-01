@@ -17,6 +17,13 @@ export LOADING_BAR=0
 export ZPROF_TRACK=0
 
 export ZSH_CONFIG_HOME=$HOME/.config/zsh
+
+PATH=$ZSH_CONFIG_HOME/commands:$PATH
+FPATH=$ZSH_CONFIG_HOME/functions:$XDG_CONFIG_HOME/zsh/completions:$FPATH
+FPATH=$FPATH:$HOME/.zsh
+
+autoload -Uz $ZSH_CONFIG_HOME/functions/*(:t)
+
 # export ZSH_PLUGIN_LOADED=0 # Disable ZSH PLUGIN # unset ZSH_PLUGIN_LOADED
 # export VS_TERM = 0         # ENV to determine running env
 
@@ -80,7 +87,6 @@ export ZSH_CONFIG_HOME=$HOME/.config/zsh
 # --------------------------------------------------------------------------
 #=============================== pre script  ===========================================
 
-mlog() { echo $@ >>$ZSH_LOADING_LOG }
 mlog "\n$(date) : zshrc start loading" 
 
 prepare_start_message() {
@@ -102,22 +108,11 @@ print_start_message() {
     (cat $WELCOME_MESSAGE && (cat $ZSH_LOADING_LOG | boxes -d stone -p a2t1)) | lolcat
 }
 
-
-echoAndEval() { echo $@ && eval $@; }
-
-alias -g ee=echoAndEval
 alias -g timeElapsed="pv -F 'Elapsed time: %t'"
 alias v='py ~/my_script/version.py ./'
 
 power_v() {
     python ~/my_script/version.py ./ powermode
-}
-
-noti() {
-    # terminal-notifier
-    # Can use terminal-notifier if we want icon modification. Can't do noti confirm
-    # Buildin noti
-    osascript -e "display notification \"$1\" with title \"$2\""
 }
 
 # SECTION: : ZSH THEME CONFIG {{{1
@@ -508,11 +503,17 @@ zinit_load() {
 
   # The last plugin to load need overwrite alias and keybinding
   # check loading order by zinit time (-m)
-  zinit ice wait="1" atload'__git_alias && zsh_cust_bindkey && my_comp' silent;
-  zinit light zpm-zsh/empty
+  # zinit light zpm-zsh/empty
 
-  # zinit load ~/.zshrc-test
+  # zinit ice wait="1" atload'__git_alias && zsh_cust_bindkey && my_comp' silent;
+  zinit ice wait="1" atload'__git_alias && bindkey.zsh && my_comp' silent;
+  # zinit snippet $ZSH_CONFIG_HOME/snippets/directory_auto_complete.zsh
+  zinit snippet $ZSH_CONFIG_HOME/snippets/history.zsh
 
+  for i in $ZSH_CONFIG_HOME/snippets/*.zsh; do
+    source $i
+    # zinit snippet $i
+  done
 
   # zinit update # Update plugin or snippet
   # zinit self-update updates zinit
@@ -596,7 +597,7 @@ c-bash() {
     fi
     touch $1
     chmod +x $1
-    echo "#!/bin/bash\n" >>$1
+    echo "#!/bin/sh\n" >>$1
 
 }
 alias cbash=c-bash
@@ -612,42 +613,6 @@ sample_function() {
     echo $2
 }
 
-# FUNCTION: mywatch {{{3
-# Watch function, replaced by watch
-# brew install watch, Experiment
-mywatch() {
-    while :; do
-        a=$($@)
-        clear
-        echo "$(date)\n\n$a"
-        sleep 2
-    done
-}
-
-# FUNCTION: mywatch_no_clean {{{3
-mywatch_no_clean() {
-    while :; do
-        __result=$($@)
-        echo "$__result"
-        sleep 2
-    done
-}
-
-# FUNCTION: mywatch_no_clean_c {{{3
-# watch print change only
-mywatch_no_clean_c() {
-  local __result=""
-  local __cached_result=""
-  while :; do
-    __result=$($@)
-    # echo "$__result" 
-    # echo "$__cached_result" 
-    [[ "$__result" != "$__cached_result" ]] &&  echo "$__result"
-
-    __cached_result=$__result
-    sleep 10
-  done
-}
 
 
 # FUNCTION: _weekly_upgrade {{{3
@@ -731,217 +696,10 @@ fkilll() {
     fi
 }
 
-#   TOOL: Deprecated {{{2
-# --------------------------------------------------------------------------
-#========================= Other helper script ================================
-#
-# Media
-# Convert m4a/wma to mp3
-# mkdir newfiles
-# for f in *.m4a; do ffmpeg -i "$f" -codec:v copy -codec:a libmp3lame -q:a 2 newfiles/"${f%.m4a}.mp3"; done
-# for f in *.wma; do ffmpeg -i "$f" -codec:v copy -codec:a libmp3lame -q:a 2 newfiles/"${f%.wma}.mp3"; done
 
 #}}}
 # SECTION: : DEV TOOL {{{1
 # --------------------------------------------------------------------------
-#   DEVTOOL: : Docker functions {{{2
-# --------------------------------------------------------------------------
-# Docker ps pretty
-docker-ps() {
-    docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t'
-}
-
-docker-ps-more() {
-    # docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t{{ .Image }}\\t{{.Command}}\\t{{.RunningFor}}'
-    docker ps $@ --format 'table {{ .Names }}\t {{ .ID }}\t {{ .Command }}\t {{ .RunningFor }}\t {{ .Status }}\t {{ .Size }}\t {{ .Mounts }}\t {{.Image}}\t'
-
-}
-
-# Docker ps pretty with port
-docker-ps-port() {
-    docker ps $@ --format 'table{{ .Image }}\t{{ .Names }}\t{{ .Status }}\t{{ .Ports }}' | awk '
-    NR % 2 == 0 {
-      printf "\033[0m";
-    }
-    NR % 2 == 1 {
-      printf "\033[1m";
-    }
-    NR == 1 {
-      PORTSPOS = index($0, "PORTS");
-      PORTS = "PORTS";
-      PORTSPADDING = "\n";
-      for(n = 1; n < PORTSPOS; n++)
-        PORTSPADDING = PORTSPADDING " ";
-    }
-    NR > 1 {
-      PORTS = substr($0, PORTSPOS);
-      gsub(/, /, PORTSPADDING, PORTS);
-    }
-    {
-      printf "%s%s\n", substr($0, 0, PORTSPOS - 1), PORTS;
-    }
-    END {
-      printf "\033[0m";
-    }
-    '
-}
-
-# Print in vertical
-docker-ps-vertical-old() {
-    local FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nSTATUS\t{{.Status}}\nRunningFor\t{{.RunningFor}}\nCOMMAND\t{{.Command}}\nPORTS\t{{.Ports}}\nLABEL\t{{.Labels}}\nMounts\t{{.Mounts}}\nNetworks\t{{.Networks}}\nSize\t{{.Size}}\n\n"
-    docker ps --filter name=$@ -a --format="$FORMAT" --no-trunc
-}
-
-docker-ps-vertical() {
-    local FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nSTATUS\t{{.Status}}\nLIVE\t{{.RunningFor}}\nCOMMAND\t{{.Command}}\nPORTS\t{{.Ports}}\nLABEL\t{{.Labels}}\nMOUNTS\t{{.Mounts}}\nNETS\t{{.Networks}}\nSIZE\t{{.Size}}\n\n"
-    docker ps --filter name=$@ -a --format="$FORMAT" --no-trunc | awk '
-    NR == 1 {
-      PORTSPADDING = "\n";
-      for(n = 1; n < 9; n++)
-          PORTSPADDING = PORTSPADDING " ";
-    }
-    NR > 1 {
-    }
-    {
-        if ($1 ~ "PORT") {
-            POS = index($0, $2);
-            DATA = substr($0, POS);
-            gsub(/, /, PORTSPADDING, DATA);
-            printf "\033[1m%s\033[0m%s\n", substr($0, 0, POS - 1), DATA;
-        } else if ($1 ~ "LABEL" || $1 ~ "MOUNTS") {
-            POS = index($0, $2);
-            DATA = substr($0, POS);
-            gsub(/,/, PORTSPADDING, DATA);
-            printf "\033[1m%s\033[0m%s\n", substr($0, 0, POS - 1), DATA;
-        } else if ($1 ~ "ID" || $1 + "IMAGE") {
-            POS = index($0, $2);
-            printf "\033[1m%s\033[0m\033[4m%s\033[0m\n", substr($0, 0, POS - 1), $2;
-        } else {
-            POS = index($0, $2);
-            printf "\033[1m%s\033[0m%s\n", substr($0, 0, POS - 1), $2;
-        }
-    }
-    END {
-      printf "\033[0m";
-    }
-    '
-}
-
-# Docker exec
-docker-exec-name() {
-    echo "Docker exec -it by name"
-    firstmatch=$(docker ps -q --filter name=$@ | head -1)
-    dpsv -f id=$firstmatch
-    docker exec -it $(docker ps -q --filter name=$@ | head -1) bash
-}
-
-# Docker stats
-docker-stats() { docker stats $@ --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
-
-docker-stats-peek() {
-    if [ $# -eq 0 ]; then
-        docker stats --no-stream
-    else
-        docker stats --no-stream | grep $1
-    fi
-}
-
-### }}}
-#   DEVTOOL: : Docker Alias {{{2
-# --------------------------------------------------------------------------
-
-alias mvimr='mvim --remote'
-alias vi='nvim'
-alias vim='nvim'
-alias vimdiff="nvim -d"
-
-alias dps=docker-ps
-alias dpsa='dps -a'
-alias dpss=docker-ps-more
-alias dpsv=docker-ps-vertical
-alias dpsp=docker-ps-port
-alias dexec=docker-exec-name
-alias dki='docker images'
-alias dkin='docker inspect'
-alias dstats=docker-stats
-alias dks=docker-stats
-alias dksp=docker-stats-peek
-
-# Docker clean
-alias docker-stop='echo "Docker stop all containers" && docker stop $(docker ps -q)'
-alias dkstop=docker-stop
-alias dkprune='docker system prune -af'
-alias docker-clean='ee "docker system prune"'
-alias docker-clean-unused='ee "docker system prune --all --force --volumes"'
-alias docker-clean-stop-all='docker stop $(docker container ls -a -q) && docker system prune -a -f --volumes'
-
-# More alias from https://hackernoon.com/handy-docker-aliases-4bd85089a3b8
-alias dk='docker'
-alias dks='docker service'
-alias dkrm='docker rm'
-alias dkl='docker logs'
-alias dklf='docker logs -f'
-alias dkflush='docker rm `docker ps --no-trunc -aq`'
-alias dkflush2='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
-
-# More
-dkln() {
-    docker logs -f $(docker ps | grep $1 | awk '{print $1}')
-}
-
-dke() {
-    docker exec -it $1 /bin/sh
-}
-
-dkexe() {
-    docker exec -it $1 $2
-}
-
-dkreboot() {
-    osascript -e 'quit app "Docker"'
-    countdown 2
-    open -a Docker
-    echo "Restarting Docker engine"
-    countdown 120
-}
-
-# }}}
-#   DEVTOOL: : Local wildfly {{{2
-# --------------------------------------------------------------------------
-# Unfinished
-## export JBOSS_HOME=/usr/local/opt/wildfly-as/libexec
-## export PATH=${PATH}:${JBOSS_HOME}/bin
-
-pre-wildfly() {
-    echo "export JBOSS_HOME"
-    export JBOSS_HOME=${HOME}/Downloads/wildfly-10.1.0.Final
-    ## export PATH=${PATH}:${JBOSS_HOME}/bin
-    export WILDFLY_DEPLOY=${JBOSS_HOME}/standalone/deployments
-}
-
-# export WILDFLY_HOME=${HOME}/CENX/wildfly-10.1.0.Final
-# Wildfly created by Eclipse
-# export WILDFLY_HOME=~/Applications/wildfly-10.1.0.Final
-export WILDFLY_HOME=~/Applications/wildfly-12.0.0.Final
-export WILDFLY_DEPLOY=${WILDFLY_HOME}/standalone/deployments
-export WILDFLY_BIN=${WILDFLY_HOME}/bin
-
-export ZOOKEEPER_INSTANCES=LOCAL
-export ZOOKEEPER_LOCAL_HOST=LOCALHOST
-export ZOOKEEPER_LOCAL_CLIENT_PORT=2181
-
-alias wildfly-standalone='$WILDFLY_BIN/standalone.sh -b=172.17.0.1'
-alias wildfly-standalone-deploy-clean='echo "Clean wildfly deploy directory" && rm $WILDFLY_DEPLOY/*.war*'
-alias wildfly-standalone-deploy-war="echo 'deploy war' && cp ./*.war $WILDFLY_DEPLOY"
-alias wildfly-standalone-deploy-target-war="echo 'deploy war from target' && cp target/*.war $WILDFLY_DEPLOY"
-alias wildfly-standalone-deploy-all="echo 'deploy war' && cp *.war $WILDFLY_DEPLOY"
-alias wildfly-standalone-deploy-war-enable="echo 'enable app from deployment' && rm $WILDFLY_DEPLOY/*.undeployed && rm $WILDFLY_DEPLOY/*.failed"
-alias wildfly-standalone-deploy-war-disable-all="echo 'disable app from ' $JBOSS_HOME && rm $WILDFLY_DEPLOY/*.deployed"
-alias wildfly-standalone-restart='$WILDFLY_BIN/jboss-cli.sh -c --command=":shutdown(restart=true)"'
-
-alias wfsstart=wildfly-standalone
-
-
 #   DEVTOOL: : K8s {{{2
 #     K8S: NAMESPACE CONTEXT {{{3
 {
@@ -1365,249 +1123,6 @@ __fzf_ag_preview() {
 }
 # }}}2
 # }}}1 DEV TOOL
-# SECTION: : GENERAL ALIAS {{{1
-# --------------------------------------------------------------------------
-# alias vi='/usr/local/bin/vim'
-alias zshconfig="vim ~/.zshrc"
-alias ohmyzsh="vim ~/.oh-my-zsh"
-# alias rs="ee 'source ~/.zshrc'"
-alias rs='source ~/.zshrc'
-alias rsl='source ~/.zshrc-local.sh'
-alias rst='unset ZSH_PLUGIN_LOADED && zsh'
-alias mz='nvim ~/.zshrc && shfmt -i 4 -s -w -ci ~/.zshrc'
-alias ca="less ~/.zshrc"
-
-alias mvimdiff="mvim -d"
-
-alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
-alias notes="mvim ~/repo/Notes/CLojure.md"
-
-# Not use this anymore
-alias kafka21="cd /usr/local && ln -s kafka_2.12-2.1.0 kafka"
-alias kafka08="cd /usr/local && ln -s kafka_2.9.1-0.8.2.2 kafka"
-
-#============= Applications =============
-alias copen='open -a Google\ Chrome'
-alias ems='open -a /Applications/Emacs.app $@'
-alias py='python'
-alias rmt='/bin/rm'
-alias rm="trash"
-
-alias em='ems'
-alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"
-# Cheatsheet
-alias cidea='cat ~/duqcyxwd/DotFiles/vim/ideavim-cheatsheet | grep $@'
-
-#alias sql="echo 'psql to localhost' && psql -h 'localhost' -U 'postgres'"
-alias sql="echo 'psql to localhost' && ee \"export PAGER='less -SF' && psql -h 'localhost' -U 'postgres'\""
-
-#============= Services =============
-alias zkcli0=/usr/local/Cellar/zookeeper/3.4.13/bin/zkCli
-
-# Alias for echo done
-alias tf='echo "Task finished"'
-
-#============= Powerful and Common alias =============
-alias cpwd='echo "copy currenty directory" && pwd |pbcopy'
-#Copy file path to clipboard
-cpath() {greadlink -f $1 | tr -d '\n' | pbcopy }
-alias cf='pbpaste | pbcopy' # clean format of clipboard
-alias dir='dirs -v'
-
-
-export GREP_COLOR='1;33'
-alias grepc='grep --color=always'
-alias cgrep='grep --color=always'
-
-
-# SECTION: : Git {{{1
-# --------------------------------------------------------------------------
-# Git config {{{2
-git config --global color.ui true
-git config --global alias.co checkout
-git config --global alias.br branch
-git config --global alias.ci commit
-git config --global alias.st status
-git config --global alias.a add
-git config --global alias.root "rev-parse --show-toplevel"
-# Configure git as my personal repo
-alias config-git-local="ee \"git config --local user.name 'Yongqinchuan Du' && git config --local user.email 'duqcyxwd@gmail.com'\""
-
-
-# Git functions {{{2
-# --------------------------------------------------------------------------
-#=== Special Git Tool  ====
-get_git_current_branch() { git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'; }
-
-# gb --show-current
-get_current_branch() { git rev-parse --abbrev-ref HEAD }
-
-git_create_branch() {
-    if [ -z "$1" ]; then
-        echo "*******************************************"
-        echo "*   !!! WARNING !!!  Branch not created   *"
-        echo "*******************************************"
-        echo ""
-        echo "Silly me!!! I need to specify a parameter, the branch.."
-    else
-        current_branch=$(get_git_current_branch)
-        set -x
-        git checkout -b $1
-        if [ $? -eq 0 ]; then
-            git push --set-upstream origin $1
-            if [ $? -ne 0 ]; then
-                git checkout ${current_branch}
-                git branch -D $1
-            fi
-        fi
-        set +x
-    fi
-}
-
-gitopen_current_branch() {
-    ee "gitopen -b $(get_current_branch)"
-}
-
-git_blame() {
-    ruby ~/repo/DotFiles/otherTool/git-blame-colored $1 | less -R
-}
-
-
-# Delete local and remote branch
-git-branch-delete-remote-current-branch() {
-  if [ $# -eq 0 ]; then
-    echo "Require branch"
-    return
-  fi
-  local branch="$(get_current_branch)"
-  git checkout -
-  ee "git branch -d $branch"
-  ee "git push -d $branch"
-}
-
-
-
-# Git Alias {{{2
-# --------------------------------------------------------------------------
-__git_alias() {
-# Unalias git log {{{3
-# --------------------------------------------------------------------------
-unalias -m glg
-unalias -m glgp
-unalias -m glgg
-unalias -m glgga
-unalias -m glgm
-unalias -m glo
-unalias -m glol
-unalias -m glols
-unalias -m glod
-unalias -m glods
-unalias -m glola
-unalias -m glog
-unalias -m gloga
-unalias -m glp
-# }}}
-
-alias gopen=gitopen
-# Non interactive git log
-alias glos='git log --stat'
-
-# git log with author
-alias glog="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(black)%C(bold)%cr%Creset'"
-
-# git log graph simple graph with stat
-alias glogs="git log --stat --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(black)%C(bold)%cr%Creset'"
-
-alias gke='\gitk --all $(git log -g --pretty=%h)'
-
-# --follow Continue listing the history of a file beyond renames (works only for a single file).
-alias glof='git log --follow -p --'
-
-
-# git pull --rebase is shorthand for a fetch and a rebase!
-# Use git rebase instead of git merge
-# https://learngitbranching.js.org/
-# alias gl="git pull rebase" Not working for develop branch
-alias gl="echo 'use gupv for feature branch update' && git pull --ff-only"
-
-alias git-tag-tips="echo ' git tag v1.0.0 \n git tag -a v1.2 9fceb02 \n git push origin v1.5 \n git push origin --tags'"
-alias git-hidden="git ls-files -v | grep '^[a-z]' | cut -c3-"
-alias git-hide='ee "git update-index --assume-unchanged"'
-alias git-unhide-all='ee "git update-index --really-refresh"'
-alias git-update-all='find . -type d -depth 1 -exec git --git-dir={}/.git --work-tree=$PWD/{} pull origin master \;'
-
-
-alias gbcopy="echo 'Copy current branch name' && git rev-parse --abbrev-ref HEAD |pbcopy && git branch"
-
-alias gbc="git create-branch"
-
-# Create cust gco for cust completion
-git_checkout_branch_cust() { git checkout $@ }
-alias gcob=git_checkout_branch_cust
-
-
-_gb_format="%(HEAD) %(align:65,left)%(color:yellow)%(refname:short)%(color:reset)%(end) - %(align:19,left)%(authorname)%(end) %(align:18,left)%(color:black)%(committerdate:relative)%(color:reset)%(end) %(color:red)%(objectname:short)%(color:reset)"
-# alias gb="git branch --format=\"$_gb_format\" --sort=-committerdate --color=always"
-gb() { git branch --format="$_gb_format" --sort=-committerdate --color=always $@ }
-__gb_clean_cmd_str="sed 's/^\\* /  /' | sed 's/^  //' | cut -f1 -d' '"
-
-
-# alias gbr='git branch --remote'
-alias gbr2="git for-each-ref --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
-
-# alias gbr="git for-each-ref --sort=-committerdate refs/remotes/ --format=\"$_gb_format\" --color=always"
-gbr() { git for-each-ref --sort=-committerdate refs/remotes/ --format="$_gb_format" --color=always $@ }
-__gbr_clean_cmd_str=$__gb_clean_cmd_str
-alias gbrr="ee 'gbr |grep r/'"                                      # ggsup or gpsup  git create-branch -r development
-
-
-# Others
-alias gcobr='echo "Create branch and remote branch| Stop using this one, use push remote instead" & git_create_branch'
-alias gcobr2='git create-branch -r'
-
-alias gcam='git commit --amend'
-
-alias gre="ee 'git recent | head'"
-alias grec="ee 'git recent | grep -i chuan | grep -v gone'"
-alias gstau='git stash -u'
-alias gstaa='echo "Tip: use gstp instead\n git stash apply" && git stash apply'
-alias gru="ee 'git remote update origin --prune'"
-
-#======================= Git Alias for work  =========================================
-
-# alias gbui="echo 'git branch update with integration' && git fetch -p && git merge origin/integration"
-alias gbud="echo 'git branch update with develop' && git pull origin develop"
-
-#  --ff-only is same to use
-alias gcod="ee 'git checkout develop && git merge origin/develop --ff-only'"
-
-# The following way will remove my unstashed change
-# alias gcod="git checkout develop && git reset origin/develop --hard"
-
-alias gf='git fetch --prune'
-alias gfco='git fetch -p && git checkout'
-alias gitf='open -a GitFiend --args $(git rev-parse --show-toplevel)'
-
-# run gitk
-alias gk="ee 'gitk --all&'"
-
-# git diff
-git_pager=$(git config core.pager || echo 'cat')
-alias gdd="{git diff --stat --color origin/develop.. && git diff --color origin/develop.. } | ${git_pager}"
-alias gitxdd="git diff origin/develop.. | gitx"
-alias gds="ee 'git diff -w --stat'"
-}
-
-# Delete all branchs excep current branch
-# alias gbdelete-all='gb | grep "f/CD" | grep -v "\*" |xargs -n 1 git branch -D'
-
-# }}}}
-
-# git clean up
-#clean all but the stuff the stuff that we would like preserved like .ccache, xmls catalog etc
-#clean -dxf will wipe everything requiring user to source gitenv again
-#alias gclean='pushd $MY_GIT_TOP > /dev/null && git submodule foreach --recursive 'git clean -xdf' && git clean -xdf -e .ccache -e .flex_dbg -e remap_catalog.xml && popd > /dev/null'
-
 # SECTION: : Autocompletion {{{1
 # --------------------------------------------------------------------------
 # Autocompletion for teamocil
@@ -1647,21 +1162,6 @@ my_comp() {
 # }}}
 # SECTION: : CONFIG (FZF, PLUGIN) {{{1
 # --------------------------------------------------------------------------
-#   FUNCTION: __tmux_config{{{2
-__tmux_config() {
-    ZSH_TMUX_ITERM2=true
-    ZSH_TMUX_AUTOCONNECT=true
-
-    # Tmuxinator
-    export EDITOR='nvim'
-
-    alias tmuxt='unset ZSH_PLUGIN_LOADED && /usr/local/bin/tmux'
-    alias tca='tmux -CC attach -t'
-    alias tcad='tmux -CC attach -d -t' #Detach other client
-    alias tcs='tmux -CC new-session -s'
-
-    source ~/script/tmuxinator/completion/tmuxinator.zsh        #tmuxinator
-}
 #   FUNCTION: __fzf_git_config {{{2
 __fzf_git_config(){
     # Interactive git and rewrite some helper function
@@ -2033,123 +1533,11 @@ apply_my_config() {
   __ls_fuzzy_preview
   __fzf_ag_preview
   __fzf_git_config
-  # __tmux_config
 }
 # }}}2
 # }}}1
-# SECTION: : OS ENVIRONMENT {{{1
-#   SUB-SECTION: : iTerm2 {{{2
-# source ~/.iterm2_shell_integration.zsh
-
-{  # iTerm2
-  # Overwrite iterm2 setting for tab color and brightness
-  echo -e "\033]6;1;bg;red;brightness;40\a" 1>/dev/null
-  echo -e "\033]6;1;bg;green;brightness;44\a" 1>/dev/null
-  echo -e "\033]6;1;bg;blue;brightness;52\a" 1>/dev/null
-
-  # Change iTerm2 Profile
-  # this might work as well: iterm2_profile Performance
-  alias performance='echo -e "\033]50;SetProfile=Performance\x7"'
-  alias noperformance='echo -e "\033]50;SetProfile=Empty Default\x7"'
-
-  function iterm_title {
-    local name=$*
-    source ~/.iterm2_shell_integration.zsh
-    # Change iterm2 tab title
-    echo -ne "\033]0;"$name"\007"
-
-    iterm2_set_user_var badge $name
-  }
-
-  # Change iterm2 panel badge
-  function iterm_badge {
-    local name=$*
-    source ~/.iterm2_shell_integration.zsh
-    iterm2_set_user_var badge $name
-  }
-}
-
-#   SUB-SECTION: : Proxy {{{2
-# --------------------------------------------------------------------------
-
-set-proxy() {
-  export ALL_PROXY=127.0.0.1:1087;
-  export http_proxy=http://127.0.0.1:1087;
-  export https_proxy=http://127.0.0.1:1087;
-}
-unset-proxy() {
-  unset ALL_PROXY
-  unset http_proxy
-  unset https_proxy
-}
-
-# SECTION: : ZSH [bindkey] {{{1
-#   SUB-SECTION: : ZSH History {{{2
-
-
-#   SUB-SECTION: : ZSH Directory {{{2
-{ # ZSH Directory
-  # Changing/making/removing directory
-  setopt auto_pushd
-  setopt pushd_ignore_dups
-  setopt pushdminus
-
-  alias -g ...='../..'
-  alias -g ....='../../..'
-  alias -g .....='../../../..'
-  alias -g ......='../../../../..'
-
-  alias -- -='cd -'
-  alias 1='cd -'
-  alias 2='cd -2'
-  alias 3='cd -3'
-  alias 4='cd -4'
-  alias 5='cd -5'
-  alias 6='cd -6'
-  alias 7='cd -7'
-  alias 8='cd -8'
-  alias 9='cd -9'
-
-  alias md='mkdir -p'
-  alias rd=rmdir
-}
-
-#   SUB-SECTION: : ZSH zsh_cust_bindkey {{{2
-zsh_cust_bindkey() {
-  bindkey '^T'      fzf-file-widget
-  bindkey '\ec'     fzf-cd-widget
-  bindkey '^R'      fzf-history-widget
-
-  bindkey '^k'      autosuggest-accept
-  bindkey '^\n'     autosuggest-execute
-  bindkey "^R"      history-search-multi-word # Use multi word. fzf is too aggressive
-  # bindkey "^R"      fzf-history-widget
-
-
-  # Fzf related
-  bindkey "^F"      fzf-file-widget           # fzf files
-  bindkey '^G'      fzf-cd-widget             # Search and goto fzf
-
-  bindkey '^T'      toggle-fzf-tab
-  bindkey "^O"      zca-widget                # Zsh Command Architect zsh-cmd-architect
-
-
-  bindkey '^ '      _expand_stuff                           # ctrl+space expand alias/glob/parameter
-
-  # Notes "^I" is reserved for suggestion complete
-  # ^M for enter
-
-  bindkey '^B' fzf_ls_widget
-  
-  # fzf complete 
-  bindkey '^I'  fzf-tab-complete                 # fzf-tab-complete
-  # bindkey '^I' __enhancd::completion::run
-  # bindkey '^I' fzf-completion                  # fzf completion. **
-
-}
-
+# SECTION: : ZSH zstyle {{{1
 { # zstyle
-  export fpath=($fpath ~/.zsh)
   # https://superuser.com/questions/1092033/how-can-i-make-zsh-tab-completion-fix-capitalization-errors-for-directorys-and
   # ZSH case insensitive completion
   zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
@@ -2166,6 +1554,7 @@ zsh_cust_bindkey() {
 }
 
 
+# }}}
 # SECTION: : After Load {{{1
 # --------------------------------------------------------------------------
 { # SECTION: : After Load
@@ -2194,9 +1583,9 @@ apply_my_config
 [ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
 mlog "zshrc loaded"
 
-for i in $ZSH_CONFIG_HOME/snippets/*.zsh; do
-    source $i
-done
+# for i in $ZSH_CONFIG_HOME/snippets/*.zsh; do
+#     source $i
+# done
 
 # SECTION: : ZSH PLAYGROUND {{{1
 # --------------------------------------------------------------------------

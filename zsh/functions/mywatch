@@ -1,0 +1,41 @@
+#!/bin/sh
+# FUNCTION: mywatch {{{3
+# Watch function, replaced by watch
+# brew install watch, Experiment
+mlog load my watch
+
+mywatch() {
+    while :; do
+        a=$($@)
+        clear
+        echo "$(date)\n\n$a"
+        sleep 2
+    done
+}
+
+# FUNCTION: mywatch_no_clean {{{3
+mywatch_no_clean() {
+    while :; do
+        __result=$($@)
+        echo "$__result"
+        sleep 2
+    done
+}
+
+# FUNCTION: mywatch_no_clean_c {{{3
+# watch print change only
+mywatch_no_clean_c() {
+  local __result=""
+  local __cached_result=""
+  while :; do
+    __result=$($@)
+    # echo "$__result" 
+    # echo "$__cached_result" 
+    [[ "$__result" != "$__cached_result" ]] &&  echo "$__result"
+
+    __cached_result=$__result
+    sleep 10
+  done
+}
+
+mywatch $@
