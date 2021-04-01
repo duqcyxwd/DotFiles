@@ -1,0 +1,29 @@
+# FUNCTION: powerline 9k {{{2
+load_POWERLEVEL9K() {
+    power-version() {
+        local color='%F{yellow}'
+        PROJECT_VERSION=$(power_v)
+        if [[ $PROJECT_VERSION != 'None' ]]; then
+            echo -n "%{$color%}$(print_icon 'VCS_HG_ICON')$PROJECT_VERSION"
+        fi
+    }
+
+    #POWERLEVEL9K_MODE='nerdfont-complete':
+    POWERLEVEL9K_MODE='awesome-fontconfig'
+    POWERLEVEL9K_CUSTOM_VERSION="power-version"
+    POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND='green'
+    POWERLEVEL9K_VI_INSERT_MODE_STRING=''
+
+    if [ "$SIMPLE" -eq "1" ]; then
+        mlog "THEME: SIMPLE POWERLEVEL9K"
+        POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(dir)
+        POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(command_execution_time)
+    else
+        mlog "THEME: POWERLEVEL9K"
+        POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(ram load ip vcs custom_version newline ssh dir)
+        POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(status vi_mode root_indicator command_execution_time background_jobs time)
+    fi
+
+    alias signs="open https://github.com/bhilburn/powerlevel9k#vcs-symbols"
+}
+# }}}

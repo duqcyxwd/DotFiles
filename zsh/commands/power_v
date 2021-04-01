@@ -1,0 +1,3 @@
+#!/bin/sh
+python ~/my_script/version.py ./ powermode
+

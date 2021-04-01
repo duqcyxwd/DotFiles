@@ -11,7 +11,8 @@ ac_my_colors() {
     local RANDOM=$$$(gdate +%N)
     local NEW_COLOR=${MYCOLORS[RANDOM % ${#MYCOLORS[@]} + 1]}
     _iterm2colors_apply $NEW_COLOR
-    mlog "COLOR THEME: " $_iterm2colors_current
+    [[ ! $_iterm2colors_current == $NEW_COLOR ]] && mlog "ERROR: Failed to update theme"
+    mlog "CURRENT COLOR THEME: " $_iterm2colors_current "=> " $NEW_COLOR
 }
 
 # zsh-iterm2colors

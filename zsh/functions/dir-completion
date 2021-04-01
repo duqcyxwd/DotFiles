@@ -6,13 +6,13 @@
 compctl -g '~/.teamocil/*(:t:r)' itermocil
 
 _comp_dir_repodir="${HOME}/code/"
-c() {cd $_repodir$1}
+c() {cd $_comp_dir_repodir$1}
 
 _comp_dir_gh_dir="${HOME}/github/"
-gh() {cd $_gh_dir$1}
+gh() {cd $_comp_dir_gh_dir$1}
 
 _comp_dir_duqcyxwd_dir="${HOME}/duqcyxwd/"
-d() {cd $_duqcyxwd_dir$1}
+d() {cd $_comp_dir_duqcyxwd_dir$1}
 
 
 # https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org

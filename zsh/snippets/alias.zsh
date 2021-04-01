@@ -12,6 +12,8 @@ alias vimr='nsvc'
 
 alias history='fc -l 1'
 
+alias -g timeElapsed="pv -F 'Elapsed time: %t'"
+
 alias vimdiff="nvim -d"
 alias mvimdiff="mvim -d"
 
