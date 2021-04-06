@@ -17,7 +17,6 @@ export ZSH_CONFIG_HOME=$HOME/.config/zsh
 
 PATH=$ZSH_CONFIG_HOME/commands:$PATH
 FPATH=$FPATH:$ZSH_CONFIG_HOME/functions:$ZSH_CONFIG_HOME/completions:$ZSH_CONFIG_HOME/.zsh
-
 autoload -Uz $ZSH_CONFIG_HOME/functions/*(:t)
 
 mlog "$(date) : zshrc start loading" 
@@ -103,19 +102,20 @@ zinit_load() {
   # zsh-vi-mode: Fast not need
   [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
   zinit light-mode for \
-    jeffreytse/zsh-vi-mode \
-    Aloxaf/fzf-tab
+    jeffreytse/zsh-vi-mode
 
   # NOTE: fzf-tab needs to be loaded after compinit, but before plugins which will wrap widgets, 
   # such as zsh-autosuggestions or fast-syntax-highlighting!!
 
-
-  zinit wait lucid load for \
+  zinit wait lucid light-mode for \
     zdharma/history-search-multi-word \
     atinit"zicompinit; zicdreplay"  zdharma/fast-syntax-highlighting \
-    atload"_zsh_autosuggest_start"  zsh-users/zsh-autosuggestions
+    atload"_zsh_autosuggest_start"  zsh-users/zsh-autosuggestions \
+    romkatv/zsh-defer \
+    Aloxaf/fzf-tab
 
-  zinit wait silent load for \
+
+  zinit wait silent light-mode for \
     OMZ::lib/git.zsh \
     OMZ::lib/functions.zsh \
     OMZ::plugins/git/git.plugin.zsh \
@@ -124,7 +124,7 @@ zinit_load() {
     OMZ::plugins/iterm2/iterm2.plugin.zsh \
     OMZ::plugins/kubectl/kubectl.plugin.zsh 
 
-  zinit wait="1" lucid load silent for \
+  zinit wait lucid silent light-mode for \
     blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions \
     wfxr/forgit \
     vim/vim \
@@ -137,11 +137,9 @@ zinit_load() {
 
   # sleep 1
   for snippet in $ZSH_CONFIG_HOME/snippets/*.zsh; do
-    # source $snippet
-    # NOTES: zinit in for is buggy
     # mlog "snippet loading $snippet"
     # zinit update $snippet
-    # zinit ice wait="1" silent;
+    # zinit ice wait silent;
     # zinit snippet $snippet
   done
   unset snippet
@@ -149,7 +147,7 @@ zinit_load() {
   # The last plugin to load need overwrite alias and keybinding
   # check loading order by zinit time (-m)
   # bindkey.zsh and dir-completion are lazy loading
-  # zinit ice wait="1" atload'bindkey.zsh && dir-completion' silent;
+  # zinit ice wait atload'bindkey.zsh && dir-completion' silent;
   zinit ice wait="1" atload'source-all-snippets && bindkey.zsh && dir-completion' silent;
   zinit light zpm-zsh/empty
 
@@ -193,7 +191,7 @@ zsh_plugins_config
   # ZSH case insensitive completion
   zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
   
-  # zstyle ':fzf-tab:*' prefix '.'
+  zstyle ':fzf-tab:*' prefix '- '
   # zstyle ':fzf-tab:*' switch-group ',' '.'
   zstyle ':fzf-tab:*' show-group full
   zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
@@ -201,9 +199,12 @@ zsh_plugins_config
   # zstyle ":completion:*:descriptions" format "---- %d ----"
   
   zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
-  # zstyle ':fzf-tab:complete:__enhancd::cd:*' fzf-preview 'exa -1 --color=always $realpath'
+  zstyle ':fzf-tab:complete:__enhancd::cd:*' fzf-preview 'exa -1 --color=always $realpath'
 }
 
+# due to a bug in fzf-tab, bell is always, triggered https://github.com/Aloxaf/fzf-tab/issues/187
+# TODO: this should be removed when the aforementioned bug is fixed
+unsetopt BEEP
 
 # SECTION: : After Load {{{1
 # --------------------------------------------------------------------------

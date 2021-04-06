@@ -1,5 +1,5 @@
 #!/bin/sh
-#   DEVTOOL: __fzf_config {{{2
+#   DEVTOOL: __fzf_config {{{
 # -------------------------------------------------------
 
 mlog fzf-config loaded
@@ -29,6 +29,8 @@ __fzf_config() {
 
     --bind='ctrl-s:toggle-sort' 
     --bind='ctrl-w:toggle-preview-wrap'
+
+    --bind='change:top'
 
     "
     # Why not tab:toggle+down

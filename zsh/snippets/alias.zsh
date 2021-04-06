@@ -19,10 +19,9 @@ alias mvimdiff="mvim -d"
 
 
 #============= zshrc config =============
-alias zshconfig="vim ~/.zshrc"
-alias rs='source ~/.zshrc'
-alias rsl='source ~/.zshrc-local.sh'
-alias mz='nvim ~/.zshrc && shfmt -i 4 -s -w -ci ~/.zshrc'
+alias rs='source $ZDOTDIR/.zshrc'
+alias rsl='source $ZDOTDIR/.zshrc-local.sh'
+alias mz='nvim $ZDOTDIR/.zshrc && shfmt -i 4 -s -w -ci $ZDOTDIR/.zshrc'
 
 
 alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'

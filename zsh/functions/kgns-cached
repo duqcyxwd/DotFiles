@@ -1,0 +1,9 @@
+#!/bin/sh
+
+mlog "[kgns-cached] update ns list cache"
+# cat $CURRENT_KUBE_NS_LIST_FILE
+
+local nsl=$(kubectl get namespaces --sort-by=.metadata.creationTimestamp)
+echo $nsl >$CURRENT_KUBE_NS_LIST_FILE 
+
+mlog "[kgns-cached] update ns list cache complete"
