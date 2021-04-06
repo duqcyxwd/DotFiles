@@ -2,3 +2,4 @@ atom/packages
 atom/snapshot-cache/
 atom/split-diff/
 atom/git-time-machine/
+.zcompdump
