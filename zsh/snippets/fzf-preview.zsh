@@ -4,7 +4,7 @@
 # -------------------------------------------------------
 # TODO move to functions?
 
-# fd_search_cur_dir{{{4
+# fd_search_cur_dir{{{1
 export FD_SEARCH_CUR_DIR_DEPTH=1
 __fd_search_cur_dir_dir() {
   fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type file
@@ -18,8 +18,8 @@ fd_search_cur_dir() {
   # fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always
   { __fd_search_cur_dir_file && __fd_search_cur_dir_dir}
 }
-# }}}4
-# short_pwd{{{4
+# }}}1
+# short_pwd{{{1
 # Short pwd for ls_fuzzy_preview
 short_pwd() {
   local pwd_str="$(pwd)"
@@ -30,7 +30,7 @@ short_pwd() {
     echo "${pwd_str}/"
   fi
 }
-# ls_fuzzy_preview {{{4
+# ls_fuzzy_preview {{{1
 # Notes: we can mix use of bind and while loop key 
 # Can't used execute and while loop key together
 ls_fuzzy_preview() {
@@ -48,14 +48,16 @@ ls_fuzzy_preview() {
     -q "$searchTerm" \
     );
   do
-    searchTerm=$(head -1 <<< "$out"| tail -1)
-    key=$(head -2 <<< "$out"| tail -1)
-    input=$(echo "$out" | tail +3 | tr '\n' ' ')
+    local searchTerm=$(head -1 <<< "$out"| tail -1)
+    local key=$(head -2 <<< "$out"| tail -1)
+    local multiInput=$(echo "$out" | tail +3 | tr '\n' ' ')
+    local lastEntry=$(echo "$out"| tail -1)
 
-    #echo $out
-    #echo "input: " $input
-    #echo "key: " $key
-    #echo "searchT: " $searchTerm
+    # echo $out
+    # echo "\ninput: " $multiInput
+    # echo "key: " $key
+    # echo "searchT: " $searchTerm
+    # echo "lastEntry: " $lastEntry
 
     if [[ "$key" == 'alt-left' ]]; then
       pushd +0 1>/dev/null;
@@ -70,22 +72,19 @@ ls_fuzzy_preview() {
       if [[ "$new_dept" -ge "1" ]];then
         FD_SEARCH_CUR_DIR_DEPTH=$new_dept
       fi
-
     elif [[ "$key" == 'ctrl-v' ]]; then
-      nvim $input
+      nvim $lastEntry
     elif [[ "$key" == 'ctrl-o' ]]; then
-      fzf-exec $input
+      fzf-exec $lastEntry
       break;
-
     elif [[ "$key" == 'ctrl-space' ]] || ; then
-      if [[ -d "${input}" ]] ; then
-        cd "${input}"
-      elif [[ -f "${input}" ]]; then
-        bat --color always --paging always --style full $input
-        # bat --color always --pager always $input | LESS='-R' less
+      if [[ -d "${lastEntry}" ]] ; then
+        cd "${lastEntry}"
+      elif [[ -f "${lastEntry}" ]]; then
+        bat --color always --paging always --style full $lastEntry
       fi
     elif [[ "$key" == 'enter' ]]; then
-      echo $input
+      echo $multiInput
       break;
     fi
   done
