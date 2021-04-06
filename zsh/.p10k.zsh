@@ -1472,7 +1472,8 @@
     # _p9k__last_prompt_pwd=$_p9k__cwd
 
     if [[ $_p9k__promot_powerversion_cached_version != "" ]]; then
-      p10k segment -f 208 -i '🍷' -t ${_p9k__promot_powerversion_cached_version}
+      # p10k segment -f 208 -i '🍷' -t ${_p9k__promot_powerversion_cached_version}
+      p10k segment -f 208 -i '' -t ${_p9k__promot_powerversion_cached_version}
     fi
 
   }
@@ -1545,17 +1546,21 @@ function p10k-on-post-prompt() {
   # Hide the empty line and the first prompt line.
   
   local dir_change=hide
-  local last_command=hide
+  local show_last_command_timelapse=hide
 
   if [[ $_p9k__cwd != $_p9k__last_prompt_pwd ]]; then
     _p9k__last_prompt_pwd=$_p9k__cwd
     dir_change=show
   fi
-  if [[ $_p9k__last_commands != "" ]]; then
-    last_command=show
+  if [[ $_p9k__show_last_command_timelapses != "" ]]; then
+    show_last_command_timelapse=show
   fi
 
-    p10k display 'empty_line|1|*/left_frame'=hide '2/right/time'=$last_command '2/right/wifi'=hide '2/right/proxy'=hide '2/left/dir'=$dir_change '2/right/command_execution_time'=show
+  if typeset -f kube_env > /dev/null; then
+    kube_env 
+  fi
+
+    p10k display 'empty_line|1|*/left_frame'=hide '2/right/time'=$show_last_command_timelapse '2/right/wifi'=hide '2/right/proxy'=hide '2/left/dir'=$dir_change '2/right/command_execution_time'=show
 
   # p10k display '1'=hide '2/right/time'=show '2/left/time'=show '2/left/dir'=hide
   # p10k display 'empty_line|1'=hide '2/left/dir'=hide
