@@ -30,6 +30,7 @@ short_pwd() {
     echo "${pwd_str}/"
   fi
 }
+
 # ls_fuzzy_preview {{{1
 # Notes: we can mix use of bind and while loop key 
 # Can't used execute and while loop key together
@@ -40,8 +41,11 @@ ls_fuzzy_preview() {
     --bind=\"ctrl-r:execute-silent(echo {} | agnvim_remote_open )\"
     --bind=\"ctrl-y:execute-silent(echo {} | pbcopy )\"
   "
-  while out=$( fd_search_cur_dir | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA_BORDER $FZF_FUZZY_BIND_OPTS" fzf-tmux -0 \
+  while out=$( fd_search_cur_dir | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA_BORDER $FZF_FUZZY_BIND_OPTS" fzf-tmux \
     --preview "quick-preview {}" --exit-0 \
+    --bind "ctrl-d:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type directory )" \
+    --bind "ctrl-f:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type file )" \
+    --bind "ctrl-r:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always )" \
     --expect=ctrl-v,ctrl-e,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down,shift-left,shift-right \
     --print-query --header "[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" \
     --preview-window right:50% --height ${FZF_TMUX_HEIGHT:-100%} \

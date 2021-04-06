@@ -1,5 +1,5 @@
 #!/bin/sh
-#   DEVTOOL: __fzf_config {{{
+#   DEVTOOL: __fzf_config
 # -------------------------------------------------------
 
 mlog fzf-config loaded
