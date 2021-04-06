@@ -33,7 +33,7 @@
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
     # os_icon                 # os identifier
-    time
+    # time
     vcs                     # git status
     kubecontext             # current kubernetes context (https://kubernetes.io/)
     # =========================[ Line #2 ]=========================
@@ -49,11 +49,11 @@
   typeset -g POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
     status                  # exit code of the last command
-    command_execution_time  # duration of the last command
     background_jobs         # presence of background jobs
     direnv                  # direnv status (https://direnv.net/)
     asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
     virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
+    powerversion
     anaconda                # conda environment (https://conda.io/)
     pyenv                   # python environment (https://github.com/pyenv/pyenv)
     goenv                   # go environment (https://github.com/syndbg/goenv)
@@ -94,18 +94,20 @@
     # load                  # CPU load
     # disk_usage            # disk usage
     ram                   # free RAM
-    swap                  # used swap
-    battery               # internal battery
+    # swap                  # used swap
+    # battery               # internal battery
     # todo                    # todo items (https://github.com/todotxt/todo.txt-cli)
-    timewarrior             # timewarrior tracking status (https://timewarrior.net/)
-    taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
+    # timewarrior             # timewarrior tracking status (https://timewarrior.net/)
+    # taskwarrior             # taskwarrior task count (https://taskwarrior.org/)
     # time                    # current time
     # =========================[ Line #2 ]=========================
     newline
-    ip                    # ip address and bandwidth usage for a specified network interface
+    # ip                    # ip address and bandwidth usage for a specified network interface
     # public_ip             # public IP address
-    # proxy                 # system-wide http/https/ftp proxy
+    proxy                 # system-wide http/https/ftp proxy
     wifi                  # wifi speed
+    command_execution_time  # duration of the last command
+    time
     # example               # example user-defined segment (see prompt_example function below)
   )
 
@@ -512,9 +514,9 @@
 
   ###################[ command_execution_time: duration of the last command ]###################
   # Show duration of the last command if takes longer than this many seconds.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=3
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=1
   # Show this many fractional digits. Zero means round to seconds.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=0
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=1
   # Execution time color.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND=101
   # Duration format: 1d 2h 3m 4s.
@@ -1073,7 +1075,8 @@
   #############[ kubecontext: current kubernetes context (https://kubernetes.io/) ]#############
   # Show kubecontext only when the the command you are typing invokes one of these tools.
   # Tip: Remove the next line to always show kubecontext.
-  typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito'
+  # typeset -g POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito'
+  # unset POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND
 
   # Kubernetes context classes for the purpose of using different colors, icons and expansions with
   # different contexts.
@@ -1436,7 +1439,7 @@
   # behavior where they contain the end times of their preceding commands.
   typeset -g POWERLEVEL9K_TIME_UPDATE_ON_COMMAND=false
   # Custom icon.
-  # typeset -g POWERLEVEL9K_TIME_VISUAL_IDENTIFIER_EXPANSION='⭐'
+  typeset -g POWERLEVEL9K_TIME_VISUAL_IDENTIFIER_EXPANSION=''
   # Custom prefix.
   # typeset -g POWERLEVEL9K_TIME_PREFIX='%fat '
 
@@ -1449,9 +1452,29 @@
     # Don't use it, too slow
     # p10k segment -f 208 -i '⭐' -t 'hello, %n'
     local version='⭐ '
-    version+=$(power_v)
-    p10k segment -f 208 -t $version
-    #p10k segment -f 208 -i '🍷' -t ${version}
+    # version+=$(power_v)
+    # p10k segment -f 208 -t $version
+    p10k segment -f 208 -i '🍷' -t ${version}
+  }
+
+  function prompt_powerversion() {
+    # Don't use it, too slow
+    # p10k segment -f 208 -i '⭐' -t 'hello, %n'
+    # local version='⭐ '
+    local version=''
+
+    if [[ $_p9k__cwd != $_p9k__last_prompt_pwd_power_version ]]; then
+      _p9k__last_prompt_pwd_power_version=$_p9k__cwd
+      version+=$(power_v)
+      _p9k__promot_powerversion_cached_version=$version
+    fi
+
+    # _p9k__last_prompt_pwd=$_p9k__cwd
+
+    if [[ $_p9k__promot_powerversion_cached_version != "" ]]; then
+      p10k segment -f 208 -i '🍷' -t ${_p9k__promot_powerversion_cached_version}
+    fi
+
   }
 
   # User-defined prompt segments may optionally provide an instant_prompt_* function. Its job
@@ -1484,7 +1507,7 @@
   #   - always:   Trim down prompt when accepting a command line.
   #   - same-dir: Trim down prompt when accepting a command line unless this is the first command
   #               typed after changing current working directory.
-  typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=always
+  typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=off
 
   # Instant prompt mode.
   #
@@ -1496,7 +1519,7 @@
   #   - verbose: Enable instant prompt and print a warning when detecting console output during
   #              zsh initialization. Choose this if you've never tried instant prompt, haven't
   #              seen the warning, or if you are unsure what this all means.
-  typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
+  typeset -g POWERLEVEL9K_INSTANT_PROMPT=verbose
 
   # Hot reload allows you to change POWERLEVEL9K options after Powerlevel10k has been initialized.
   # For example, you can type POWERLEVEL9K_BACKGROUND=red and see your prompt turn red. Hot reload
@@ -1507,6 +1530,35 @@
   # If p10k is already loaded, reload configuration.
   # This works even with POWERLEVEL9K_DISABLE_HOT_RELOAD=true.
   (( ! $+functions[p10k] )) || p10k reload
+}
+
+# POWERLEVEL9K_RIGHT_PROMPT_ELEMENTS+=time
+# POWERLEVEL9K_LEFT_PROMPT_ELEMENTS+=time
+function p10k-on-pre-prompt() {
+  # Show empty line if it's the first prompt in the TTY.
+  [[ $P9K_TTY == old ]] && p10k display 'empty_line'=show
+  # Show the first prompt line.
+  p10k display '1|*/left_frame'=show '2/right/time'=hide '2/left/time'=hide '2/right/wifi'=show '2/right/proxy'=show '2/left/dir'=show '1/right/powerversion'=show
+}
+
+function p10k-on-post-prompt() {
+  # Hide the empty line and the first prompt line.
+  
+  local dir_change=hide
+  local last_command=hide
+
+  if [[ $_p9k__cwd != $_p9k__last_prompt_pwd ]]; then
+    _p9k__last_prompt_pwd=$_p9k__cwd
+    dir_change=show
+  fi
+  if [[ $_p9k__last_commands != "" ]]; then
+    last_command=show
+  fi
+
+    p10k display 'empty_line|1|*/left_frame'=hide '2/right/time'=$last_command '2/right/wifi'=hide '2/right/proxy'=hide '2/left/dir'=$dir_change '2/right/command_execution_time'=show
+
+  # p10k display '1'=hide '2/right/time'=show '2/left/time'=show '2/left/dir'=hide
+  # p10k display 'empty_line|1'=hide '2/left/dir'=hide
 }
 
 # Tell `p10k configure` which file it should overwrite.
