@@ -1,0 +1,4 @@
+#!/bin/bash
+
+mkdir -p ~/.zsh_history_bk
+cp $ZDOTDIR/.zsh_history ~/.zsh_history_bk/.zsh_history-$(date +%Y-%m-%d-%H)
