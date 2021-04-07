@@ -33,12 +33,16 @@
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
     # =========================[ Line #1 ]=========================
     # os_icon                 # os identifier
-    # time
+    time
     vcs                     # git status
     kubecontext             # current kubernetes context (https://kubernetes.io/)
+    powerversion
     # =========================[ Line #2 ]=========================
+    
     newline                 # \n
     dir                     # current directory
+
+    newline                 # \n
     prompt_char             # prompt symbol
   )
 
@@ -53,15 +57,13 @@
     direnv                  # direnv status (https://direnv.net/)
     asdf                    # asdf version manager (https://github.com/asdf-vm/asdf)
     virtualenv              # python virtual environment (https://docs.python.org/3/library/venv.html)
-    powerversion
     anaconda                # conda environment (https://conda.io/)
     pyenv                   # python environment (https://github.com/pyenv/pyenv)
     goenv                   # go environment (https://github.com/syndbg/goenv)
     nodenv                  # node.js version from nodenv (https://github.com/nodenv/nodenv)
     nvm                     # node.js version from nvm (https://github.com/nvm-sh/nvm)
-    nodeenv                 # node.js environment (https://github.com/ekalinin/nodeenv)
-    node_version          # node.js version
-    # go_version            # go version (https://golang.org)
+    node_version            # node.js version
+    go_version              # go version (https://golang.org)
     # rust_version          # rustc version (https://www.rust-lang.org)
     # dotnet_version        # .NET version (https://dotnet.microsoft.com)
     # php_version           # php version (https://www.php.net/)
@@ -73,9 +75,9 @@
     # fvm                     # flutter version management (https://github.com/leoafarias/fvm)
     # luaenv                  # lua version from luaenv (https://github.com/cehoffman/luaenv)
     jenv                    # java version from jenv (https://github.com/jenv/jenv)
-    plenv                   # perl version from plenv (https://github.com/tokuhirom/plenv)
-    phpenv                  # php version from phpenv (https://github.com/phpenv/phpenv)
-    haskell_stack           # haskell version from stack (https://haskellstack.org/)
+    # plenv                   # perl version from plenv (https://github.com/tokuhirom/plenv)
+    # phpenv                  # php version from phpenv (https://github.com/phpenv/phpenv)
+    # haskell_stack           # haskell version from stack (https://haskellstack.org/)
     # kubecontext             # current kubernetes context (https://kubernetes.io/)
     terraform               # terraform workspace (https://www.terraform.io)
     aws                     # aws profile (https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-profiles.html)
@@ -91,10 +93,10 @@
     midnight_commander      # midnight commander shell (https://midnight-commander.org/)
     nix_shell               # nix shell (https://nixos.org/nixos/nix-pills/developing-with-nix-shell.html)
     # vpn_ip                # virtual private network indicator
-    # load                  # CPU load
-    # disk_usage            # disk usage
+    disk_usage            # disk usage
+    load                  # CPU load
     ram                   # free RAM
-    # swap                  # used swap
+    swap                  # used swap
     # battery               # internal battery
     # todo                    # todo items (https://github.com/todotxt/todo.txt-cli)
     # timewarrior             # timewarrior tracking status (https://timewarrior.net/)
@@ -102,10 +104,10 @@
     # time                    # current time
     # =========================[ Line #2 ]=========================
     newline
-    # ip                    # ip address and bandwidth usage for a specified network interface
+    ip                    # ip address and bandwidth usage for a specified network interface
     # public_ip             # public IP address
     proxy                 # system-wide http/https/ftp proxy
-    wifi                  # wifi speed
+    # wifi                  # wifi speed
     command_execution_time  # duration of the last command
     time
     # example               # example user-defined segment (see prompt_example function below)
@@ -141,22 +143,26 @@
   typeset -g POWERLEVEL9K_PROMPT_ADD_NEWLINE=true
 
   # Connect left prompt lines with these symbols.
-  # typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=
-  # typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX=
-  # typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX=
+  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX=
+  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX=
+  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX=
 
-  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX='%242F╭─'
-  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX='%242F├─'
-  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX='%242F╰─'
+  # typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_PREFIX='%242F╭─'
+  # typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_PREFIX='%242F├─'
+  # typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_PREFIX='%242F╰─'
 
   # Connect right prompt lines with these symbols.
+  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX='%238F─╮'
+  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX='%238F─╯'
+  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX=''
+
   # typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX='%238F─╮'
   # typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX='%238F─┤'
   # typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX='%238F─╯'
 
-  typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX=
-  typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX=
-  typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX=
+  # typeset -g POWERLEVEL9K_MULTILINE_FIRST_PROMPT_SUFFIX=
+  # typeset -g POWERLEVEL9K_MULTILINE_NEWLINE_PROMPT_SUFFIX=
+  # typeset -g POWERLEVEL9K_MULTILINE_LAST_PROMPT_SUFFIX=
 
 
   # The left end of left prompt.
@@ -526,7 +532,7 @@
   # Show duration of the last command if takes longer than this many seconds.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=1
   # Show this many fractional digits. Zero means round to seconds.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=1
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_PRECISION=2
   # Execution time color.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND=101
   # Duration format: 1d 2h 3m 4s.
@@ -1483,7 +1489,7 @@
 
     if [[ $_p9k__promot_powerversion_cached_version != "" ]]; then
       # p10k segment -f 208 -i '🍷' -t ${_p9k__promot_powerversion_cached_version}
-      p10k segment -f 208 -i '' -t ${_p9k__promot_powerversion_cached_version}
+      p10k segment -f 208 -i "" -t ${_p9k__promot_powerversion_cached_version}
     fi
 
   }
@@ -1549,7 +1555,18 @@ function p10k-on-pre-prompt() {
   # Show empty line if it's the first prompt in the TTY.
   [[ $P9K_TTY == old ]] && p10k display 'empty_line'=show
   # Show the first prompt line.
-  p10k display '1|*/left_frame'=show '2/right/time'=hide '2/left/time'=hide '2/right/wifi'=show '2/right/proxy'=show '2/left/dir'=show '1/right/powerversion'=show
+  p10k display '1|*/left_frame'=show \
+    '1/right/powerversion'=show \
+    '2/right/time'=hide \
+    '2/left/time'=hide \
+    '2/left/dir'=show \
+    '2/right/ip'=show \
+    '2/right_frame'=show \
+    '2/right/wifi'=show \
+    '2/right/proxy'=show \
+    'empty_line|2|*/left_frame'=show \
+    '3/right_frame'=show \
+    '3/left_frame'=show
 }
 
 function p10k-on-post-prompt() {
@@ -1557,12 +1574,18 @@ function p10k-on-post-prompt() {
   
   local dir_change=hide
   local show_last_command_timelapse=hide
+  local second_line_show=hide
 
+  # Only keep dir when it changed
   if [[ $_p9k__cwd != $_p9k__last_prompt_pwd ]]; then
     _p9k__last_prompt_pwd=$_p9k__cwd
     dir_change=show
+    second_line_show=show
+
   fi
-  if [[ $_p9k__show_last_command_timelapses != "" ]]; then
+
+  if (( P9K_COMMAND_DURATION_SECONDS >= _POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD )); then
+    second_line_show=show
     show_last_command_timelapse=show
   fi
 
@@ -1570,10 +1593,21 @@ function p10k-on-post-prompt() {
     kube_env 
   fi
 
-    p10k display 'empty_line|1|*/left_frame'=hide '2/right/time'=$show_last_command_timelapse '2/right/wifi'=hide '2/right/proxy'=hide '2/left/dir'=$dir_change '2/right/command_execution_time'=show
-
-  # p10k display '1'=hide '2/right/time'=show '2/left/time'=show '2/left/dir'=hide
-  # p10k display 'empty_line|1'=hide '2/left/dir'=hide
+    # 'empty_line|2|/left_frame'=$second_line_show \
+  p10k display \
+    'empty_line|1|*/left_frame'=hide \
+    '|2|/'=$second_line_show \
+    '2/left/dir'=$dir_change \
+    '2/right/time'=$show_last_command_timelapse \
+    '2/right/command_execution_time'=show \
+    '2/right/wifi'=hide \
+    '2/right/proxy'=hide \
+    '2/right/ip'=hide \
+    '2/right/ip'=hide \
+    '2/left_frame'=hide \
+    '2/right_frame'=hide \
+    '3/right_frame'=hide \
+    '3/left_frame'=hide
 }
 
 # Tell `p10k configure` which file it should overwrite.
