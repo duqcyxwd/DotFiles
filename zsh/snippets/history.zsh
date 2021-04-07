@@ -33,16 +33,11 @@ setopt AUTO_CD                # ZSH AUTO CD into directories
 # only store success command
 zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
 
-zsh_history_bk() {
-  mkdir -p ~/.zsh_history_bk
-  cp ~/.zsh_history ~/.zsh_history_bk/.zsh_history-$(date +%Y-%m-%d-%H)
-}
-alias history_count="cat ~/.zsh_history| wc -l"
+alias history_count="cat $ZDOTDIR/.zsh_history| wc -l"
 clean_history() { local HISTSIZE=0; }
 # fc -p "$HISTFILE" This will chagne history file
 
-# alias history='zsh_history_bk && omz_history -i'
-alias hist-c='zsh_history_bk && vi ~/.zsh_history'
+alias hist-c='zsh-history-bk && vi $ZDOTDIR/.zsh_history'
 
 uuu() {
   echo "Clean last command from history"

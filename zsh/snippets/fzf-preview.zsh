@@ -46,7 +46,7 @@ ls_fuzzy_preview() {
     --bind "ctrl-d:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type directory )" \
     --bind "ctrl-f:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type file )" \
     --bind "ctrl-r:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always )" \
-    --expect=ctrl-v,ctrl-e,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down,shift-left,shift-right \
+    --expect=ctrl-v,ctrl-o,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down,shift-left,shift-right \
     --print-query --header "[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" \
     --preview-window right:50% --height ${FZF_TMUX_HEIGHT:-100%} \
     -q "$searchTerm" \

@@ -2,15 +2,16 @@
 
 input_path=$1
 
+echo $@ >> /Users/EYONDUU/work_credential/temp/log/log
 if [[ -d "${input_path}" ]] ; then
     # echo "$PASSED is a directory";
     exa --group-directories-first -F --icons --group-directories-first -T -lh -L 2 --color=always $1
 else
     if [[ -f "${input_path}" ]]; then
-        # echo "${PASSED} is a file";
+        echo "${PASSED} is a file";
         exa -lbFa --color=always $input_path
         echo ""
-        bat --style=numbers --color=always "${input_path}"  -r 0:200| head -200
+        bat --style=numbers --color=always "${input_path}"  -r 0:300 
     else
         echo "${input_path} is not valid";
     fi
