@@ -142,14 +142,6 @@ __fzf_git_config(){
           fzf --preview 'quick-preview {}' | sed 's#/$##')
         [[ -n "$files" ]] && echo "$files" | tr '\n' '\0' | xargs -0 -I% git clean -xdf '%' && return
         echo 'Nothing to clean.'
-
-    
-      # Use new fzf build feature to replace agbat
-      # ag --nobreak --noheading --color $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA_BORDER $FZF_GIT_FILE_BIND_OPTS"  \
-      #   fzf-tmux -0 --delimiter : \
-      #   --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
-      #   --preview-window +{2} 
-      #   # | cut -d ':' -f1 | xargs fzf-exec   # This is not working with ctrl-v, anything command launches other script
     }
 
     # Cleanup untracked file include ignore file

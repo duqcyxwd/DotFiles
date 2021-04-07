@@ -13,9 +13,7 @@ fag() {
   "
   # -0 exit when no match
   # -1 Automatically select the only match 
-  # ag --nobreak --noheading --color $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA_BORDER $FZF_FAG_BIND_OPTS"  fzf-tmux -0 --preview "agbat {}"
   #
-  # Use new fzf build feature to replace agbat
   ag --hidden --nobreak --noheading --color $@ | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA_BORDER $FZF_FAG_BIND_OPTS"  \
     fzf-tmux -0 --delimiter : \
     --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
