@@ -16,7 +16,7 @@ export ZPROF_TRACK=0
 export ZSH_CONFIG_HOME=$HOME/.config/zsh
 
 PATH=$ZSH_CONFIG_HOME/commands:$PATH
-FPATH=$FPATH:$ZSH_CONFIG_HOME/functions:$ZSH_CONFIG_HOME/completions:$ZSH_CONFIG_HOME/.zsh
+FPATH=$FPATH:$ZSH_CONFIG_HOME/functions:$ZSH_CONFIG_HOME/completions
 autoload -Uz $ZSH_CONFIG_HOME/functions/*(:t)
 
 mlog "$(date) : zshrc start loading" 
