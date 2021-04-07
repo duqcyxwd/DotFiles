@@ -4,9 +4,9 @@ if [[ ! -v ZSH_LOADING_LOG ]] ; then
   ZSH_LOADING_LOG=$HOME/.startup.log
 fi
 
-echo "First time log">>$ZSH_LOADING_LOG 
-echo $@ >>$ZSH_LOADING_LOG
+echo "\n[" $$ "]: " "Init logger" >> $ZSH_LOADING_LOG 
+echo "[" $$ "]: " $@ >>$ZSH_LOADING_LOG 
 
 function mlog() { 
-  echo $@ >>$ZSH_LOADING_LOG 
+  echo "[" $$ "]: " $@ >>$ZSH_LOADING_LOG 
 }

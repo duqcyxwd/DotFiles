@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
-tail -f $ZSH_LOADING_LOG
+tail -1000f $ZSH_LOADING_LOG | grcat ~/.config/grc/log
 
