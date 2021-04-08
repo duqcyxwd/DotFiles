@@ -29,9 +29,44 @@ setopt HIST_NO_FUNCTIONS      # Don't store function
 
 setopt AUTO_CD                # ZSH AUTO CD into directories
 
-# https://superuser.com/questions/902241/how-to-make-zsh-not-store-failed-command
-# only store success command
-zshaddhistory() { whence ${${(z)1}[1]} >| /dev/null || return 1 }
+# Notes
+# https://scarff.id.au/blog/2019/zsh-history-conditional-on-command-success/
+zshaddhistory() {  
+  emulate -L zsh
+
+  # return 1 when first command is unknown command
+  whence ${${(z)1}[1]} >| /dev/null || return 1  
+
+  local line=${1%%$'\n'}
+  local cmd=${line%% *}
+
+  # mlog "zshaddhistory"
+  # mlog ${${(z)1}[1]}
+  # mlog ${(z)1}
+  # mlog $@
+  # mlog $line
+  # mlog $cmd
+
+  # Modified from https://mollifier.hatenablog.com/entry/20090
+  # Not necessary, Most of them will be cleanup by zsh
+  if [[ ${#line} -ge 4
+          && ${cmd} != ("")
+          && ${cmd} != (c|cd) 
+          && ${cmd} != (bat) 
+          && ${cmd} != (gc) 
+          && ${cmd} != (l|l[salt]|l[salt][a])
+          && ${cmd} != (m|man) ]] ; then
+    # Following code will cache command to avoid duplicate entry
+    # Stop writing same command within a limited time period
+    print -sr -- "${1%%$'\n'}"
+    fc -p
+  else
+    return 1
+  fi
+
+  # Notes
+  # https://superuser.com/questions/352788/how-to-prevent-a-command-in-the-zshell-from-being-saved-into-history
+}
 
 alias history_count="cat $ZDOTDIR/.zsh_history| wc -l"
 clean_history() { local HISTSIZE=0; }
@@ -52,3 +87,6 @@ uuu() {
 # fc -e nano -1
 # edit the entire history
 # fc -W; nano "$HISTFILE"; fc -R
+
+function bla() { return 1 }
+function bla2() { return 0 }
