@@ -1,4 +1,5 @@
-#compdef kubectl
+# #compdef kubectl
+# replaced by kubectl plugins in OMZ
 
 # Example of lazy load
 # Check if 'kubectl' is a command in $PATH

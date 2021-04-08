@@ -5,7 +5,7 @@ fag() {
 
   local FZF_FAG_BIND_OPTS=" \
     --bind=\"ctrl-space:execute(bat --style=numbers --color=always --paging always --highlight-line {2} {1} | LESS='-R +{2}' less)\"
-    --bind=\"ctrl-e:execute(echo {} | cut -d ':' -f1 | xargs fzf-exec )\"
+    --bind=\"ctrl-o:execute(echo {} | cut -d ':' -f1 | xargs fzf-exec )\"
     --bind=\"ctrl-v:execute(echo {} | agnvim_open )\"
     --bind=\"ctrl-r:execute-silent(echo {} | agnvim_remote_open )\"
     --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1 | xargs | tr -d '\\\n' | pbcopy )\"
