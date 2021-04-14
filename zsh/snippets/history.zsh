@@ -69,7 +69,7 @@ zshaddhistory() {
 }
 
 alias history_count="cat $ZDOTDIR/.zsh_history| wc -l"
-clean_history() { local HISTSIZE=0; }
+dis_zsh_history() { local HISTSIZE=0; }
 # fc -p "$HISTFILE" This will chagne history file
 
 alias hist-c='zsh-history-bk && vi $ZDOTDIR/.zsh_history'
