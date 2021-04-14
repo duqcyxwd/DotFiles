@@ -3,4 +3,5 @@ atom/snapshot-cache/
 atom/split-diff/
 atom/git-time-machine/
 .zcompdump
+.zsh_history
 .git
