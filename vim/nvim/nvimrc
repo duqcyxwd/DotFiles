@@ -3,6 +3,7 @@
 " everything in my vimrc works in neovim (even all the plugins!),
 " so I just source my vimrc
 " source ~/.vimrc
+" TODO Cleanup
 source /Users/EYONDUU/duqcyxwd/DotFiles/vim/nvim/vimrc
 
 " When I open a terminal buffer, I want it to feel like I'm in the terminal. I
