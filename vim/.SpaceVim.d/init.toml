@@ -6,19 +6,20 @@
 # License: GPLv3
 #=============================================================================
 
-# All SpaceVim option below [option] section
+# All SpaceVim option below [option] section {{{1
+# -------------------------------------------------------------------------------
 [options]
     # set spacevim theme. by default colorscheme layer is not loaded,
     # if you want to use more colorscheme, please load the colorscheme
     # layer
-    colorscheme = "SpaceVim"
-    colorscheme_bg = "dark"
+    # colorscheme = "SpaceVim"
+    colorscheme = "oceanic-next"
     # Disable guicolors in basic mode, many terminal do not support 24bit
     # true colors
     enable_guicolors = false
     # Disable statusline separator, if you want to use other value, please
     # install nerd fonts
-    guifont = "SauceCodePro Nerd Font Mono:h18"
+    guifont = "SauceCodePro Nerd Font Mono:h14"
     statusline_separator = "nil"
     statusline_inactive_separator = "bar"
     buffer_index_type = 4
@@ -28,30 +29,144 @@
     statusline_unicode_symbols = false
     # Enable vim compatible mode, avoid changing origin vim key bindings
     vimcompatible = true
-    bootstrap_before = "myspacevim#before"
-    bootstrap_after  = "myspacevim#after"
+    bootstrap_before = "g:myspacevim#before"
+    bootstrap_after  = "g:myspacevim#after"
     # For Layer chinese
     vim_help_language = "cn"
+    relativenumber = "false"
 
-# Enable autocomplete layer
+    enable_vimfiler_welcome = false
+    project_rooter_patterns = ['.git/', '_darcs/', '.hg/', '.bzr/', 'project.clj']
+    project_rooter_outermost = false
+
+
+# Enable autocomplete layer {{{1
+# -------------------------------------------------------------------------------
 [[layers]]
-name = 'autocomplete'
-auto-completion-return-key-behavior = "complete"
-auto-completion-tab-key-behavior = "cycle"
+    name = 'autocomplete'
+    auto-completion-return-key-behavior = "complete"
+    auto-completion-tab-key-behavior = "cycle"
 
 [[layers]]
-name = 'shell'
-default_position = 'top'
-default_height = 30
+    name = 'shell'
+    default_position = 'top'
+    default_height = 30
 
 [[layers]]
-  name = "chat"
-
-[[layers]]
-  name = "chinese"
+    name = "chinese"
 
 [[layers]]
   name = "colorscheme"
 
+# https://github.com/SpaceVim/SpaceVim/blob/master/autoload/SpaceVim/layers/fzf.vim
+# :FzfMenu CustomKeyMaps
 [[layers]]
   name = "fzf"
+  enable-spacevim-styled-keys = true
+
+[[layers]]
+  name = "core#statusline"
+  enable = false
+
+[[layers]]
+  name = "git"
+  git-plugin="fugitive"
+
+[[layers]]
+  name = 'lang#clojure'
+
+# custom plugins {{{1
+# -------------------------------------------------------------------------------
+[[custom_plugins]]
+    name = "junegunn/fzf"
+    merged = 0
+
+# https://github.com/junegunn/fzf.vim
+[[custom_plugins]]
+    name = "junegunn/fzf.vim"
+    merged = 0
+
+[[custom_plugins]]
+    name = "ayu-theme/ayu-vim"
+    merged = 0
+
+# add custom_plugins: https://github.com/mhartington/oceanic-next
+[[custom_plugins]]
+  name = "mhartington/oceanic-next"
+  merged = 0
+
+
+# https://github.com/tpope/vim-fireplace
+# Provider repl
+[[custom_plugins]]
+  name = "tpope/vim-fireplace"
+  merged = 0
+
+
+[[custom_plugins]]
+  name = "tpope/vim-fireplace"
+  merged = 0
+
+
+[[custom_plugins]]
+  name = "Olical/conjure"
+  merged = 0
+
+# Use fireplace
+# https://github.com/clojure-vim/vim-cider
+# Format
+# [[custom_plugins]]
+#   name = "clojure-vim/vim-cider"
+#   merged = 0
+
+# [[custom_plugins]]
+#   name = "kovisoft/paredit"
+#   merged = 0
+
+# [[custom_plugins]]
+#   name = "bhurlow/vim-parinfer"
+#   merged = 0
+
+
+# 2021-04-21 Use sexp instead of paredit
+[[custom_plugins]]
+  name = "guns/vim-sexp"
+  merged = 0
+
+
+[[custom_plugins]]
+  name = "tpope/vim-repeat"
+  merged = 0
+ 
+[[custom_plugins]]
+  name = "tpope/vim-surround"
+  merged = 0
+
+
+# WIP
+[[custom_plugins]]
+  name = "guns/vim-clojure-highlight"
+  merged = 0
+
+[[custom_plugins]]
+  name = "venantius/vim-cljfmt"
+  merged = 0
+
+# Nothing too fancy....
+# [[custom_plugins]]
+#   name = "tpope/vim-sexp-mappings-for-regular-people"
+#   merged = 0
+
+
+# [[custom_plugins]]
+#     name = "yuki-ycino/fzf-preview.vim"
+
+[[custom_plugins]]
+    name = "evedovelli/rst-robotframework-syntax-vim"
+
+[[custom_plugins]]
+    name = "shumphrey/fugitive-gitlab.vim"
+
+# [[custom_plugins]]
+#     name = "ruanyl/vim-gh-line"
+
