@@ -1,0 +1,45 @@
+{
+  "coc.source.conjure.priority": 999999,
+  "diagnostic.virtualText": true,
+  "diagnostic-languageserver.filetypes": {
+    "sh": "shellcheck"
+  },
+  "java.errors.incompleteClasspath.severity": "ignore",
+  "languageserver": {
+    "clojure-lsp": {
+      "command": "bash",
+      "args": [
+        "-c",
+        "/home/dave/bin/clojure-lsp"
+      ],
+      "filetypes": [
+        "clojure"
+      ],
+      "rootPatterns": [
+        "project.clj",
+        "build.boot",
+        "deps.edn"
+      ],
+      "additionalSchemes": [
+        "jar",
+        "zipfile"
+      ],
+      "trace.server": "verbose",
+      "initializationOptions": {}
+    },
+    "elmLS": {
+      "command": "elm-language-server",
+      "filetypes": [
+        "elm"
+      ],
+      "rootPatterns": [
+        "elm.json"
+      ],
+      "initializationOptions": {
+        "elmAnalyseTrigger": "change"
+      }
+    }
+  },
+  "codeLens.enable": true,
+  "suggest.removeDuplicateItems": true
+}

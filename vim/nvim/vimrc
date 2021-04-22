@@ -1,0 +1,6 @@
+
+
+" '/Users/EYONDUU/duqcyxwd/DotFiles/vim'
+for f in split(glob('/Users/EYONDUU/duqcyxwd/DotFiles/vim/nvim/custom/*.vim'), '\n')
+  exe 'source' f
+endfor
