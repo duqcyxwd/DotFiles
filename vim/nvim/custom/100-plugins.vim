@@ -1,5 +1,37 @@
 
+" TODO Fix this
+"
 call plug#begin('/Users/EYONDUU/.local/share/nvim/plug')
+
+"New for chuan {{{1
+Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
+Plug 'mhinz/vim-startify'
+
+Plug 'tpope/vim-fireplace/'
+Plug 'mattn/vim-findroot'
+
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+
+" Use project rooter
+" Plug 'ctrlpvim/ctrlp.vim'
+
+"End for chuan
+
+" clojure things
+" Plug 'eraserhd/parinfer-rust', {'do': 'cargo build --release'}
+Plug 'guns/vim-clojure-static'
+Plug 'guns/vim-sexp'
+Plug 'luochen1990/rainbow'
+Plug 'Olical/conjure'
+
+" Plug 'tpope/vim-sexp-mappings-for-regular-people'
+
+" editor enhancements
+Plug 'junegunn/vim-easy-align'
+
+
+"Default {{{1
 
 " aesthetic
 Plug 'ayu-theme/ayu-vim'
@@ -26,29 +58,20 @@ Plug 'kassio/neoterm'
 Plug 'kshenoy/vim-signature'
 Plug 'liuchengxu/vim-which-key'
 Plug 'liuchengxu/vista.vim'
-Plug 'ludovicchabant/vim-gutentags'
+" Plug 'ludovicchabant/vim-gutentags'
 Plug 'machakann/vim-highlightedyank'
 Plug 'machakann/vim-sandwich'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'schickling/vim-bufonly'
 Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'tommcdo/vim-lion'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-unimpaired'
 Plug 'unblevable/quick-scope'
-Plug 'vim-scripts/gitignore'
-
-" clojure things
-Plug 'eraserhd/parinfer-rust', {'do': 'cargo build --release'}
-Plug 'guns/vim-clojure-static'
-Plug 'guns/vim-sexp'
-Plug 'luochen1990/rainbow'
-Plug 'Olical/conjure'
-Plug 'tpope/vim-sexp-mappings-for-regular-people'
+" Plug 'vim-scripts/gitignore'
 
 " other languages/filetypes
 Plug 'adimit/prolog.vim'

@@ -1,5 +1,5 @@
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => acid.nvim
+" => acid.nvim {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:acid_auto_require = 1
 let g:acid_alt_paths = ['src/backend']
@@ -8,7 +8,7 @@ let g:acid_alt_paths = ['src/backend']
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => ALE (asynchronous lint engine)
+" => ALE (asynchronous lint engine) {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:ale_fix_on_save = 1
 let g:ale_linters = {'clojure': [], 'sh': []}
@@ -18,7 +18,7 @@ let g:ale_fixers = {'go': ['goimports']}
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => airline
+" => airline {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " let g:airline_theme = 'luna'                         " airline colorscheme
 " let g:airline_powerline_fonts = 1                    " Fancy symbols
@@ -43,7 +43,7 @@ let g:ale_fixers = {'go': ['goimports']}
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => asciidoctor
+" => asciidoctor {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:asciidoctor_fenced_languages = ['python', 'clojure']
 
@@ -76,7 +76,7 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => auto-pairs
+" => auto-pairs {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup autopairs_config
   " autocmd Filetype clojure let g:AutoPairsFlyMode = 1
@@ -90,7 +90,7 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => better-whitespace
+" => better-whitespace {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:better_whitespace_filetypes_blacklist = ['diff', 'gitcommit', 'unite', 'qf', 'help', 'ctrlsf']
 
@@ -112,13 +112,13 @@ nnoremap <silent> <leader><Space> :call StripWhitespace()<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => buffergator
+" => buffergator {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " horizontal bottom (full screen width)
 let g:buffergator_viewport_split_policy = "B"
 let g:buffergator_split_size = 10
 let g:buffergator_suppress_keymaps = 1
-nnoremap <space><space> :BuffergatorOpen<CR>
+" nnoremap <space><space> :BuffergatorOpen<CR>
 
 " press ESC to close the buffergator buffer
 augroup buffergator_buffer
@@ -128,20 +128,20 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => calendar
+" => calendar {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:calendar_google_calendar = 1
 let g:calendar_clock_12hour = 1
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => clj-refactor
+" => clj-refactor {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:clj_refactor_prefix_rewriting = 0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => clojure-static
+" => clojure-static {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:clojure_fuzzy_indent = 1
 let g:clojure_fuzzy_indent_patterns = ['^with', '^def', '^let', '-tpl$']
@@ -152,7 +152,7 @@ let g:clojure_maxlines = 0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => coc
+" => coc {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " HACK to workaround coc not providing a :CocToggle command
 function! ToggleCoc() abort
@@ -229,7 +229,7 @@ nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
 " Find symbol of current document
 nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
 " Search workspace symbols
-nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
 " Do default action for next item.
 " nnoremap <silent> <space>j  :<C-u>CocNext<CR>
 " " Do default action for previous item.
@@ -306,7 +306,7 @@ endfunction
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => colorizer
+" => colorizer {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:colorizer_auto_color = 1
 " Clojure is included because Conjure's log buffer is a Clojure buffer, and
@@ -320,7 +320,7 @@ let g:colorizer_disable_bufleave = 1
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => commentary
+" => commentary {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup commentary_config
   autocmd!
@@ -333,7 +333,7 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => conjure
+" => conjure {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NOTE: I'd like to have a good setup where ANSI escape codes are interpreted in
 " the Conjure log buffer. Currently, neither Colorizer nor Olical's fork of
@@ -351,67 +351,68 @@ let g:conjure#log#hud#passive_close_delay = 1000
 
 let g:conjure#highlight#enabled = v:true
 
-let g:conjure#filetype#sicp = "conjure.client.racket.stdio"
+" let g:conjure#filetype#sicp = "conjure.client.racket.stdio"
 
-function! ToggleConjureLog() abort
-  if expand('%:t') =~ ".*conjure-log-.*"
-    execute 'Bclose'
-  else
-    " Ideally I could call some function provided by Conjure directly to do
-    " this, but I wasn't able to figure out how to do that. This mapping will
-    " need to be adjusted if I ever configure Conjure to use a different mapping
-    " to open the log in a tab, or if Conjure ever changes the default mapping.
-    " I think those two things are both pretty unlikely to happen, so meh.
-    "
-    " Another thing worth noting: normal apparently doesn't work with <leader>
-    " and <localleader>, so you have to do some hackery like what's going on
-    " here (https://vi.stackexchange.com/a/7780/25687) or just give up and type
-    " your actual (local)leader key in the mapping. I'm doing the second one.
-    normal \lt
-  endif
-endfunction
+" function! ToggleConjureLog() abort
+"   if expand('%:t') =~ ".*conjure-log-.*"
+"     execute 'Bclose'
+"   else
+"     " Ideally I could call some function provided by Conjure directly to do
+"     " this, but I wasn't able to figure out how to do that. This mapping will
+"     " need to be adjusted if I ever configure Conjure to use a different mapping
+"     " to open the log in a tab, or if Conjure ever changes the default mapping.
+"     " I think those two things are both pretty unlikely to happen, so meh.
+"     "
+"     " Another thing worth noting: normal apparently doesn't work with <leader>
+"     " and <localleader>, so you have to do some hackery like what's going on
+"     " here (https://vi.stackexchange.com/a/7780/25687) or just give up and type
+"     " your actual (local)leader key in the mapping. I'm doing the second one.
+"     normal \lt
+"   endif
+" endfunction
 
-augroup additional_conjure_bindings
-  autocmd!
+" augroup additional_conjure_bindings
+"   autocmd!
+" 
+"   autocmd FileType clojure,fennel,janet,racket
+"         \ nnoremap <buffer>
+"         \ <localleader>cc :call ToggleConjureLog()<CR>
+"   autocmd FileType clojure,fennel,janet,racket
+"         \ nnoremap <buffer>
+"         \ <localleader>cl :call ToggleConjureLog()<CR>
+" 
+"   " mnemonic: eval prompt
+"   " (like how <localleader>ee is eval expression)
+"   autocmd FileType clojure,fennel,janet,racket
+"         \ nnoremap <buffer>
+"         \ <localleader>ep :ConjureEval<space>
+" 
+"   " press q to close the log buffer
+"   autocmd BufEnter conjure-log-* nnoremap <buffer> q :Bclose<CR>
+" 
+"   " Automatically enable AnsiEsc (interpret ANSI escape codes) for the Conjure
+"   " log buffer.
+"   " autocmd BufEnter conjure-log-* AnsiEsc
+" augroup END
 
-  autocmd FileType clojure,fennel,janet,racket
-        \ nnoremap <buffer>
-        \ <localleader>cc :call ToggleConjureLog()<CR>
-  autocmd FileType clojure,fennel,janet,racket
-        \ nnoremap <buffer>
-        \ <localleader>cl :call ToggleConjureLog()<CR>
 
-  " mnemonic: eval prompt
-  " (like how <localleader>ee is eval expression)
-  autocmd FileType clojure,fennel,janet,racket
-        \ nnoremap <buffer>
-        \ <localleader>ep :ConjureEval<space>
-
-  " press q to close the log buffer
-  autocmd BufEnter conjure-log-* nnoremap <buffer> q :Bclose<CR>
-
-  " Automatically enable AnsiEsc (interpret ANSI escape codes) for the Conjure
-  " log buffer.
-  " autocmd BufEnter conjure-log-* AnsiEsc
-augroup END
-
-
-""""""""""""""""""""""""""""""
-" => ctrlp
-""""""""""""""""""""""""""""""
-" let g:ctrlp_working_path_mode = 0
-
+" """"""""""""""""""""""""""""""
+" " => ctrlp {{{1
+" """"""""""""""""""""""""""""""
+" let g:ctrlp_working_path_mode = 'ra'
+" 
 " let g:ctrlp_map = '<c-f>'
 " " map <leader>j :CtrlP<cr>
 " " map <c-b> :CtrlPBuffer<cr>
-
+" 
 " let g:ctrlp_max_height = 20
 " let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|^.git$\|_site'
-
+" let g:ctrlp_root_markers = ['pom.xml', '.p4ignore', 'project.clj']
+" 
 " let g:ctrlp_use_caching = 0
 " if executable('ag')
 "     set grepprg=ag\ --nogroup\ --nocolor
-
+" 
 "     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 " else
 "   let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
@@ -422,7 +423,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""
-" => ctrlsf
+" => ctrlsf {{{1
 """"""""""""""""""""""""""""""
 let g:ctrlsf_auto_focus = {"at": "start"}
 let g:ctrlsf_winsize = '100%'
@@ -440,7 +441,7 @@ nmap <leader>8 :CtrlSF -R '.{81,}'<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => ctrlspace
+" => ctrlspace {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 if executable("ag")
   let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
@@ -451,7 +452,7 @@ endif
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => defx
+" => defx {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " defx somewhat annoyingly doesn't provide any default mappings. I copy-pasted
 " this example config from :help defx and modified it.
@@ -563,7 +564,7 @@ nnoremap <silent> -
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => deoplete
+" => deoplete {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:deoplete#enable_at_startup = 1
 
@@ -585,30 +586,30 @@ let g:deoplete#omni#input_patterns.ocaml = '[^. *\t]\.\w*|\s\w*|#'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => dispatch
+" => dispatch {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:dispatch_no_maps = 1
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => elm-vim
+" => elm-vim {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:elm_format_autosave = 0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => fireplace
+" => fireplace {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " nnoremap <leader>r :Require!<CR>
 " nnoremap <leader>t :RunTests<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => fzf
+" => fzf {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <C-f> :FZF<CR>
-nnoremap <C-g> :GFiles<CR>
-nnoremap <C-g> :GFiles<CR>
+" nnoremap <C-f> :FZF<CR>
+" nnoremap <C-g> :GFiles<CR>
+" nnoremap <C-g> :GFiles<CR>
 
 " I think I can't use <C-m> for this one because <C-m> is sort of the same thing
 " as Enter, so when I press Enter, :Maps<CR> is happening.
@@ -661,7 +662,7 @@ endfunction
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => gina
+" => gina {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:gina#action#index#discard_directories = 1
 
@@ -689,7 +690,7 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => gitgutter
+" => gitgutter {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:gitgutter_map_keys = 0
 
@@ -704,14 +705,14 @@ let g:gitgutter_terminal_reports_focus=0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => gitv
+" => gitv {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " nnoremap <leader>gv :Gitv<CR>
 
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => go
+" => go {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:go_highlight_functions = 1
 let g:go_highlight_methods = 1
@@ -729,7 +730,7 @@ let g:go_highlight_build_constraints = 1
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => gofmt
+" => gofmt {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " I've read that goimports is basically just like gofmt, plus it organizes your
 " imports and removes ones you aren't using. So, I prefer goimports over gofmt.
@@ -737,7 +738,7 @@ let g:gofmt_exe = 'goimports'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => goyo
+" => goyo {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:goyo_width=100
 let g:goyo_margin_top = 2
@@ -746,14 +747,14 @@ nnoremap <silent> <leader>z :Goyo<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => gv
+" => gv {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nnoremap <leader>gv :GV<CR>
 
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => hexokinase
+" => hexokinase {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:Hexokinase_highlighters = ['backgroundfull']
 
@@ -777,13 +778,13 @@ let g:Hexokinase_refreshEvents = [
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => highlightedyank
+" => highlightedyank {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:highlightedyank_highlight_duration = 250
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => iced
+" => iced {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " nmap <localleader>'   <Plug>(iced_connect)
 " nmap <localleader>ei  <Plug>(iced_eval)<Plug>(sexp_inner_element)``
@@ -842,7 +843,7 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => jack-in
+" => jack-in {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " nnoremap <leader>L :Lein<CR>
 " nnoremap <leader>B :Boot<CR>
@@ -853,7 +854,7 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => LanguageClient
+" => LanguageClient {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:LanguageClient_serverCommands = {
     \ 'reason': ['ocaml-language-server', '--stdio'],
@@ -863,7 +864,7 @@ let g:LanguageClient_serverCommands = {
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => lightline
+" => lightline {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:lightline = {
   \   'colorscheme': 'onehalfdark',
@@ -897,7 +898,7 @@ let g:lightline.tabline = {
 
 
 """""""""""""""""""""""""""""""
-" => Merlin (OCAML)
+" => Merlin (OCAML) {{{1
 """""""""""""""""""""""""""""""
 if executable('opam')
   let g:opamshare = substitute(system('opam config var share 2>/dev/null'),'\n$','','''')
@@ -906,7 +907,7 @@ endif
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => ncm2 (fka nvim-completion-manager)
+" => ncm2 (fka nvim-completion-manager) {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " enable ncm2 for all buffers
 " autocmd BufEnter * call ncm2#enable_for_buffer()
@@ -932,7 +933,7 @@ endif
 " autocmd User Ncm2PopupClose set completeopt=menuone
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => neomake
+" => neomake {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Run neomake on insert and normal mode change and upon reading or writing a
 " buffer, with a 500ms delay.
@@ -940,7 +941,7 @@ endif
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => neoterm
+" => neoterm {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:neoterm_shell = 'fish'
 let g:neoterm_autoscroll = 1
@@ -974,7 +975,7 @@ nnoremap <silent> ,ti :call neoterm#kill()<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => nim
+" => nim {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 fun! JumpToDef()
   if exists("*GotoDefinition_" . &filetype)
@@ -990,7 +991,7 @@ ino <M-g> <esc>:call JumpToDef()<cr>i
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => open-browser
+" => open-browser {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " the gx mapping provided by netrw used to open the URL under the cursor in my
 " browser, then it mysteriously stopped working. The new behavior is that it
@@ -1006,33 +1007,33 @@ vmap gx <Plug>(openbrowser-smart-search)
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => paredit
+" => paredit {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:paredit_leader = '\'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => plug
+" => plug {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Open the vim-plug window full-screen
 let g:plug_window = 'enew'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => quick-scope
+" => quick-scope {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => rainbow
+" => rainbow {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:rainbow_active = 1
 let g:rainbow_conf = {'separately': {'html': 0}} " disable for html
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => sandwich
+" => sandwich {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
 
@@ -1129,7 +1130,7 @@ let s:command = "'[+1,']-1normal! >>"
 "       \ ]
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => sexp
+" => sexp {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:sexp_enable_insert_mode_mappings = 0
 
@@ -1138,7 +1139,7 @@ nnoremap <Bslash>a f)i
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => startify
+" => startify {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:startify_custom_header = [
       \ '               ________________________________   ',
@@ -1158,7 +1159,7 @@ let g:startify_enable_special = 0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => syntastic
+" => syntastic {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:syntastic_python_checkers=['pyflakes']
 
@@ -1174,19 +1175,19 @@ let g:syntastic_swift_checkers = ['swiftpm', 'swiftlint']
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => tagbar
+" => tagbar {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " nnoremap <leader>T :TagbarToggle<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => unicode
+" => unicode {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 nnoremap ga :UnicodeName<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vimagit
+" => vimagit {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:magit_show_help = 0
 let g:magit_toggle_help_mapping = '?'
@@ -1195,7 +1196,7 @@ let g:magit_show_magit_mapping='<leader>G'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vimfiler
+" => vimfiler {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " let g:vimfiler_as_default_explorer = 1
 " let g:vimfiler_time_format = "%b %d %Y %H:%M"
@@ -1207,14 +1208,14 @@ let g:magit_show_magit_mapping='<leader>G'
 
 
 """"""""""""""""""""""""""""""
-" => vim grep
+" => vim grep {{{1
 """"""""""""""""""""""""""""""
 let Grep_Skip_Dirs = 'RCS CVS SCCS .svn generated'
 set grepprg=/bin/grep\ -nH
 
 
 """"""""""""""""""""""""""""""
-" => vim-tmux-navigator
+" => vim-tmux-navigator {{{1
 """"""""""""""""""""""""""""""
 " I keep wanting to navigate between vim panes while I'm in insert mode without
 " switching back to normal mode first. These mappings let me do that.
@@ -1227,14 +1228,14 @@ set grepprg=/bin/grep\ -nH
 " Update: I don't actually want to remap <C-k> because that's the stock mapping
 " for digraphs and I don't want to retrain my fingers to learn a new mapping for
 " that.
-imap <C-h> <Esc><C-h>
-imap <C-j> <Esc><C-j>
+" imap <C-h> <Esc><C-h>
+" imap <C-j> <Esc><C-j>
 " imap <C-k> <Esc><C-k>
-imap <C-l> <Esc><C-l>
+" imap <C-l> <Esc><C-l>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vimux
+" => vimux {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Prompt for a command to be run in a 20% lower tmux split, without losing
 " focus on vim :)
@@ -1311,7 +1312,7 @@ nnoremap <buffer> <leader>vF
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vimwiki
+" => vimwiki {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:vimwiki_list = [{'path': '~/Sync/vimwiki', 'path_html': '~/Sync/vimwiki/html'}]
 
@@ -1352,7 +1353,7 @@ nmap <leader>wt <Plug>VimwikiMakeDiaryNote
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vista
+" => vista {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Ensure you have installed some decent font to show these pretty symbols, then you can enable icon for the kind.
 let g:vista#renderer#enable_icon = 0
@@ -1380,7 +1381,7 @@ let g:vista#renderer#ctags = 'kind'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vlime
+" => vlime {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " A handful of vlime mappings conflict with vim-sexp mappings.
@@ -1398,7 +1399,7 @@ augroup end
 
 
 """"""""""""""""""""""""""""""
-" => which-key
+" => which-key {{{1
 """"""""""""""""""""""""""""""
 nnoremap <silent> <leader>      :<c-u>WhichKey ','<CR>
 nnoremap <silent> <localleader> :<c-u>WhichKey '\'<CR>
@@ -1417,34 +1418,35 @@ vnoremap <silent> <Space>       :<c-u>WhichKeyVisual '<Space>'<CR>
 " call which_key#register(',', "g:which_key_map_leader")
 " call which_key#register('\', "g:which_key_map_localleader")
 " call which_key#register('<Space>', "g:which_key_map_space")
-let g:which_key_map_leader = {}
-let g:which_key_map_localleader = {}
-let g:which_key_map_space = {}
+" let g:which_key_map_leader = {}
+" let g:which_key_map_localleader = {}
+" let g:which_key_map_space = {}
 
-let g:which_key_map_leader.b = {
-      \ 'name': '+buffers',
-      \ 'd': 'delete this buffer',
-      \ 'D': 'delete all buffers',
-      \ 'l': 'list buffers',
-      \ 'o': 'delete all other buffers'
-      \ }
 
-let g:which_key_map_leader.c = {
-      \ 'name': '+coc',
-      \ 'c': 'toggle coc',
-      \ 'd': 'coc diagnostics',
-      \ 'f': 'coc: format selected',
-      \ 'i': 'coc info'
-      \ }
-
-let g:which_key_map_leader.e = {
-      \ 'name': '+edit',
-      \ 'c': 'config directory',
-      \ 'm': 'edit mappings',
-      \ 'p': 'edit plugins',
-      \ 'P': 'edit plugins config',
-      \ 'v': 'edit vimrc',
-      \ }
+" let g:which_key_map_leader.b = {
+"       \ 'name': '+buffers',
+"       \ 'd': 'delete this buffer',
+"       \ 'D': 'delete all buffers',
+"       \ 'l': 'list buffers',
+"       \ 'o': 'delete all other buffers'
+"       \ }
+" 
+" let g:which_key_map_leader.c = {
+"       \ 'name': '+coc',
+"       \ 'c': 'toggle coc',
+"       \ 'd': 'coc diagnostics',
+"       \ 'f': 'coc: format selected',
+"       \ 'i': 'coc info'
+"       \ }
+" 
+" let g:which_key_map_leader.e = {
+"       \ 'name': '+edit',
+"       \ 'c': 'config directory',
+"       \ 'm': 'edit mappings',
+"       \ 'p': 'edit plugins',
+"       \ 'P': 'edit plugins config',
+"       \ 'v': 'edit vimrc',
+"       \ }
 
 " NB: This doesn't work:
 "     \ '<Space>': 'enter git command',
@@ -1454,6 +1456,7 @@ let g:which_key_map_leader.e = {
 " For now, I'm happy with leaving it out of the map and letting it display as:
 "
 "     SPC → Gina<space>
+let g:which_key_centered = 0
 let g:which_key_map_leader.g = {
       \ 'name': '+git',
       \ 'A': 'git add --all',
@@ -1500,7 +1503,7 @@ let g:which_key_map_leader.B = {
       \ }
 
 """"""""""""""""""""""""""""""
-" => YankRing
+" => YankRing {{{1
 """"""""""""""""""""""""""""""
 if has("win16") || has("win32")
     " Don't do anything
