@@ -29,7 +29,7 @@ Plug 'Olical/conjure'
 
 " editor enhancements
 Plug 'junegunn/vim-easy-align'
-
+Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
 
 "Default {{{1
 
@@ -64,7 +64,6 @@ Plug 'machakann/vim-sandwich'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'schickling/vim-bufonly'
-Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-repeat'
