@@ -10,8 +10,12 @@
 " Debug keys
 " verbose map <Space>s
 
-" SpaceMapping: Section 0 {{{1
+" [SpaceMapping] 00: Leader keymap setting {{{1
 " ------------------------------------------------------------------------------
+
+" remap leader key to ,
+let mapleader = ","
+let g:mapleader = ","
 
 nnoremap <silent> <leader>      :<c-u>WhichKey ','<CR>
 nnoremap <silent> <localleader> :<c-u>WhichKey '\'<CR>
@@ -19,6 +23,8 @@ nnoremap <silent> <Space>       :<c-u>WhichKey '<Space>'<CR>
 vnoremap <silent> <leader>      :<c-u>WhichKeyVisual ','<CR>
 vnoremap <silent> <localleader> :<c-u>WhichKeyVisual '\'<CR>
 vnoremap <silent> <Space>       :<c-u>WhichKeyVisual '<Space>'<CR>
+" WIP
+vnoremap <silent> g             :<c-u>WhichKeyVisual 'g'<CR>
 
 call which_key#register(',', "g:which_key_map_leader")
 call which_key#register('\', "g:which_key_map_localleader")
@@ -37,7 +43,7 @@ let g:which_key_map_space.s = { 'name' : '+Search' }
 let g:which_key_map_space.w = { 'name' : '+Windows' }
 let g:which_key_map_space.t = { 'name' : '+Togglers' }
 
-" SpaceMapping: Section f+: File {{{1
+" [SpaceMapping] f+: File {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.f.s = "Save current file"
 nnoremap <Space>fs :w!<CR>
@@ -59,36 +65,45 @@ nnoremap <Space>fr :History<CR>
 let which_key_map_space.f.r = "Open History files"
 nnoremap <Space>fh :History<CR>
 
-" SpaceMapping: Section h+: Help {{{1
+" [SpaceMapping] h+: Help {{{1
 " ------------------------------------------------------------------------------
 "['FzfHelpTags SpaceVim', 'find-SpaceVim-help']
 
 let g:which_key_map_space.h.t = "Fzf Help tag"
 nnoremap <silent> <Space>ht :Helptags<CR>
 
-let g:which_key_map_space.h.m = "FZF Key Maps"
+let g:which_key_map_space.h.m = "[normal] Key Maps"
 nnoremap <silent> <Space>hm :Maps<CR>
 
+command! -bar -bang IMaps  call fzf#vim#maps("i", <bang>0)',
+command! -bar -bang VMaps  call fzf#vim#maps("v", <bang>0)',
 
-" SpaceMapping: Section q+: Quit {{{1
+let g:which_key_map_space.h.i = "[insert] Key Maps"
+nnoremap <silent> <Space>hi :Maps<CR>
+
+let g:which_key_map_space.h.v = "[visual] Key Maps"
+nnoremap <silent> <Space>hv :Maps<CR>
+
+
+
+" [SpaceMapping] q+: Quit {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.q.q = "Quit"
 nnoremap <Space>qq :q<CR>
-let which_key_map_space.q.a = "Force Quit"
-nnoremap <Space>qa :q!<CR>
+let which_key_map_space.q.Q = "Force Quit"
+nnoremap <Space>qQ :q!<CR>
+let which_key_map_space.q.a = "Force Quit all"
+nnoremap <Space>qa :qa!<CR>
 
-" SpaceMapping: Section p+: Project {{{1
+" [SpaceMapping] p+: Project {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.p.f = "Project files"
 nnoremap <Space>pf :Files<CR>
 
-" SpaceMapping: Section b+: Buffers {{{1
+" [SpaceMapping] b+: Buffers {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.b.d = "delete this buffer"
-" nnoremap <Space>bd :bp<bar>sp<bar>bn<bar>bd<CR>
-" nnoremap <Space>bd :bd<CR>
-" nnoremap <Space>bd :UndoableTabclose<CR>
-nnoremap <Space>wd :call undoquit#SaveWindowQuitHistory()<CR>:bd<CR>
+nnoremap <Space>bd :call undoquit#SaveWindowQuitHistory()<CR>:bd<CR>
 
 let which_key_map_space.b.D = "Force delete this buffer"
 nnoremap <Space>bD :bp<bar>sp<bar>bn<bar>bd!<CR>
@@ -99,7 +114,7 @@ nnoremap <Space>bb :Buffers<CR>
 let which_key_map_space.b.h = "home"
 nnoremap <Space>bh :Startify<CR>
 
-" SpaceMapping: Section s+: Search {{{1
+" [SpaceMapping] s+: Search {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.s.b = "FZF Search Current Files"
 nnoremap <Space>sb :lines<CR>
@@ -110,7 +125,7 @@ nnoremap <Space>sp :Ag<CR>
 let which_key_map_space.s.s = "FZF Search All Open Files"
 nnoremap <Space>ss :BLines<CR>
 
-" SpaceMapping: Section t+: Toggler {{{1
+" [SpaceMapping] t+: Toggler {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.t.n = "Toggle line number"
 nnoremap <Space>tn :setlocal number!<CR>:setlocal number?<CR>
@@ -118,9 +133,9 @@ let which_key_map_space.t.r = "Toggle relative line number"
 nnoremap <Space>tr :setlocal rnu!<CR>:setlocal rnu?<CR>
 
 
-" SpaceMapping: Section w+: Window {{{1
+" [SpaceMapping] w+: Window {{{1
 " ------------------------------------------------------------------------------
-"
+" TODO Make this more powerful
 let which_key_map_space.w.c = "Window Close"
 " nnoremap <Space>wc :close
 nnoremap <Space>wc :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
@@ -131,7 +146,7 @@ nnoremap <Space>wd :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
 let which_key_map_space.w.u = "Undo quit window"
 nnoremap <Space>wu :Undoquit<CR>
 
-" SpaceMapping: Section +: Misc {{{1
+" [SpaceMapping] +: Misc {{{1
 " ------------------------------------------------------------------------------
 " Search all open buffer
 let which_key_map_space['Space'] = "FZF Command Search"
@@ -152,7 +167,7 @@ nnoremap <Space>sc :noh<CR>
 
 
 
-" Section: Slash Key mappings {{{1
+" [Slash Key] mappings {{{1
 "--------------------------------------------------------------------------
 
 nmap \w :setlocal wrap!<CR>:setlocal wrap?<CR>
@@ -162,8 +177,16 @@ nmap \s :set foldmethod = syntax<CR>
 nmap \S :set foldmethod = marker<CR>
 
 
-" Section: Other Key mappings {{{1
+" [Other Keys] mappings {{{1
 "--------------------------------------------------------------------------
+
+" Some of them are used as object motions
+vnoremap " c""<Esc>hp
+" vnoremap ' c''<Esc>hp
+" vnoremap ( c()<Esc>hp
+vnoremap 9 c()<Esc>hp
+" vnoremap [ c[]<Esc>hp
+" vnoremap { c{}<Esc>hp
 
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
@@ -171,6 +194,8 @@ xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
+" Not vim stype but I am used to it. Similar to vscode, atom and sublime
+nnoremap <C-P> :Files<CR>
 
 nnoremap gj <C-W>j
 nnoremap gk <C-W>k
@@ -181,8 +206,7 @@ nnoremap gl <C-W>l
 nnoremap <silent><buffer> <C-j> i<CR><Esc>
 map <Leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
 
-
-" Enter for following
+" Map Enter to folding
 nnoremap <CR> za
 
 " Treat long lines as break lines (useful when moving around in them)
@@ -198,6 +222,7 @@ cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 nnoremap <leader>ec :Defx ~/.config/vim/custom/<CR>
 nnoremap <leader>em :e! ~/.config/vim/custom/400-mappings.vim<CR>
+nnoremap <leader>er :e! ~/.config/vim/custom/999-random.vim<CR>
 nnoremap <leader>ep :e! ~/.config/vim/custom/100-plugins.vim<CR>
 nnoremap <leader>eP :e! ~/.config/vim/custom/500-plugins-config.vim<CR>
 nnoremap <leader>ev :e! ~/.config/vim/vimrc<CR>

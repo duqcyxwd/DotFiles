@@ -1,4 +1,12 @@
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" /****************************************************************/
+" /*  ____  _             _          ____             __ _        */
+" /* |  _ \| |_   _  __ _(_)_ __    / ___|___  _ __  / _(_) __ _  */
+" /* | |_) | | | | |/ _` | | '_ \  | |   / _ \| '_ \| |_| |/ _` | */
+" /* |  __/| | |_| | (_| | | | | | | |__| (_) | | | |  _| | (_| | */
+" /* |_|   |_|\__,_|\__, |_|_| |_|  \____\___/|_| |_|_| |_|\__, | */
+" /*                |___/                                  |___/  */
+" /****************************************************************/
+
 " => acid.nvim {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:acid_auto_require = 1
@@ -15,31 +23,6 @@ let g:ale_linters = {'clojure': [], 'sh': []}
 " I've read that goimports is basically just like gofmt, plus it organizes your
 " imports and removes ones you aren't using. So, I prefer goimports over gofmt.
 let g:ale_fixers = {'go': ['goimports']}
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => airline {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" let g:airline_theme = 'luna'                         " airline colorscheme
-" let g:airline_powerline_fonts = 1                    " Fancy symbols
-" let g:airline#extensions#tabline#enabled = 1         " Enable the list of buffers
-" let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
-" let g:airline#extensions#tabline#tab_nr_type = 1     " Show buffer #, not # of splits
-" let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
-" let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
-" let g:airline#extensions#tabline#buffer_idx_mode = 1 " Show buffer index
-" let g:airline#extensions#hunks#enabled = 0 " don't show +N ~N -N for changed hunks
-" let g:airline_section_z = airline#section#create(['%3p%% ', 'linenr', ':%3v'])
-
-" nmap <leader>1 <Plug>AirlineSelectTab1
-" nmap <leader>2 <Plug>AirlineSelectTab2
-" nmap <leader>3 <Plug>AirlineSelectTab3
-" nmap <leader>4 <Plug>AirlineSelectTab4
-" nmap <leader>5 <Plug>AirlineSelectTab5
-" nmap <leader>6 <Plug>AirlineSelectTab6
-" nmap <leader>7 <Plug>AirlineSelectTab7
-" nmap <leader>8 <Plug>AirlineSelectTab8
-" nmap <leader>9 <Plug>AirlineSelectTab9
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -72,20 +55,6 @@ endfun
 augroup asciidoctor
   autocmd!
   autocmd BufEnter *.adoc,*.asciidoc call AsciidoctorMappings()
-augroup END
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => auto-pairs {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-augroup autopairs_config
-  " autocmd Filetype clojure let g:AutoPairsFlyMode = 1
-
-  " don't pair single quotes or backticks when editing lisp code
-  " autocmd Filetype lisp,scheme,clojure,lfe let b:AutoPairs = {'(':')', '[':']', '{':'}','"':'"'}
-
-  " disable auto-pairs for lisp -- it interferes with parinfer
-  autocmd Filetype lisp,scheme,clojure,lfe let b:AutoPairs = {}
 augroup END
 
 
@@ -373,23 +342,23 @@ let g:conjure#highlight#enabled = v:true
 
 " augroup additional_conjure_bindings
 "   autocmd!
-" 
+"
 "   autocmd FileType clojure,fennel,janet,racket
 "         \ nnoremap <buffer>
 "         \ <localleader>cc :call ToggleConjureLog()<CR>
 "   autocmd FileType clojure,fennel,janet,racket
 "         \ nnoremap <buffer>
 "         \ <localleader>cl :call ToggleConjureLog()<CR>
-" 
+"
 "   " mnemonic: eval prompt
 "   " (like how <localleader>ee is eval expression)
 "   autocmd FileType clojure,fennel,janet,racket
 "         \ nnoremap <buffer>
 "         \ <localleader>ep :ConjureEval<space>
-" 
+"
 "   " press q to close the log buffer
 "   autocmd BufEnter conjure-log-* nnoremap <buffer> q :Bclose<CR>
-" 
+"
 "   " Automatically enable AnsiEsc (interpret ANSI escape codes) for the Conjure
 "   " log buffer.
 "   " autocmd BufEnter conjure-log-* AnsiEsc
@@ -400,19 +369,19 @@ let g:conjure#highlight#enabled = v:true
 " " => ctrlp {{{1
 " """"""""""""""""""""""""""""""
 " let g:ctrlp_working_path_mode = 'ra'
-" 
+"
 " let g:ctrlp_map = '<c-f>'
 " " map <leader>j :CtrlP<cr>
 " " map <c-b> :CtrlPBuffer<cr>
-" 
+"
 " let g:ctrlp_max_height = 20
 " let g:ctrlp_custom_ignore = 'node_modules\|DS_Store\|^.git$\|_site'
 " let g:ctrlp_root_markers = ['pom.xml', '.p4ignore', 'project.clj']
-" 
+"
 " let g:ctrlp_use_caching = 0
 " if executable('ag')
 "     set grepprg=ag\ --nogroup\ --nocolor
-" 
+"
 "     let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 " else
 "   let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
@@ -449,118 +418,6 @@ endif
 
 " <ctrl><space> doesn't seem to be sent to Vim, for some reason.
 " nnoremap <space><space> :CtrlSpace<CR>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => defx {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" defx somewhat annoyingly doesn't provide any default mappings. I copy-pasted
-" this example config from :help defx and modified it.
-function! s:defx_my_settings() abort
-  " Define mappings
-  nnoremap <silent><buffer><expr> <CR>
-        \ defx#do_action('open')
-  nnoremap <silent><buffer><expr> c
-        \ defx#do_action('copy')
-  nnoremap <silent><buffer><expr> m
-        \ defx#do_action('move')
-  nnoremap <silent><buffer><expr> p
-        \ defx#do_action('paste')
-  nnoremap <silent><buffer><expr> l
-        \ defx#do_action('open')
-  nnoremap <silent><buffer><expr> E
-        \ defx#do_action('open', 'vsplit')
-  nnoremap <silent><buffer><expr> P
-        \ defx#do_action('open', 'pedit')
-  nnoremap <silent><buffer><expr> o
-        \ defx#do_action('open_or_close_tree')
-  nnoremap <silent><buffer><expr> K
-        \ defx#do_action('new_directory')
-  nnoremap <silent><buffer><expr> N
-        \ defx#do_action('new_file')
-  nnoremap <silent><buffer><expr> M
-        \ defx#do_action('new_multiple_files')
-  nnoremap <silent><buffer><expr> C
-        \ defx#do_action('toggle_columns',
-        \                'mark:indent:icon:filename:type:size:time')
-  nnoremap <silent><buffer><expr> S
-        \ defx#do_action('toggle_sort', 'time')
-  nnoremap <silent><buffer><expr> d
-        \ defx#do_action('remove')
-  nnoremap <silent><buffer><expr> r
-        \ defx#do_action('rename')
-  nnoremap <silent><buffer><expr> !
-        \ defx#do_action('execute_command')
-  nnoremap <silent><buffer><expr> x
-        \ defx#do_action('execute_system')
-  nnoremap <silent><buffer><expr> yy
-        \ defx#do_action('yank_path')
-  nnoremap <silent><buffer><expr> .
-        \ defx#do_action('toggle_ignored_files')
-  nnoremap <silent><buffer><expr> ;
-        \ defx#do_action('repeat')
-  nnoremap <silent><buffer><expr> h
-        \ defx#do_action('cd', ['..'])
-  nnoremap <silent><buffer><expr> ~
-        \ defx#do_action('cd')
-  nnoremap <silent><buffer><expr> q
-        \ defx#do_action('quit')
-  nnoremap <silent><buffer><expr> <Space>
-        \ defx#do_action('toggle_select') . 'j'
-  nnoremap <silent><buffer><expr> *
-        \ defx#do_action('toggle_select_all')
-  nnoremap <silent><buffer><expr> j
-        \ line('.') == line('$') ? 'gg' : 'j'
-  nnoremap <silent><buffer><expr> k
-        \ line('.') == 1 ? 'G' : 'k'
-  nnoremap <silent><buffer><expr> <C-l>
-        \ defx#do_action('redraw')
-  nnoremap <silent><buffer><expr> <C-g>
-        \ defx#do_action('print')
-  nnoremap <silent><buffer><expr> cd
-        \ defx#do_action('change_vim_cwd')
-  call defx#custom#option('_', {
-        \ 'columns': 'mark:indent:icon:filename:type:size:time',
-        \ })
-	call defx#custom#column('time', {
-	      \ 'format': '%Y-%m-%d %I:%M %p',
-	      \ })
-endfunction
-
-function! s:open_defx_if_directory() abort
-  " This throws an error if the buffer name contains unusual characters like
-  " [[buffergator]]. Desired behavior in those scenarios is to consider the
-  " buffer not to be a directory.
-  try
-    let l:full_path = expand(expand('%:p'))
-  catch
-    return
-  endtry
-
-  " If the path is a directory, delete the (useless) buffer and open defx for
-  " that directory instead.
-  if isdirectory(l:full_path)
-    execute "Defx `expand('%:p')` | bd " . expand('%:r')
-  endif
-endfunction
-
-augroup defx_config
-  autocmd!
-  autocmd FileType defx call s:defx_my_settings()
-
-  " It seems like BufReadPost should work for this, but for some reason, I can't
-  " get it to fire. BufEnter seems to be more reliable.
-  autocmd BufEnter * call s:open_defx_if_directory()
-augroup END
-
-" netrw apparently has a similar callback, because sometimes netrw opens instead
-" of defx! According to https://stackoverflow.com/a/21687112/2338327, this
-" disables netrw.
-let loaded_netrwPlugin = 1
-
-nnoremap <silent> -
-      \ :Defx `expand('%:p:h')`
-      \ -search=`expand('%:p')`<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -602,63 +459,6 @@ let g:elm_format_autosave = 0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " nnoremap <leader>r :Require!<CR>
 " nnoremap <leader>t :RunTests<CR>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => fzf {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" nnoremap <C-f> :FZF<CR>
-" nnoremap <C-g> :GFiles<CR>
-" nnoremap <C-g> :GFiles<CR>
-
-" I think I can't use <C-m> for this one because <C-m> is sort of the same thing
-" as Enter, so when I press Enter, :Maps<CR> is happening.
-nnoremap <leader>m :Maps<CR>
-
-" I can't use <C-h> because I use that to navigate between vim/tmux panes.
-nnoremap <leader>h :Helptags<CR>
-
-" I can't use <C-b> for this one because <C-b> is my tmux prefix key.
-"
-" Using <leader>bb instead of <leader>b because I have other buffer-related
-" mappings that start with <leader>b, e.g. <leader>bd to delete the current
-" buffer.
-nnoremap <leader>bl :Buffers<CR>
-
-" <C-t> is already the stock Vim keybinding for 'go back to where you were after
-" following a tag', and it's so ingrained in my muscle memory, I can't remap it
-" to something else. So this mapping is a bit of an oddball, but I'm OK with it.
-" It actually kind of fits in with the <leader>T mapping for tagbar, another Vim
-" plugin also related to tags, so it feels alright.
-"
-" Another note: I wanted <leader>t but I have other mappings for the neoterm
-" plugin that are <leader>t followed by another key. <leader>tt isn't so bad,
-" though.
-nnoremap <leader>tt :Tags<CR>
-
-" source: https://www.reddit.com/r/neovim/comments/djmehv/im_probably_really_late_to_the_party_but_fzf_in_a/f463fxr/
-let g:fzf_layout = { 'window': 'call FloatingFZF()' }
-
-function! FloatingFZF() abort
-  let buf = nvim_create_buf(v:false, v:true)
-  call setbufvar(buf, '&signcolumn', 'no')
-
-  let height = float2nr(15)
-  let width = float2nr(80)
-  let horizontal = float2nr((&columns - width) / 2)
-  let vertical = float2nr((&lines - height) / 2)
-
-  let opts = {
-        \ 'relative': 'editor',
-        \ 'row': vertical,
-        \ 'col': horizontal,
-        \ 'width': width,
-        \ 'height': height,
-        \ 'style': 'minimal'
-        \ }
-
-  call nvim_open_win(buf, v:true, opts)
-endfunction
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1139,26 +939,6 @@ nnoremap <Bslash>a f)i
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => startify {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:startify_custom_header = [
-      \ '               ________________________________   ',
-      \ '              /    o   oooo ooo oooo   o o o  /\  ',
-      \ '             /    oo  ooo  oo  oooo   o o o  / /  ',
-      \ '            /    _________________________  / /   ',
-      \ '           / // / // /// // /// // /// / / / /    ',
-      \ '          /___ //////////////////////////_/ /     ',
-      \ '          \____\________________________\_\/      ',
-      \ '',
-      \ '',
-      \ ]
-
-let g:startify_custom_indices = ['a', 'o', 'u', 'd', 'n', 'p', 'g', 'c', 'r', 'y', 'f', 'x', 'm', 'w', 'z', 'A', 'O', 'E', 'U', 'H', 'T', 'N', 'S', 'I', 'D', 'P', 'G', 'C', 'R', 'L', 'Y', 'F', 'Q', 'J', 'K', 'B', 'W', 'V', 'Z', 'X']
-
-let g:startify_enable_special = 0
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => syntastic {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:syntastic_python_checkers=['pyflakes']
@@ -1399,6 +1179,304 @@ augroup end
 
 
 """"""""""""""""""""""""""""""
+" => YankRing {{{1
+""""""""""""""""""""""""""""""
+if has("win16") || has("win32")
+    " Don't do anything
+else
+    let g:yankring_history_dir = '~/.vim_runtime/temp_dirs/'
+endif
+
+
+" Chuan's Config: ===================================================================================={{{1
+"
+" => airline {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:airline_theme = 'luna'                         " airline colorscheme
+let g:airline_powerline_fonts = 1                    " Fancy symbols
+let g:airline#extensions#tabline#enabled = 1         " Enable the list of buffers
+let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
+let g:airline#extensions#tabline#tab_nr_type = 1     " Show buffer #, not # of splits
+let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
+let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
+let g:airline#extensions#tabline#buffer_idx_mode = 1 " Show buffer index
+
+nmap <Space>1 <Plug>AirlineSelectTab1
+nmap <Space>2 <Plug>AirlineSelectTab2
+nmap <Space>3 <Plug>AirlineSelectTab3
+nmap <Space>4 <Plug>AirlineSelectTab4
+nmap <Space>5 <Plug>AirlineSelectTab5
+nmap <Space>6 <Plug>AirlineSelectTab6
+nmap <Space>7 <Plug>AirlineSelectTab7
+nmap <Space>8 <Plug>AirlineSelectTab8
+nmap <Space>9 <Plug>AirlineSelectTab9
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => auto-pairs {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+augroup autopairs_config
+  " autocmd Filetype clojure let g:AutoPairsFlyMode = 1
+
+  " don't pair single quotes or backticks when editing lisp code
+  " autocmd Filetype lisp,scheme,clojure,lfe let b:AutoPairs = {'(':')', '[':']', '{':'}','"':'"'}
+
+  " disable auto-pairs for lisp -- it interferes with parinfer
+  autocmd Filetype lisp,scheme,clojure,lfe let b:AutoPairs = {}
+
+
+  " Default
+  " let g:AutoPairs={'(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
+
+  " Don't auto pair " and { when it is vim mode
+  autocmd Filetype vim let b:AutoPairs = {'<':'>', '(':')', '[':']', "'":"'",'"':'', "`":"`", '```':'```', '""':'"', "'''":"'''"}
+
+
+augroup END
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => defx {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" defx somewhat annoyingly doesn't provide any default mappings. I copy-pasted
+" this example config from :help defx and modified it.
+function! s:defx_my_settings() abort
+  " Define mappings
+  nnoremap <silent><buffer><expr> <CR>
+        \ defx#do_action('open')
+  nnoremap <silent><buffer><expr> c
+        \ defx#do_action('copy')
+  nnoremap <silent><buffer><expr> m
+        \ defx#do_action('move')
+  nnoremap <silent><buffer><expr> p
+        \ defx#do_action('paste')
+  nnoremap <silent><buffer><expr> l
+        \ defx#do_action('open')
+  nnoremap <silent><buffer><expr> E
+        \ defx#do_action('open', 'vsplit')
+  nnoremap <silent><buffer><expr> P
+        \ defx#do_action('open', 'pedit')
+  nnoremap <silent><buffer><expr> o
+        \ defx#do_action('open_or_close_tree')
+  nnoremap <silent><buffer><expr> K
+        \ defx#do_action('new_directory')
+  nnoremap <silent><buffer><expr> N
+        \ defx#do_action('new_file')
+  nnoremap <silent><buffer><expr> M
+        \ defx#do_action('new_multiple_files')
+  nnoremap <silent><buffer><expr> C
+        \ defx#do_action('toggle_columns',
+        \                'mark:indent:icon:filename:type:size:time')
+  nnoremap <silent><buffer><expr> S
+        \ defx#do_action('toggle_sort', 'time')
+  nnoremap <silent><buffer><expr> d
+        \ defx#do_action('remove')
+  nnoremap <silent><buffer><expr> r
+        \ defx#do_action('rename')
+  nnoremap <silent><buffer><expr> !
+        \ defx#do_action('execute_command')
+  nnoremap <silent><buffer><expr> x
+        \ defx#do_action('execute_system')
+  nnoremap <silent><buffer><expr> yy
+        \ defx#do_action('yank_path')
+  nnoremap <silent><buffer><expr> .
+        \ defx#do_action('toggle_ignored_files')
+  nnoremap <silent><buffer><expr> ;
+        \ defx#do_action('repeat')
+  nnoremap <silent><buffer><expr> h
+        \ defx#do_action('cd', ['..'])
+  nnoremap <silent><buffer><expr> ~
+        \ defx#do_action('cd')
+  nnoremap <silent><buffer><expr> q
+        \ defx#do_action('quit')
+  nnoremap <silent><buffer><expr> <Space>
+        \ defx#do_action('toggle_select') . 'j'
+  nnoremap <silent><buffer><expr> *
+        \ defx#do_action('toggle_select_all')
+  nnoremap <silent><buffer><expr> j
+        \ line('.') == line('$') ? 'gg' : 'j'
+  nnoremap <silent><buffer><expr> k
+        \ line('.') == 1 ? 'G' : 'k'
+  nnoremap <silent><buffer><expr> <C-l>
+        \ defx#do_action('redraw')
+  nnoremap <silent><buffer><expr> <C-g>
+        \ defx#do_action('print')
+  nnoremap <silent><buffer><expr> cd
+        \ defx#do_action('change_vim_cwd')
+  call defx#custom#option('_', {
+        \ 'columns': 'mark:indent:icon:filename:type:size:time',
+        \ })
+	call defx#custom#column('time', {
+	      \ 'format': '%Y-%m-%d %I:%M %p',
+	      \ })
+endfunction
+
+function! s:open_defx_if_directory() abort
+  " This throws an error if the buffer name contains unusual characters like
+  " [[buffergator]]. Desired behavior in those scenarios is to consider the
+  " buffer not to be a directory.
+  try
+    let l:full_path = expand(expand('%:p'))
+  catch
+    return
+  endtry
+
+  " If the path is a directory, delete the (useless) buffer and open defx for
+  " that directory instead.
+  if isdirectory(l:full_path)
+    execute "Defx `expand('%:p')` | bd " . expand('%:r')
+  endif
+endfunction
+
+augroup defx_config
+  autocmd!
+  autocmd FileType defx call s:defx_my_settings()
+
+  " It seems like BufReadPost should work for this, but for some reason, I can't
+  " get it to fire. BufEnter seems to be more reliable.
+  autocmd BufEnter * call s:open_defx_if_directory()
+augroup END
+
+" netrw apparently has a similar callback, because sometimes netrw opens instead
+" of defx! According to https://stackoverflow.com/a/21687112/2338327, this
+" disables netrw.
+let loaded_netrwPlugin = 1
+
+nnoremap <silent> -
+      \ :Defx `expand('%:p:h')`
+      \ -search=`expand('%:p')`<CR>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" => findroot {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" If you allow changing directory that goes up from sub-directory:
+let g:findroot_not_for_subdir = 0
+let g:findroot_patterns = [
+      \  '.git/',
+      \  '.svn/',
+      \  '.hg/',
+      \  '.bzr/',
+      \  '.gitignore',
+      \  'Rakefile',
+      \  'pom.xml',
+      \  'project.clj',
+      \  '*.csproj',
+      \  '*.sln',
+      \  '.vimroot',
+      \]
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => fzf {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" nnoremap <C-f> :FZF<CR>
+" nnoremap <C-g> :GFiles<CR>
+" nnoremap <C-g> :GFiles<CR>
+
+" source: https://www.reddit.com/r/neovim/comments/djmehv/im_probably_really_late_to_the_party_but_fzf_in_a/f463fxr/
+" https://github.com/junegunn/fzf.vim/issues/664
+let g:fzf_layout = { 'window': 'call FloatingFZF()' }
+let $FZF_DEFAULT_OPTS .= " --ansi --border --layout=reverse --bind 'up:previous-history' "
+let $FZF_DEFAULT_OPTS .= " --bind 'down:next-history' --bind 'ctrl-p:up' --bind 'ctrl-n:down' "
+" let $FZF_DEFAULT_OPTS .= " --margin=1,4"
+
+" https://www.erickpatrick.net/blog/adding-syntax-highlighting-to-fzf.vim-preview-window
+" let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4"
+
+function! FloatingFZF() abort
+  " echom $FZF_DEFAULT_OPTS
+  let buf = nvim_create_buf(v:false, v:true)
+  call setbufvar(buf, '&signcolumn', 'no')
+
+  " let height = float2nr(15)
+  " let width = float2nr(80)
+  let width = float2nr(&columns * 0.9)
+  let height = float2nr(&lines * 0.6)
+  let col = float2nr((&columns - width) / 2)
+  let row = float2nr((&lines - height) / 2)
+
+  let opts = {
+        \ 'relative': 'editor',
+        \ 'row': row,
+        \ 'col': col,
+        \ 'width': width,
+        \ 'height': height,
+        \ 'style': 'minimal'
+        \ }
+
+  call nvim_open_win(buf, v:true, opts)
+endfunction
+
+" This is the default extra key bindings
+" let g:fzf_action = {
+"       \ 'ctrl-t': 'tab split',
+"       \ 'ctrl-x': 'split',
+"       \ 'ctrl-v': 'vsplit' }
+
+let g:fzf_files_options= '--preview "bat {} 2> /dev/null | head 100" --bind "?:toggle-preview"'
+let g:fzf_history_dir = '~/.local/share/fzf-history'
+
+" Customize fzf colors to match your color scheme
+" - fzf#wrap translates this to a set of `--color` options
+let g:fzf_colors =
+      \ { 'fg':      ['fg', 'Normal'],
+      \ 'bg':      ['bg', 'Normal'],
+      \ 'hl':      ['fg', 'Comment'],
+      \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
+      \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
+      \ 'hl+':     ['fg', 'Statement'],
+      \ 'info':    ['fg', 'PreProc'],
+      \ 'border':  ['fg', 'Ignore'],
+      \ 'prompt':  ['fg', 'Conditional'],
+      \ 'pointer': ['fg', 'Exception'],
+      \ 'marker':  ['fg', 'Keyword'],
+      \ 'spinner': ['fg', 'Label'],
+      \ 'header':  ['fg', 'Comment'] }
+
+" Use esc to kill fzf
+
+" augroup FZFVIM
+"   if has("nvim")
+"     autocmd!
+"     au TermOpen * tnoremap <Esc> <c-\><c-n>
+"     au FileType fzf tunmap <Esc>
+"   endif
+" augroup END
+
+" Mapping selecting mappings
+nmap <leader><tab> <plug>(fzf-maps-n)
+xmap <leader><tab> <plug>(fzf-maps-x)
+omap <leader><tab> <plug>(fzf-maps-o)
+
+" Insert mode completion
+" imap <c-x><c-k> <plug>(fzf-complete-word)
+" imap <c-x><c-f> <plug>(fzf-complete-path)
+" imap <c-x><c-l> <plug>(fzf-complete-line)
+
+" When Escape is pressed while in Terminal mode:
+" * If it's the FZF buffer, close it.
+" * Otherwise, enter Normal mode.
+tnoremap <silent> <esc> <C-\><C-n>:silent! call QuitFZFBuffer()<CR>
+
+" This mostly works, but results in errors like this sometimes being printed
+" in the the output that prints to the terminal AFTER exiting Vim:
+"
+" Error detected while processing function 57:
+" line   17:
+" E516: No buffers were deleted: bd! 7
+" Error running ( bash '/tmp/user/1000/nvimdrsnj1/10' )|'/home/dave/.fzf/bin/fzf'  '--multi' '--prompt' '~/.dotfiles/' --expect=ctrl-v,ctrl-x,ctrl-t --no-height > /tmp/user/1000/nvimdrsnj1/9
+"
+" Commenting it out for now, so I just have to use ^C to exit the FZF buffer. It
+" sure would be nice to be able to use Escape to exit it, instead. Oh well.
+function! QuitFZFBuffer() abort
+  " if bufname("%") =~ "fzf"
+  "   normal i<C-c>
+  "   bwipeout!
+  " endif
+endfunction
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => which-key {{{1
 """"""""""""""""""""""""""""""
 nnoremap <silent> <leader>      :<c-u>WhichKey ','<CR>
@@ -1430,7 +1508,7 @@ vnoremap <silent> <Space>       :<c-u>WhichKeyVisual '<Space>'<CR>
 "       \ 'l': 'list buffers',
 "       \ 'o': 'delete all other buffers'
 "       \ }
-" 
+"
 " let g:which_key_map_leader.c = {
 "       \ 'name': '+coc',
 "       \ 'c': 'toggle coc',
@@ -1438,7 +1516,7 @@ vnoremap <silent> <Space>       :<c-u>WhichKeyVisual '<Space>'<CR>
 "       \ 'f': 'coc: format selected',
 "       \ 'i': 'coc info'
 "       \ }
-" 
+"
 " let g:which_key_map_leader.e = {
 "       \ 'name': '+edit',
 "       \ 'c': 'config directory',
@@ -1503,10 +1581,41 @@ let g:which_key_map_leader.B = {
       \ }
 
 """"""""""""""""""""""""""""""
-" => YankRing {{{1
-""""""""""""""""""""""""""""""
-if has("win16") || has("win32")
-    " Don't do anything
-else
-    let g:yankring_history_dir = '~/.vim_runtime/temp_dirs/'
-endif
+" => startify {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:startify_custom_header = [
+      \ '',
+      \' /**********************************************************************/',
+      \' /*       ___          ___          ___          ___          ___      */',
+      \' /*      /\  \        /\  \        /\  \        /\__\        /|  |     */',
+      \' /*      \:\  \       \:\  \      /::\  \      /:/  /       |:|  |     */',
+      \' /*       \:\  \       \:\  \    /:/\:\  \    /:/  /        |:|  |     */',
+      \' /*   ___ /::\  \  ___ /::\  \  /:/ /::\  \  /:/  /  ___  __|:|  |     */',
+      \' /*  /\  /:/\:\__\/\  /:/\:\__\/:/_/:/\:\__\/:/__/  /\__\/\ |:|__|____ */',
+      \' /*  \:\/:/  \/__/\:\/:/  \/__/\:\/:/  \/__/\:\  \ /:/  /\:\/:::::/__/ */',
+      \' /*   \::/__/      \::/__/      \::/__/      \:\  /:/  /  \::/~~/~     */',
+      \' /*    \:\  \       \:\  \       \:\  \       \:\/:/  /    \:\~~\      */',
+      \' /*     \:\__\       \:\__\       \:\__\       \::/  /      \:\__\     */',
+      \' /*      \/__/        \/__/        \/__/        \/__/        \/__/     */',
+      \' /* Happy Hacking                                                      */',
+      \' /**********************************************************************/',
+      \ ]
+
+" Reopen session if there is session.vim in current directory
+let g:startify_session_autoload    = 1
+let g:startify_files_number = 5
+let g:startify_enable_special = 0
+let g:startify_session_persistence = 1
+let g:startify_bookmarks = [{'c': '~/.config/vim/nvimrc'}, {'z': '~/.config/zsh/zshrc'}]
+
+
+let g:startify_lists = [
+      \ { 'type': 'files',     'header': ['   MRU']            },
+      \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
+      \ { 'type': 'sessions',  'header': ['   Sessions']       },
+      \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
+      \ { 'type': 'commands',  'header': ['   Commands']       },
+      \ ]
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

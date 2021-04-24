@@ -39,8 +39,12 @@ Plug 'evedovelli/rst-robotframework-syntax-vim'
 Plug 'folke/tokyonight.nvim'
 Plug 'mhartington/oceanic-next'
 
+" Misc+ {{{2
+Plug 'tpope/vim-fugitive'
+
 " WIP {{{2
 Plug 'yuki-yano/fzf-preview.vim'
+
 
 
 
@@ -55,6 +59,9 @@ Plug 'morhetz/gruvbox'
 Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'vim-scripts/mayansmoke'
+
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 
 " editor enhancements {{{2
 " ------------------------------------------------------------------------------
@@ -142,7 +149,6 @@ Plug 'lambdalisue/gina.vim'
 Plug 'mileszs/ack.vim'
 Plug 'szw/vim-dict'
 Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
 Plug 'tyru/open-browser.vim'
 Plug 'Valloric/ListToggle'

@@ -9,10 +9,6 @@
 " ------------------------------------------------------------------------------
 " Chuan's Settings =>  {{{1
 " remap leader key to ,
-let mapleader = ","
-let g:mapleader = ","
-
-let g:easy_align_delimiters = {}
 
 filetype indent on          " Enable filetype plugins
 filetype plugin on          " Enable filetype plugins
@@ -152,6 +148,12 @@ endfunction
 "         \ if argc() == 0 && filereadable($HOME . "/.vim/Session.vim") |
 "         \ execute "source " . $HOME . "/.vim/Session.vim"
 " augroup END
+
+" Save last session using startify
+augroup save_last_session
+  autocmd!
+  autocmd VimLeave * SSave! last-open-session
+augroup END
 
 " Turn persistent undo on (means that you can undo even when you close a
 " buffer/VIM)
