@@ -1,39 +1,53 @@
-
 " TODO Fix this
 "
 call plug#begin('/Users/EYONDUU/.local/share/nvim/plug')
 
 "New for chuan {{{1
-Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
+" ------------------------------------------------------------------------------
 Plug 'mhinz/vim-startify'
 
-Plug 'tpope/vim-fireplace/'
 Plug 'mattn/vim-findroot'
-
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 
 " Use project rooter
 " Plug 'ctrlpvim/ctrlp.vim'
 
-"End for chuan
-
-" clojure things
+" Clojure things {{{2
 " Plug 'eraserhd/parinfer-rust', {'do': 'cargo build --release'}
+Plug 'Olical/conjure'
 Plug 'guns/vim-clojure-static'
 Plug 'guns/vim-sexp'
 Plug 'luochen1990/rainbow'
-Plug 'Olical/conjure'
+Plug 'tpope/vim-fireplace/'
+Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
 
 " Plug 'tpope/vim-sexp-mappings-for-regular-people'
 
-" editor enhancements
+" Editor enhancements {{{2
 Plug 'junegunn/vim-easy-align'
-Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'AndrewRadev/undoquit.vim'
+
+" Language {{{2
+" WIP
+Plug 'evedovelli/rst-robotframework-syntax-vim'
+
+" Aesthetic {{{2
+" ------------------------------------------------------------------------------
+Plug 'folke/tokyonight.nvim'
+Plug 'mhartington/oceanic-next'
+
+" WIP {{{2
+Plug 'yuki-yano/fzf-preview.vim'
+
+
 
 "Default {{{1
-
-" aesthetic
+" ------------------------------------------------------------------------------
+" aesthetic {{{2
+" ------------------------------------------------------------------------------
 Plug 'ayu-theme/ayu-vim'
 Plug 'cormacrelf/vim-colors-github'
 Plug 'itchyny/lightline.vim'
@@ -42,7 +56,9 @@ Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'vim-scripts/mayansmoke'
 
-" editor enhancements
+" editor enhancements {{{2
+" ------------------------------------------------------------------------------
+Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'airblade/vim-gitgutter'
 Plug 'benmills/vimux'
 Plug 'christoomey/vim-tmux-navigator'
@@ -52,8 +68,6 @@ Plug 'gerw/vim-HiLinkTrace'
 Plug 'godlygeek/tabular'
 Plug 'jeetsukumaran/vim-buffergator'
 Plug 'jiangmiao/auto-pairs'
-Plug 'junegunn/fzf.vim'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'kassio/neoterm'
 Plug 'kshenoy/vim-signature'
 Plug 'liuchengxu/vim-which-key'
@@ -72,7 +86,8 @@ Plug 'tpope/vim-unimpaired'
 Plug 'unblevable/quick-scope'
 " Plug 'vim-scripts/gitignore'
 
-" other languages/filetypes
+" other languages/filetypes {{{2
+" ------------------------------------------------------------------------------
 Plug 'adimit/prolog.vim'
 Plug 'aklt/plantuml-syntax'
 Plug 'bakpakin/fennel.vim'
@@ -118,7 +133,8 @@ Plug 'vlime/vlime', {'rtp': 'vim/'}
 Plug 'wlangstroth/vim-racket'
 Plug 'zah/nim.vim'
 
-" misc
+" misc {{{2
+" ------------------------------------------------------------------------------
 Plug 'chrisbra/unicode.vim'
 Plug 'jreybert/vimagit'
 Plug 'junegunn/gv.vim'

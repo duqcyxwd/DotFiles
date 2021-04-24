@@ -36,14 +36,21 @@ endfunction
 
 " i use this theme most of the time
 function! s:DarkMode() abort
+
   let g:colorscheme_mode = 'dark'
-  let g:gruvbox_italic=1
-  set background=dark
-  colorscheme gruvbox
+
+  " let g:gruvbox_italic=1
+  " set background=dark
+  " colorscheme gruvbox
+
   let g:lightline.colorscheme = 'onehalfdark'
 
   " let ayucolor="dark"
   " colorscheme ayu
+
+  let ayucolor="mirage" " for mirage version of theme
+  let ayucolor="dark"   " for dark version of theme
+  colorscheme ayu
 
   call s:RefreshLightline()
 endfunction
@@ -66,6 +73,9 @@ function! s:LightMode() abort
   colorscheme github
   let g:lightline.colorscheme = 'github'
 
+  " let ayucolor="light"   " for dark version of theme
+  " colorscheme ayu
+
   call s:RefreshLightline()
 endfunction
 command! LightMode call s:LightMode()
@@ -82,3 +92,4 @@ nnoremap <leader>M :ToggleColorschemeMode<CR>
 
 " Start in dark mode
 call s:DarkMode()
+" call s:LightMode()

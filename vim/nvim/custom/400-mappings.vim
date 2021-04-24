@@ -50,7 +50,7 @@ map <Space>fa <Plug>(EasyAlign)
 
 
 let g:which_key_map_space.f.e = "Reopen current file"
-nnoremap <Space>fS :e!<CR>
+nnoremap <Space>fe :e!<CR>
 
 
 let which_key_map_space.f.r = "Open Recent files"
@@ -85,12 +85,19 @@ nnoremap <Space>pf :Files<CR>
 " SpaceMapping: Section b+: Buffers {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.b.d = "delete this buffer"
-nnoremap <Space>bd :bdelete<CR>
+" nnoremap <Space>bd :bp<bar>sp<bar>bn<bar>bd<CR>
+" nnoremap <Space>bd :bd<CR>
+" nnoremap <Space>bd :UndoableTabclose<CR>
+nnoremap <Space>wd :call undoquit#SaveWindowQuitHistory()<CR>:bd<CR>
 
 let which_key_map_space.b.D = "Force delete this buffer"
-nnoremap <Space>bD :bdelete!<CR>
+nnoremap <Space>bD :bp<bar>sp<bar>bn<bar>bd!<CR>
+
 let which_key_map_space.b.b = "List all buffers"
 nnoremap <Space>bb :Buffers<CR>
+
+let which_key_map_space.b.h = "home"
+nnoremap <Space>bh :Startify<CR>
 
 " SpaceMapping: Section s+: Search {{{1
 " ------------------------------------------------------------------------------
@@ -101,7 +108,7 @@ nnoremap <Space>sl :Rg<CR>
 let which_key_map_space.s.p = "FZF <ag> Search Current Project"
 nnoremap <Space>sp :Ag<CR>
 let which_key_map_space.s.s = "FZF Search All Open Files"
-nnoremap <Space>ss :Blines<CR>
+nnoremap <Space>ss :BLines<CR>
 
 " SpaceMapping: Section t+: Toggler {{{1
 " ------------------------------------------------------------------------------
@@ -115,10 +122,14 @@ nnoremap <Space>tr :setlocal rnu!<CR>:setlocal rnu?<CR>
 " ------------------------------------------------------------------------------
 "
 let which_key_map_space.w.c = "Window Close"
-nnoremap <Space>wc <C-w><C-c>
+" nnoremap <Space>wc :close
+nnoremap <Space>wc :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
 
 let which_key_map_space.w.d = "Window Delete"
-nnoremap <Space>wd <C-w><C-c>
+nnoremap <Space>wd :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
+
+let which_key_map_space.w.u = "Undo quit window"
+nnoremap <Space>wu :Undoquit<CR>
 
 " SpaceMapping: Section +: Misc {{{1
 " ------------------------------------------------------------------------------
@@ -129,7 +140,7 @@ nnoremap <Space><Space> :Commands<CR>
 let which_key_map_space['\'] = "FZF Command History Search"
 nnoremap <silent> <Space>\ :History:<CR>
 
-
+" https://stackoverflow.com/questions/51644477/reuse-vim-terminal-buffer
 let which_key_map_space["'"] = "Terminal"
 nnoremap <silent> <Space>' :sp term://zsh<CR>
 
@@ -167,7 +178,7 @@ nnoremap gh <C-W>h
 nnoremap gl <C-W>l
 
 
-nnoremap <silent><buffer> <C-j>           i<CR><Esc>
+nnoremap <silent><buffer> <C-j> i<CR><Esc>
 map <Leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
 
 
@@ -185,10 +196,17 @@ cnoremap <C-K> <C-U>
 
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
+nnoremap <leader>ec :Defx ~/.config/vim/custom/<CR>
+nnoremap <leader>em :e! ~/.config/vim/custom/400-mappings.vim<CR>
+nnoremap <leader>ep :e! ~/.config/vim/custom/100-plugins.vim<CR>
+nnoremap <leader>eP :e! ~/.config/vim/custom/500-plugins-config.vim<CR>
+nnoremap <leader>ev :e! ~/.config/vim/vimrc<CR>
 
-nnoremap <leader>ec :Defx ~/.nvim/custom/<CR>
-nnoremap <leader>em :e! ~/.nvim/custom/400-mappings.vim<CR>
-nnoremap <leader>ep :e! ~/.nvim/custom/100-plugins.vim<CR>
-nnoremap <leader>eP :e! ~/.nvim/custom/500-plugins-config.vim<CR>
-nnoremap <leader>ev :e! ~/.nvim/vimrc<CR>
-nnoremap <leader>sv :source ~/.vimrc<CR>
+" easy align: ga <Left>, Indent keep
+" https://stackoverflow.com/a/24717020/2727296
+" :help cmdline-special.
+
+nnoremap <leader>es :so %<CR>|                   " Srouce current file
+nnoremap <leader>sv :so ~/.config/vim/vimrc<CR>| " Srouce .vimrc
+
+
