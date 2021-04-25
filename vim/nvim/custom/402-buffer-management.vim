@@ -19,10 +19,10 @@ function! <SID>BufcloseCloseIt() abort
    endif
 endfunction
 
-nnoremap H :bp<CR>
-nnoremap L :bn<CR>
-nnoremap <leader>, :b#<CR>
-nnoremap Q :bp <BAR> bd #<CR>
+" nnoremap H :bp<CR>
+" nnoremap L :bn<CR>
+" nnoremap <leader>, :b#<CR>
+" nnoremap Q :bp <BAR> bd #<CR>
 
 " Close the current buffer
 nnoremap <leader>bd :Bclose<cr>

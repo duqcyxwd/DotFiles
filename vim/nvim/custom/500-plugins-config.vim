@@ -32,23 +32,23 @@ let g:asciidoctor_fenced_languages = ['python', 'clojure']
 
 " Function to create buffer local mappings
 fun! AsciidoctorMappings()
-  nnoremap <buffer> <localleader>oo :AsciidoctorOpenRAW<CR>
-  nnoremap <buffer> <localleader>op :AsciidoctorOpenPDF<CR>
-  nnoremap <buffer> <localleader>oh :AsciidoctorOpenHTML<CR>
-  nnoremap <buffer> <localleader>ox :AsciidoctorOpenDOCX<CR>
-  nnoremap <buffer> <localleader>ch :Asciidoctor2HTML<CR>
-  nnoremap <buffer> <localleader>cp :Asciidoctor2PDF<CR>
-  nnoremap <buffer> <localleader>cx :Asciidoctor2DOCX<CR>
+  " nnoremap <buffer> <localleader>oo :AsciidoctorOpenRAW<CR>
+  " nnoremap <buffer> <localleader>op :AsciidoctorOpenPDF<CR>
+  " nnoremap <buffer> <localleader>oh :AsciidoctorOpenHTML<CR>
+  " nnoremap <buffer> <localleader>ox :AsciidoctorOpenDOCX<CR>
+  " nnoremap <buffer> <localleader>ch :Asciidoctor2HTML<CR>
+  " nnoremap <buffer> <localleader>cp :Asciidoctor2PDF<CR>
+  " nnoremap <buffer> <localleader>cx :Asciidoctor2DOCX<CR>
 
-  nnoremap <buffer> <localleader>H
-        \ :silent! Asciidoctor2HTML<CR>
-        \ :silent! AsciidoctorOpenHTML<CR>
-  nnoremap <buffer> <localleader>P
-        \ :silent! Asciidoctor2PDF<CR>
-        \ :silent! AsciidoctorOpenPDF<CR>
-  nnoremap <buffer> <localleader>D
-        \ :silent! Asciidoctor2DOCX<CR>
-        \ :silent! AsciidoctorOpenDOCX<CR>
+  " nnoremap <buffer> <localleader>H
+  "       \ :silent! Asciidoctor2HTML<CR>
+  "       \ :silent! AsciidoctorOpenHTML<CR>
+  " nnoremap <buffer> <localleader>P
+  "       \ :silent! Asciidoctor2PDF<CR>
+  "       \ :silent! AsciidoctorOpenPDF<CR>
+  " nnoremap <buffer> <localleader>D
+  "       \ :silent! Asciidoctor2DOCX<CR>
+  "       \ :silent! AsciidoctorOpenDOCX<CR>
 endfun
 
 " Call AsciidoctorMappings for all `*.adoc` and `*.asciidoc` files
@@ -77,7 +77,7 @@ function! StripWhitespace() abort
   " endtry
 endfunction
 
-nnoremap <silent> <leader><Space> :call StripWhitespace()<CR>
+" nnoremap <silent> <leader><Space> :call StripWhitespace()<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -132,9 +132,9 @@ function! ToggleCoc() abort
   endif
 endfunction
 
-nnoremap <silent> <leader>cc :call ToggleCoc()<CR>
-nnoremap <leader>cd :CocList diagnostics<CR>
-nnoremap <leader>ci :CocInfo<CR>
+" nnoremap <silent> <leader>cc :call ToggleCoc()<CR>
+" nnoremap <leader>cd :CocList diagnostics<CR>
+" nnoremap <leader>ci :CocInfo<CR>
 
 " press q to close e.g. the :CocInfo buffer
 augroup coc_buffers
@@ -228,8 +228,8 @@ augroup coc_highlight_symbol_under_cursor
   autocmd!
   autocmd CursorHold * silent call CocActionAsync('highlight')
 augroup END
-vmap <leader>cf <Plug>(coc-format-selected)
-nmap <leader>cf <Plug>(coc-format-selected)
+" vmap <leader>cf <Plug>(coc-format-selected)
+" nmap <leader>cf <Plug>(coc-format-selected)
 
 nnoremap <silent> crcc :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'cycle-coll', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
 nnoremap <silent> crth :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
@@ -302,70 +302,6 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => conjure {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" NOTE: I'd like to have a good setup where ANSI escape codes are interpreted in
-" the Conjure log buffer. Currently, neither Colorizer nor Olical's fork of
-" AnsiEsc are doing this as well as I'd like. I think Olical/AnsiEsc is more
-" likely to get there with time (Colorizer seems to be under-maintained), but
-" for now, Colorizer is marginally better, so I'm sticking with Colorizer for
-" now. I'm leaving AnsiEsc config intact below, ready to be un-commented when I
-" inevitably switch back over to Olical/AnsiEsc.
-
-" Disable the default ANSI escape code stripping so that I can use a separate
-" plugin to interpret them and display the colors.
-" let g:conjure#log#strip_ansi_escape_sequences_line_limit = 0
-
-let g:conjure#log#hud#passive_close_delay = 1000
-
-let g:conjure#highlight#enabled = v:true
-
-" let g:conjure#filetype#sicp = "conjure.client.racket.stdio"
-
-" function! ToggleConjureLog() abort
-"   if expand('%:t') =~ ".*conjure-log-.*"
-"     execute 'Bclose'
-"   else
-"     " Ideally I could call some function provided by Conjure directly to do
-"     " this, but I wasn't able to figure out how to do that. This mapping will
-"     " need to be adjusted if I ever configure Conjure to use a different mapping
-"     " to open the log in a tab, or if Conjure ever changes the default mapping.
-"     " I think those two things are both pretty unlikely to happen, so meh.
-"     "
-"     " Another thing worth noting: normal apparently doesn't work with <leader>
-"     " and <localleader>, so you have to do some hackery like what's going on
-"     " here (https://vi.stackexchange.com/a/7780/25687) or just give up and type
-"     " your actual (local)leader key in the mapping. I'm doing the second one.
-"     normal \lt
-"   endif
-" endfunction
-
-" augroup additional_conjure_bindings
-"   autocmd!
-"
-"   autocmd FileType clojure,fennel,janet,racket
-"         \ nnoremap <buffer>
-"         \ <localleader>cc :call ToggleConjureLog()<CR>
-"   autocmd FileType clojure,fennel,janet,racket
-"         \ nnoremap <buffer>
-"         \ <localleader>cl :call ToggleConjureLog()<CR>
-"
-"   " mnemonic: eval prompt
-"   " (like how <localleader>ee is eval expression)
-"   autocmd FileType clojure,fennel,janet,racket
-"         \ nnoremap <buffer>
-"         \ <localleader>ep :ConjureEval<space>
-"
-"   " press q to close the log buffer
-"   autocmd BufEnter conjure-log-* nnoremap <buffer> q :Bclose<CR>
-"
-"   " Automatically enable AnsiEsc (interpret ANSI escape codes) for the Conjure
-"   " log buffer.
-"   " autocmd BufEnter conjure-log-* AnsiEsc
-" augroup END
-
-
-" """"""""""""""""""""""""""""""
 " " => ctrlp {{{1
 " """"""""""""""""""""""""""""""
 " let g:ctrlp_working_path_mode = 'ra'
@@ -402,11 +338,11 @@ let g:ctrlsf_winsize = '100%'
 "
 " As a workaround, this rg option has the same desired effect.
 let g:ctrlsf_extra_backend_args = {'rg': '--glob !tags'}
-nmap <leader>f <Plug>CtrlSFPrompt
-vmap <leader>f <Plug>CtrlSFVwordExec
-nmap <leader>F :CtrlSFOpen<CR>:CtrlSFUpdate<CR>
-nmap <leader>td :CtrlSF -R TODO<bar>FIXME<CR>
-nmap <leader>8 :CtrlSF -R '.{81,}'<CR>
+" nmap <leader>f <Plug>CtrlSFPrompt
+" vmap <leader>f <Plug>CtrlSFVwordExec
+" nmap <leader>F :CtrlSFOpen<CR>:CtrlSFUpdate<CR>
+" nmap <leader>td :CtrlSF -R TODO<bar>FIXME<CR>
+" nmap <leader>8 :CtrlSF -R '.{81,}'<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -466,21 +402,21 @@ let g:elm_format_autosave = 0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:gina#action#index#discard_directories = 1
 
-nnoremap <leader>g<space> :Gina<space>
-nnoremap <leader>gA :Gina add --all<CR>:Gina status<CR>
+" nnoremap <leader>g<space> :Gina<space>
+" nnoremap <leader>gA :Gina add --all<CR>:Gina status<CR>
 " this one actually comes from fugitive because I like its output better than
 " :Gina blame. Putting it here so that I don't have to look in two places for
 " all my git-related keybindings.
-nnoremap <leader>gb :Git blame<CR>
-nnoremap <leader>gc :Gina commit -v<CR>gg0i
-nnoremap <leader>gd :Gina diff<CR>
-nnoremap <leader>gD :Gina diff -w<CR>
-nnoremap <leader>gg :Gina grep<space>
-nnoremap <leader>gi :Gina init<CR>
-nnoremap <leader>gl :Gina log --graph --pretty=format:"%C(yellow)%h %ad%Cred%d %Creset%s%Cblue [%cn]" --decorate --all --date=short<CR><CR>
-nnoremap <leader>gp :Gina push<CR>
-nnoremap <leader>gs :Gina status<CR>
-nnoremap <leader>gS :Gina show<CR>
+" nnoremap <leader>gb :Git blame<CR>
+" nnoremap <leader>gc :Gina commit -v<CR>gg0i
+" nnoremap <leader>gd :Gina diff<CR>
+" nnoremap <leader>gD :Gina diff -w<CR>
+" nnoremap <leader>gg :Gina grep<space>
+" nnoremap <leader>gi :Gina init<CR>
+" nnoremap <leader>gl :Gina log --graph --pretty=format:"%C(yellow)%h %ad%Cred%d %Creset%s%Cblue [%cn]" --decorate --all --date=short<CR><CR>
+" nnoremap <leader>gp :Gina push<CR>
+" nnoremap <leader>gs :Gina status<CR>
+" nnoremap <leader>gS :Gina show<CR>
 
 " press q to close gina buffers
 augroup gina_buffers
@@ -535,15 +471,6 @@ let g:go_highlight_build_constraints = 1
 " I've read that goimports is basically just like gofmt, plus it organizes your
 " imports and removes ones you aren't using. So, I prefer goimports over gofmt.
 let g:gofmt_exe = 'goimports'
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => goyo {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:goyo_width=100
-let g:goyo_margin_top = 2
-let g:goyo_margin_bottom = 2
-nnoremap <silent> <leader>z :Goyo<cr>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -969,10 +896,10 @@ nnoremap ga :UnicodeName<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vimagit {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:magit_show_help = 0
-let g:magit_toggle_help_mapping = '?'
-let g:magit_discard_untracked_do_delete=1
-let g:magit_show_magit_mapping='<leader>G'
+" let g:magit_show_help = 0
+" let g:magit_toggle_help_mapping = '?'
+" let g:magit_discard_untracked_do_delete=1
+" let g:magit_show_magit_mapping='<leader>G'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1019,26 +946,26 @@ set grepprg=/bin/grep\ -nH
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Prompt for a command to be run in a 20% lower tmux split, without losing
 " focus on vim :)
-nnoremap <leader>vp :VimuxPromptCommand<CR>
-nnoremap <leader>v<space> :VimuxPromptCommand<CR>
+" nnoremap <leader>vp :VimuxPromptCommand<CR>
+" nnoremap <leader>v<space> :VimuxPromptCommand<CR>
 
 " Opens a shell in the split.
-nnoremap <leader>vo :call VimuxOpenRunner()<CR>
+" nnoremap <leader>vo :call VimuxOpenRunner()<CR>
 
 " Re-run the last command.
-nnoremap <leader>vv :VimuxRunLastCommand<CR>
+" nnoremap <leader>vv :VimuxRunLastCommand<CR>
 
 " Interrupt whatever process is running in the runner pane.
-nnoremap <leader>vi :VimuxInterruptRunner<CR>
+" nnoremap <leader>vi :VimuxInterruptRunner<CR>
 
 " Zoom the runner pane.
-nnoremap <leader>vz :VimuxZoomRunner<CR>
+" nnoremap <leader>vz :VimuxZoomRunner<CR>
 
 " Clear the runner pane. (i.e. Ctrl-L)
-nnoremap <leader>vc :call VimuxSendKeys("C-l")<CR>
+" nnoremap <leader>vc :call VimuxSendKeys("C-l")<CR>
 
 " Close vimux runner pane.
-nnoremap <leader>vC :VimuxCloseRunner<CR>
+" nnoremap <leader>vC :VimuxCloseRunner<CR>
 
 " An operator for sending text to Vimux.
 function! VimuxOperator(type, ...) abort
@@ -1069,10 +996,10 @@ function! VimuxOperator(type, ...) abort
 
 endfunction
 
-nnoremap <leader>vs :set operatorfunc=VimuxOperator<cr>g@
-nmap <leader>vss V<leader>vs
-vnoremap <leader>vs :<c-u>call VimuxOperator(visualmode())<cr>
-vnoremap <leader>vS :<c-u>call VimuxOperator(visualmode(), 0)<cr>
+" nnoremap <leader>vs :set operatorfunc=VimuxOperator<cr>g@
+" nmap <leader>vss V<leader>vs
+" vnoremap <leader>vs :<c-u>call VimuxOperator(visualmode())<cr>
+" vnoremap <leader>vS :<c-u>call VimuxOperator(visualmode(), 0)<cr>
 
 function! VimuxSendBuffer(...) abort
   let pos = winsaveview()
@@ -1084,11 +1011,11 @@ endfunction
 command! VimuxSendBuffer
   \ call VimuxSendBuffer()
 
-nnoremap <buffer> <leader>vf
-  \ :call VimuxSendBuffer()<CR>
-
-nnoremap <buffer> <leader>vF
-  \ :call VimuxSendBuffer(0)<CR>
+" nnoremap <buffer> <leader>vf
+"   \ :call VimuxSendBuffer()<CR>
+"
+" nnoremap <buffer> <leader>vF
+"   \ :call VimuxSendBuffer(0)<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1124,12 +1051,12 @@ augroup end
 " the directory of diary entries. So, I'm remapping the keybinding that would
 " otherwise open the diary index page. vimwiki is nice enough not to overwrite
 " this when it loads.
-nnoremap <leader>wi :e ~/Sync/vimwiki/diary/<CR>
+" nnoremap <leader>wi :e ~/Sync/vimwiki/diary/<CR>
 
 " ,w,w feels a bit awkward. I like ,wt (mnemonic: "wiki today") better.  Vimwiki
 " has its own ,wt mapping, but I never use it (it opens the wiki index page in a
 " tab, and I don't really use tabs).
-nmap <leader>wt <Plug>VimwikiMakeDiaryNote
+" nmap <leader>wt <Plug>VimwikiMakeDiaryNote
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1144,7 +1071,7 @@ let g:vista#renderer#icons = {
 \   "variable": "\uf71b",
 \  }
 let g:vista_icon_indent = ["▸ ", ""]
-nnoremap <leader>T :Vista!!<CR>
+" nnoremap <leader>T :Vista!!<CR>
 
 " Don't blink the cursor after jumping to definition.
 let g:vista_top_level_blink = [0, 0]
@@ -1167,15 +1094,15 @@ let g:vista#renderer#ctags = 'kind'
 " A handful of vlime mappings conflict with vim-sexp mappings.
 " vlime courteously does not overwrite them, so I can redefine the conflicting
 " mappings to different keys here.
-augroup LocalVlimeKeys
-  autocmd!
-  " mnemonic: Send File
-  autocmd FileType lisp nnoremap <silent> <buffer> <LocalLeader>sf
-        \ :call vlime#plugin#LoadFile(expand("%:p"))<cr>
-  " mnemonic: Vlime Interactive mode
-  autocmd FileType lisp nnoremap <silent> <buffer> <LocalLeader>vi
-        \ :call vlime#plugin#InteractionMode()<cr>
-augroup end
+" augroup LocalVlimeKeys
+"   autocmd!
+"   " mnemonic: Send File
+"   autocmd FileType lisp nnoremap <silent> <buffer> <LocalLeader>sf
+"         \ :call vlime#plugin#LoadFile(expand("%:p"))<cr>
+"   " mnemonic: Vlime Interactive mode
+"   autocmd FileType lisp nnoremap <silent> <buffer> <LocalLeader>vi
+"         \ :call vlime#plugin#InteractionMode()<cr>
+" augroup end
 
 
 """"""""""""""""""""""""""""""
@@ -1193,13 +1120,13 @@ endif
 " => airline {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:airline_theme = 'luna'                         " airline colorscheme
-let g:airline_powerline_fonts = 1                    " Fancy symbols
-let g:airline#extensions#tabline#enabled = 1         " Enable the list of buffers
-let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
-let g:airline#extensions#tabline#tab_nr_type = 1     " Show buffer #, not # of splits
-let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
-let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
-let g:airline#extensions#tabline#buffer_idx_mode = 1 " Show buffer index
+" let g:airline_powerline_fonts = 1                    " Fancy symbols
+" let g:airline#extensions#tabline#enabled = 1         " Enable the list of buffers
+" let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
+" let g:airline#extensions#tabline#tab_nr_type = 1     " Show buffer #, not # of splits
+" let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
+" let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
+" let g:airline#extensions#tabline#buffer_idx_mode = 1 " Show buffer index
 
 nmap <Space>1 <Plug>AirlineSelectTab1
 nmap <Space>2 <Plug>AirlineSelectTab2
@@ -1444,10 +1371,6 @@ let g:fzf_colors =
 "   endif
 " augroup END
 
-" Mapping selecting mappings
-nmap <leader><tab> <plug>(fzf-maps-n)
-xmap <leader><tab> <plug>(fzf-maps-x)
-omap <leader><tab> <plug>(fzf-maps-o)
 
 " Insert mode completion
 " imap <c-x><c-k> <plug>(fzf-complete-word)
@@ -1477,14 +1400,25 @@ function! QuitFZFBuffer() abort
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => goyo {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:goyo_width=100
+let g:goyo_margin_top = 2
+let g:goyo_margin_bottom = 2
+
+" TODO fix this
+
+nnoremap <silent> <leader>z :Goyo<cr>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => which-key {{{1
 """"""""""""""""""""""""""""""
-nnoremap <silent> <leader>      :<c-u>WhichKey ','<CR>
-nnoremap <silent> <localleader> :<c-u>WhichKey '\'<CR>
-nnoremap <silent> <Space>       :<c-u>WhichKey '<Space>'<CR>
-vnoremap <silent> <leader>      :<c-u>WhichKeyVisual ','<CR>
-vnoremap <silent> <localleader> :<c-u>WhichKeyVisual '\'<CR>
-vnoremap <silent> <Space>       :<c-u>WhichKeyVisual '<Space>'<CR>
+
+let g:which_key_centered = 0
+" Don't put keygroup at start or at end
+let g:which_key_group_dicts=''
+let g:which_key_floating_opts = { 'row': '0', 'col': '-10', 'height': '+0', 'width': '+10'}
+
 
 " TODO: Add description dictionaries so that it's easier to see what each key
 " mapping does. The default display is the command that's run, but that
@@ -1492,14 +1426,6 @@ vnoremap <silent> <Space>       :<c-u>WhichKeyVisual '<Space>'<CR>
 "
 " See: https://github.com/liuchengxu/vim-which-key#configuration
 "
-" WIP:
-" call which_key#register(',', "g:which_key_map_leader")
-" call which_key#register('\', "g:which_key_map_localleader")
-" call which_key#register('<Space>', "g:which_key_map_space")
-" let g:which_key_map_leader = {}
-" let g:which_key_map_localleader = {}
-" let g:which_key_map_space = {}
-
 
 " let g:which_key_map_leader.b = {
 "       \ 'name': '+buffers',
@@ -1534,7 +1460,6 @@ vnoremap <silent> <Space>       :<c-u>WhichKeyVisual '<Space>'<CR>
 " For now, I'm happy with leaving it out of the map and letting it display as:
 "
 "     SPC → Gina<space>
-let g:which_key_centered = 0
 let g:which_key_map_leader.g = {
       \ 'name': '+git',
       \ 'A': 'git add --all',
@@ -1619,3 +1544,67 @@ let g:startify_lists = [
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => conjure {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NOTE: I'd like to have a good setup where ANSI escape codes are interpreted in
+" the Conjure log buffer. Currently, neither Colorizer nor Olical's fork of
+" AnsiEsc are doing this as well as I'd like. I think Olical/AnsiEsc is more
+" likely to get there with time (Colorizer seems to be under-maintained), but
+" for now, Colorizer is marginally better, so I'm sticking with Colorizer for
+" now. I'm leaving AnsiEsc config intact below, ready to be un-commented when I
+" inevitably switch back over to Olical/AnsiEsc.
+
+" Disable the default ANSI escape code stripping so that I can use a separate
+" plugin to interpret them and display the colors.
+" let g:conjure#log#strip_ansi_escape_sequences_line_limit = 0
+
+" let g:conjure#log#hud#passive_close_delay = 1000
+"
+" let g:conjure#highlight#enabled = v:true
+
+" let g:conjure#filetype#sicp = "conjure.client.racket.stdio"
+
+" function! ToggleConjureLog() abort
+"   if expand('%:t') =~ ".*conjure-log-.*"
+"     execute 'Bclose'
+"   else
+"     " Ideally I could call some function provided by Conjure directly to do
+"     " this, but I wasn't able to figure out how to do that. This mapping will
+"     " need to be adjusted if I ever configure Conjure to use a different mapping
+"     " to open the log in a tab, or if Conjure ever changes the default mapping.
+"     " I think those two things are both pretty unlikely to happen, so meh.
+"     "
+"     " Another thing worth noting: normal apparently doesn't work with <leader>
+"     " and <localleader>, so you have to do some hackery like what's going on
+"     " here (https://vi.stackexchange.com/a/7780/25687) or just give up and type
+"     " your actual (local)leader key in the mapping. I'm doing the second one.
+"     normal \lt
+"   endif
+" endfunction
+
+" augroup additional_conjure_bindings
+"   autocmd!
+"
+"   autocmd FileType clojure,fennel,janet,racket
+"         \ nnoremap <buffer>
+"         \ <localleader>cc :call ToggleConjureLog()<CR>
+"   autocmd FileType clojure,fennel,janet,racket
+"         \ nnoremap <buffer>
+"         \ <localleader>cl :call ToggleConjureLog()<CR>
+"
+"   " mnemonic: eval prompt
+"   " (like how <localleader>ee is eval expression)
+"   autocmd FileType clojure,fennel,janet,racket
+"         \ nnoremap <buffer>
+"         \ <localleader>ep :ConjureEval<space>
+"
+"   " press q to close the log buffer
+"   autocmd BufEnter conjure-log-* nnoremap <buffer> q :Bclose<CR>
+"
+"   " Automatically enable AnsiEsc (interpret ANSI escape codes) for the Conjure
+"   " log buffer.
+"   " autocmd BufEnter conjure-log-* AnsiEsc
+" augroup END
+
+
+" """"""""""""""""""""""""""""""

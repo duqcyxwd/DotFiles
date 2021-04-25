@@ -1,11 +1,18 @@
-" TODO Fix this
+" /***********************************************/
+" /*         ____  _             _               */
+" /*        |  _ \| |_   _  __ _(_)_ __          */
+" /*        | |_) | | | | |/ _` | | '_ \         */
+" /*        |  __/| | |_| | (_| | | | | |        */
+" /*        |_|   |_|\__,_|\__, |_|_| |_|        */
+" /*                       |___/                 */
+" /***********************************************/
+
 "
-call plug#begin('/Users/EYONDUU/.local/share/nvim/plug')
+call plug#begin('$HOME/.local/share/nvim/plug')
 
 "New for chuan {{{1
 " ------------------------------------------------------------------------------
 Plug 'mhinz/vim-startify'
-
 Plug 'mattn/vim-findroot'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
@@ -41,12 +48,13 @@ Plug 'mhartington/oceanic-next'
 
 " Misc+ {{{2
 Plug 'tpope/vim-fugitive'
+Plug 'shumphrey/fugitive-gitlab.vim'
 
 " WIP {{{2
 Plug 'yuki-yano/fzf-preview.vim'
 
-
-
+Plug 'junegunn/goyo.vim'
+" https://github.com/clojure-vim/clj-refactor.nvim
 
 "Default {{{1
 " ------------------------------------------------------------------------------
@@ -151,7 +159,7 @@ Plug 'szw/vim-dict'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-rhubarb'
 Plug 'tyru/open-browser.vim'
-Plug 'Valloric/ListToggle'
+" Plug 'Valloric/ListToggle'
 Plug 'vimwiki/vimwiki'
 
 call plug#end()

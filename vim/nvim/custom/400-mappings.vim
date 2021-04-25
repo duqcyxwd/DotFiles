@@ -16,6 +16,8 @@
 " remap leader key to ,
 let mapleader = ","
 let g:mapleader = ","
+let g:maplocalleader = ","
+let maplocalleader = ","
 
 nnoremap <silent> <leader>      :<c-u>WhichKey ','<CR>
 nnoremap <silent> <localleader> :<c-u>WhichKey '\'<CR>
@@ -29,10 +31,13 @@ vnoremap <silent> g             :<c-u>WhichKeyVisual 'g'<CR>
 call which_key#register(',', "g:which_key_map_leader")
 call which_key#register('\', "g:which_key_map_localleader")
 call which_key#register('<Space>', "g:which_key_map_space")
+call which_key#register('g', "g:which_key_map_g")
 
 let g:which_key_map_leader = {}
 let g:which_key_map_localleader = {}
 let g:which_key_map_space = {}
+let g:which_key_map_g = {}
+
 
 let g:which_key_map_space.b = { 'name' : '+buffers' }
 let g:which_key_map_space.f = { 'name' : '+file/format' }
@@ -78,11 +83,16 @@ nnoremap <silent> <Space>hm :Maps<CR>
 command! -bar -bang IMaps  call fzf#vim#maps("i", <bang>0)',
 command! -bar -bang VMaps  call fzf#vim#maps("v", <bang>0)',
 
+" Mapping selecting mappings
+" nmap <leader><tab> <plug>(fzf-maps-n)
+" xmap <leader><tab> <plug>(fzf-maps-x)
+" omap <leader><tab> <plug>(fzf-maps-o)
+
 let g:which_key_map_space.h.i = "[insert] Key Maps"
-nnoremap <silent> <Space>hi :Maps<CR>
+nnoremap <silent> <Space>hi :IMaps<CR>
 
 let g:which_key_map_space.h.v = "[visual] Key Maps"
-nnoremap <silent> <Space>hv :Maps<CR>
+nnoremap <silent> <Space>hv :VMaps<CR>
 
 
 
@@ -195,7 +205,10 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 " Not vim stype but I am used to it. Similar to vscode, atom and sublime
-nnoremap <C-P> :Files<CR>
+" nnoremap <C-P> :Files<CR>
+" https://www.javaer101.com/en/article/16363554.html
+" nnoremap J :s/\s*$//<cr>J
+" vnoremap J :s/\s*$//<cr>gvJ
 
 nnoremap gj <C-W>j
 nnoremap gk <C-W>k
@@ -204,7 +217,7 @@ nnoremap gl <C-W>l
 
 
 nnoremap <silent><buffer> <C-j> i<CR><Esc>
-map <Leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
+" map <Leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
 
 " Map Enter to folding
 nnoremap <CR> za
@@ -220,18 +233,39 @@ cnoremap <C-K> <C-U>
 
 cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
-nnoremap <leader>ec :Defx ~/.config/vim/custom/<CR>
-nnoremap <leader>em :e! ~/.config/vim/custom/400-mappings.vim<CR>
-nnoremap <leader>er :e! ~/.config/vim/custom/999-random.vim<CR>
-nnoremap <leader>ep :e! ~/.config/vim/custom/100-plugins.vim<CR>
-nnoremap <leader>eP :e! ~/.config/vim/custom/500-plugins-config.vim<CR>
-nnoremap <leader>ev :e! ~/.config/vim/vimrc<CR>
+nnoremap <Space>ec :Defx ~/.config/vim/custom/<CR>
+nnoremap <Space>em :e! ~/.config/vim/custom/400-mappings.vim<CR>
+nnoremap <Space>er :e! ~/.config/vim/custom/999-random.vim<CR>
+nnoremap <Space>ep :e! ~/.config/vim/custom/100-plugins.vim<CR>
+nnoremap <Space>eP :e! ~/.config/vim/custom/500-plugins-config.vim<CR>
+nnoremap <Space>ev :e! ~/.config/vim/vimrc<CR>
 
 " easy align: ga <Left>, Indent keep
 " https://stackoverflow.com/a/24717020/2727296
 " :help cmdline-special.
 
-nnoremap <leader>es :so %<CR>|                   " Srouce current file
-nnoremap <leader>sv :so ~/.config/vim/vimrc<CR>| " Srouce .vimrc
+nnoremap <Space>es :so %<CR>|                   " Srouce current file
+nnoremap <Space>sv :so ~/.config/vim/vimrc<CR>| " Srouce .vimrc
 
 
+" nnoremap <leader>gb :Git blame<CR>
+" nnoremap <leader>gc :Gina commit -v<CR>gg0i
+" nnoremap <leader>gd :Gina diff<CR>
+" nnoremap <leader>gD :Gina diff -w<CR>
+" nnoremap <leader>gg :Gina grep<space>
+" nnoremap <leader>gi :Gina init<CR>
+" nnoremap <leader>gl :Gina log --graph --pretty=format:"%C(yellow)%h %ad%Cred%d %Creset%s%Cblue [%cn]" --decorate --all --date=short<CR><CR>
+" nnoremap <leader>gp :Gina push<CR>
+" nnoremap <leader>gs :Gina status<CR>
+" nnoremap <leader>gS :Gina show<CR>
+"
+"
+" let g:magit_show_help = 0
+" let g:magit_toggle_help_mapping = '?'
+" let g:magit_discard_untracked_do_delete=1
+" let g:magit_show_magit_mapping='<leader>G'
+"
+"
+" nnoremap <leader>wi :e ~/Sync/vimwiki/diary/<CR>
+"
+"
