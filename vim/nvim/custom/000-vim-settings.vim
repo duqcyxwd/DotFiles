@@ -7,6 +7,7 @@
 "                                                  |___/
 
 " ------------------------------------------------------------------------------
+
 " Chuan's Settings =>  {{{1
 " remap leader key to ,
 
@@ -44,14 +45,16 @@ set scrolloff=15                " Keep cursor away from this many chars top/bot
 set shell=zsh                   " Default shell to zsh
 set showcmd
 set showmatch                   " Show matching brackets when text indicator is over them
-set showtabline=1               " turn on tabline
 set smartcase                   " When searching try to be smart about cases
 set startofline                 " When "on" the commands listed below move the cursor to the first non-blank of the line.
 set timeoutlen=500              " The default timeoutlen is 1000 ms.
 set updatetime=250
-set viminfo^=%                  " Remember info about open buffers on close
+" set viminfo^=%                  " Remember info about open buffers on close, will reopen buffer
+                                " Replaced with shada
 set visualbell
 
+" Don't use this with tabline
+" set showtabline=1               " turn on tabline
 
 " Text Related
 set autoindent
@@ -77,17 +80,6 @@ set whichwrap+=<,>,h,l         " Allow specified keys that move the cursor left/
 " See: https://github.com/vim/vim/issues/2790
 set redrawtime=10000
 
-
-" Return to last edit position when opening files (You want this!)
-augroup return_to_last_edit_position
-  autocmd!
-  autocmd BufReadPost *
-        \ if line("'\"") > 0 && line("'\"") <= line("$") |
-        \   exe "normal! g`\"" |
-        \ endif
-augroup END
-
-
 " Set extra options when running in GUI mode
 if has("gui_running")
     set guioptions-=T
@@ -106,6 +98,28 @@ augroup END
 
 " CLeanup extra space when save
 autocmd BufWritePre * %s/\s\+$//e
+
+" Save last session using startify
+augroup save_last_session
+  autocmd!
+  autocmd VimLeave * SSave! last-open-session
+augroup END
+
+" Return to last edit position when opening files (You want this!)
+" VIM info can do samething
+augroup return_to_last_edit_position
+  autocmd!
+  autocmd BufReadPost *
+        \ if line("'\"") > 0 && line("'\"") <= line("$") |
+        \   exe "normal! g`\"" |
+        \ endif
+augroup END
+
+" WIP
+
+set nojoinspaces " No extra space when join line
+
+
 
 " Default =>  {{{1
 " ------------------------------------------------------------------------------
@@ -148,12 +162,6 @@ endfunction
 "         \ if argc() == 0 && filereadable($HOME . "/.vim/Session.vim") |
 "         \ execute "source " . $HOME . "/.vim/Session.vim"
 " augroup END
-
-" Save last session using startify
-augroup save_last_session
-  autocmd!
-  autocmd VimLeave * SSave! last-open-session
-augroup END
 
 " Turn persistent undo on (means that you can undo even when you close a
 " buffer/VIM)

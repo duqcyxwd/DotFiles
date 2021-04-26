@@ -36,6 +36,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'AndrewRadev/undoquit.vim'
+Plug 'liuchengxu/vim-which-key'
 
 " Language {{{2
 " WIP
@@ -45,6 +46,9 @@ Plug 'evedovelli/rst-robotframework-syntax-vim'
 " ------------------------------------------------------------------------------
 Plug 'folke/tokyonight.nvim'
 Plug 'mhartington/oceanic-next'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'ayu-theme/ayu-vim'
 
 " Misc+ {{{2
 Plug 'tpope/vim-fugitive'
@@ -60,16 +64,14 @@ Plug 'junegunn/goyo.vim'
 " ------------------------------------------------------------------------------
 " aesthetic {{{2
 " ------------------------------------------------------------------------------
-Plug 'ayu-theme/ayu-vim'
 Plug 'cormacrelf/vim-colors-github'
-Plug 'itchyny/lightline.vim'
+" Use this if airline is too heavy
+" Plug 'itchyny/lightline.vim'
 Plug 'morhetz/gruvbox'
 Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
 Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'vim-scripts/mayansmoke'
 
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 
 " editor enhancements {{{2
 " ------------------------------------------------------------------------------
@@ -85,7 +87,6 @@ Plug 'jeetsukumaran/vim-buffergator'
 Plug 'jiangmiao/auto-pairs'
 Plug 'kassio/neoterm'
 Plug 'kshenoy/vim-signature'
-Plug 'liuchengxu/vim-which-key'
 Plug 'liuchengxu/vista.vim'
 " Plug 'ludovicchabant/vim-gutentags'
 Plug 'machakann/vim-highlightedyank'
@@ -162,4 +163,5 @@ Plug 'tyru/open-browser.vim'
 " Plug 'Valloric/ListToggle'
 Plug 'vimwiki/vimwiki'
 
+"}}}1
 call plug#end()

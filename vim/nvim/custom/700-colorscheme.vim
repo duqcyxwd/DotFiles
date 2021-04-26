@@ -52,7 +52,8 @@ function! s:DarkMode() abort
   let ayucolor="dark"   " for dark version of theme
   colorscheme ayu
 
-  call s:RefreshLightline()
+  " WIP
+  " call s:RefreshLightline()
 endfunction
 command! DarkMode call s:DarkMode()
 
@@ -76,7 +77,8 @@ function! s:LightMode() abort
   " let ayucolor="light"   " for dark version of theme
   " colorscheme ayu
 
-  call s:RefreshLightline()
+  " WIP
+  " call s:RefreshLightline()
 endfunction
 command! LightMode call s:LightMode()
 

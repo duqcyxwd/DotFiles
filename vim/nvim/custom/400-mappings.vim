@@ -9,6 +9,9 @@
 
 " Debug keys
 " verbose map <Space>s
+" WIP
+
+nnoremap <Space>hk :verbose map
 
 " [SpaceMapping] 00: Leader keymap setting {{{1
 " ------------------------------------------------------------------------------
