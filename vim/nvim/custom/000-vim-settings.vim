@@ -63,6 +63,8 @@ set lbr                   " Automatically break lines at 80 characters.
 set shiftwidth=2          " 1 tab == 2 spaces
 set smarttab              " Be smart when using tabs ;)
 set tabstop=2
+
+" WIP Add toggle for this
 set textwidth=80          " 80 chars or die
 set nowrap                " Wrap lines
 
@@ -95,9 +97,6 @@ augroup i_like_folding_lol
   autocmd BufWinEnter * silent! zMzv
 augroup END
 
-
-" CLeanup extra space when save
-autocmd BufWritePre * %s/\s\+$//e
 
 " Save last session using startify
 augroup save_last_session

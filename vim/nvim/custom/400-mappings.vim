@@ -44,14 +44,15 @@ let g:which_key_map_g = {}
 
 let g:which_key_map_space.b = { 'name' : '+buffers' }
 let g:which_key_map_space.f = { 'name' : '+file/format' }
+let g:which_key_map_space.g = { 'name' : '+Git' }
 let g:which_key_map_space.h = { 'name' : '+Help' }
 let g:which_key_map_space.p = { 'name' : '+Projects/Packages' }
 let g:which_key_map_space.q = { 'name' : '+Quit' }
 let g:which_key_map_space.s = { 'name' : '+Search' }
-let g:which_key_map_space.w = { 'name' : '+Windows' }
 let g:which_key_map_space.t = { 'name' : '+Togglers' }
+let g:which_key_map_space.w = { 'name' : '+Windows' }
 
-" [SpaceMapping] f+: File {{{1
+" [SpaceMapping] f+: File/Format {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.f.s = "Save current file"
 nnoremap <Space>fs :w!<CR>
@@ -70,8 +71,29 @@ nnoremap <Space>fe :e!<CR>
 let which_key_map_space.f.r = "Open Recent files"
 nnoremap <Space>fr :History<CR>
 
-let which_key_map_space.f.r = "Open History files"
+let which_key_map_space.f.h = "Open History files"
 nnoremap <Space>fh :History<CR>
+
+let which_key_map_space.f.t = "[format] Clean trailing space"
+nnoremap <Space>ft :call StripWhitespace()<CR>
+" noremap <leader>ss :call StripWhitespace()<CR>
+
+let which_key_map_space.t.s = "toggle auto strip whitespace"
+nnoremap <Space>ts :call ToggleAutoStripSpace()<CR>
+
+
+" [SpaceMapping] g+: Git/Go {{{1
+" ------------------------------------------------------------------------------
+let which_key_map_space.g.M = "WIP Vimagit"
+let g:magit_show_magit_mapping='<Space>gM'
+
+let which_key_map_space.g.b = "Git Blame"
+nnoremap <Space>gb :Gblame<CR>
+
+
+let which_key_map_space.g.l = "Git Link (GBrwose)"
+nnoremap <Space>gb :GBrwose<CR>
+
 
 " [SpaceMapping] h+: Help {{{1
 " ------------------------------------------------------------------------------
@@ -150,7 +172,6 @@ nnoremap <Space>tr :setlocal rnu!<CR>:setlocal rnu?<CR>
 " ------------------------------------------------------------------------------
 " TODO Make this more powerful
 let which_key_map_space.w.c = "Window Close"
-" nnoremap <Space>wc :close
 nnoremap <Space>wc :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
 
 let which_key_map_space.w.d = "Window Delete"
@@ -158,6 +179,11 @@ nnoremap <Space>wd :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
 
 let which_key_map_space.w.u = "Undo quit window"
 nnoremap <Space>wu :Undoquit<CR>
+
+" [SpaceMapping] z+: WIP {{{1
+" ------------------------------------------------------------------------------
+nnoremap <silent> <Space>zz :Goyo<cr>
+
 
 " [SpaceMapping] +: Misc {{{1
 " ------------------------------------------------------------------------------
@@ -183,18 +209,25 @@ nnoremap <Space>sc :noh<CR>
 " [Slash Key] mappings {{{1
 "--------------------------------------------------------------------------
 
+" WIP Remove this
 nmap \w :setlocal wrap!<CR>:setlocal wrap?<CR>
 nmap \l :set foldcolumn = 2<CR>
 nmap \L :set foldcolumn = 0<CR>
 nmap \s :set foldmethod = syntax<CR>
 nmap \S :set foldmethod = marker<CR>
+" Add a indent for robot test
 
+"   call SpaceVim#mapping#space#def( 'nnoremap', ['t', 'T', 's'], "set foldmethod=syntax", 'Set foldmethod syntax', 1)
+"   call SpaceVim#mapping#space#def( 'nnoremap', ['t', 'T', 'm'], "set foldmethod=marker", 'Set foldmethod marker', 1)
+"   call SpaceVim#mapping#space#def( 'nnoremap', ['t', 'T', 'c'], "set foldcolumn=2", 'Set column to 2', 1)
+"   call SpaceVim#mapping#space#def( 'nnoremap', ['t', 'T', 'C'], "set foldcolumn=0", 'Set column to 0', 1)
 
 " [Other Keys] mappings {{{1
 "--------------------------------------------------------------------------
 
 " Some of them are used as object motions
-vnoremap " c""<Esc>hp
+" Bad idea, " is used for register
+" vnoremap " c""<Esc>hp
 " vnoremap ' c''<Esc>hp
 " vnoremap ( c()<Esc>hp
 vnoremap 9 c()<Esc>hp
@@ -270,5 +303,4 @@ nnoremap <Space>sv :so ~/.config/vim/vimrc<CR>| " Srouce .vimrc
 "
 "
 " nnoremap <leader>wi :e ~/Sync/vimwiki/diary/<CR>
-"
 "
