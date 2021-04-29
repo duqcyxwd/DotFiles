@@ -163,16 +163,16 @@ zinit_load() {
       djui/alias-tips \
       psprint/zsh-cmd-architect \
       wfxr/forgit \
-      zpm-zsh/template
-
-    zinit wait silent light-mode for \
+      zpm-zsh/template \
       OMZ::plugins/brew/brew.plugin.zsh \
       OMZ::plugins/git-extras/git-extras.plugin.zsh \
       OMZ::plugins/iterm2/iterm2.plugin.zsh \
       OMZ::plugins/kubectl/kubectl.plugin.zsh \
       OMZ::plugins/systemd/systemd.plugin.zsh
 
+
   }
+
   #}}}
   # zinit snippet 'https://github.com/Dabz/kafka-zsh-completions/blob/master/kafka.plugin.zsh'
 
