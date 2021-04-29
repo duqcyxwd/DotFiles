@@ -5,7 +5,7 @@
 # ------------------------------------------------------------------
 
 VERSION=0.1.0
-USAGE="Usage: command -vht VARIABLE"
+USAGE="Usage: command -vhm VARIABLE"
 
 # --- Options processing -------------------------------------------
 if [ $# == 0 ] ; then
@@ -20,7 +20,7 @@ while getopts ":t:m:vh" optname
         echo "Version $VERSION"
         exit 0;
         ;;
-      "o")
+      "m")
         echo "Message Number: $OPTARG"
         option=$OPTARG
         ;;

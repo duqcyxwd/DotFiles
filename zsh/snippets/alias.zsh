@@ -1,10 +1,17 @@
 #!/bin/sh
 # SECTION: : GENERAL ALIAS
 # --------------------------------------------------------------------------
-# alias vi='/usr/local/bin/vim'
 alias mvimr='mvim --remote'
+
 alias vi='nvim'
 alias vim='nvim'
+
+
+alias svi=/usr/local/bin/vi                   # Use vi to open spacevim
+# Macvim still using .vim
+
+# alias v='nvim -u ~/.nvim/nvimrc'
+
 # Remote control Neovim processes.
 # TODO auto complete for nvr
 alias vimr='nvr'
