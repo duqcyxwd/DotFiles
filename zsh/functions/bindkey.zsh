@@ -19,19 +19,20 @@ __zsh_cust_bindkey() {
   # Fzf related
   bindkey "^F"      fzf-file-widget           # fzf files
   bindkey '^G'      fzf-cd-widget             # Search and goto fzf
+  bindkey '^B'      fzf_ls_widget
 
   bindkey '^T'      toggle-fzf-tab
   bindkey "^O"      zca-widget                # Zsh Command Architect zsh-cmd-architect
 
+  # ^M for enter
+  # bindkey "^M"      accept-line
+  bindkey "^T"      forward-word
 
   bindkey '^ '      _expand_stuff                           # ctrl+space expand alias/glob/parameter
 
-  # Notes "^I" is reserved for suggestion complete
-  # ^M for enter
 
-  bindkey '^B' fzf_ls_widget
-  
-  # fzf complete 
+  # Notes "^I" is reserved for suggestion complete
+  # fzf complete
   bindkey '^I'  fzf-tab-complete                 # fzf-tab-complete
   # bindkey '^I' __enhancd::completion::run
   # bindkey '^I' fzf-completion                  # fzf completion. **

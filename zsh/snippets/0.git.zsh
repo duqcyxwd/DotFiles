@@ -1,4 +1,4 @@
- 
+
 # Git config {{{2
 git config --global color.ui true
 git config --global alias.co checkout
@@ -14,6 +14,39 @@ alias config-git-local="ee \"git config --local user.name 'Yongqinchuan Du' && g
 # Git functions {{{2
 # --------------------------------------------------------------------------
 #=== Special Git Tool  ====
+
+# Three git functions from ohmzsh, I don't want load whole lib becase it took too
+# long
+# https://github.com/ohmyzsh/ohmyzsh/blob/master/lib/git.zsh
+
+# We wrap in a local function instead of exporting the variable directly in
+# order to avoid interfering with manually-run git commands by the user.
+function __git_prompt_git() {
+  GIT_OPTIONAL_LOCKS=0 command git "$@"
+}
+
+function git_repo_name() {
+  local repo_path
+  if repo_path="$(__git_prompt_git rev-parse --show-toplevel 2>/dev/null)" && [[ -n "$repo_path" ]]; then
+    echo ${repo_path:t}
+  fi
+}
+
+# Outputs the name of the current branch
+# Usage example: git pull origin $(git_current_branch)
+# Using '--quiet' with 'symbolic-ref' will not cause a fatal error (128) if
+# it's not a symbolic ref, but in a Git repo.
+function git_current_branch() {
+  local ref
+  ref=$(__git_prompt_git symbolic-ref --quiet HEAD 2> /dev/null)
+  local ret=$?
+  if [[ $ret != 0 ]]; then
+    [[ $ret == 128 ]] && return  # no git repo.
+    ref=$(__git_prompt_git rev-parse --short HEAD 2> /dev/null) || return
+  fi
+  echo ${ref#refs/heads/}
+}
+
 get_git_current_branch() { git branch 2>/dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/(\1)/'; }
 
 # gb --show-current
@@ -65,6 +98,7 @@ git-branch-delete-remote-current-branch() {
 
 # Unalias git log {{{2
 # --------------------------------------------------------------------------
+# Unalias from OMZ::plugins/git/git.plugin.zsh
 unalias -m glg
 unalias -m glgp
 unalias -m glgg
@@ -130,8 +164,8 @@ alias gcob=git_checkout_branch_cust
 _gb_format="%(HEAD) %(align:65,left)%(color:yellow)%(refname:short)%(color:reset)%(end) - %(align:19,left)%(authorname)%(end) %(align:18,left)%(color:black)%(committerdate:relative)%(color:reset)%(end) %(color:red)%(objectname:short)%(color:reset)"
 # alias gb="git branch --format=\"$_gb_format\" --sort=-committerdate --color=always"
 
-gb() { 
-  git branch --format="$_gb_format" --sort=-committerdate --color=always $@ 
+gb() {
+  git branch --format="$_gb_format" --sort=-committerdate --color=always $@
 }
 __gb_clean_cmd_str="sed 's/^\\* /  /' | sed 's/^  //' | cut -f1 -d' '"
 
@@ -187,7 +221,7 @@ alias gds="ee 'git diff -w --stat'"
 # alias gbdelete-all='gb | grep "f/CD" | grep -v "\*" |xargs -n 1 git branch -D'
 
 # }}}}
- 
+
 
 # git clean up
 #clean all but the stuff the stuff that we would like preserved like .ccache, xmls catalog etc

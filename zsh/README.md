@@ -12,10 +12,10 @@ Script Directories
 - snippets
   - Random snippets
 
-TODO 
+TODO
 - lib
   - Inlcude general functions/setup shared in plugins or functions
-- plugins 
+- plugins
   - standalone plugins
 
 
