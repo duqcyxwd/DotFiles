@@ -14,6 +14,7 @@
 " /******************************************************/
 
 " [Function] Strip Whitespace {{{1
+" --------------------------------------------------------------------------------
 " Cleanup extra space when save
 " Strip trailing whitespace without affect search and current cursor
  function! g:StripWhitespace()
@@ -39,3 +40,64 @@ function! ToggleAutoStripSpace()
     let s:autoStripSpaceEnabled = 1
   endif
 endfunction
+call ToggleAutoStripSpace()
+
+" [Function] Fold Related Fns {{{1
+" --------------------------------------------------------------------------------
+
+function! ToggleFoldColumn()
+  if &foldcolumn == 3
+    set foldcolumn=0
+  else
+    set foldcolumn=3
+  endif
+endfunction
+
+let s:foldMethodList = ['manual', 'indent', 'expr', 'marker', 'syntax', 'diff']
+let s:foldLength=len(s:foldMethodList)
+
+let s:foldMethod = 0
+function! LoopFoldMethod()
+  execute "set foldmethod=".s:foldMethodList[s:foldMethod]
+  let s:foldMethod +=1
+  if s:foldMethod >= s:foldLength
+    let s:foldMethod =0
+  endif
+endfunction
+
+" [Function] Reload VIM file when save {{{1
+" --------------------------------------------------------------------------------
+" The only reason we modify vim file is source it.
+" Why not make this happend in a magic way?!
+
+function! SourceCurrentFile()
+  echom "Auto Source Current file" expand("%")
+  let save_cursor = getcurpos()
+  source %
+  call setpos('.', save_cursor)
+endfun
+
+" autocmd! BufWritePost vim call ReloadVimrc()
+
+
+
+" WIP
+let s:autoVimSourceEnabled = 0
+function! ToggleAutoVimSource()
+  if s:autoVimSourceEnabled
+    echo "Turn off autoVimSource"
+    augroup VimSource
+      autocmd!
+    augroup END
+    let s:autoVimSourceEnabled = 0
+  else
+    echo "Turn on autoVimSource"
+    augroup VimSource
+      autocmd FileType vim
+            \ autocmd! VimSource BufWritePost <buffer> call SourceCurrentFile()
+    augroup END
+    let s:autoVimSourceEnabled = 1
+  endif
+endfunction
+" call ToggleAutoVimSource()
+
