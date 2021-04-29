@@ -3,6 +3,7 @@ let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
 set termguicolors
 
+" HighlightCharactersOver80 {{{1
 " Highlight characters in column 81+ with a red background.
 " (source: https://stackoverflow.com/a/235970/2338327)
 function! s:HighlightCharactersOver80() abort
@@ -16,6 +17,7 @@ endfunction
 " Hooks:
 " 1. Italicize comments.
 " 2. Highlight characters in column 81+ with a red background.
+" TODO Add a toggle for this
 " augroup ColorSchemeMods
 "   autocmd!
 "   autocmd ColorScheme *
@@ -24,11 +26,10 @@ endfunction
 " augroup END
 
 
-" ADD A toggle for this
-" WIP
 
 let g:colorscheme_mode = v:null
 
+" Dark {{{1
 function! s:DarkMode() abort
   let g:colorscheme_mode = 'dark'
 
@@ -45,7 +46,7 @@ function! s:DarkMode() abort
 endfunction
 command! DarkMode call s:DarkMode()
 
-" a decent looking light theme to use when giving demos, etc.
+" Light {{{1
 function! s:LightMode() abort
   let g:colorscheme_mode = 'light'
 
@@ -67,6 +68,7 @@ function! s:LightMode() abort
 endfunction
 command! LightMode call s:LightMode()
 
+" Toggle {{{1
 function! s:ToggleColorschemeMode() abort
   if g:colorscheme_mode ==# 'dark'
     call s:LightMode()
