@@ -5,3 +5,5 @@ atom/git-time-machine/
 .zcompdump
 .zsh_history
 .git
+.vimroot
+Session.vim
