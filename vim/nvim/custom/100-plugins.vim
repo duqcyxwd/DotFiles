@@ -51,11 +51,16 @@ Plug 'seeamkhan/robotframework-vim'
 
 " Aesthetic {{{2
 " ------------------------------------------------------------------------------
-Plug 'folke/tokyonight.nvim'
-Plug 'mhartington/oceanic-next'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
+" Plug 'vim-scripts/mayansmoke'
+
+"theme
+Plug 'mhartington/oceanic-next'
 Plug 'ayu-theme/ayu-vim'
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'cormacrelf/vim-colors-github'
 
 " Misc+ {{{2
 Plug 'tpope/vim-fugitive'
@@ -68,15 +73,6 @@ Plug 'junegunn/goyo.vim'
 
 "Default {{{1
 " ------------------------------------------------------------------------------
-" aesthetic {{{2
-" ------------------------------------------------------------------------------
-Plug 'cormacrelf/vim-colors-github'
-" Use this if airline is too heavy
-" Plug 'itchyny/lightline.vim'
-Plug 'morhetz/gruvbox'
-Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
-Plug 'sonph/onehalf', {'rtp': 'vim/'}
-Plug 'vim-scripts/mayansmoke'
 
 
 " editor enhancements {{{2

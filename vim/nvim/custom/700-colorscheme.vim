@@ -16,69 +16,54 @@ endfunction
 " Hooks:
 " 1. Italicize comments.
 " 2. Highlight characters in column 81+ with a red background.
-augroup ColorSchemeMods
-  autocmd!
-  autocmd ColorScheme *
-        \ highlight Comment cterm=italic
-        \ | call s:HighlightCharactersOver80()
-augroup END
+" augroup ColorSchemeMods
+"   autocmd!
+"   autocmd ColorScheme *
+"         \ highlight Comment cterm=italic
+"         \ | call s:HighlightCharactersOver80()
+" augroup END
+
+
+" ADD A toggle for this
+" WIP
 
 let g:colorscheme_mode = v:null
 
-function! s:RefreshLightline() abort
-  if !exists("*lightline#disable")
-    return
-  endif
-
-  call lightline#disable()
-  call lightline#enable()
-endfunction
-
-" i use this theme most of the time
 function! s:DarkMode() abort
-
   let g:colorscheme_mode = 'dark'
 
-  " let g:gruvbox_italic=1
-  " set background=dark
-  " colorscheme gruvbox
+  " let g:airline_theme='onehalfdark'
+  " let g:lightline.colorscheme = 'onehalfdark'
+  " colorscheme onehalfdark
 
-  let g:lightline.colorscheme = 'onehalfdark'
-
-  " let ayucolor="dark"
+  " let ayucolor="mirage" " for mirage version of theme
+  " let ayucolor="dark"   " for dark version of theme
   " colorscheme ayu
 
-  let ayucolor="mirage" " for mirage version of theme
-  let ayucolor="dark"   " for dark version of theme
-  colorscheme ayu
+  colorscheme OceanicNext
 
-  " WIP
-  " call s:RefreshLightline()
 endfunction
 command! DarkMode call s:DarkMode()
 
 " a decent looking light theme to use when giving demos, etc.
 function! s:LightMode() abort
   let g:colorscheme_mode = 'light'
-  set background=light
 
-  " 0 = low, 1 = medium, 2 = high visibility; i think medium looks best
-  " let g:mayansmoke_cursor_line_visibility = 1
-  " colorscheme mayansmoke
-  " let g:lightline.colorscheme = 'solarized'
-
-  " use a slightly darker background, like GitHub inline code blocks
-  " let g:github_colors_soft = 1
-  " more blocky diff markers in signcolumn (e.g. GitGutter)
+  " github theme
+  let g:github_colors_soft = 1
   let g:github_colors_block_diffmark = 1
-  colorscheme github
   let g:lightline.colorscheme = 'github'
+  let g:airline_theme = "github"
+  set background=light
+  colorscheme github
+
 
   " let ayucolor="light"   " for dark version of theme
   " colorscheme ayu
 
-  " WIP
-  " call s:RefreshLightline()
+  " colorscheme onehalflight
+  " let g:airline_theme='onehalflight'
+
 endfunction
 command! LightMode call s:LightMode()
 
@@ -94,4 +79,4 @@ nnoremap <leader>M :ToggleColorschemeMode<CR>
 
 " Start in dark mode
 call s:DarkMode()
-" call s:LightMode()
+
