@@ -17,19 +17,23 @@ Plug 'mattn/vim-findroot'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
 
-" Use project rooter
-" Plug 'ctrlpvim/ctrlp.vim'
-
 " Clojure things {{{2
-" Plug 'eraserhd/parinfer-rust', {'do': 'cargo build --release'}
-Plug 'Olical/conjure'
-Plug 'guns/vim-clojure-static'
-Plug 'guns/vim-sexp'
-Plug 'luochen1990/rainbow'
-Plug 'tpope/vim-fireplace/'
-Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
+" Plug 'eraserhd/parinfer-rust'
+" Plug 'bhurlow/vim-parinfer'
+" Plug 'vim-scripts/paredit.vim'
 
-" Plug 'tpope/vim-sexp-mappings-for-regular-people'
+" Plug 'clojure-vim/acid.nvim'|                      "Asynchronous Clojure Interactive Development
+Plug 'Olical/conjure'
+
+Plug 'clojure-vim/clojure.vim'|                      " Replace guns/vim-clojure-static
+Plug 'guns/vim-sexp'
+Plug 'duqcyxwd/vim-sexp'
+" Plug 'tpope/vim-sexp-mappings-for-regular-people'| " Tesing
+
+" Or load it locally
+Plug 'tpope/vim-fireplace'
+Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
+Plug 'luochen1990/rainbow'
 
 " Editor enhancements {{{2
 Plug 'junegunn/vim-easy-align'
@@ -37,10 +41,13 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'AndrewRadev/undoquit.vim'
 Plug 'liuchengxu/vim-which-key'
+Plug 'osyo-manga/vim-over'
+Plug 'mg979/vim-visual-multi'
+Plug 'tpope/vim-commentary'
 
 " Language {{{2
-" WIP
 Plug 'evedovelli/rst-robotframework-syntax-vim'
+Plug 'seeamkhan/robotframework-vim'
 
 " Aesthetic {{{2
 " ------------------------------------------------------------------------------
@@ -56,7 +63,6 @@ Plug 'shumphrey/fugitive-gitlab.vim'
 
 " WIP {{{2
 Plug 'yuki-yano/fzf-preview.vim'
-
 Plug 'junegunn/goyo.vim'
 " https://github.com/clojure-vim/clj-refactor.nvim
 
@@ -94,7 +100,6 @@ Plug 'machakann/vim-sandwich'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'schickling/vim-bufonly'
-Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'

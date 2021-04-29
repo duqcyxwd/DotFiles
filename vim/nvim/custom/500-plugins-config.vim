@@ -190,13 +190,13 @@ augroup END
 
 " Using CocList
 " Show all diagnostics
-nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" Manage extensions
-nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" Show commands
-nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" Find symbol of current document
-nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" " Manage extensions
+" nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" " Show commands
+" nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" " Find symbol of current document
+" nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
 " Search workspace symbols
 " nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
 " Do default action for next item.
@@ -286,19 +286,6 @@ let g:colorizer_auto_filetype='scss,css,clojure'
 " Disable Colorizer's strange default behavior where it de-colorizes whenever
 " you leave the buffer.
 let g:colorizer_disable_bufleave = 1
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => commentary {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-augroup commentary_config
-  autocmd!
-  autocmd FileType cs,kotlin,adoc setlocal commentstring=//\ %s
-  autocmd FileType lisp,clojure,racket setlocal commentstring=;;\ %s
-  autocmd FileType sml,ocaml setlocal commentstring=(*\ %s\ *)
-  autocmd FileType resolv,crontab setlocal commentstring=#\ %s
-  autocmd FileType sql setlocal commentstring=--\ %s
-augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -857,15 +844,6 @@ let s:command = "'[+1,']-1normal! >>"
 "       \ ]
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => sexp {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:sexp_enable_insert_mode_mappings = 0
-
-" jump to the end of a sexp and be in insert mode
-nnoremap <Bslash>a f)i
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => syntastic {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:syntastic_python_checkers=['pyflakes']
@@ -899,7 +877,8 @@ nnoremap ga :UnicodeName<CR>
 " let g:magit_show_help = 0
 " let g:magit_toggle_help_mapping = '?'
 " let g:magit_discard_untracked_do_delete=1
-" let g:magit_show_magit_mapping='<leader>G'
+" WIP Update this
+" let g:magit_show_magit_mapping='<Space>gM'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1120,13 +1099,14 @@ endif
 " => airline {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:airline_theme = 'luna'                         " airline colorscheme
-" let g:airline_powerline_fonts = 1                    " Fancy symbols
-" let g:airline#extensions#tabline#enabled = 1         " Enable the list of buffers
-" let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
-" let g:airline#extensions#tabline#tab_nr_type = 1     " Show buffer #, not # of splits
-" let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
-" let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
-" let g:airline#extensions#tabline#buffer_idx_mode = 1 " Show buffer index
+let g:airline_powerline_fonts = 1                    " Fancy symbols
+let g:airline#extensions#tabline#enabled = 1         " Enable the list of buffers
+let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
+let g:airline#extensions#tabline#tab_nr_type = 1     " Show buffer #, not # of splits
+let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
+let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
+let g:airline#extensions#tabline#buffer_idx_mode = 1 " Show buffer index
+
 
 nmap <Space>1 <Plug>AirlineSelectTab1
 nmap <Space>2 <Plug>AirlineSelectTab2
@@ -1159,6 +1139,21 @@ augroup autopairs_config
   autocmd Filetype vim let b:AutoPairs = {'<':'>', '(':')', '[':']', "'":"'",'"':'', "`":"`", '```':'```', '""':'"', "'''":"'''"}
 
 
+augroup END
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => commentary {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+augroup commentary_config
+  autocmd!
+  autocmd FileType cs,kotlin,adoc setlocal commentstring=//\ %s
+  " autocmd FileType lisp,clojure,racket setlocal commentstring=;;\ %s
+  autocmd FileType lisp,racket setlocal commentstring=;;\ %s
+  autocmd FileType clojure setlocal commentstring=#_%s
+  autocmd FileType sml,ocaml setlocal commentstring=(*\ %s\ *)
+  autocmd FileType resolv,crontab setlocal commentstring=#\ %s
+  autocmd FileType sql setlocal commentstring=--\ %s
 augroup END
 
 
@@ -1406,10 +1401,6 @@ let g:goyo_width=100
 let g:goyo_margin_top = 2
 let g:goyo_margin_bottom = 2
 
-" TODO fix this
-
-nnoremap <silent> <leader>z :Goyo<cr>
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => which-key {{{1
 """"""""""""""""""""""""""""""
@@ -1526,8 +1517,6 @@ let g:startify_custom_header = [
       \' /**********************************************************************/',
       \ ]
 
-" Reopen session if there is session.vim in current directory
-let g:startify_session_autoload    = 1
 let g:startify_files_number = 5
 let g:startify_enable_special = 0
 let g:startify_session_persistence = 1
@@ -1608,3 +1597,153 @@ let g:startify_lists = [
 
 
 " """"""""""""""""""""""""""""""
+"
+" => sexp {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" Nice function from tpope/vim-sexp-mappings-for-regular-people,
+" can't loaded as plugin since I have customized sexp mappings
+function! s:map_sexp_wrap(type, target, left, right, pos)
+  execute (a:type ==# 'v' ? 'x' : 'n').'noremap'
+        \ '<buffer><silent>' a:target ':<C-U>let b:sexp_count = v:count<Bar>exe "normal! m`"<Bar>'
+        \ . 'call sexp#wrap("'.a:type.'", "'.a:left.'", "'.a:right.'", '.a:pos.', 0)'
+        \ . '<Bar>silent! call repeat#set("'.a:target.'", v:count)<CR>'
+endfunction
+
+function! g:VIM_lisp_mappings()  "{{{2
+  echom "Meow!! config vim_lisp_mappings"
+
+  " TODO Some of those binding can be used outside of lisp world
+  " TODO Disable auto adding space
+
+  xmap <silent><buffer> af              <Plug>(sexp_outer_list)
+  omap <silent><buffer> af              <Plug>(sexp_outer_list)
+  xmap <silent><buffer> if              <Plug>(sexp_inner_list)
+  omap <silent><buffer> if              <Plug>(sexp_inner_list)
+  xmap <silent><buffer> aF              <Plug>(sexp_outer_top_list)
+  omap <silent><buffer> aF              <Plug>(sexp_outer_top_list)
+  xmap <silent><buffer> iF              <Plug>(sexp_inner_top_list)
+  omap <silent><buffer> iF              <Plug>(sexp_inner_top_list)
+  xmap <silent><buffer> as              <Plug>(sexp_outer_string)
+  omap <silent><buffer> as              <Plug>(sexp_outer_string)
+  xmap <silent><buffer> is              <Plug>(sexp_inner_string)
+  omap <silent><buffer> is              <Plug>(sexp_inner_string)
+  xmap <silent><buffer> ae              <Plug>(sexp_outer_element)
+  omap <silent><buffer> ae              <Plug>(sexp_outer_element)
+  xmap <silent><buffer> ie              <Plug>(sexp_inner_element)
+  omap <silent><buffer> ie              <Plug>(sexp_inner_element)
+  nmap <silent><buffer> (               <Plug>(sexp_move_to_prev_bracket)
+  xmap <silent><buffer> (               <Plug>(sexp_move_to_prev_bracket)
+  omap <silent><buffer> (               <Plug>(sexp_move_to_prev_bracket)
+  nmap <silent><buffer> )               <Plug>(sexp_move_to_next_bracket)
+  xmap <silent><buffer> )               <Plug>(sexp_move_to_next_bracket)
+  omap <silent><buffer> )               <Plug>(sexp_move_to_next_bracket)
+  nmap <silent><buffer> [[              <Plug>(sexp_move_to_prev_top_element)
+  xmap <silent><buffer> [[              <Plug>(sexp_move_to_prev_top_element)
+  omap <silent><buffer> [[              <Plug>(sexp_move_to_prev_top_element)
+  nmap <silent><buffer> ]]              <Plug>(sexp_move_to_next_top_element)
+  xmap <silent><buffer> ]]              <Plug>(sexp_move_to_next_top_element)
+  omap <silent><buffer> ]]              <Plug>(sexp_move_to_next_top_element)
+  " nmap <silent><buffer> ==              <Plug>(sexp_indent)
+  " nmap <silent><buffer> =-              <Plug>(sexp_indent_top)
+
+  nmap <silent><buffer> <LocalLeader>i  <Plug>(sexp_round_head_wrap_list)
+  xmap <silent><buffer> <LocalLeader>i  <Plug>(sexp_round_head_wrap_list)
+  nmap <silent><buffer> <LocalLeader>I  <Plug>(sexp_round_tail_wrap_list)
+  xmap <silent><buffer> <LocalLeader>I  <Plug>(sexp_round_tail_wrap_list)
+  nmap <silent><buffer> <LocalLeader>[  <Plug>(sexp_square_head_wrap_list)
+  xmap <silent><buffer> <LocalLeader>[  <Plug>(sexp_square_head_wrap_list)
+  nmap <silent><buffer> <LocalLeader>]  <Plug>(sexp_square_tail_wrap_list)
+  xmap <silent><buffer> <LocalLeader>]  <Plug>(sexp_square_tail_wrap_list)
+  nmap <silent><buffer> <LocalLeader>{  <Plug>(sexp_curly_head_wrap_list)
+  xmap <silent><buffer> <LocalLeader>{  <Plug>(sexp_curly_head_wrap_list)
+  nmap <silent><buffer> <LocalLeader>}  <Plug>(sexp_curly_tail_wrap_list)
+  xmap <silent><buffer> <LocalLeader>}  <Plug>(sexp_curly_tail_wrap_list)
+  nmap <silent><buffer> <LocalLeader>w  <Plug>(sexp_round_head_wrap_element)
+  xmap <silent><buffer> <LocalLeader>w  <Plug>(sexp_round_head_wrap_element)
+  nmap <silent><buffer> <LocalLeader>W  <Plug>(sexp_round_tail_wrap_element)
+  xmap <silent><buffer> <LocalLeader>W  <Plug>(sexp_round_tail_wrap_element)
+  nmap <silent><buffer> <LocalLeader>e[ <Plug>(sexp_square_head_wrap_element)
+  xmap <silent><buffer> <LocalLeader>e[ <Plug>(sexp_square_head_wrap_element)
+  nmap <silent><buffer> <LocalLeader>e] <Plug>(sexp_square_tail_wrap_element)
+  xmap <silent><buffer> <LocalLeader>e] <Plug>(sexp_square_tail_wrap_element)
+  nmap <silent><buffer> <LocalLeader>e{ <Plug>(sexp_curly_head_wrap_element)
+  xmap <silent><buffer> <LocalLeader>e{ <Plug>(sexp_curly_head_wrap_element)
+  nmap <silent><buffer> <LocalLeader>e} <Plug>(sexp_curly_tail_wrap_element)
+  xmap <silent><buffer> <LocalLeader>e} <Plug>(sexp_curly_tail_wrap_element)
+  nmap <silent><buffer> <LocalLeader>h  <Plug>(sexp_insert_at_list_head)
+  nmap <silent><buffer> <LocalLeader>l  <Plug>(sexp_insert_at_list_tail)
+  nmap <silent><buffer> <LocalLeader>@  <Plug>(sexp_splice_list)
+  nmap <silent><buffer> <LocalLeader>o  <Plug>(sexp_raise_list)
+  xmap <silent><buffer> <LocalLeader>o  <Plug>(sexp_raise_list)
+  nmap <silent><buffer> <LocalLeader>O  <Plug>(sexp_raise_element)
+  xmap <silent><buffer> <LocalLeader>O  <Plug>(sexp_raise_element)
+
+  " Some nice keybinding from tpope/vim-sexp-mappings-for-regular-people
+  nmap <buffer> B   <Plug>(sexp_move_to_prev_element_head)
+  nmap <buffer> W   <Plug>(sexp_move_to_next_element_head)
+  nmap <buffer> E   <Plug>(sexp_move_to_next_element_tail)
+  xmap <buffer> B   <Plug>(sexp_move_to_prev_element_head)
+  xmap <buffer> W   <Plug>(sexp_move_to_next_element_head)
+  xmap <buffer> E   <Plug>(sexp_move_to_next_element_tail)
+  omap <buffer> B   <Plug>(sexp_move_to_prev_element_head)
+  omap <buffer> W   <Plug>(sexp_move_to_next_element_head)
+  omap <buffer> E   <Plug>(sexp_move_to_next_element_tail)
+
+  nmap <buffer> <I  <Plug>(sexp_insert_at_list_head)
+  nmap <buffer> >I  <Plug>(sexp_insert_at_list_tail)
+  nmap <buffer> <f  <Plug>(sexp_swap_list_backward)
+  nmap <buffer> >f  <Plug>(sexp_swap_list_forward)
+  nmap <buffer> <e  <Plug>(sexp_swap_element_backward)
+  nmap <buffer> >e  <Plug>(sexp_swap_element_forward)
+  nmap <buffer> >(  <Plug>(sexp_emit_head_element)
+  nmap <buffer> <)  <Plug>(sexp_emit_tail_element)
+  nmap <buffer> <(  <Plug>(sexp_capture_prev_element)
+  nmap <buffer> >)  <Plug>(sexp_capture_next_element)
+
+  call s:map_sexp_wrap('e', 'cseb', '(', ')', 0)
+  call s:map_sexp_wrap('e', 'cse(', '(', ')', 0)
+  call s:map_sexp_wrap('e', 'cse)', '(', ')', 1)
+  call s:map_sexp_wrap('e', 'cse[', '[', ']', 0)
+  call s:map_sexp_wrap('e', 'cse]', '[', ']', 1)
+  call s:map_sexp_wrap('e', 'cse{', '{', '}', 0)
+  call s:map_sexp_wrap('e', 'cse}', '{', '}', 1)
+
+  " Don't use auto pair plugins
+  imap <silent><buffer> "               <Plug>(sexp_insert_double_quote)
+  imap <silent><buffer> (               <Plug>(sexp_insert_opening_round)
+  imap <silent><buffer> )               <Plug>(sexp_insert_closing_round)
+  imap <silent><buffer> [               <Plug>(sexp_insert_opening_square)
+  imap <silent><buffer> ]               <Plug>(sexp_insert_closing_square)
+  imap <silent><buffer> {               <Plug>(sexp_insert_opening_curly)
+  imap <silent><buffer> }               <Plug>(sexp_insert_closing_curly)
+
+  " nmap <silent><buffer> <C-k>           <Plug>(sexp_swap_list_backward)
+  " nmap <silent><buffer> <C-j>           <Plug>(sexp_swap_list_forward)
+  nmap <silent><buffer> <C-h>           <Plug>(sexp_swap_element_backward)
+  nmap <silent><buffer> <C-l>           <Plug>(sexp_swap_element_forward)
+
+  nmap <silent><buffer> H          <Plug>(sexp_swap_element_backward)
+  nmap <silent><buffer> L           <Plug>(sexp_swap_element_forward)
+
+  " nmap <silent><buffer> <C-]>           <Plug>(sexp_emit_head_element)
+  " nmap <silent><buffer> <C-[>           <Plug>(sexp_capture_prev_element)
+  nmap <silent><buffer> <C-left>        <Plug>(sexp_emit_tail_element)
+  nmap <silent><buffer> <C-right>       <Plug>(sexp_capture_next_element)
+
+  "Beautiful thing in vim-sexp
+  "nmap <silent><buffer> <C-k> daf
+  nmap <silent><buffer> <C-k> <Plug>(sexp_kill)
+
+endfunction
+"}}}2
+
+let g:sexp_filetypes = ''
+augroup VIM_SEXP_MAPPING
+  autocmd!
+  if exists('g:sexp_loaded')
+    autocmd FileType clojure,scheme,lisp,timl,scheme call g:VIM_lisp_mappings()
+  endif
+augroup END
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

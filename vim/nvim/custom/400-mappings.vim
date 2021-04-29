@@ -8,10 +8,7 @@
 " Mapping
 
 " Debug keys
-" verbose map <Space>s
-" WIP
-
-nnoremap <Space>hk :verbose map
+noremap <Space>hk :verbose map
 
 " [SpaceMapping] 00: Leader keymap setting {{{1
 " ------------------------------------------------------------------------------
@@ -28,6 +25,7 @@ nnoremap <silent> <Space>       :<c-u>WhichKey '<Space>'<CR>
 vnoremap <silent> <leader>      :<c-u>WhichKeyVisual ','<CR>
 vnoremap <silent> <localleader> :<c-u>WhichKeyVisual '\'<CR>
 vnoremap <silent> <Space>       :<c-u>WhichKeyVisual '<Space>'<CR>
+
 " WIP
 vnoremap <silent> g             :<c-u>WhichKeyVisual 'g'<CR>
 
@@ -51,6 +49,20 @@ let g:which_key_map_space.q = { 'name' : '+Quit' }
 let g:which_key_map_space.s = { 'name' : '+Search' }
 let g:which_key_map_space.t = { 'name' : '+Togglers' }
 let g:which_key_map_space.w = { 'name' : '+Windows' }
+
+" [SpaceMapping] b+: Buffers {{{1
+" ------------------------------------------------------------------------------
+let which_key_map_space.b.d = "delete this buffer"
+nnoremap <Space>bd :call undoquit#SaveWindowQuitHistory()<CR>:bd<CR>
+
+let which_key_map_space.b.D = "Force delete this buffer"
+nnoremap <Space>bD :bp<bar>sp<bar>bn<bar>bd!<CR>
+
+let which_key_map_space.b.b = "List all buffers"
+nnoremap <Space>bb :Buffers<CR>
+
+let which_key_map_space.b.h = "home"
+nnoremap <Space>bh :Startify<CR>
 
 " [SpaceMapping] f+: File/Format {{{1
 " ------------------------------------------------------------------------------
@@ -76,11 +88,6 @@ nnoremap <Space>fh :History<CR>
 
 let which_key_map_space.f.t = "[format] Clean trailing space"
 nnoremap <Space>ft :call StripWhitespace()<CR>
-" noremap <leader>ss :call StripWhitespace()<CR>
-
-let which_key_map_space.t.s = "toggle auto strip whitespace"
-nnoremap <Space>ts :call ToggleAutoStripSpace()<CR>
-
 
 " [SpaceMapping] g+: Git/Go {{{1
 " ------------------------------------------------------------------------------
@@ -121,6 +128,17 @@ nnoremap <silent> <Space>hv :VMaps<CR>
 
 
 
+" [SpaceMapping] p+: Project/Install {{{1
+" ------------------------------------------------------------------------------
+let which_key_map_space.p.f = "Project files"
+nnoremap <Space>pf :Files<CR>
+
+let which_key_map_space.p.i = "Plug Install"
+nnoremap <Space>pi :execute "tabnew\| PlugInstall"<CR>
+
+let which_key_map_space.p.u = "Plug Update"
+nnoremap <Space>pu :execute "tabnew\| PlugUpdate"<CR>
+
 " [SpaceMapping] q+: Quit {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.q.q = "Quit"
@@ -129,25 +147,6 @@ let which_key_map_space.q.Q = "Force Quit"
 nnoremap <Space>qQ :q!<CR>
 let which_key_map_space.q.a = "Force Quit all"
 nnoremap <Space>qa :qa!<CR>
-
-" [SpaceMapping] p+: Project {{{1
-" ------------------------------------------------------------------------------
-let which_key_map_space.p.f = "Project files"
-nnoremap <Space>pf :Files<CR>
-
-" [SpaceMapping] b+: Buffers {{{1
-" ------------------------------------------------------------------------------
-let which_key_map_space.b.d = "delete this buffer"
-nnoremap <Space>bd :call undoquit#SaveWindowQuitHistory()<CR>:bd<CR>
-
-let which_key_map_space.b.D = "Force delete this buffer"
-nnoremap <Space>bD :bp<bar>sp<bar>bn<bar>bd!<CR>
-
-let which_key_map_space.b.b = "List all buffers"
-nnoremap <Space>bb :Buffers<CR>
-
-let which_key_map_space.b.h = "home"
-nnoremap <Space>bh :Startify<CR>
 
 " [SpaceMapping] s+: Search {{{1
 " ------------------------------------------------------------------------------
@@ -164,9 +163,33 @@ nnoremap <Space>ss :BLines<CR>
 " ------------------------------------------------------------------------------
 let which_key_map_space.t.n = "Toggle line number"
 nnoremap <Space>tn :setlocal number!<CR>:setlocal number?<CR>
+
 let which_key_map_space.t.r = "Toggle relative line number"
 nnoremap <Space>tr :setlocal rnu!<CR>:setlocal rnu?<CR>
 
+let which_key_map_space.t.s = "toggle auto strip whitespace"
+nnoremap <Space>ts :call ToggleAutoStripSpace()<CR>
+
+let which_key_map_space.t.w = "toggle word wrap"
+nnoremap <Space>tw :setlocal wrap!<CR>:setlocal wrap?<CR>
+
+" WIP
+let g:which_key_map_space.t.f = { 'name' : 'Fold+' }
+
+let which_key_map_space.t.f.l = "[loop] foldmethod"
+nnoremap <Space>tfl :call LoopFoldMethod()<CR>:set foldmethod<CR>zv
+
+let which_key_map_space.t.f.m = "change foldmethod to marker"
+nnoremap <Space>tfm :set foldmethod=marker<CR>zv
+
+let which_key_map_space.t.f.s = "change foldmethod to syntax"
+nnoremap <Space>tfs :set foldmethod=syntax<CR>zv
+
+let which_key_map_space.t.f.c = "Toggle Fold Column"
+nnoremap <Space>tfc :call ToggleFoldColumn()<CR>
+
+
+nmap \s :call LoopFoldMethod()<CR>
 
 " [SpaceMapping] w+: Window {{{1
 " ------------------------------------------------------------------------------
@@ -205,17 +228,8 @@ let which_key_map_space.s.c = "Search highlight Clean"
 nnoremap <Space>sc :noh<CR>
 
 
-
 " [Slash Key] mappings {{{1
 "--------------------------------------------------------------------------
-
-" WIP Remove this
-nmap \w :setlocal wrap!<CR>:setlocal wrap?<CR>
-nmap \l :set foldcolumn = 2<CR>
-nmap \L :set foldcolumn = 0<CR>
-nmap \s :set foldmethod = syntax<CR>
-nmap \S :set foldmethod = marker<CR>
-" Add a indent for robot test
 
 "   call SpaceVim#mapping#space#def( 'nnoremap', ['t', 'T', 's'], "set foldmethod=syntax", 'Set foldmethod syntax', 1)
 "   call SpaceVim#mapping#space#def( 'nnoremap', ['t', 'T', 'm'], "set foldmethod=marker", 'Set foldmethod marker', 1)
@@ -224,6 +238,54 @@ nmap \S :set foldmethod = marker<CR>
 
 " [Other Keys] mappings {{{1
 "--------------------------------------------------------------------------
+
+" easy align: ga <Left>, Indent keep
+" https://stackoverflow.com/a/24717020/2727296
+" :help cmdline-special.
+
+nnoremap <Space>es :so %<CR>|                   " Srouce current file
+nnoremap <Space>sv :so ~/.config/vim/vimrc<CR>| " Srouce .vimrc
+
+" Map Enter to folding
+nnoremap <CR> za
+
+" Treat long lines as break lines (useful when moving around in them)
+" map j gj
+" map k gk
+
+
+" Bash like keys for the command line
+cnoremap <C-A> <Home>
+cnoremap <C-E> <End>
+cnoremap <C-K> <C-U>
+cnoremap <C-P> <Up>
+cnoremap <C-N> <Down>
+
+nnoremap <Space>ec :Defx ~/.config/vim/custom/<CR>
+nnoremap <Space>em :e! ~/.config/vim/custom/400-mappings.vim<CR>
+nnoremap <Space>er :e! ~/.config/vim/custom/999-random.vim<CR>
+nnoremap <Space>ep :e! ~/.config/vim/custom/100-plugins.vim<CR>
+nnoremap <Space>eP :e! ~/.config/vim/custom/500-plugins-config.vim<CR>
+nnoremap <Space>ev :e! ~/.config/vim/vimrc<CR>
+nnoremap <silent><buffer> <C-j> i<CR><Esc>
+
+nnoremap gj <C-W>j
+nnoremap gk <C-W>k
+nnoremap gh <C-W>h
+nnoremap gl <C-W>l
+
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+" }}}1
+
+" Other random / WIP
+" --------------------------------------------------------------------------------
+"
+"  Comments
+nnoremap <Space>cl i#_<esc>
 
 " Some of them are used as object motions
 " Bad idea, " is used for register
@@ -235,53 +297,14 @@ vnoremap 9 c()<Esc>hp
 " vnoremap { c{}<Esc>hp
 
 
-" Start interactive EasyAlign in visual mode (e.g. vipga)
-xmap ga <Plug>(EasyAlign)
-" Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)
-
 " Not vim stype but I am used to it. Similar to vscode, atom and sublime
 " nnoremap <C-P> :Files<CR>
 " https://www.javaer101.com/en/article/16363554.html
 " nnoremap J :s/\s*$//<cr>J
 " vnoremap J :s/\s*$//<cr>gvJ
 
-nnoremap gj <C-W>j
-nnoremap gk <C-W>k
-nnoremap gh <C-W>h
-nnoremap gl <C-W>l
 
-
-nnoremap <silent><buffer> <C-j> i<CR><Esc>
 " map <Leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
-
-" Map Enter to folding
-nnoremap <CR> za
-
-" Treat long lines as break lines (useful when moving around in them)
-" map j gj
-" map k gk
-
-" Bash like keys for the command line
-cnoremap <C-A> <Home>
-cnoremap <C-E> <End>
-cnoremap <C-K> <C-U>
-
-cnoremap <C-P> <Up>
-cnoremap <C-N> <Down>
-nnoremap <Space>ec :Defx ~/.config/vim/custom/<CR>
-nnoremap <Space>em :e! ~/.config/vim/custom/400-mappings.vim<CR>
-nnoremap <Space>er :e! ~/.config/vim/custom/999-random.vim<CR>
-nnoremap <Space>ep :e! ~/.config/vim/custom/100-plugins.vim<CR>
-nnoremap <Space>eP :e! ~/.config/vim/custom/500-plugins-config.vim<CR>
-nnoremap <Space>ev :e! ~/.config/vim/vimrc<CR>
-
-" easy align: ga <Left>, Indent keep
-" https://stackoverflow.com/a/24717020/2727296
-" :help cmdline-special.
-
-nnoremap <Space>es :so %<CR>|                   " Srouce current file
-nnoremap <Space>sv :so ~/.config/vim/vimrc<CR>| " Srouce .vimrc
 
 
 " nnoremap <leader>gb :Git blame<CR>
