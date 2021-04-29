@@ -92,78 +92,88 @@ zinit_load() {
   # Test if we still need this
   # zpcompinit; zpcdreplay
 
-  zinit ice wait atload'ac_my_colors' silent;
-  zinit light shayneholmes/zsh-iterm2colors
-
-  # Test it
+  # Stage 0 Try Random Plugins
   zinit load larkery/zsh-histdb
 
-  # Load p10k
-  zinit ice depth=1 ; zinit light romkatv/powerlevel10k
-  # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
-  [[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh
+  # Stage 1 Must have plugins before prompt {{{2
+  {
+    zinit ice wait atload'ac_my_colors' silent;
+    zinit light shayneholmes/zsh-iterm2colors
 
-  # No turbo mode
-  # zsh-vi-mode: Fast not need
-  [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-  zinit light-mode for \
-    jeffreytse/zsh-vi-mode
+    # Load p10k
+    zinit ice depth=1 ; zinit light romkatv/powerlevel10k
+    # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+    [[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh
 
-  # NOTE: fzf-tab needs to be loaded after compinit, but before plugins which will wrap widgets,
-  # such as zsh-autosuggestions or fast-syntax-highlighting!!
+    # zsh-vi-mode: Fast not need
+    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+    zinit light-mode for \
+      jeffreytse/zsh-vi-mode
+  }
 
-  zinit wait lucid light-mode for \
-    zdharma/history-search-multi-word \
-    atinit"zicompinit; zicdreplay"  zdharma/fast-syntax-highlighting \
-    Aloxaf/fzf-tab \
-    atload"_zsh_autosuggest_start"  zsh-users/zsh-autosuggestions \
+  # Stage 2 Lazy load Plugins {{{2
+  {
+    # 1. Plugins need to be loaded before my config
 
-  zinit wait silent light-mode for \
-    OMZ::lib/functions.zsh \
-    OMZ::plugins/git/git.plugin.zsh \
-    OMZ::plugins/git-extras/git-extras.plugin.zsh \
-    OMZ::plugins/systemd/systemd.plugin.zsh \
-    OMZ::plugins/iterm2/iterm2.plugin.zsh \
-    OMZ::plugins/brew/brew.plugin.zsh
+    # NOTE: fzf-tab needs to be loaded after compinit, but before plugins which will wrap widgets,
+    # such as zsh-autosuggestions or fast-syntax-highlighting!!
+    # The order to load plug is important below
+    zinit wait lucid light-mode for \
+      zdharma/history-search-multi-word \
+      atinit"zicompinit; zicdreplay"  zdharma/fast-syntax-highlighting \
+      Aloxaf/fzf-tab \
+      atload"_zsh_autosuggest_start"  zsh-users/zsh-autosuggestions \
 
+    zinit wait silent light-mode for \
+      OMZ::plugins/git/git.plugin.zsh
 
-  zinit wait lucid silent light-mode for \
-    as'completion' is-snippet 'https://github.com/Valodim/zsh-curl-completion/blob/master/_curl' \
-    blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions \
-    vim/vim \
-    psprint/zsh-cmd-architect \
-    b4b4r07/enhancd \
-    agkozak/zsh-z \
-    djui/alias-tips \
-    zpm-zsh/template
+    zinit wait lucid silent light-mode for \
+      as'completion' is-snippet 'https://github.com/Valodim/zsh-curl-completion/blob/master/_curl' \
+      blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions \
 
-  : '
-  for snippet in $ZSH_CONFIG_HOME/snippets/*.zsh; do
-    mlog "snippet loading $snippet"
-    # zinit update $snippet
-    zinit ice wait silent;
-    zinit snippet $snippet
-  done
-  unset snippet
-  # '
+    }
 
-  # The last plugin to load need overwrite alias and keybinding
-  # check loading order by zinit time (-m)
-  # bindkey.zsh and dir-completion are lazy loading
-  # zinit ice wait atload'bindkey.zsh && dir-completion' silent;
-  zinit ice wait="0" atload'source-all-snippets && bindkey.zsh && dir-completion' silent;
-  zinit light zpm-zsh/empty
+  # Stage 3 Lazy load Personal scripts {{{2
+  {
+    : '
+    for snippet in $ZSH_CONFIG_HOME/snippets/*.zsh; do
+      mlog "snippet loading $snippet"
+      # zinit update $snippet
+      zinit ice wait silent;
+      zinit snippet $snippet
+    done
+    unset snippet
+    # '
+    # The last plugin to load need overwrite alias and keybinding
+    # check loading order by zinit time (-m)
+    # bindkey.zsh and dir-completion are lazy loading
+    # zinit ice wait atload'bindkey.zsh && dir-completion' silent;
+    zinit ice wait="0" atload'source-all-snippets && bindkey.zsh && dir-completion' silent;
+    zinit light zpm-zsh/empty
+  }
 
+  # Stage 4 Lazy load Other scripts  {{{2
+  {
+    # 1. Plugins takes with long loading time
+    # 2. Plugins need to be loaded after config
+    # 3. Plugins
+    zinit wait lucid silent light-mode for \
+      agkozak/zsh-z \
+      b4b4r07/enhancd \
+      djui/alias-tips \
+      psprint/zsh-cmd-architect \
+      wfxr/forgit \
+      zpm-zsh/template
 
-  # Some Special Plugins below
-  # 1. Plugins need to be loaded after config
-  # 2. Plugins takes with long loading time
-  zinit wait lucid silent light-mode for \
-    wfxr/forgit
+    zinit wait silent light-mode for \
+      OMZ::plugins/brew/brew.plugin.zsh \
+      OMZ::plugins/git-extras/git-extras.plugin.zsh \
+      OMZ::plugins/iterm2/iterm2.plugin.zsh \
+      OMZ::plugins/kubectl/kubectl.plugin.zsh \
+      OMZ::plugins/systemd/systemd.plugin.zsh
 
-  zinit wait silent light-mode for \
-    OMZ::plugins/kubectl/kubectl.plugin.zsh
-
+  }
+  #}}}
   # zinit snippet 'https://github.com/Dabz/kafka-zsh-completions/blob/master/kafka.plugin.zsh'
 
   # zinit update # Update plugin or snippet

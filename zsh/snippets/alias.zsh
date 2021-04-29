@@ -76,3 +76,7 @@ alias cgrep='grep --color=always'
 alias test-passed='if [ "$?" -eq "0" ]; then lolcat ~/.tp -a -s 40 -d 2; fi;'
 
 # --------------------------------------------------------------------------
+
+function take() {
+  mkdir -p $@ && cd ${@:$#}
+}
