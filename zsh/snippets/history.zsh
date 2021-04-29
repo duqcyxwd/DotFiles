@@ -31,11 +31,11 @@ setopt AUTO_CD                # ZSH AUTO CD into directories
 
 # Notes
 # https://scarff.id.au/blog/2019/zsh-history-conditional-on-command-success/
-zshaddhistory() {  
+zshaddhistory() {
   emulate -L zsh
 
   # return 1 when first command is unknown command
-  whence ${${(z)1}[1]} >| /dev/null || return 1  
+  whence ${${(z)1}[1]} >| /dev/null || return 1
 
   local line=${1%%$'\n'}
   local cmd=${line%% *}
@@ -51,9 +51,7 @@ zshaddhistory() {
   # Not necessary, Most of them will be cleanup by zsh
   if [[ ${#line} -ge 4
           && ${cmd} != ("")
-          && ${cmd} != (c|cd) 
-          && ${cmd} != (bat) 
-          && ${cmd} != (gc) 
+          && ${cmd} != (gc)
           && ${cmd} != (l|l[salt]|l[salt][a])
           && ${cmd} != (m|man) ]] ; then
     # Following code will cache command to avoid duplicate entry

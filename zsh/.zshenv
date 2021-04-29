@@ -1,5 +1,6 @@
 
 export ZDOTDIR=$HOME/.config/zsh
+export XDG_DATA_HOME=$HOME/.config
 
 # Overwrite by /ect/zshrc
 export HISTSIZE=10000002          #The maximum number of events stored in the internal history list.

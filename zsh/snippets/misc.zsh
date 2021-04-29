@@ -100,6 +100,7 @@ fif() {
 
 # FZF with kill {{{3
 # fkill - kill processes - list only the ones you can kill. Modified the earlier script.
+# This is better than default completion
 fkilll() {
     local pid
     if [ "$UID" != "0" ]; then
@@ -120,7 +121,7 @@ fkilll() {
 # METHOD: : Lazy Plugin Load {{{2
 # --------------------------------------------------------------------------
 # alias helm3="/usr/local/Cellar/helm/3.2.1/bin/helm"
-alias helm2="/usr/local/Cellar/helm@2/2.16.7/bin/helm"
+alias helm2="/usr/local/Cellar/helm@2/2.17.0/bin/helm"
 
 # if [ $commands[helm] ]; then
 #     helm() {

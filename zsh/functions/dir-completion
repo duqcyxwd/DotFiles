@@ -1,36 +1,40 @@
 #!/bin/sh
 
-# SECTION: : Autocompletion {{{1
+# SECTION: : Autocompletion
 # --------------------------------------------------------------------------
 # Autocompletion for teamocil
-compctl -g '~/.teamocil/*(:t:r)' itermocil
 
 _comp_dir_repodir="${HOME}/code/"
-c() {cd $_comp_dir_repodir$1}
+co() { cd $_comp_dir_repodir$1 }
 
 _comp_dir_gh_dir="${HOME}/github/"
-gh() {cd $_comp_dir_gh_dir$1}
+gh() { cd $_comp_dir_gh_dir$1 }
 
 _comp_dir_duqcyxwd_dir="${HOME}/duqcyxwd/"
-d() {cd $_comp_dir_duqcyxwd_dir$1}
+d() { cd $_comp_dir_duqcyxwd_dir$1 }
 
 
 # https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org
 _code_directory_completion() {
-  _alternative \
-    "dirs:user directory:($(/bin/ls $_comp_dir_repodir/))" 
+  # _alternative "dirs:user directory:($(/bin/ls $_comp_dir_repodir/))"
+  # _alternative "dirs:user directory:($(/usr/local/bin/fd -d 3 -t d '' $_comp_dir_repodir))"
+  # local files=($(/usr/local/bin/fd -d 1 -t d '' $_comp_dir_repodir | cut -c${#_comp_dir_repodir}- | cut -c2- ))
+  local files=($(/usr/local/bin/fd -d 1 -t d --base-directory=$_comp_dir_repodir ))
+  compadd -a -f files
 }
 
 _gh_directory_completion() {
   _alternative \
-    "dirs:user directory:($(/bin/ls $_comp_dir_gh_dir/))" 
+    "dirs:user directory:($(/bin/ls $_comp_dir_gh_dir/))"
 }
 
 _duqcyxwd_directory_completion() {
-  _alternative \
-    "dirs:user directory:($(/bin/ls $_comp_dir_duqcyxwd_dir/))" 
+  # _alternative "dirs:user directory:($(/bin/ls $_comp_dir_duqcyxwd_dir/))"
+  _alternative  "dirs:user directory:($(/usr/local/bin/fd -d 3 -t d '' $_comp_dir_duqcyxwd_dir | cut -c${#_comp_dir_duqcyxwd_dir}- | cut -c2- ))"
 }
 
-compdef _code_directory_completion c
+compdef _cenx_directory_completion ce
+compdef _code_directory_completion co
 compdef _gh_directory_completion gh
 compdef _duqcyxwd_directory_completion d
+
