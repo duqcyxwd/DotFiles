@@ -10,13 +10,14 @@ __fzf_config() {
 
   # FZF KEYBINDING {{{3
     export FZF_MY_KEYBINDING="
-    --bind '?:toggle-preview' 
+    --bind '?:toggle-preview'
 
-    --bind 'left:up' 
-    --bind 'left:+toggle' 
-    --bind 'right:toggle+down' 
-    --bind 'tab:down' 
-    --bind 'btab:up' 
+    --bind 'left:up'
+    --bind 'left:+toggle'
+    --bind 'right:toggle+down'
+    --bind 'tab:down'
+    --bind 'btab:up'
+
 
     --bind='ctrl-k:preview-half-page-up'
     --bind='ctrl-j:preview-half-page-down'
@@ -27,21 +28,25 @@ __fzf_config() {
     --bind='ctrl-b:half-page-up'
     --bind='ctrl-f:half-page-down'
 
-    --bind='ctrl-s:toggle-sort' 
+    --bind='ctrl-s:toggle-sort'
     --bind='ctrl-w:toggle-preview-wrap'
 
     --bind='change:top'
-
     "
+
+    # --bind 'ctrl-p:up'
+    # --bind 'ctrl-n:down'
+    # --bind 'up:previous-history'
+    # --bind 'down:next-history'
     # Why not tab:toggle+down
     # {{{
     # Need a way to move cursor
-    # --bind 'left:up' 
+    # --bind 'left:up'
 
     # --bind='ctrl-u:half-page-up'
     # --bind='ctrl-d:half-page-down'
     # }}}
-    
+
     # Other Default keybinding
     # ctrl-n
     # ctrl-p
@@ -50,7 +55,7 @@ __fzf_config() {
     # ctrl-a
     # ctrl-u
     # ctrl-w
-    
+
     #### My fzf shared general keybinding
     # ctrl-r vim open remote
     # ctrl-v vim open
@@ -59,7 +64,7 @@ __fzf_config() {
     # ctrl-o fzf-exec
     # ctrl-space  bat preview
     #
-    
+
     #### Fuzzy preview
     # enter echo input
     #
@@ -75,13 +80,15 @@ __fzf_config() {
     # export FZF_COLOR_SCHEMA_BORDER=""
     export FZF_COLOR_SCHEMA_BORDER="--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899' --border"
 
+
+
     # Dracula Theme
     local __FZF_COLOR_SCHEMA_DRACULA='
     --color=dark
     --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
     --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
     '
-    
+
     # Theme Ayu Mirage
     local __FZF_COLOR_SCHEMA_AYU='
      --color=fg:#cbccc6,bg:#1f2430,hl:#707a8c
@@ -103,7 +110,7 @@ __fzf_config() {
     # export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_DRACULA"
     export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_AYU"
     # export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_NORD"
-    
+
 
     export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
 
@@ -117,18 +124,22 @@ __fzf_config() {
 
     # Options to fzf command
     # export FZF_COMPLETION_OPTS='+c -x'
-    
+
   # FZF fd support {{{3
     # Setting fd as the default source for fzf
     if [ $commands[fd] ]; then
       # Use fd (https://github.com/sharkdp/fd) instead of the default find
-      export FZF_DEFAULT_COMMAND="fd --type file --color=always"
+      # export FZF_DEFAULT_COMMAND="fd --type file --hidden --color=always"
+      export FZF_DEFAULT_COMMAND="fd --type file --hidden --color=always --exclude={.git,.idea,.vscode,.sass-cache,node_modules}"
+
 
       # https://github.com/Aloxaf/fzf-tab/issues/65
       # export FZF_DEFAULT_COMMAND='fd --hidden --follow --type=f'
       # _fzf_compgen_path() { fd --hidden --follow --type=f }
 
-      export FZF_ALT_C_COMMAND="fd --type d --color=always"
+      # Directory finder
+      export FZF_ALT_C_COMMAND="fd --type d --hidden --color=always --exclude={.git,.idea,.vscode,.sass-cache,node_modules}"
+      # File finder
       export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
       # Use fd (https://github.com/sharkdp/fd) instead of the default find
@@ -143,6 +154,6 @@ __fzf_config() {
     fi
     # }}}3
 
-} 
+}
 
 __fzf_config

@@ -40,14 +40,18 @@ export CURRENT_KUBE_NS_LIST_FILE=$HOME/.kube/KUBE_NS_LIST
     # kgns-cached &|
     
     # Method 3, mix, preload and reload on demand
-    kgns-cached &|
-    set-ns $(cat $CURRENT_KUBE_NS_LIST_FILE | fzf \
+    # kgns-cached &|
+    # set-ns $(cat $CURRENT_KUBE_NS_LIST_FILE | fzf \
+    # --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" --header-lines=1 -0 | awk '{print $1}')
+
+    # Method 4, manual reload with loading icon
+    set-ns $({ cat $CURRENT_KUBE_NS_LIST_FILE && kgns-cached } | fzf +m \
     --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" --header-lines=1 -0 | awk '{print $1}')
   }
   
   set-context() {
       if [ $# -eq 0 ]; then
-          mlog "[set-context] Require namespace"
+          mlog "[set-context] Require a context"
           return
       fi
   
@@ -65,7 +69,7 @@ export CURRENT_KUBE_NS_LIST_FILE=$HOME/.kube/KUBE_NS_LIST
   
   set-contexti() {
     # kubectl config use-context $(kubectl config get-contexts  | awk 'NR>1' | fzf | awk '{print $2}')
-    set-context $(kubectl config get-contexts  | fzf -0 --header-lines=1 | awk '{print $2}')
+    set-context $(kubectl config get-contexts | fzf +m -0 --header-lines=1 | awk '{print $2}')
   }
   
 }
