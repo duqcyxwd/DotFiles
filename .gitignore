@@ -7,3 +7,4 @@ atom/git-time-machine/
 .git
 .vimroot
 Session.vim
+.DS_Store
