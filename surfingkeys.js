@@ -175,8 +175,8 @@ map('l', 'R');
 map('H', 'S');
 map('L', 'D');
 map('s', 'u');
-map('<Ctrl-z>', '<Alt-s>')
-map('<Ctrl-i>', '<Alt-s>')
+map('<Ctrl-z>', '<Alt-s>');
+map('<Ctrl-i>', '<Alt-s>');
 
 //  --------------------------------------------------------------------------
 // }}}
@@ -247,8 +247,10 @@ addSearchAliasX('L', 'Im feeling lucky', 'https://www.google.com/search?btnI=1&q
 //  --------------------------------------------------------------------------
 const atlassianJIRAMapping = () => {
   let domainMap = {
-    domain: /(cenx.*|jira-.*)/i,
-  };
+      domain: /(cenx.*|jira-.*)/i,
+    },
+    jstate = { sideHidden: true };
+
   mapkey(
     ',zm',
     'Toggle navigation bar',
@@ -262,37 +264,37 @@ const atlassianJIRAMapping = () => {
     'Copy JIRA TO MarkDown',
     function () {
       // let header = document.querySelectorAll('h1[data-test-id="issue.views.issue-base.foundation.summary.heading"]')[0].textContent,
-      let header = document.querySelectorAll('.editable-field')[0].textContent
-        url = window.location.href,
-        cd = url.match(/CD-[0-9]*/)[0];
+      let header = document.querySelectorAll('.editable-field')[0].textContent;
+      (url = window.location.href), (cd = url.match(/CD-[0-9]*/)[0]);
 
-      let type = document.querySelectorAll('#issuedetails .item #type-val')[0], 
-        typeText = "";
+      let type = document.querySelectorAll('#issuedetails .item #type-val')[0],
+        typeText = '';
 
       if (type) {
-        typeText = type.textContent.replace(/\n/g, "").replace(/ /g, "");
+        typeText = type.textContent.replace(/\n/g, '').replace(/ /g, '');
 
-        switch(typeText) {
-          case "Requirement":
-            cd = "R:" + cd;
+        switch (typeText) {
+          case 'Requirement':
+            cd = '🟠' + ' [' + 'R:' + cd + ']';
             break;
-          case "Epic":
-            cd = "E:" + cd;
+          case 'Epic':
+            cd = '🟣' + ' [' + 'E:' + cd + ']';
             break;
-          case "Story":
-            cd = "S:" + cd;
+          case 'Story':
+            cd = '🟢' + ' [' + 'S:' + cd + ']';
             break;
-          case "Bug":
-            cd = "B:" + cd;
+          case 'Bug':
+            cd = '🔴' + ' [' + 'BB:' + cd + ']';
+
             break;
           default:
-            // code block
+          // code block
         }
 
-        typeText = typeText + ": ";
+        typeText = typeText + ': ';
       }
 
-      md = '[' + cd + ']' + '(' + url + ')' + ' ' + typeText + header;
+      md = cd + '(' + url + ')' + ' ' + typeText + header;
 
       console.log(typeText);
       console.log(md);
@@ -300,6 +302,27 @@ const atlassianJIRAMapping = () => {
     },
     domainMap
   );
+
+  mapkey(
+    ',,c',
+    'Clean view',
+    function () {
+      let d = document.getElementById('viewissuesidebar');
+      let dlist = document.querySelectorAll('.aui-item.list-results-panel')[0];
+
+      if (jstate.sideHidden) {
+        d.style.width = '0%';
+        if (dlist != null) dlist.style.display = 'none';
+      } else {
+        d.style.width = '30%';
+        if (dlist != null) dlist.style.display = '';
+      }
+      // document.querySelectorAll('.aui-item.list-results-panel')[0].style.width="250px"
+      jstate.sideHidden = !jstate.sideHidden;
+    },
+    domainMap
+  );
+
   mapkey(
     ',pr',
     'Open pull request',
@@ -459,32 +482,31 @@ const gitlabMapping = () => {
       knownPathRegex = /(merge_requests\/\d*|pipelines\/\d*|jobs\/\d*)/,
       url = window.location.href,
       path = window.location.pathname,
-      titleText, 
+      titleText,
       linkName,
-      shortPath, 
+      shortPath,
       shortPathText;
 
-
-    titleText =  mrTitle ? mrTitle.textContent.replace(/\n/g, "") : "";
+    titleText = mrTitle ? mrTitle.textContent.replace(/\n/g, '') : '';
 
     knownPath = url.match(knownPathRegex);
 
     if (knownPath) {
-      linkName = knownPath[0].replace(/merge_requests\//, "MR: #")
-                          .replace(/pipelines\//, "Pipeline: #")
-                          .replace(/jobs\//, "Job: #");
+      linkName = knownPath[0]
+        .replace(/merge_requests\//, 'MR: #')
+        .replace(/pipelines\//, 'Pipeline: #')
+        .replace(/jobs\//, 'Job: #');
     } else {
       // shortPath = path.match(/\/\w+\/\w+\/?$/);
       shortPath = path.match(/\/\w+\/[a-zA-Z0-9-_]+\/?$/);
       linkName = shortPath ? shortPath[0].replace(/^\//, '') : '';
-
     }
 
-    md = "[" + linkName + '](' + url + ')  ' + titleText;
+    md = '[' + linkName + '](' + url + ')  ' + titleText;
 
     console.log(md);
     Clipboard.write(md);
-  }
+  };
 
   mapkey(',,y', 'Gitlab: copy mr/pipeline link', gitlabCopyUrl, gitlabDomain);
   mapkey(',,c', 'Gitlab: github clean', cleanSchedule, gitlabDomain);
@@ -502,7 +524,6 @@ const gitlabMapping = () => {
 
 // Section: Google Search Result {{{2
 //  --------------------------------------------------------------------------
-
 
 const googleMapping = () => {
   const googleDomain = {
@@ -524,7 +545,6 @@ const googleMapping = () => {
   mapkey(',,,', 'Google: Ad clean', cleanAd, googleDomain);
   // mapkey(',,a', 'Google: Ad clean', cleanAd);
 };
-
 
 //  --------------------------------------------------------------------------
 // }}}
@@ -626,7 +646,7 @@ Visual.style('cursor', 'background-color: #6272a4; color: #f8f8f2');
 // Section: Theme {{{1
 //  --------------------------------------------------------------------------
 
-settings.theme = `
+settings.Notheme = `
 .sk_theme input {
     font-family: "Fira Code";
 }
@@ -826,15 +846,6 @@ if (window.navigator.userAgent.indexOf('Firefox') <= 0) {
   });
 }
 
-// self.mappings.add('f', {
-//   annotation: 'Open a link, press SHIFT to flip overlapped hints, hold SPACE to hide hints',
-//   feature_group: 1,
-//   repeatIgnore: true,
-//   code: function() {
-//     Hints.create('', Hints.dispatchMouseClick);
-//   }
-// });
-
 mapkey(',fn', '#1Open a link in new tab', function () {
   Hints.create('', Hints.dispatchMouseClick, { tabbed: true });
 });
@@ -916,6 +927,7 @@ function DefaultSetting() {
       });
     });
   });
+
   // create shortcuts for the command with different parameters
   map('spa', ':setProxyMode always', 0, '#13set proxy mode `always`');
   map('spb', ':setProxyMode byhost', 0, '#13set proxy mode `byhost`');
@@ -1596,12 +1608,6 @@ function DefaultSetting() {
     return res.map(function (r) {
       return r.phrase;
     });
-  });
-  addSearchAliasX('b', 'baidu', 'https://www.baidu.com/s?wd=', 's', 'http://suggestion.baidu.com/su?cb=&wd=', function (
-    response
-  ) {
-    var res = response.text.match(/,s:\[("[^\]]+")]}/);
-    return res ? res[1].replace(/"/g, '').split(',') : [];
   });
   addSearchAliasX(
     'w',
