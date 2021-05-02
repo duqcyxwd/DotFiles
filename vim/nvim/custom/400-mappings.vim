@@ -98,8 +98,8 @@ let which_key_map_space.g.b = "Git Blame"
 nnoremap <Space>gb :Gblame<CR>
 
 
-let which_key_map_space.g.l = "Git Link (GBrwose)"
-nnoremap <Space>gb :GBrwose<CR>
+let which_key_map_space.g.o = "Git Open Link (GBrwose)"
+nnoremap <Space>go :GBrowse<CR>
 
 
 " [SpaceMapping] h+: Help {{{1
@@ -167,11 +167,20 @@ nnoremap <Space>tn :setlocal number!<CR>:setlocal number?<CR>
 let which_key_map_space.t.r = "Toggle relative line number"
 nnoremap <Space>tr :setlocal rnu!<CR>:setlocal rnu?<CR>
 
-let which_key_map_space.t.s = "toggle auto strip whitespace"
+let which_key_map_space.t.s = "Toggle auto strip whitespace"
 nnoremap <Space>ts :call ToggleAutoStripSpace()<CR>
 
-let which_key_map_space.t.w = "toggle word wrap"
+let which_key_map_space.t.w = "Toggle word wrap"
 nnoremap <Space>tw :setlocal wrap!<CR>:setlocal wrap?<CR>
+
+let which_key_map_space.t.t = "Toggle 80 text width"
+nnoremap <Space>tt :call ToggleTextWidth()<CR>
+" nnoremap <Space>tt :call ToggleHighlightCharacterOver80()<CR>
+
+
+let which_key_map_space.t.l = "Toggle list for special char "
+nnoremap <Space>tl :set list!<CR>
+" nnoremap <Space>tt :call ToggleHighlightCharacterOver80()<CR>
 
 " WIP
 let g:which_key_map_space.t.f = { 'name' : 'Fold+' }

@@ -13,8 +13,8 @@
 " /*                                                    */
 " /******************************************************/
 
-" [Function] Strip Whitespace {{{1
-" --------------------------------------------------------------------------------
+" [Function] Toggle Strip Whitespace {{{1
+" ------------------------------------------------------------------------------
 " Cleanup extra space when save
 " Strip trailing whitespace without affect search and current cursor
  function! g:StripWhitespace()
@@ -28,45 +28,57 @@
 let s:autoStripSpaceEnabled = 0
 function! ToggleAutoStripSpace()
   if s:autoStripSpaceEnabled
+    let s:autoStripSpaceEnabled = 0
+    echo "autoStripSpaceEnabled off"
     augroup STRIP_WHITESPACE
       autocmd!
     augroup END
-    let s:autoStripSpaceEnabled = 0
   else
+    let s:autoStripSpaceEnabled = 1
+    " echo "autoStripSpaceEnabled on"
     augroup STRIP_WHITESPACE
       autocmd!
       autocmd BufWritePre * call StripWhitespace()
     augroup END
-    let s:autoStripSpaceEnabled = 1
   endif
 endfunction
 call ToggleAutoStripSpace()
 
-" [Function] Fold Related Fns {{{1
-" --------------------------------------------------------------------------------
-
-function! ToggleFoldColumn()
-  if &foldcolumn == 3
-    set foldcolumn=0
+" [Function] HighlightCharactersOver80 {{{1
+" ------------------------------------------------------------------------------
+" Highlight characters in column 81+ with a red background.
+" (source: https://stackoverflow.com/a/235970/2338327)
+let s:highlightCharacterOver80 = 1
+function! s:HighlightCharactersOver80() abort
+  if s:highlightCharacterOver80
+    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+          \ | match OverLength /\%81v.\+/
   else
-    set foldcolumn=3
+    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+          \ | match OverLength /\%999v.\+/
   endif
 endfunction
 
-let s:foldMethodList = ['manual', 'indent', 'expr', 'marker', 'syntax', 'diff']
-let s:foldLength=len(s:foldMethodList)
-
-let s:foldMethod = 0
-function! LoopFoldMethod()
-  execute "set foldmethod=".s:foldMethodList[s:foldMethod]
-  let s:foldMethod +=1
-  if s:foldMethod >= s:foldLength
-    let s:foldMethod =0
+function! ToggleTextWidth()
+  if &textwidth == 0
+    set textwidth=80
+    let s:highlightCharacterOver80 = 1
+    syntax on
+  else
+    set textwidth=0
+    let s:highlightCharacterOver80 = 0
+    syntax on
   endif
 endfunction
 
-" [Function] Reload VIM file when save {{{1
-" --------------------------------------------------------------------------------
+augroup ColorSchemeMods
+  autocmd!
+  autocmd ColorScheme * call s:HighlightCharactersOver80()
+augroup END
+
+
+" [Function] Toggle Reload VIM file when save {{{1
+" ------------------------------------------------------------------------------
 " The only reason we modify vim file is source it.
 " Why not make this happend in a magic way?!
 
@@ -78,8 +90,6 @@ function! SourceCurrentFile()
 endfun
 
 " autocmd! BufWritePost vim call ReloadVimrc()
-
-
 
 " WIP
 let s:autoVimSourceEnabled = 0
@@ -100,4 +110,54 @@ function! ToggleAutoVimSource()
   endif
 endfunction
 " call ToggleAutoVimSource()
+
+" [Function] Fold Related Fns {{{1
+" ------------------------------------------------------------------------------
+function! ToggleFoldColumn()
+  if &foldcolumn == 3
+    set foldcolumn=0
+  else
+    set foldcolumn=3
+  endif
+endfunction
+
+let s:foldMethodList = ['manual', 'indent', 'expr', 'marker', 'syntax', 'diff']
+let s:foldLength=len(s:foldMethodList)
+
+let s:foldMethod = 0
+function! LoopFoldMethod()
+  execute "set foldmethod=".s:foldMethodList[s:foldMethod]
+  let s:foldMethod +=1
+  if s:foldMethod >= s:foldLength
+    let s:foldMethod =0
+  endif
+endfunction
+
+" [Function] Run current file {{{1
+" ------------------------------------------------------------------------------
+
+function! RunUsingCurrentFiletype()
+  execute 'write'
+  execute '! clear; '.&filetype.' <% '
+endfunction
+" WIP
+nmap <Space>rr :call RunUsingCurrentFiletype()<CR>
+
+
+" }}}1
+"
+"
+let s:whitespace_enable = 0
+function! g:Toggle_whitespace() abort
+  if s:whitespace_enable
+    DisableWhitespace
+    let s:whitespace_enable = 0
+  else
+    EnableWhitespace
+    let s:whitespace_enable = 1
+  endif
+  call SpaceVim#layers#core#statusline#toggle_section('whitespace')
+  call SpaceVim#layers#core#statusline#toggle_mode('whitespace')
+endfunction
+
 

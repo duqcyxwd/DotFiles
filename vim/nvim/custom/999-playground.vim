@@ -10,7 +10,7 @@
 "
 "
 "
-function! g:ToggleVerbose() "{{{1
+function! g:ToggleVerbose()
   if !&verbose
     set verbosefile=~/temp/log/vim.log
     set verbose=15
@@ -20,12 +20,12 @@ function! g:ToggleVerbose() "{{{1
   endif
 endfunction
 
-function! g:UnmapDelimitMate() "{{{1
+function! g:UnmapDelimitMate()
   inoremap <silent><buffer> " "
   inoremap <silent><buffer> { {
 endfunction
 
-"}}}1
+
 
 augroup VIM_VIM_FILE
   autocmd!
@@ -33,11 +33,11 @@ augroup VIM_VIM_FILE
 augroup END
 
 
-function g:Meow() "{{{1
+function! g:Meow()
   echom "Meow!"
 endfunction
 
 
-command CDC cd %:p:h             " CDC = Change to Directory of Current file
+command! CDC cd %:p:h             " CDC = Change to Directory of Current file
 
 " map <Leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>

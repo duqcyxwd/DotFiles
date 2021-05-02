@@ -23,7 +23,7 @@ set cmdheight=1
 set cursorline                  " highlights line numbers (vim-airline-colornum)
 set encoding=utf8               " Set utf8 as standard encoding
 set ffs=unix,dos,mac            " Use Unix as the standard file type
-set foldcolumn=0
+set foldcolumn=0                " Disable fold column by default, <Space>tc to enable it
 set foldmethod=marker           " Use braces by default
 set hidden                      " A buffer becomes hidden when it is abandoned
 set history=700                 " Sets how many lines of history VIM has to remember
@@ -63,6 +63,7 @@ set lbr                   " Automatically break lines at 80 characters.
 set shiftwidth=2          " 1 tab == 2 spaces
 set smarttab              " Be smart when using tabs ;)
 set tabstop=2
+set textwidth=80          " 80 chars <Space>tt to toggle it
 
 " WIP Add toggle for this
 set textwidth=80          " 80 chars or die
@@ -72,6 +73,10 @@ set nowrap                " Wrap lines
 " Edit
 set backspace=eol,start,indent " Configure backspace so it acts as it should act
 set whichwrap+=<,>,h,l         " Allow specified keys that move the cursor left/right to move to the previous/next line
+
+
+" https://stackoverflow.com/a/29787362
+set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
 
 
 " * Special *
@@ -171,3 +176,4 @@ endif
 
 
 
+set startofline                 " When "on" the commands listed below move the cursor to the first non-blank of the line. set startofline                 " When "on" the commands listed below move the cursor to the first non-blank of the line.

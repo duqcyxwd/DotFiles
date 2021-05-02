@@ -12,10 +12,20 @@ call plug#begin('$HOME/.local/share/nvim/plug')
 
 "New for chuan {{{1
 " ------------------------------------------------------------------------------
-Plug 'mhinz/vim-startify'
-Plug 'mattn/vim-findroot'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-surround'
+
+" Aesthetic {{{2
+" ------------------------------------------------------------------------------
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
+Plug 'dracula/vim', { 'as': 'dracula' }
+" Plug 'vim-scripts/mayansmoke'
+
+"theme
+Plug 'mhartington/oceanic-next'
+Plug 'ayu-theme/ayu-vim'
+Plug 'sonph/onehalf', {'rtp': 'vim/'}
+Plug 'cormacrelf/vim-colors-github'
 
 " Clojure things {{{2
 " Plug 'eraserhd/parinfer-rust'
@@ -36,35 +46,27 @@ Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
 Plug 'luochen1990/rainbow'
 
 " Editor enhancements {{{2
-Plug 'junegunn/vim-easy-align'
-Plug 'junegunn/fzf.vim'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'AndrewRadev/undoquit.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug 'junegunn/fzf.vim'
+Plug 'junegunn/vim-easy-align'
 Plug 'liuchengxu/vim-which-key'
-Plug 'osyo-manga/vim-over'
 Plug 'mg979/vim-visual-multi'
+Plug 'osyo-manga/vim-over'
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
 
 " Language {{{2
 Plug 'evedovelli/rst-robotframework-syntax-vim'
 Plug 'seeamkhan/robotframework-vim'
-
-" Aesthetic {{{2
-" ------------------------------------------------------------------------------
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
-" Plug 'vim-scripts/mayansmoke'
-
-"theme
-Plug 'mhartington/oceanic-next'
-Plug 'ayu-theme/ayu-vim'
-Plug 'sonph/onehalf', {'rtp': 'vim/'}
-Plug 'cormacrelf/vim-colors-github'
+Plug 'zinit-zsh/zinit-vim-syntax'
 
 " Misc+ {{{2
-Plug 'tpope/vim-fugitive'
+Plug 'mattn/vim-findroot'
+Plug 'mhinz/vim-startify'
 Plug 'shumphrey/fugitive-gitlab.vim'
+Plug 'tpope/vim-fugitive'
 
 " WIP {{{2
 Plug 'yuki-yano/fzf-preview.vim'
