@@ -1,0 +1,47 @@
+{
+  "diagnostic.virtualText": true,
+  "coc.source.conjure.priority": 999999,
+  "diagnostic-languageserver.filetypes": {
+    "sh": "shellcheck"
+  },
+  "java.errors.incompleteClasspath.severity": "ignore",
+  "languageserver": {
+    "bash": {
+      "command": "bash-language-server",
+      "args": [
+        "start"
+      ],
+      "filetypes": [
+        "sh"
+      ],
+      "ignoredRootPaths": [
+        "~"
+      ]
+    }
+  }
+  "codeLens.enable": true,
+  "suggest.removeDuplicateItems": true,
+  // python config
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "css",
+    "markdown",
+    "javascript",
+    "graphql",
+    "html",
+    "yaml"
+  ],
+  // explorer
+  "explorer.width": 30,
+  "explorer.icon.enableNerdfont": true,
+  "explorer.previewAction.onHover": false,
+  "explorer.keyMappings.global": {
+    "<cr>": [
+      "expandable?",
+      "expand",
+      "open"
+    ],
+    "v": "open:vsplit"
+  }
+}
