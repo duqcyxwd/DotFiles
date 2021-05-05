@@ -121,160 +121,6 @@ let g:clojure_maxlines = 0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => coc {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" HACK to workaround coc not providing a :CocToggle command
-function! ToggleCoc() abort
-  if len(coc#status()) == 0
-    execute 'CocEnable'
-  else
-    execute 'CocDisable'
-  endif
-endfunction
-
-" nnoremap <silent> <leader>cc :call ToggleCoc()<CR>
-" nnoremap <leader>cd :CocList diagnostics<CR>
-" nnoremap <leader>ci :CocInfo<CR>
-
-" press q to close e.g. the :CocInfo buffer
-augroup coc_buffers
-  autocmd!
-  autocmd BufEnter output:///info nnoremap <buffer> q :bd<CR>
-augroup END
-
-" don't give |ins-completion-menu| messages
-set shortmess+=c
-set signcolumn=yes
-
-" Use tab for trigger completion with characters ahead and navigate.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-" Use <c-space> to trigger completion.
-inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-" position.
-" Coc only does snippet and additional edit on confirm.
-" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" A variation on the above that plays nicely with vim-endwise.
-" source: https://github.com/roxma/nvim-completion-manager/issues/49#issuecomment-285923119
-" (the link above is about ncm2, but the same concept applies to coc)
-let g:endwise_no_mappings = 1
-imap <C-X><CR>   <CR><Plug>AlwaysEnd
-imap <expr> <CR> (pumvisible() ? "\<C-Y>\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd")
-
-nmap <silent> [c <Plug>(coc-diagnostic-prev)
-nmap <silent> ]c <Plug>(coc-diagnostic-next)
-
-" Remap keys for gotos
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-let g:coc_enable_locationlist = 0
-augroup coc_locationlist
-  autocmd!
-  autocmd User CocLocationsChange CocList --normal location
-augroup END
-
-" Using CocList
-" Show all diagnostics
-" nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" " Manage extensions
-" nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" " Show commands
-" nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" " Find symbol of current document
-" nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-" nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-" nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" " Do default action for previous item.
-" nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" " Resume latest coc list
-" nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-
-nmap <silent> [k :CocPrev<cr>
-nmap <silent> ]k :CocNext<cr>
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-function! s:show_documentation() abort
-  if &filetype == 'vim'
-    execute 'h '.expand('<cword>')
-  else
-    call CocAction('doHover')
-  endif
-endfunction
-
-function! Expand(exp) abort
-    let l:result = expand(a:exp)
-    return l:result ==# '' ? '' : "file://" . l:result
-endfunction
-
-" Highlight symbol under cursor on CursorHold
-augroup coc_highlight_symbol_under_cursor
-  autocmd!
-  autocmd CursorHold * silent call CocActionAsync('highlight')
-augroup END
-" vmap <leader>cf <Plug>(coc-format-selected)
-" nmap <leader>cf <Plug>(coc-format-selected)
-
-nnoremap <silent> crcc :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'cycle-coll', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crth :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crtt :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crtf :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crtl :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> cruw :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-thread', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crua :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crml :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'move-to-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
-nnoremap <silent> cril :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'introduce-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
-nnoremap <silent> crel :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'expand-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> cram :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'add-missing-libspec', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crcn :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'clean-ns', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> cref :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'extract-function', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Function name: ')]})<CR>
-
-" NB: I don't know what codeActions are, and <leader>a conflicts with my
-" ZoomToggle binding, so I'm just commenting this out for now.
-"
-" If/when I learn what codeActions are and want to use them, I'll have to come
-" up with a different binding.
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-" vmap <leader>a  <Plug>(coc-codeaction-selected)
-" nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-" nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-" nmap <leader>qf  <Plug>(coc-fix-current)
-
-augroup coc_load_clojure_content
-  autocmd BufReadCmd,FileReadCmd,SourceCmd jar:file://*
-        \ call s:LoadClojureContent(expand("<amatch>"))
-augroup END
-
-function! s:LoadClojureContent(uri) abort
-  setfiletype clojure
-  let content = CocRequest('clojure-lsp', 'clojure/dependencyContents', {'uri': a:uri})
-  call setline(1, split(content, "\n"))
-  setl nomodified
-  setl readonly
-endfunction
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => colorizer {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:colorizer_auto_color = 1
@@ -1107,6 +953,8 @@ let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
 let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
 let g:airline#extensions#tabline#buffer_idx_mode = 1 " Show buffer index
 
+let g:airline_section_b = airline#section#create(['hunks', 'battery', 'file'])
+let g:airline_section_c = airline#section#create(['%<', 'readonly', 'coc_status', 'lsp_progress'])
 
 nmap <Space>1 <Plug>AirlineSelectTab1
 nmap <Space>2 <Plug>AirlineSelectTab2
@@ -1143,6 +991,344 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => coc {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" HACK to workaround coc not providing a :CocToggle command
+function! ToggleCoc() abort
+  if len(coc#status()) == 0
+    execute 'CocEnable'
+  else
+    execute 'CocDisable'
+  endif
+endfunction
+
+" nnoremap <silent> <leader>cc :call ToggleCoc()<CR>
+" nnoremap <leader>cd :CocList diagnostics<CR>
+" nnoremap <leader>ci :CocInfo<CR>
+
+" press q to close e.g. the :CocInfo buffer
+" augroup coc_buffers
+"   autocmd!
+"   autocmd BufEnter output:///info nnoremap <buffer> q :bd<CR>
+" augroup END
+"
+" " don't give |ins-completion-menu| messages
+" set shortmess+=c
+" set signcolumn=yes
+"
+" " Use tab for trigger completion with characters ahead and navigate.
+" inoremap <silent><expr> <TAB>
+"       \ pumvisible() ? "\<C-n>" :
+"       \ <SID>check_back_space() ? "\<TAB>" :
+"       \ coc#refresh()
+" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+"
+" function! s:check_back_space() abort
+"   let col = col('.') - 1
+"   return !col || getline('.')[col - 1]  =~# '\s'
+" endfunction
+"
+" " Use <c-space> to trigger completion.
+" inoremap <silent><expr> <c-space> coc#refresh()
+
+" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
+" position.
+" Coc only does snippet and additional edit on confirm.
+" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+
+" A variation on the above that plays nicely with vim-endwise.
+" source: https://github.com/roxma/nvim-completion-manager/issues/49#issuecomment-285923119
+" (the link above is about ncm2, but the same concept applies to coc)
+" let g:endwise_no_mappings = 1
+" imap <C-X><CR>   <CR><Plug>AlwaysEnd
+" imap <expr> <CR> (pumvisible() ? "\<C-Y>\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd")
+"
+" nmap <silent> [c <Plug>(coc-diagnostic-prev)
+" nmap <silent> ]c <Plug>(coc-diagnostic-next)
+"
+" " Remap keys for gotos
+" nmap <silent> gd <Plug>(coc-definition)
+" nmap <silent> gy <Plug>(coc-type-definition)
+" nmap <silent> gi <Plug>(coc-implementation)
+" nmap <silent> gr <Plug>(coc-references)
+"
+" let g:coc_enable_locationlist = 0
+" augroup coc_locationlist
+"   autocmd!
+"   autocmd User CocLocationsChange CocList --normal location
+" augroup END
+
+" Using CocList
+" Show all diagnostics
+" nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
+" " Manage extensions
+" nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
+" " Show commands
+" nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
+" " Find symbol of current document
+" nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
+" Search workspace symbols
+" nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
+" Do default action for next item.
+" nnoremap <silent> <space>j  :<C-u>CocNext<CR>
+" " Do default action for previous item.
+" nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
+" " Resume latest coc list
+" nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
+
+" nmap <silent> [k :CocPrev<cr>
+" nmap <silent> ]k :CocNext<cr>
+"
+" nnoremap <silent> K :call <SID>show_documentation()<CR>
+"
+" function! s:show_documentation()
+"   if (index(['vim','help'], &filetype) >= 0)
+"     execute 'h '.expand('<cword>')
+"   elseif (coc#rpc#ready())
+"     call CocActionAsync('doHover')
+"   else
+"     execute '!' . &keywordprg . " " . expand('<cword>')
+"   endif
+" endfunction
+
+" function! s:show_documentation() abort
+"   if &filetype == 'vim'
+"     execute 'h '.expand('<cword>')
+"   else
+"     call CocAction('doHover')
+"   endif
+" endfunction
+
+" function! Expand(exp) abort
+"     let l:result = expand(a:exp)
+"     return l:result ==# '' ? '' : "file://" . l:result
+" endfunction
+"
+" " Highlight symbol under cursor on CursorHold
+" augroup coc_highlight_symbol_under_cursor
+"   autocmd!
+"   autocmd CursorHold * silent call CocActionAsync('highlight')
+" augroup END
+" vmap <leader>cf <Plug>(coc-format-selected)
+" nmap <leader>cf <Plug>(coc-format-selected)
+
+nnoremap <silent> crcc :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'cycle-coll', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> crth :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> crtt :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> crtf :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> crtl :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> cruw :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-thread', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> crua :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> crml :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'move-to-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
+nnoremap <silent> cril :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'introduce-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
+nnoremap <silent> crel :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'expand-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> cram :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'add-missing-libspec', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> crcn :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'clean-ns', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> cref :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'extract-function', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Function name: ')]})<CR>
+
+" NB: I don't know what codeActions are, and <leader>a conflicts with my
+" ZoomToggle binding, so I'm just commenting this out for now.
+"
+" If/when I learn what codeActions are and want to use them, I'll have to come
+" up with a different binding.
+
+" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+" vmap <leader>a  <Plug>(coc-codeaction-selected)
+" nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap for do codeAction of current line
+" nmap <leader>ac  <Plug>(coc-codeaction)
+" Fix autofix problem of current line
+" nmap <leader>qf  <Plug>(coc-fix-current)
+
+augroup coc_load_clojure_content
+  autocmd BufReadCmd,FileReadCmd,SourceCmd jar:file://*
+        \ call s:LoadClojureContent(expand("<amatch>"))
+augroup END
+
+function! s:LoadClojureContent(uri) abort
+  setfiletype clojure
+  let content = CocRequest('clojure-lsp', 'clojure/dependencyContents', {'uri': a:uri})
+  call setline(1, split(content, "\n"))
+  setl nomodified
+  setl readonly
+endfunction
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => coc new {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Set internal encoding of vim, not needed on neovim, since coc.nvim using some
+" unicode characters in the file autoload/float.vim
+set encoding=utf-8
+
+" TextEdit might fail if hidden is not set.
+set hidden
+
+" Some servers have issues with backup files, see #649.
+set nobackup
+set nowritebackup
+
+" Give more space for displaying messages.
+set cmdheight=2
+
+" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+" delays and poor user experience.
+set updatetime=300
+
+" Don't pass messages to |ins-completion-menu|.
+set shortmess+=c
+
+" Always show the signcolumn, otherwise it would shift the text each time
+" diagnostics appear/become resolved.
+if has("patch-8.1.1564")
+  " Recently vim can merge signcolumn and number column into one
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
+
+" WIP
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+      \ pumvisible() ? "\<C-n>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+" Use <c-space> to trigger completion.
+if has('nvim')
+  inoremap <silent><expr> <c-space> coc#refresh()
+else
+  inoremap <silent><expr> <c-@> coc#refresh()
+endif
+
+" NOT WORKing
+" " Make <CR> auto-select the first completion item and notify coc.nvim to
+" " format on enter, <cr> could be remapped by other vim plugin
+" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+"                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+
+
+" Use `[g` and `]g` to navigate diagnostics
+" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
+" GoTo code navigation.
+nmap <silent> gd <Plug>(coc-definition)
+nmap <silent> gy <Plug>(coc-type-definition)
+nmap <silent> gi <Plug>(coc-implementation)
+nmap <silent> gr <Plug>(coc-references)
+
+" Use K to show documentation in preview window.
+nnoremap <silent> K :call <SID>show_documentation()<CR>
+
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
+" Highlight the symbol and its references when holding the cursor.
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+
+" Symbol renaming.
+nmap <Space>crn <Plug>(coc-rename)
+
+" Formatting selected code.
+xmap <Space>cf  <Plug>(coc-format-selected)
+nmap <Space>cf  <Plug>(coc-format-selected)
+
+" augroup mygroup
+"   autocmd!
+"   " Setup formatexpr specified filetype(s).
+"   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+"   " Update signature help on jump placeholder.
+"   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+" augroup end
+
+" Applying codeAction to the selected region.
+" Example: `<leader>aap` for current paragraph
+xmap <Space>ca  <Plug>(coc-codeaction-selected)
+nmap <Space>ca  <Plug>(coc-codeaction-selected)
+
+" Remap keys for applying codeAction to the current buffer.
+nmap <Space>cac  <Plug>(coc-codeaction)
+" Apply AutoFix to problem on the current line.
+nmap <Space>cqf  <Plug>(coc-fix-current)
+
+" Map function and class text objects
+" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+" xmap if <Plug>(coc-funcobj-i)
+" omap if <Plug>(coc-funcobj-i)
+" xmap af <Plug>(coc-funcobj-a)
+" omap af <Plug>(coc-funcobj-a)
+" xmap ic <Plug>(coc-classobj-i)
+" omap ic <Plug>(coc-classobj-i)
+" xmap ac <Plug>(coc-classobj-a)
+" omap ac <Plug>(coc-classobj-a)
+
+" Remap <C-f> and <C-b> for scroll float windows/popups.
+if has('nvim-0.4.0') || has('patch-8.2.0750')
+  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
+  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+endif
+
+" Use CTRL-S for selections ranges.
+" Requires 'textDocument/selectionRange' support of language server.
+nmap <silent> <C-s> <Plug>(coc-range-select)
+xmap <silent> <C-s> <Plug>(coc-range-select)
+
+" " Add `:Format` command to format current buffer.
+" command! -nargs=0 Format :call CocAction('format')
+"
+" " Add `:Fold` command to fold current buffer.
+" command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+"
+" " Add `:OR` command for organize imports of the current buffer.
+" command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+" Mappings for CoCList
+" Show all diagnostics.
+nnoremap <silent><nowait> <space>ca  :<C-u>CocList diagnostics<cr>
+" Manage extensions.
+nnoremap <silent><nowait> <space>cE  :<C-u>CocList extensions<cr>
+" Show commands.
+nnoremap <silent><nowait> <space>cc  :<C-u>CocList commands<cr>
+" Find symbol of current document.
+nnoremap <silent><nowait> <space>co  :<C-u>CocList outline<cr>
+" Search workspace symbols.
+nnoremap <silent><nowait> <space>cs  :<C-u>CocList -I symbols<cr>
+
+
+" Do default action for next item.
+nnoremap <silent><nowait> <space>cj  :<C-u>CocNext<CR>
+" Do default action for previous item.
+nnoremap <silent><nowait> <space>ck  :<C-u>CocPrev<CR>
+" Resume latest coc list.
+"
+nnoremap <silent><nowait> <space>cp  :<C-u>CocListResume<CR>
+
+nnoremap <silent><nowait> <Space>ce :CocCommand explorer<CR>
+
+
 " => commentary {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup commentary_config
@@ -1158,6 +1344,71 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => conjure {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" NOTE: I'd like to have a good setup where ANSI escape codes are interpreted in
+" the Conjure log buffer. Currently, neither Colorizer nor Olical's fork of
+" AnsiEsc are doing this as well as I'd like. I think Olical/AnsiEsc is more
+" likely to get there with time (Colorizer seems to be under-maintained), but
+" for now, Colorizer is marginally better, so I'm sticking with Colorizer for
+" now. I'm leaving AnsiEsc config intact below, ready to be un-commented when I
+" inevitably switch back over to Olical/AnsiEsc.
+
+" Disable the default ANSI escape code stripping so that I can use a separate
+" plugin to interpret them and display the colors.
+" let g:conjure#log#strip_ansi_escape_sequences_line_limit = 0
+
+" let g:conjure#log#hud#passive_close_delay = 1000
+"
+" let g:conjure#highlight#enabled = v:true
+
+" let g:conjure#filetype#sicp = "conjure.client.racket.stdio"
+
+" function! ToggleConjureLog() abort
+"   if expand('%:t') =~ ".*conjure-log-.*"
+"     execute 'Bclose'
+"   else
+"     " Ideally I could call some function provided by Conjure directly to do
+"     " this, but I wasn't able to figure out how to do that. This mapping will
+"     " need to be adjusted if I ever configure Conjure to use a different mapping
+"     " to open the log in a tab, or if Conjure ever changes the default mapping.
+"     " I think those two things are both pretty unlikely to happen, so meh.
+"     "
+"     " Another thing worth noting: normal apparently doesn't work with <leader>
+"     " and <localleader>, so you have to do some hackery like what's going on
+"     " here (https://vi.stackexchange.com/a/7780/25687) or just give up and type
+"     " your actual (local)leader key in the mapping. I'm doing the second one.
+"     normal \lt
+"   endif
+" endfunction
+
+" augroup additional_conjure_bindings
+"   autocmd!
+"
+"   autocmd FileType clojure,fennel,janet,racket
+"         \ nnoremap <buffer>
+"         \ <localleader>cc :call ToggleConjureLog()<CR>
+"   autocmd FileType clojure,fennel,janet,racket
+"         \ nnoremap <buffer>
+"         \ <localleader>cl :call ToggleConjureLog()<CR>
+"
+"   " mnemonic: eval prompt
+"   " (like how <localleader>ee is eval expression)
+"   autocmd FileType clojure,fennel,janet,racket
+"         \ nnoremap <buffer>
+"         \ <localleader>ep :ConjureEval<space>
+"
+"   " press q to close the log buffer
+"   autocmd BufEnter conjure-log-* nnoremap <buffer> q :Bclose<CR>
+"
+"   " Automatically enable AnsiEsc (interpret ANSI escape codes) for the Conjure
+"   " log buffer.
+"   " autocmd BufEnter conjure-log-* AnsiEsc
+" augroup END
+
+
+" """"""""""""""""""""""""""""""
+"
 " => defx {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " defx somewhat annoyingly doesn't provide any default mappings. I copy-pasted
@@ -1533,71 +1784,6 @@ let g:startify_lists = [
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => conjure {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" NOTE: I'd like to have a good setup where ANSI escape codes are interpreted in
-" the Conjure log buffer. Currently, neither Colorizer nor Olical's fork of
-" AnsiEsc are doing this as well as I'd like. I think Olical/AnsiEsc is more
-" likely to get there with time (Colorizer seems to be under-maintained), but
-" for now, Colorizer is marginally better, so I'm sticking with Colorizer for
-" now. I'm leaving AnsiEsc config intact below, ready to be un-commented when I
-" inevitably switch back over to Olical/AnsiEsc.
-
-" Disable the default ANSI escape code stripping so that I can use a separate
-" plugin to interpret them and display the colors.
-" let g:conjure#log#strip_ansi_escape_sequences_line_limit = 0
-
-" let g:conjure#log#hud#passive_close_delay = 1000
-"
-" let g:conjure#highlight#enabled = v:true
-
-" let g:conjure#filetype#sicp = "conjure.client.racket.stdio"
-
-" function! ToggleConjureLog() abort
-"   if expand('%:t') =~ ".*conjure-log-.*"
-"     execute 'Bclose'
-"   else
-"     " Ideally I could call some function provided by Conjure directly to do
-"     " this, but I wasn't able to figure out how to do that. This mapping will
-"     " need to be adjusted if I ever configure Conjure to use a different mapping
-"     " to open the log in a tab, or if Conjure ever changes the default mapping.
-"     " I think those two things are both pretty unlikely to happen, so meh.
-"     "
-"     " Another thing worth noting: normal apparently doesn't work with <leader>
-"     " and <localleader>, so you have to do some hackery like what's going on
-"     " here (https://vi.stackexchange.com/a/7780/25687) or just give up and type
-"     " your actual (local)leader key in the mapping. I'm doing the second one.
-"     normal \lt
-"   endif
-" endfunction
-
-" augroup additional_conjure_bindings
-"   autocmd!
-"
-"   autocmd FileType clojure,fennel,janet,racket
-"         \ nnoremap <buffer>
-"         \ <localleader>cc :call ToggleConjureLog()<CR>
-"   autocmd FileType clojure,fennel,janet,racket
-"         \ nnoremap <buffer>
-"         \ <localleader>cl :call ToggleConjureLog()<CR>
-"
-"   " mnemonic: eval prompt
-"   " (like how <localleader>ee is eval expression)
-"   autocmd FileType clojure,fennel,janet,racket
-"         \ nnoremap <buffer>
-"         \ <localleader>ep :ConjureEval<space>
-"
-"   " press q to close the log buffer
-"   autocmd BufEnter conjure-log-* nnoremap <buffer> q :Bclose<CR>
-"
-"   " Automatically enable AnsiEsc (interpret ANSI escape codes) for the Conjure
-"   " log buffer.
-"   " autocmd BufEnter conjure-log-* AnsiEsc
-" augroup END
-
-
-" """"""""""""""""""""""""""""""
-"
 " => sexp {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 

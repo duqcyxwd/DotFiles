@@ -37,7 +37,7 @@ Plug 'Olical/conjure'
 
 Plug 'clojure-vim/clojure.vim'|                      " Replace guns/vim-clojure-static
 Plug 'guns/vim-sexp'
-Plug 'duqcyxwd/vim-sexp'
+" Plug 'duqcyxwd/vim-sexp'
 " Plug 'tpope/vim-sexp-mappings-for-regular-people'| " Tesing
 
 " Or load it locally
@@ -52,6 +52,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
 Plug 'liuchengxu/vim-which-key'
 Plug 'mg979/vim-visual-multi'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'osyo-manga/vim-over'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
@@ -75,8 +76,6 @@ Plug 'junegunn/goyo.vim'
 
 "Default {{{1
 " ------------------------------------------------------------------------------
-
-
 " editor enhancements {{{2
 " ------------------------------------------------------------------------------
 Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
@@ -95,7 +94,6 @@ Plug 'liuchengxu/vista.vim'
 " Plug 'ludovicchabant/vim-gutentags'
 Plug 'machakann/vim-highlightedyank'
 Plug 'machakann/vim-sandwich'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'schickling/vim-bufonly'
 Plug 'tpope/vim-endwise'

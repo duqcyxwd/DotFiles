@@ -198,6 +198,8 @@ let which_key_map_space.t.f.c = "Toggle Fold Column"
 nnoremap <Space>tfc :call ToggleFoldColumn()<CR>
 
 
+
+
 nmap \s :call LoopFoldMethod()<CR>
 
 " [SpaceMapping] w+: Window {{{1
@@ -295,6 +297,14 @@ nmap ga <Plug>(EasyAlign)
 "
 "  Comments
 nnoremap <Space>cl i#_<esc>
+
+" COC
+nnoremap <Space>ce :CocCommand explorer<CR>
+
+
+
+nnoremap j gj
+nnoremap k gk
 
 " Some of them are used as object motions
 " Bad idea, " is used for register
