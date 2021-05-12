@@ -274,13 +274,6 @@ let g:gitgutter_terminal_reports_focus=0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => gitv {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" nnoremap <leader>gv :Gitv<CR>
-
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => go {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:go_highlight_functions = 1
@@ -304,13 +297,6 @@ let g:go_highlight_build_constraints = 1
 " I've read that goimports is basically just like gofmt, plus it organizes your
 " imports and removes ones you aren't using. So, I prefer goimports over gofmt.
 let g:gofmt_exe = 'goimports'
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => gv {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap <leader>gv :GV<CR>
-
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -498,98 +484,6 @@ endif
 " Run neomake on insert and normal mode change and upon reading or writing a
 " buffer, with a 500ms delay.
 " call neomake#configure#automake('nrwi', 500)
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => neoterm {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:neoterm_shell = 'fish'
-let g:neoterm_autoscroll = 1
-let g:neoterm_keep_term_open = 0
-let g:neoterm_autoinsert = 1
-
-nmap gt <Plug>(neoterm-repl-send)
-xmap gt <Plug>(neoterm-repl-send)
-nmap gtt <Plug>(neoterm-repl-send-line)
-
-" nnoremap <silent> <f10> :TREPLSendFile<cr>
-" nnoremap <silent> <f9> :TREPLSendLine<cr>
-" vnoremap <silent> <f9> :TREPLSendSelection<cr>
-
-" open the default terminal (mnemonic: terminal prompt)
-nnoremap <silent> ,tp :above Topen<CR>
-
-" prompt to use the default terminal or terminals 1-3
-" Usage: ,t<space>ls<CR>
-nnoremap ,t<space> :above T<space>
-nnoremap ,t1 :above T1<space>
-nnoremap ,t2 :above T2<space>
-nnoremap ,t3 :above T3<space>
-
-" hide/close terminal
-nnoremap <silent> ,tC :call neoterm#close()<cr>
-" clear terminal
-nnoremap <silent> ,tc :call neoterm#clear()<cr>
-" interrupts the current job (send a <c-c>)
-nnoremap <silent> ,ti :call neoterm#kill()<cr>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => nim {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-fun! JumpToDef()
-  if exists("*GotoDefinition_" . &filetype)
-    call GotoDefinition_{&filetype}()
-  else
-    exe "norm! \<C-]>"
-  endif
-endfun
-
-" Jump to tag
-nn <M-g> :call JumpToDef()<cr>
-ino <M-g> <esc>:call JumpToDef()<cr>i
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => open-browser {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" the gx mapping provided by netrw used to open the URL under the cursor in my
-" browser, then it mysteriously stopped working. The new behavior is that it
-" curls the URL into a tempfile and then open the file in my browser, and I
-" would see the HTML.
-"
-" I found a tip here (https://vi.stackexchange.com/a/14526) to use this plugin
-" instead. I tried it and it works as expected.
-
-let g:netrw_nogx = 1 " disable netrw's gx mapping.
-nmap gx <Plug>(openbrowser-smart-search)
-vmap gx <Plug>(openbrowser-smart-search)
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => paredit {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:paredit_leader = '\'
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => plug {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Open the vim-plug window full-screen
-let g:plug_window = 'enew'
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => quick-scope {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => rainbow {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:rainbow_active = 1
-let g:rainbow_conf = {'separately': {'html': 0}} " disable for html
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -989,11 +883,9 @@ augroup autopairs_config
 
 augroup END
 
-
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => coc {{{1
+" => coc new {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" HACK to workaround coc not providing a :CocToggle command
 function! ToggleCoc() abort
   if len(coc#status()) == 0
     execute 'CocEnable'
@@ -1002,165 +894,6 @@ function! ToggleCoc() abort
   endif
 endfunction
 
-" nnoremap <silent> <leader>cc :call ToggleCoc()<CR>
-" nnoremap <leader>cd :CocList diagnostics<CR>
-" nnoremap <leader>ci :CocInfo<CR>
-
-" press q to close e.g. the :CocInfo buffer
-" augroup coc_buffers
-"   autocmd!
-"   autocmd BufEnter output:///info nnoremap <buffer> q :bd<CR>
-" augroup END
-"
-" " don't give |ins-completion-menu| messages
-" set shortmess+=c
-" set signcolumn=yes
-"
-" " Use tab for trigger completion with characters ahead and navigate.
-" inoremap <silent><expr> <TAB>
-"       \ pumvisible() ? "\<C-n>" :
-"       \ <SID>check_back_space() ? "\<TAB>" :
-"       \ coc#refresh()
-" inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-"
-" function! s:check_back_space() abort
-"   let col = col('.') - 1
-"   return !col || getline('.')[col - 1]  =~# '\s'
-" endfunction
-"
-" " Use <c-space> to trigger completion.
-" inoremap <silent><expr> <c-space> coc#refresh()
-
-" Use <cr> to confirm completion, `<C-g>u` means break undo chain at current
-" position.
-" Coc only does snippet and additional edit on confirm.
-" inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-
-" A variation on the above that plays nicely with vim-endwise.
-" source: https://github.com/roxma/nvim-completion-manager/issues/49#issuecomment-285923119
-" (the link above is about ncm2, but the same concept applies to coc)
-" let g:endwise_no_mappings = 1
-" imap <C-X><CR>   <CR><Plug>AlwaysEnd
-" imap <expr> <CR> (pumvisible() ? "\<C-Y>\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd")
-"
-" nmap <silent> [c <Plug>(coc-diagnostic-prev)
-" nmap <silent> ]c <Plug>(coc-diagnostic-next)
-"
-" " Remap keys for gotos
-" nmap <silent> gd <Plug>(coc-definition)
-" nmap <silent> gy <Plug>(coc-type-definition)
-" nmap <silent> gi <Plug>(coc-implementation)
-" nmap <silent> gr <Plug>(coc-references)
-"
-" let g:coc_enable_locationlist = 0
-" augroup coc_locationlist
-"   autocmd!
-"   autocmd User CocLocationsChange CocList --normal location
-" augroup END
-
-" Using CocList
-" Show all diagnostics
-" nnoremap <silent> <space>a  :<C-u>CocList diagnostics<cr>
-" " Manage extensions
-" nnoremap <silent> <space>e  :<C-u>CocList extensions<cr>
-" " Show commands
-" nnoremap <silent> <space>c  :<C-u>CocList commands<cr>
-" " Find symbol of current document
-" nnoremap <silent> <space>o  :<C-u>CocList outline<cr>
-" Search workspace symbols
-" nnoremap <silent> <space>s  :<C-u>CocList -I symbols<cr>
-" Do default action for next item.
-" nnoremap <silent> <space>j  :<C-u>CocNext<CR>
-" " Do default action for previous item.
-" nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
-" " Resume latest coc list
-" nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
-
-" nmap <silent> [k :CocPrev<cr>
-" nmap <silent> ]k :CocNext<cr>
-"
-" nnoremap <silent> K :call <SID>show_documentation()<CR>
-"
-" function! s:show_documentation()
-"   if (index(['vim','help'], &filetype) >= 0)
-"     execute 'h '.expand('<cword>')
-"   elseif (coc#rpc#ready())
-"     call CocActionAsync('doHover')
-"   else
-"     execute '!' . &keywordprg . " " . expand('<cword>')
-"   endif
-" endfunction
-
-" function! s:show_documentation() abort
-"   if &filetype == 'vim'
-"     execute 'h '.expand('<cword>')
-"   else
-"     call CocAction('doHover')
-"   endif
-" endfunction
-
-" function! Expand(exp) abort
-"     let l:result = expand(a:exp)
-"     return l:result ==# '' ? '' : "file://" . l:result
-" endfunction
-"
-" " Highlight symbol under cursor on CursorHold
-" augroup coc_highlight_symbol_under_cursor
-"   autocmd!
-"   autocmd CursorHold * silent call CocActionAsync('highlight')
-" augroup END
-" vmap <leader>cf <Plug>(coc-format-selected)
-" nmap <leader>cf <Plug>(coc-format-selected)
-
-nnoremap <silent> crcc :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'cycle-coll', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crth :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crtt :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crtf :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crtl :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> cruw :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-thread', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crua :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crml :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'move-to-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
-nnoremap <silent> cril :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'introduce-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
-nnoremap <silent> crel :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'expand-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> cram :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'add-missing-libspec', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> crcn :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'clean-ns', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> cref :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'extract-function', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Function name: ')]})<CR>
-
-" NB: I don't know what codeActions are, and <leader>a conflicts with my
-" ZoomToggle binding, so I'm just commenting this out for now.
-"
-" If/when I learn what codeActions are and want to use them, I'll have to come
-" up with a different binding.
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-" vmap <leader>a  <Plug>(coc-codeaction-selected)
-" nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-" nmap <leader>ac  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-" nmap <leader>qf  <Plug>(coc-fix-current)
-
-augroup coc_load_clojure_content
-  autocmd BufReadCmd,FileReadCmd,SourceCmd jar:file://*
-        \ call s:LoadClojureContent(expand("<amatch>"))
-augroup END
-
-function! s:LoadClojureContent(uri) abort
-  setfiletype clojure
-  let content = CocRequest('clojure-lsp', 'clojure/dependencyContents', {'uri': a:uri})
-  call setline(1, split(content, "\n"))
-  setl nomodified
-  setl readonly
-endfunction
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => coc new {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Set internal encoding of vim, not needed on neovim, since coc.nvim using some
-" unicode characters in the file autoload/float.vim
-set encoding=utf-8
 
 " TextEdit might fail if hidden is not set.
 set hidden
@@ -1168,9 +901,6 @@ set hidden
 " Some servers have issues with backup files, see #649.
 set nobackup
 set nowritebackup
-
-" Give more space for displaying messages.
-set cmdheight=2
 
 " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
 " delays and poor user experience.
@@ -1210,6 +940,16 @@ else
   inoremap <silent><expr> <c-@> coc#refresh()
 endif
 
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
+
 " NOT WORKing
 " " Make <CR> auto-select the first completion item and notify coc.nvim to
 " " format on enter, <cr> could be remapped by other vim plugin
@@ -1231,22 +971,10 @@ nmap <silent> gr <Plug>(coc-references)
 " Use K to show documentation in preview window.
 nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
-  else
-    execute '!' . &keywordprg . " " . expand('<cword>')
-  endif
-endfunction
-
 " Highlight the symbol and its references when holding the cursor.
-autocmd CursorHold * silent call CocActionAsync('highlight')
+" TODO Enable this
+" autocmd CursorHold * silent call CocActionAsync('highlight')
 
-
-" Symbol renaming.
-nmap <Space>crn <Plug>(coc-rename)
 
 " Formatting selected code.
 xmap <Space>cf  <Plug>(coc-format-selected)
@@ -1282,13 +1010,14 @@ nmap <Space>cqf  <Plug>(coc-fix-current)
 " omap ac <Plug>(coc-classobj-a)
 
 " Remap <C-f> and <C-b> for scroll float windows/popups.
+" WIP C-j and C-k
 if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  nnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
-  inoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-f> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-f>"
-  vnoremap <silent><nowait><expr> <C-b> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-b>"
+  nnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
+  nnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
+  inoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  inoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  vnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
+  vnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
 endif
 
 " Use CTRL-S for selections ranges.
@@ -1306,12 +1035,47 @@ xmap <silent> <C-s> <Plug>(coc-range-select)
 " command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
 
 " Mappings for CoCList
+
+" Show COC commands.
+nnoremap <silent><nowait> <space>cc  :<C-u>CocList commands<cr>
+
+" Show COC commands.
+nnoremap <silent><nowait> <space>cl  :CocList<cr>
+nnoremap <silent><nowait> <space>ci  :CocInfo<cr>
+
+" COC Actions
+" nnoremap <silent><nowait> <space>c:  :CocAction<cr>
+" xnoremap <silent><nowait> <space>c:  :CocAction<cr>
+nnoremap <silent><nowait> <space>;  :CocAction<cr>
+xnoremap <silent><nowait> <space>;  :CocAction<cr>
+
+" nnoremap <silent><nowait> <space>:  <Plug>(coc-codeaction-cursor)
+nmap <silent> <space>:            <Plug>(coc-codeaction-line)
+vmap <silent> <space>:            <Plug>(coc-codeaction-selected)
+" nnoremap <leader>ci :CocInfo<CR>
+
+" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+" vmap <leader>a  <Plug>(coc-codeaction-selected)
+" nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+" Remap for do codeAction of current line
+" nmap <space>c;  <Plug>(coc-codeaction)
+" Fix autofix problem of current line
+" nmap <leader>qf  <Plug>(coc-fix-current)
+
+
+" vmap <leader>cf <Plug>(coc-format-selected)
+" nmap <leader>cf <Plug>(coc-format-selected)
+
+" Common commands
+nnoremap <silent><nowait> <Space>ce :CocCommand explorer<CR>
+
 " Show all diagnostics.
 nnoremap <silent><nowait> <space>ca  :<C-u>CocList diagnostics<cr>
 " Manage extensions.
 nnoremap <silent><nowait> <space>cE  :<C-u>CocList extensions<cr>
-" Show commands.
-nnoremap <silent><nowait> <space>cc  :<C-u>CocList commands<cr>
+
+
 " Find symbol of current document.
 nnoremap <silent><nowait> <space>co  :<C-u>CocList outline<cr>
 " Search workspace symbols.
@@ -1323,11 +1087,46 @@ nnoremap <silent><nowait> <space>cj  :<C-u>CocNext<CR>
 " Do default action for previous item.
 nnoremap <silent><nowait> <space>ck  :<C-u>CocPrev<CR>
 " Resume latest coc list.
-"
 nnoremap <silent><nowait> <space>cp  :<C-u>CocListResume<CR>
 
-nnoremap <silent><nowait> <Space>ce :CocCommand explorer<CR>
 
+" WIP
+" COC with Clojure
+" https://clojure-lsp.github.io/clojure-lsp/clients/
+function! Expand(exp) abort
+    let l:result = expand(a:exp)
+    return l:result ==# '' ? '' : "file://" . l:result
+endfunction
+
+autocmd CursorHold * silent call CocActionAsync('highlight')
+
+" TODO add mapping for cojure only
+nnoremap <silent> <leader>rcc :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'cycle-coll', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> <leader>rth :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> <leader>rtt :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> <leader>rtf :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> <leader>rtl :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> <leader>ruw :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-thread', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> <leader>rua :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> <leader>rml :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'move-to-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
+nnoremap <silent> <leader>ril :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'introduce-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
+nnoremap <silent> <leader>rel :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'expand-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> <leader>ram :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'add-missing-libspec', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> <leader>rcn :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'clean-ns', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+nnoremap <silent> <leader>ref :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'extract-function', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Function name: ')]})<CR>
+
+" augroup coc_load_clojure_content
+"   autocmd BufReadCmd,FileReadCmd,SourceCmd jar:file://*
+"         \ call s:LoadClojureContent(expand("<amatch>"))
+" augroup END
+
+" function! s:LoadClojureContent(uri) abort
+"   setfiletype clojure
+"   let content = CocRequest('clojure-lsp', 'clojure/dependencyContents', {'uri': a:uri})
+"   call setline(1, split(content, "\n"))
+"   setl nomodified
+"   setl readonly
+" endfunction
 
 " => commentary {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1646,11 +1445,70 @@ function! QuitFZFBuffer() abort
 endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => GV {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" ### Commands
+"
+" - `:GV` to open commit browser
+"     - You can pass `git log` options to the command, e.g. `:GV -S foobar -- plugins`.
+" - `:GV!` will only list commits that affected the current file
+" - `:GV?` fills the location list with the revisions of the current file
+"
+" `:GV` or `:GV?` can be used in visual mode to track the changes in the
+" selected lines.
+"
+" ### Mappings
+"
+" - `o` or `<cr>` on a commit to display the content of it
+" - `o` or `<cr>` on commits to display the diff in the range
+" - `O` opens a new tab instead
+" - `gb` for `:Gbrowse`
+" - `]]` and `[[` to move between commits
+" - `.` to start command-line with `:Git [CURSOR] SHA` à la fugitive
+" - `q` or `gq` to close
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => goyo {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:goyo_width=100
 let g:goyo_margin_top = 2
 let g:goyo_margin_bottom = 2
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => neoterm {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:neoterm_shell = 'zsh'
+let g:neoterm_autoscroll = 1
+let g:neoterm_keep_term_open = 1
+let g:neoterm_autoinsert = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => open-browser {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" the gx mapping provided by netrw used to open the URL under the cursor in my
+" browser, then it mysteriously stopped working. The new behavior is that it
+" curls the URL into a tempfile and then open the file in my browser, and I
+" would see the HTML.
+
+let g:netrw_nogx = 1 " disable netrw's gx mapping.
+nmap gx <Plug>(openbrowser-smart-search)
+vmap gx <Plug>(openbrowser-smart-search)
+
+let g:openbrowser_search_engines = {
+      \   'favorite': 'http://example.com/search?q={query}',
+      \     'github': 'https://github.com/search?q={query}',
+      \}
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => quick-scope {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Trigger a highlight in the appropriate direction when pressing these keys:
+let g:qs_highlight_on_keys = ['f', 'F', 't', 'T']
+augroup qs_colors
+  autocmd!
+  autocmd ColorScheme * highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
+  autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
+augroup END
+
+" let g:qs_hi_priority = 2
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => which-key {{{1
@@ -1718,19 +1576,6 @@ let g:which_key_map_leader.g = {
       \ 'v': 'browse git commits',
       \ }
 
-" vim-HiLinkTrace provides this mapping whether you like it or not. It sort of
-" goes against the hierarchical organization of mappings suggested by which-key.
-" I'm tempted to remove vim-HiLinkTrace because I almost never use it, but on
-" the other hand, I don't currently have a use for 'h' as a mapping prefix key,
-" so I'm OK with this.
-let g:which_key_map_leader.h = {
-      \ 'name': '+hilinks',
-      \ 'l': {
-      \   'name': '+hilinks',
-      \   't': 'trace highlighting',
-      \   },
-      \ }
-
 let g:which_key_map_leader.j = {
       \ 'name': '+json',
       \ 'f': 'format JSON',
@@ -1748,6 +1593,43 @@ let g:which_key_map_leader.B = {
       \ }
 
 """"""""""""""""""""""""""""""
+" => rainbow {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:rainbow_active = 1
+let g:rainbow_conf = {'separately': {'html': 0}} " disable for html
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => signature (Improve Marks) {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+  " mx           Toggle mark 'x' and display it in the leftmost column
+  " dmx          Remove mark 'x' where x is a-zA-Z
+
+  " m,           Place the next available mark
+  " m.           If no mark on line, place the next available mark. Otherwise, remove (first) existing mark.
+  " m-           Delete all marks from the current line
+  " m<Space>     Delete all marks from the current buffer
+  " ]`           Jump to next mark
+  " [`           Jump to prev mark
+  " ]'           Jump to start of next line containing a mark
+  " ['           Jump to start of prev line containing a mark
+  " `]           Jump by alphabetical order to next mark
+  " `[           Jump by alphabetical order to prev mark
+  " ']           Jump by alphabetical order to start of next line having a mark
+  " '[           Jump by alphabetical order to start of prev line having a mark
+  " m/           Open location list and display marks from current buffer
+
+  " m[0-9]       Toggle the corresponding marker !@#$%^&*()
+  " m<S-[0-9]>   Remove all markers of the same type
+  " ]-           Jump to next line having a marker of the same type
+  " [-           Jump to prev line having a marker of the same type
+  " ]=           Jump to next line having a marker of any type
+  " [=           Jump to prev line having a marker of any type
+  " m?           Open location list and display markers from current buffer
+  " m<BS>        Remove all markers
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => startify {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:startify_custom_header = [
@@ -1764,7 +1646,7 @@ let g:startify_custom_header = [
       \' /*    \:\  \       \:\  \       \:\  \       \:\/:/  /    \:\~~\      */',
       \' /*     \:\__\       \:\__\       \:\__\       \::/  /      \:\__\     */',
       \' /*      \/__/        \/__/        \/__/        \/__/        \/__/     */',
-      \' /* Happy Hacking                                                      */',
+      \" /* Happy Hacking. Chuan's new vim                                     */",
       \' /**********************************************************************/',
       \ ]
 
@@ -1830,9 +1712,11 @@ function! g:VIM_lisp_mappings()  "{{{2
   nmap <silent><buffer> ]]              <Plug>(sexp_move_to_next_top_element)
   xmap <silent><buffer> ]]              <Plug>(sexp_move_to_next_top_element)
   omap <silent><buffer> ]]              <Plug>(sexp_move_to_next_top_element)
-  " nmap <silent><buffer> ==              <Plug>(sexp_indent)
-  " nmap <silent><buffer> =-              <Plug>(sexp_indent_top)
 
+  nmap <silent><buffer> ==              <Plug>(sexp_indent)
+  nmap <silent><buffer> =-              <Plug>(sexp_indent_top)
+
+  " Wrappping
   nmap <silent><buffer> <LocalLeader>i  <Plug>(sexp_round_head_wrap_list)
   xmap <silent><buffer> <LocalLeader>i  <Plug>(sexp_round_head_wrap_list)
   nmap <silent><buffer> <LocalLeader>I  <Plug>(sexp_round_tail_wrap_list)
@@ -1857,13 +1741,15 @@ function! g:VIM_lisp_mappings()  "{{{2
   xmap <silent><buffer> <LocalLeader>e{ <Plug>(sexp_curly_head_wrap_element)
   nmap <silent><buffer> <LocalLeader>e} <Plug>(sexp_curly_tail_wrap_element)
   xmap <silent><buffer> <LocalLeader>e} <Plug>(sexp_curly_tail_wrap_element)
-  nmap <silent><buffer> <LocalLeader>h  <Plug>(sexp_insert_at_list_head)
-  nmap <silent><buffer> <LocalLeader>l  <Plug>(sexp_insert_at_list_tail)
+
   nmap <silent><buffer> <LocalLeader>@  <Plug>(sexp_splice_list)
-  nmap <silent><buffer> <LocalLeader>o  <Plug>(sexp_raise_list)
-  xmap <silent><buffer> <LocalLeader>o  <Plug>(sexp_raise_list)
-  nmap <silent><buffer> <LocalLeader>O  <Plug>(sexp_raise_element)
-  xmap <silent><buffer> <LocalLeader>O  <Plug>(sexp_raise_element)
+  " nmap <silent><buffer> <LocalLeader>o  <Plug>(sexp_raise_list)
+  " xmap <silent><buffer> <LocalLeader>o  <Plug>(sexp_raise_list)
+  " nmap <silent><buffer> <LocalLeader>O  <Plug>(sexp_raise_element)
+  " xmap <silent><buffer> <LocalLeader>O  <Plug>(sexp_raise_element)
+
+  nmap <silent><buffer> <LocalLeader>o  <Plug>(sexp_raise_element)
+  xmap <silent><buffer> <LocalLeader>o  <Plug>(sexp_raise_element)
 
   " Some nice keybinding from tpope/vim-sexp-mappings-for-regular-people
   nmap <buffer> B   <Plug>(sexp_move_to_prev_element_head)
@@ -1876,6 +1762,10 @@ function! g:VIM_lisp_mappings()  "{{{2
   omap <buffer> W   <Plug>(sexp_move_to_next_element_head)
   omap <buffer> E   <Plug>(sexp_move_to_next_element_tail)
 
+  nmap <silent><buffer> $   <Plug>(sexp_move_to_end_of_line_with_form)
+  xmap <silent><buffer> $   <Plug>(sexp_move_to_end_of_line_with_form)
+  omap <silent><buffer> $   <Plug>(sexp_move_to_end_of_line_with_form)
+
   nmap <buffer> <I  <Plug>(sexp_insert_at_list_head)
   nmap <buffer> >I  <Plug>(sexp_insert_at_list_tail)
   nmap <buffer> <f  <Plug>(sexp_swap_list_backward)
@@ -1887,13 +1777,14 @@ function! g:VIM_lisp_mappings()  "{{{2
   nmap <buffer> <(  <Plug>(sexp_capture_prev_element)
   nmap <buffer> >)  <Plug>(sexp_capture_next_element)
 
-  call s:map_sexp_wrap('e', 'cseb', '(', ')', 0)
-  call s:map_sexp_wrap('e', 'cse(', '(', ')', 0)
-  call s:map_sexp_wrap('e', 'cse)', '(', ')', 1)
-  call s:map_sexp_wrap('e', 'cse[', '[', ']', 0)
-  call s:map_sexp_wrap('e', 'cse]', '[', ']', 1)
-  call s:map_sexp_wrap('e', 'cse{', '{', '}', 0)
-  call s:map_sexp_wrap('e', 'cse}', '{', '}', 1)
+  " cs is not regular surround command
+  " call s:map_sexp_wrap('e', 'cseb', '(', ')', 0)
+  " call s:map_sexp_wrap('e', 'cse(', '(', ')', 0)
+  " call s:map_sexp_wrap('e', 'cse)', '(', ')', 1)
+  " call s:map_sexp_wrap('e', 'cse[', '[', ']', 0)
+  " call s:map_sexp_wrap('e', 'cse]', '[', ']', 1)
+  " call s:map_sexp_wrap('e', 'cse{', '{', '}', 0)
+  " call s:map_sexp_wrap('e', 'cse}', '{', '}', 1)
 
   " Don't use auto pair plugins
   imap <silent><buffer> "               <Plug>(sexp_insert_double_quote)
@@ -1904,22 +1795,41 @@ function! g:VIM_lisp_mappings()  "{{{2
   imap <silent><buffer> {               <Plug>(sexp_insert_opening_curly)
   imap <silent><buffer> }               <Plug>(sexp_insert_closing_curly)
 
-  " nmap <silent><buffer> <C-k>           <Plug>(sexp_swap_list_backward)
-  " nmap <silent><buffer> <C-j>           <Plug>(sexp_swap_list_forward)
-  nmap <silent><buffer> <C-h>           <Plug>(sexp_swap_element_backward)
-  nmap <silent><buffer> <C-l>           <Plug>(sexp_swap_element_forward)
+  " nmap <silent><buffer> H               <Plug>(sexp_swap_element_backward)
+  " nmap <silent><buffer> L               <Plug>(sexp_swap_element_forward)
 
-  nmap <silent><buffer> H          <Plug>(sexp_swap_element_backward)
-  nmap <silent><buffer> L           <Plug>(sexp_swap_element_forward)
+  nmap <silent><buffer> (               <Plug>(sexp_move_to_prev_bracket)
+  xmap <silent><buffer> (               <Plug>(sexp_move_to_prev_bracket)
+  omap <silent><buffer> (               <Plug>(sexp_move_to_prev_bracket)
+  nmap <silent><buffer> )               <Plug>(sexp_move_to_next_bracket)
+  xmap <silent><buffer> )               <Plug>(sexp_move_to_next_bracket)
+  omap <silent><buffer> )               <Plug>(sexp_move_to_next_bracket)
+
+  nmap <silent><buffer> H               <Plug>(sexp_move_to_list_head)
+  nmap <silent><buffer> L               <Plug>(sexp_move_to_list_end)
+
+  " nmap <silent><buffer> <LocalLeader>h  <Plug>(sexp_insert_at_list_head)
+  " nmap <silent><buffer> <LocalLeader>l  <Plug>(sexp_insert_at_list_tail)
+  " Using keybinding is faster than switch to insert in code
+  nmap <silent><buffer> <LocalLeader>h  Ha
+  nmap <silent><buffer> <LocalLeader>l  Li
+  nmap <silent><buffer> I  Ha
+  nmap <silent><buffer> A  Li
+  nmap <silent><buffer> I  <Plug>(sexp_insert_at_list_head)
+  nmap <silent><buffer> A  <Plug>(sexp_insert_at_list_tail)
+
+  " WIP Better D
+  nmap <silent><buffer> D               d)
+  nmap <silent><buffer> <C-k>           d$
 
   " nmap <silent><buffer> <C-]>           <Plug>(sexp_emit_head_element)
   " nmap <silent><buffer> <C-[>           <Plug>(sexp_capture_prev_element)
   nmap <silent><buffer> <C-left>        <Plug>(sexp_emit_tail_element)
   nmap <silent><buffer> <C-right>       <Plug>(sexp_capture_next_element)
 
-  "Beautiful thing in vim-sexp
-  "nmap <silent><buffer> <C-k> daf
-  nmap <silent><buffer> <C-k> <Plug>(sexp_kill)
+  " WIP Need improve source code
+  imap <silent><buffer> <C-right>       <esc><Plug>(sexp_capture_next_element)i
+
 
 endfunction
 "}}}2
@@ -1927,9 +1837,11 @@ endfunction
 let g:sexp_filetypes = ''
 augroup VIM_SEXP_MAPPING
   autocmd!
-  if exists('g:sexp_loaded')
-    autocmd FileType clojure,scheme,lisp,timl,scheme call g:VIM_lisp_mappings()
-  endif
+  autocmd FileType clojure,scheme,lisp,timl,scheme call g:VIM_lisp_mappings()
+  " if exists('g:sexp_loaded')
+  "   autocmd FileType clojure,scheme,lisp,timl,scheme call g:VIM_lisp_mappings()
+  " endif
 augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+

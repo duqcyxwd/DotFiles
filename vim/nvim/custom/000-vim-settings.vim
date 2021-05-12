@@ -19,7 +19,7 @@ syntax on                   " Used by vimwiki
 
 set autoread                    " Set to auto read when a file is changed from the outside
 set clipboard+=unnamed          " use system clipboard
-set cmdheight=1
+set cmdheight=5                 " Give more space for displaying messages.
 set cursorline                  " highlights line numbers (vim-airline-colornum)
 set encoding=utf8               " Set utf8 as standard encoding
 set ffs=unix,dos,mac            " Use Unix as the standard file type
@@ -37,6 +37,7 @@ set matchtime=2                 " How many tenths of a second to blink when matc
 set mouse=a
 set noautochdir                 " no auto dir
 set noerrorbells                " No annoying sound on errors
+set nojoinspaces                " No extra space when join line
 set nonumber                    " No line numbers to start
 set number
 set ruler                       " Always show current position
@@ -49,8 +50,7 @@ set smartcase                   " When searching try to be smart about cases
 set startofline                 " When "on" the commands listed below move the cursor to the first non-blank of the line.
 set timeoutlen=500              " The default timeoutlen is 1000 ms.
 set updatetime=250
-" set viminfo^=%                  " Remember info about open buffers on close, will reopen buffer
-                                " Replaced with shada
+" set viminfo^=%                  " Remember info about open buffers on close, will reopen buffer Replaced with shada
 set visualbell
 
 " Don't use this with tabline
@@ -96,10 +96,16 @@ if has("gui_running")
 endif
 
 
-augroup i_like_folding_lol
+" augroup i_like_folding_lol
+"   autocmd!
+"   " autocmd BufWinEnter * silent! :%foldopen!
+" augroup END
+
+" auto-Load fold views
+augroup AutoSaveFolds
   autocmd!
-  " autocmd BufWinEnter * silent! :%foldopen!
-  autocmd BufWinEnter * silent! zMzv
+  " autocmd BufWinLeave ?* mkview
+  autocmd BufWinEnter ?* silent! loadview!
 augroup END
 
 
@@ -118,36 +124,6 @@ augroup return_to_last_edit_position
         \   exe "normal! g`\"" |
         \ endif
 augroup END
-
-" WIP
-
-set nojoinspaces " No extra space when join line
-set cmdheight=2
-
-" https://github.com/neoclide/coc.nvim
-"
-
-" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-" delays and poor user experience.
-set updatetime=300
-
-" Don't pass messages to |ins-completion-menu|.
-set shortmess+=c
-
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
-
-" Default ctrl-space
-inoremap <silent><expr> <C-_> coc#refresh()
-
-
-
 
 " Default =>  {{{1
 " ------------------------------------------------------------------------------

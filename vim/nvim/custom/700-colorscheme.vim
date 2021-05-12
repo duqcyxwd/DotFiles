@@ -64,6 +64,8 @@ function! s:ToggleColorschemeMode() abort
   else
     call s:DarkMode()
   endif
+  " Set syntax on to avoid weird color
+  syntax on
 endfunction
 command! ToggleColorschemeMode call s:ToggleColorschemeMode()
 nnoremap <leader>M :ToggleColorschemeMode<CR>

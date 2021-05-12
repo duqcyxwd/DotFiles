@@ -138,18 +138,6 @@ augroup quickfix_settings
 augroup END
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => netrw
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" why the fuck is it so hard to close netrw?
-" I just want to press q
-" augroup wtf_netrw
-"   autocmd!
-"   autocmd filetype netrw nnoremap <buffer> q :e#<CR>
-" augroup END
-
-" <CR> opens file in new tab (doesn't seem to work...)
-" let g:netrw_browse_split = 3
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -272,21 +260,3 @@ augroup alda
         \ :call RandomizeAldaInstruments()<cr>
 augroup END
 
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Bash
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" I'm tired of doing this manually every time I start writing a Bash script!
-function! InitBashScript() abort
-  exe "normal! ggO#!/usr/bin/env bash\<cr>\<cr>set -eo pipefail\<cr>\<cr>"
-  exe "w"
-  " Provided by vim-eunoch
-  exe "Chmod +x"
-endfunction
-
-augroup bash_affordances
-  autocmd!
-  autocmd FileType sh
-        \ nnoremap <buffer> <silent> <leader>Bi
-        \ :call InitBashScript()<cr>
-augroup END

@@ -7,10 +7,5 @@ source ~/.config/vim/vimrc
 autocmd TermOpen * startinsert
 
 
-" " required for python remote plugins
-let g:python_host_prog = '/usr/bin/python'
-let g:python3_host_prog = '/usr/bin/python3'
-
-
 " set verbosefile=~/temp/log/vim.log
 " set verbose=1

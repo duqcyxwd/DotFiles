@@ -1,10 +1,16 @@
 {
   "diagnostic.virtualText": true,
   "coc.source.conjure.priority": 999999,
+  // diagnostic-languageserver
   "diagnostic-languageserver.filetypes": {
-    "sh": "shellcheck"
+    "sh": "shellcheck",
+    "vim": "vint",
+    "markdown": [ "write-good", "markdownlint" ]
   },
-  "java.errors.incompleteClasspath.severity": "ignore",
+  "diagnostic-languageserver.formatFiletypes": {
+    "python": ["black", "isort"],
+    "sh": "shfmt"
+  },
   "languageserver": {
     "bash": {
       "command": "bash-language-server",
@@ -12,13 +18,23 @@
         "start"
       ],
       "filetypes": [
-        "sh"
+        "sh", "zsh"
       ],
       "ignoredRootPaths": [
         "~"
       ]
+    },
+    "clojure-lsp": {
+      "command": "clojure-lsp",
+      "filetypes": ["clojure"],
+      "rootPatterns": ["project.clj"],
+      "additionalSchemes": ["jar", "zipfile"],
+      "trace.server": "verbose",
+      "initializationOptions": {
+        "ignore-classpath-directories": true
+      }
     }
-  }
+  },
   "codeLens.enable": true,
   "suggest.removeDuplicateItems": true,
   // python config
@@ -43,5 +59,8 @@
       "open"
     ],
     "v": "open:vsplit"
-  }
+  },
+  "coc.preferences.extensionUpdateCheck": "daily",
+  "coc.preferences.useQuickfixForLocations": true,
+  "suggest.snippetIndicator": "🍦"
 }

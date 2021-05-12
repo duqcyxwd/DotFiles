@@ -16,9 +16,12 @@ noremap <Space>hk :verbose map
 " remap leader key to ,
 let mapleader = ","
 let g:mapleader = ","
+
 let g:maplocalleader = ","
 let maplocalleader = ","
 
+" Random notes: <c-u> will clean command line
+" <C-R><C-W> inserts the word object.
 nnoremap <silent> <leader>      :<c-u>WhichKey ','<CR>
 nnoremap <silent> <localleader> :<c-u>WhichKey '\'<CR>
 nnoremap <silent> <Space>       :<c-u>WhichKey '<Space>'<CR>
@@ -46,14 +49,15 @@ let g:which_key_map_space.g = { 'name' : '+Git' }
 let g:which_key_map_space.h = { 'name' : '+Help' }
 let g:which_key_map_space.p = { 'name' : '+Projects/Packages' }
 let g:which_key_map_space.q = { 'name' : '+Quit' }
+let g:which_key_map_space.r = { 'name' : '+Run' }
 let g:which_key_map_space.s = { 'name' : '+Search' }
 let g:which_key_map_space.t = { 'name' : '+Togglers' }
 let g:which_key_map_space.w = { 'name' : '+Windows' }
 
 " [SpaceMapping] b+: Buffers {{{1
 " ------------------------------------------------------------------------------
-let which_key_map_space.b.d = "delete this buffer"
-nnoremap <Space>bd :call undoquit#SaveWindowQuitHistory()<CR>:bd<CR>
+let which_key_map_space.b.d = "Delete this buffer"
+nnoremap <Space>bd :call undoquit#SaveWindowQuitHistory()<CR>:Bclose<CR>
 
 let which_key_map_space.b.D = "Force delete this buffer"
 nnoremap <Space>bD :bp<bar>sp<bar>bn<bar>bd!<CR>
@@ -67,7 +71,7 @@ nnoremap <Space>bh :Startify<CR>
 " [SpaceMapping] f+: File/Format {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.f.s = "Save current file"
-nnoremap <Space>fs :w!<CR>
+nnoremap <Space>fs :mkview<CR>:w<CR>
 
 let which_key_map_space.f.S = "Save all files"
 nnoremap <Space>fS :wa!<CR>
@@ -75,9 +79,8 @@ nnoremap <Space>fS :wa!<CR>
 let g:which_key_map_space.f.a = "[operator] vim-easy-align {motion}"
 map <Space>fa <Plug>(EasyAlign)
 
-
 let g:which_key_map_space.f.e = "Reopen current file"
-nnoremap <Space>fe :e!<CR>
+nnoremap <Space>fe :mkview<CR><ESC>:e!<CR>
 
 
 let which_key_map_space.f.r = "Open Recent files"
@@ -97,9 +100,18 @@ let g:magit_show_magit_mapping='<Space>gM'
 let which_key_map_space.g.b = "Git Blame"
 nnoremap <Space>gb :Gblame<CR>
 
+let which_key_map_space.g.l = "Git Open Link (GBrwose)"
+nnoremap <Space>gl :GBrowse<CR>
+let which_key_map_space.g.h = "Git history (GV)"
+nnoremap <Space>gh :GV<CR>
 
-let which_key_map_space.g.o = "Git Open Link (GBrwose)"
-nnoremap <Space>go :GBrowse<CR>
+let which_key_map_space.g.o = "Open ** under cursor"
+nmap <Space>go <Plug>(openbrowser-smart-search)
+vmap <Space>go <Plug>(openbrowser-smart-search)
+
+let which_key_map_space.g.o = "Search ** in Github"
+nmap <Space>gs :OpenBrowserSmartSearch -github <c-r><c-w><CR>
+vmap <Space>gs y:OpenBrowserSmartSearch -github <c-r>0<CR>
 
 
 " [SpaceMapping] h+: Help {{{1
@@ -145,8 +157,26 @@ let which_key_map_space.q.q = "Quit"
 nnoremap <Space>qq :q<CR>
 let which_key_map_space.q.Q = "Force Quit"
 nnoremap <Space>qQ :q!<CR>
-let which_key_map_space.q.a = "Force Quit all"
-nnoremap <Space>qa :qa!<CR>
+let which_key_map_space.q.a = "Quit all"
+nnoremap <Space>qa :qa<CR>
+let which_key_map_space.q.A = "Force Quit all"
+nnoremap <Space>qA :qa!<CR>
+
+" [SpaceMapping] r+: Run {{{1
+" ------------------------------------------------------------------------------
+let which_key_map_space.r.r = "Run Current file"
+nnoremap <Space>rr :call RunUsingCurrentFiletype()<CR>
+
+let which_key_map_space.r.l = "Run Current line in neoterm"
+nmap <Space>rl <Plug>(neoterm-repl-send-line)
+
+let which_key_map_space.r.t = "Run in neoterm"
+nmap <Space>rt <Plug>(neoterm-repl-send)
+xmap <Space>rt <Plug>(neoterm-repl-send)
+
+" nmap gt <Plug>(neoterm-repl-send)
+" xmap gt <Plug>(neoterm-repl-send)
+" nmap gtt <Plug>(neoterm-repl-send-line)
 
 " [SpaceMapping] s+: Search {{{1
 " ------------------------------------------------------------------------------
@@ -208,8 +238,11 @@ nmap \s :call LoopFoldMethod()<CR>
 let which_key_map_space.w.c = "Window Close"
 nnoremap <Space>wc :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
 
-let which_key_map_space.w.d = "Window Delete"
-nnoremap <Space>wd :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
+let which_key_map_space.w.h = "Window Hide"
+nnoremap <Space>wh :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
+
+let which_key_map_space.w.d = "Window Delete and Close"
+nnoremap <Space>wd :call undoquit#SaveWindowQuitHistory()<CR>:bd!<CR>
 
 let which_key_map_space.w.u = "Undo quit window"
 nnoremap <Space>wu :Undoquit<CR>
@@ -230,7 +263,16 @@ nnoremap <silent> <Space>\ :History:<CR>
 
 " https://stackoverflow.com/questions/51644477/reuse-vim-terminal-buffer
 let which_key_map_space["'"] = "Terminal"
-nnoremap <silent> <Space>' :sp term://zsh<CR>
+" nnoremap <silent> <Space>' :sp term://zsh<CR>
+nnoremap <silent> <Space>' :above Ttoggle<CR>
+
+" prompt to use the default terminal or terminals 1-3
+" Usage: ,t<space>ls<CR>
+"nnoremap ,t<space> :above T<space>
+"nnoremap ,t1 :above T1<space>
+"nnoremap ,t2 :above T2<space>
+"nnoremap ,t3 :above T3<space>
+
 
 let which_key_map_space['<Tab>'] = "last buffer"
 nnoremap <silent> <Space><Tab> :e#<cr>
@@ -290,18 +332,43 @@ xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
+" Useful thing from vim-sexp
+" Safe full line delete
+omap <silent><buffer> $   <Plug>(sexp_move_to_end_of_line_with_form)
+nmap <silent><buffer> <C-k>           d$
+
 " }}}1
 
 " Other random / WIP
 " --------------------------------------------------------------------------------
 "
 "  Comments
-nnoremap <Space>cl i#_<esc>
+" nnoremap <Space>cl i#_<esc>
 
-" COC
-nnoremap <Space>ce :CocCommand explorer<CR>
+" p will not overwrite register
+" https://vim.fandom.com/wiki/Replace_a_word_with_yanked_text
+"Some draw back for p
+" xnoremap p "_dP
+xnoremap <silent> p p:let @+=@0<CR>:let @"=@0<CR>
+xnoremap <silent> p p:let @"=@0<CR>
 
+nmap gp <Plug>(OpenPluginPage)
 
+function! OpenGithubPlugin()
+  " let s:uri = matchstr(getline("."), "'[a-z]*'")
+  let s:uri = matchstr(getline("."), "[0-9a-z\-\_\.]*\/[0-9a-z\-\_\.]*")
+  let s:uri = "https://www.github.com/".s:uri
+  echom "uri2" s:uri
+  if s:uri != ""
+    silent exec "!open '".s:uri."'"
+    :redraw!
+  else
+    echo "no packages found"
+  endif
+endfunction
+
+" Plugin open
+nnoremap <Space>po :call OpenGithubPlugin()<CR>
 
 nnoremap j gj
 nnoremap k gk

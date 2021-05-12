@@ -47,9 +47,11 @@ Plug 'luochen1990/rainbow'
 
 " Editor enhancements {{{2
 Plug 'AndrewRadev/undoquit.vim'
+Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
 Plug 'junegunn/vim-easy-align'
+Plug 'kassio/neoterm'
 Plug 'liuchengxu/vim-which-key'
 Plug 'mg979/vim-visual-multi'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -57,6 +59,7 @@ Plug 'osyo-manga/vim-over'
 Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-surround'
+Plug 'unblevable/quick-scope'
 
 " Language {{{2
 Plug 'evedovelli/rst-robotframework-syntax-vim'
@@ -64,10 +67,14 @@ Plug 'seeamkhan/robotframework-vim'
 Plug 'zinit-zsh/zinit-vim-syntax'
 
 " Misc+ {{{2
+
+Plug 'chrisbra/unicode.vim'
+Plug 'junegunn/gv.vim'
 Plug 'mattn/vim-findroot'
 Plug 'mhinz/vim-startify'
 Plug 'shumphrey/fugitive-gitlab.vim'
 Plug 'tpope/vim-fugitive'
+Plug 'tyru/open-browser.vim'
 
 " WIP {{{2
 Plug 'yuki-yano/fzf-preview.vim'
@@ -84,11 +91,8 @@ Plug 'benmills/vimux'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'dyng/ctrlsf.vim'
 Plug 'embear/vim-localvimrc'
-Plug 'gerw/vim-HiLinkTrace'
 Plug 'godlygeek/tabular'
 Plug 'jeetsukumaran/vim-buffergator'
-Plug 'jiangmiao/auto-pairs'
-Plug 'kassio/neoterm'
 Plug 'kshenoy/vim-signature'
 Plug 'liuchengxu/vista.vim'
 " Plug 'ludovicchabant/vim-gutentags'
@@ -97,10 +101,8 @@ Plug 'machakann/vim-sandwich'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'schickling/vim-bufonly'
 Plug 'tpope/vim-endwise'
-Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-unimpaired'
-Plug 'unblevable/quick-scope'
 " Plug 'vim-scripts/gitignore'
 
 " other languages/filetypes {{{2
@@ -152,17 +154,15 @@ Plug 'zah/nim.vim'
 
 " misc {{{2
 " ------------------------------------------------------------------------------
-Plug 'chrisbra/unicode.vim'
 Plug 'jreybert/vimagit'
-Plug 'junegunn/gv.vim'
 Plug 'lambdalisue/gina.vim'
 Plug 'mileszs/ack.vim'
 Plug 'szw/vim-dict'
 Plug 'tpope/vim-eunuch'
 Plug 'tpope/vim-rhubarb'
-Plug 'tyru/open-browser.vim'
 " Plug 'Valloric/ListToggle'
 Plug 'vimwiki/vimwiki'
 
 "}}}1
+
 call plug#end()
