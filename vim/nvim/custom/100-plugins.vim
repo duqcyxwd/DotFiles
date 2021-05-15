@@ -55,6 +55,7 @@ Plug 'AndrewRadev/undoquit.vim'
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug 'junegunn/fzf.vim'
+Plug 'junegunn/limelight.vim'
 Plug 'kassio/neoterm'
 Plug 'kshenoy/vim-signature'
 Plug 'liuchengxu/vim-which-key'
@@ -73,9 +74,20 @@ Plug 'unblevable/quick-scope'
 
 
 " Align text
-
 Plug 'godlygeek/tabular'
 Plug 'junegunn/vim-easy-align'
+
+" VimWiki
+Plug 'vimwiki/vimwiki'
+Plug 'preservim/tagbar'
+" Not working
+"Plug 'matt-snider/vim-tagquery', { 'do': 'bash install.sh' }
+
+
+" Markdown
+" Plug 'jtratner/vim-flavored-markdown'
+" Plug 'godlygeek/tabular' " Required by vim-markdown
+Plug 'plasticboy/vim-markdown'
 
 " Languages/Filetypes {{{2
 " ------------------------------------------------------------------------------
@@ -83,6 +95,7 @@ Plug 'junegunn/vim-easy-align'
 Plug 'OrangeT/vim-csharp'
 Plug 'adimit/prolog.vim'
 Plug 'cespare/vim-toml'
+Plug 'christoomey/vim-tmux-navigator'
 Plug 'evedovelli/rst-robotframework-syntax-vim'
 Plug 'kchmck/vim-coffee-script'
 Plug 'keith/swift.vim'
@@ -102,21 +115,20 @@ Plug 'zinit-zsh/zinit-vim-syntax'
 " ------------------------------------------------------------------------------
 
 Plug 'chrisbra/unicode.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'junegunn/gv.vim'
 Plug 'mattn/vim-findroot'
 Plug 'mhinz/vim-startify'
 Plug 'shumphrey/fugitive-gitlab.vim'
 Plug 'szw/vim-dict'
-Plug 'tpope/vim-fugitive'
-Plug 'junegunn/gv.vim'
 Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-fugitive'
 Plug 'tyru/open-browser.vim'
 
 " WIP {{{2
 " ------------------------------------------------------------------------------
 
 Plug 'yuki-yano/fzf-preview.vim'
-Plug 'junegunn/goyo.vim'
-
 " https://github.com/clojure-vim/clj-refactor.nvim
 
 "Default {{{1
@@ -127,12 +139,11 @@ Plug 'junegunn/goyo.vim'
 Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'airblade/vim-gitgutter'
 Plug 'benmills/vimux'
-Plug 'christoomey/vim-tmux-navigator'
 Plug 'dyng/ctrlsf.vim'
 Plug 'embear/vim-localvimrc'
 Plug 'jeetsukumaran/vim-buffergator'
 Plug 'liuchengxu/vista.vim'
-" Plug 'ludovicchabant/vim-gutentags'
+Plug 'ludovicchabant/vim-gutentags'
 Plug 'machakann/vim-highlightedyank'
 Plug 'tpope/vim-unimpaired'
 " Not sure why this plugin: https://github.com/tpope/vim-unimpaired/blob/master/plugin/unimpaired.vim
@@ -143,7 +154,6 @@ Plug 'tpope/vim-unimpaired'
 
 Plug 'daveyarwood/vim-alda'
 Plug 'habamax/vim-asciidoctor'
-Plug 'jtratner/vim-flavored-markdown'
 Plug 'junegunn/vader.vim'
 Plug 'vlime/vlime', {'rtp': 'vim/'}
 
@@ -152,7 +162,6 @@ Plug 'vlime/vlime', {'rtp': 'vim/'}
 
 Plug 'jreybert/vimagit'
 Plug 'lambdalisue/gina.vim'
-Plug 'vimwiki/vimwiki'
 
 "}}}1
 call plug#end()

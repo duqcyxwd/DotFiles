@@ -1,5 +1,5 @@
 """"""""""""""""""""""""""""""
-" => Python
+" => Python {{{1 {{{1
 """"""""""""""""""""""""""""""
 let python_highlight_all = 1
 
@@ -12,7 +12,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""
-" => JavaScript
+" => JavaScript {{{1
 """""""""""""""""""""""""""""""
 function! JavaScriptFold() abort
   setl foldmethod=syntax
@@ -34,7 +34,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""
-" => JSON
+" => JSON {{{1
 """""""""""""""""""""""""""""""
 " magically format/minify json in the current buffer
 nnoremap <leader>jf :%!jq -S '.'<CR>
@@ -45,7 +45,7 @@ vnoremap <leader>jm :!jq -c '.'<CR>
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => CoffeeScript
+" => CoffeeScript {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! CoffeeScriptFold() abort
   setl foldmethod=indent
@@ -59,7 +59,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => fish
+" => fish {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup fish_filetype_settings
   autocmd!
@@ -70,7 +70,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => git
+" => git {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup git_buffer_settings
   autocmd!
@@ -79,7 +79,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => io
+" => io {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup iolang
   autocmd!
@@ -92,7 +92,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => lisp
+" => lisp {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup lisp
   autocmd!
@@ -101,18 +101,76 @@ augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => markdown
+" => markdown {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup markdown
   autocmd!
-  autocmd BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
-  "for some reason, I have to set the filetype to ghmarkdown, and then set it to markdown, in order to get all of the syntax highlighting. cool!
-  autocmd BufNewFile,BufRead *.md,*.markdown setlocal filetype=markdown
+  " autocmd BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
+  " "for some reason, I have to set the filetype to ghmarkdown, and then set it to markdown, in order to get all of the syntax highlighting. cool!
+  " autocmd BufNewFile,BufRead *.md,*.markdown setlocal syntax=markdown
+  " autocmd BufReadPost *.md,*.markdown setlocal syntax=markdown
+  " autocmd BufNewFile,BufRead *.md,*.markdown setlocal filetype=markdown
+  " autocmd BufReadPost *.md,*.markdown :%foldopen!
+  " autocmd FileType vimwiki set ft=markdown
+augroup END
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => vimWiki {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! s:vimWikiMap()
+
+  let g:which_key_map_space.w.w = "VimWiki Index Page"
+  " nmap <Space>ww <Plug>VimwikiIndex
+
+  " call vimwiki#u#map_key('n', '<CR>', '<Plug>VimwikiFollowLink')
+  let g:which_key_map_space.w.o = "VimWiki Page open"
+  call vimwiki#u#map_key('n', '<Space>wo', '<Plug>VimwikiFollowLink')
+  call vimwiki#u#map_key('v', '<Space>wo', '<Plug>VimwikiNormalizeLinkVisualCR')
+
+  call vimwiki#u#map_key('n', '<S-CR>', '<Plug>VimwikiSplitLink')
+  call vimwiki#u#map_key('n', '<C-CR>', '<Plug>VimwikiVSplitLink')
+  call vimwiki#u#map_key('n', '+', '<Plug>VimwikiNormalizeLink')
+  call vimwiki#u#map_key('v', '+', '<Plug>VimwikiNormalizeLinkVisual')
+  " call vimwiki#u#map_key('v', '<CR>', '<Plug>VimwikiNormalizeLinkVisualCR')
+  call vimwiki#u#map_key('n', '<D-CR>', '<Plug>VimwikiTabnewLink')
+  call vimwiki#u#map_key('n', '<C-S-CR>', '<Plug>VimwikiTabnewLink', 1)
+  call vimwiki#u#map_key('n', '<BS>', '<Plug>VimwikiGoBackLink')
+  " call vimwiki#u#map_key('n', '<TAB>', '<Plug>VimwikiNextLink')
+  " call vimwiki#u#map_key('n', '<S-TAB>', '<Plug>VimwikiPrevLink')
+  call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'n', '<Plug>VimwikiGoto')
+  call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'d', '<Plug>VimwikiDeleteFile')
+  call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'r', '<Plug>VimwikiRenameFile')
+  call vimwiki#u#map_key('n', '<C-Down>', '<Plug>VimwikiDiaryNextDay')
+  call vimwiki#u#map_key('n', '<C-Up>', '<Plug>VimwikiDiaryPrevDay')
+
+  " nunmap <Tab>
+  " nunmap <S-Tab>
+
+  nnoremap <buffer> <Tab> >>
+  nnoremap <buffer> <S-Tab> <<
+  vnoremap <buffer> <Tab> >
+  vnoremap <buffer> <S-Tab> <
+  " inoremap <Tab> >
+  " inoremap <S-Tab> <
+  imap <buffer> <Tab> <C-t>
+  imap <buffer> <S-Tab> <C-d>
+  " nnoremap <CR> <Plug>VimwikiFollowLink
+  " xnoremap <CR> <Plug>VimwikiFollowLink
+
+endfunction
+
+augroup vimWiki
+  autocmd!
+  " Fix wrong fold method from vim-markdown
+  autocmd FileType vimwiki set foldexpr=VimwikiFoldListLevel(v:lnum)
+  autocmd FileType vimwiki call s:vimWikiMap()
+  autocmd FileType markdown call s:vimWikiMap()
+  " autocmd BufReadPost *.md,*.markdown call s:vimWikiMap()
 augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => help text
+" => help text {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup help_text
   autocmd!
@@ -129,7 +187,7 @@ endfunction
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => quickfix
+" => quickfix {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Press q to close quickfix buffer.
 augroup quickfix_settings
@@ -141,7 +199,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Clojure
+" => Clojure {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " Paul copy-pasted me this from his own vimrc on 2021-04-21.
@@ -199,7 +257,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Prolog
+" => Prolog {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup prolog
   autocmd!
@@ -208,7 +266,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => C# / Spark MVC
+" => C# / Spark MVC {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup spark_mvc
   autocmd!
@@ -217,7 +275,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Go
+" => Go {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup golang
   autocmd!
@@ -235,7 +293,7 @@ augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Alda
+" => Alda {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Replaces each part call in the score (e.g. `piano:`) with a random instrument.
 " This is useful for when I'm writing demo scores and I want to keep things
@@ -258,5 +316,15 @@ augroup alda
   autocmd FileType alda
         \ nnoremap <buffer> <silent> <localleader>ri
         \ :call RandomizeAldaInstruments()<cr>
+augroup END
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Vim {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+augroup VimSource
+  autocmd FileType vim
+        \ autocmd! VimSource BufWritePost <buffer> set foldmethod=marker
 augroup END
 

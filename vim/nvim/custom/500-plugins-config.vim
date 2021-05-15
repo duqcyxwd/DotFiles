@@ -59,28 +59,6 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => better-whitespace {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:better_whitespace_filetypes_blacklist = ['diff', 'gitcommit', 'unite', 'qf', 'help', 'ctrlsf']
-
-" function! ReloadWithoutScrolling() abort
-"   let l:currentview = winsaveview()
-"   edit
-"   call winrestview(l:currentview)
-" endfunction
-
-function! StripWhitespace() abort
-  StripWhitespace
-  " try
-  "   call ReloadWithoutScrolling()
-  " catch
-  " endtry
-endfunction
-
-" nnoremap <silent> <leader><Space> :call StripWhitespace()<CR>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => buffergator {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " horizontal bottom (full screen width)
@@ -600,15 +578,9 @@ let g:syntastic_swift_checkers = ['swiftpm', 'swiftlint']
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => tagbar {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" nnoremap <leader>T :TagbarToggle<CR>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => unicode {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-nnoremap ga :UnicodeName<CR>
+" nnoremap ga :UnicodeName<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -641,26 +613,6 @@ set grepprg=/bin/grep\ -nH
 
 
 """"""""""""""""""""""""""""""
-" => vim-tmux-navigator {{{1
-""""""""""""""""""""""""""""""
-" I keep wanting to navigate between vim panes while I'm in insert mode without
-" switching back to normal mode first. These mappings let me do that.
-"
-" The only one that doesn't really work is <C-h>, which can't seem to shed its
-" standard behavior of acting like Backspace. It's weird that I can't seem to
-" override that, but oh well. I usually keep my vim on the left anyway, so it's
-" rare that I'll need it.
-"
-" Update: I don't actually want to remap <C-k> because that's the stock mapping
-" for digraphs and I don't want to retrain my fingers to learn a new mapping for
-" that.
-" imap <C-h> <Esc><C-h>
-" imap <C-j> <Esc><C-j>
-" imap <C-k> <Esc><C-k>
-" imap <C-l> <Esc><C-l>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vimux {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Prompt for a command to be run in a 20% lower tmux split, without losing
@@ -735,47 +687,6 @@ command! VimuxSendBuffer
 "
 " nnoremap <buffer> <leader>vF
 "   \ :call VimuxSendBuffer(0)<CR>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => vimwiki {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:vimwiki_list = [{'path': '~/Sync/vimwiki', 'path_html': '~/Sync/vimwiki/html'}]
-
-function! CreateSkeletonDiaryEntry() abort
-  if line('$') == 1 && getline(1) == ''
-    read !cat ~/Sync/vimwiki/diary/template.wiki
-    " The previous command pastes starting on the line _below_ the cursor (i.e.
-    " line 2), so we have to delete the empty line at the top (line 1).
-    execute "normal! ggdd"
-    " Insert today's date
-    execute "%s/DATE-GOES-HERE/" . strftime('%Y-%m-%d (%A)') . "/"
-  endif
-endfunction
-
-augroup CustomVimwikiMappings
-  autocmd!
-  " Use my own mappings for increment/decrement header level, ( and ) instead of
-  " - and =. This is because I have my own - mapping that I use to open the
-  "   current directory in defx.
-  autocmd FileType vimwiki nmap ( <Plug>VimwikiRemoveHeaderLevel
-  autocmd FileType vimwiki nmap ) <Plug>VimwikiAddHeaderLevel
-
-  " This adds some functionality that vimwiki is missing: if there is no diary
-  " entry for today yet, it creates a skeleton from a template.
-  autocmd BufEnter *vimwiki/diary/*.wiki call CreateSkeletonDiaryEntry()
-augroup end
-
-" I don't use the diary.wiki diary index page. I prefer to use defx to browse
-" the directory of diary entries. So, I'm remapping the keybinding that would
-" otherwise open the diary index page. vimwiki is nice enough not to overwrite
-" this when it loads.
-" nnoremap <leader>wi :e ~/Sync/vimwiki/diary/<CR>
-
-" ,w,w feels a bit awkward. I like ,wt (mnemonic: "wiki today") better.  Vimwiki
-" has its own ,wt mapping, but I never use it (it opens the wiki index page in a
-" tab, and I don't really use tabs).
-" nmap <leader>wt <Plug>VimwikiMakeDiaryNote
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -864,7 +775,11 @@ nmap <Space>9 <Plug>AirlineSelectTab9
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => auto-pairs {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:AutoPairsMapSpace=0
+
 augroup autopairs_config
+  autocmd!
   " autocmd Filetype clojure let g:AutoPairsFlyMode = 1
 
   " don't pair single quotes or backticks when editing lisp code
@@ -878,14 +793,37 @@ augroup autopairs_config
   " let g:AutoPairs={'(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
 
   " Don't auto pair " and { when it is vim mode
-  autocmd Filetype vim let b:AutoPairs = {'<':'>', '(':')', '[':']', "'":"'",'"':'', "`":"`", '```':'```', '""':'"', "'''":"'''"}
-
+  " It pairs for """
+  " autocmd Filetype vim let b:AutoPairs = {'<':'>', '(':')', '[':']', "'":"'",'"':'', "`":"`", '```':'```', '""':'"', "'''":"'''"}
+  autocmd Filetype vim let b:AutoPairs = {'<':'>', '(':')', '[':']', "'":"'",'"':'', "`":"`", '```':'```', "'''":"'''"}
 
 augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => better-whitespace {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:better_whitespace_filetypes_blacklist = ['diff', 'gitcommit', 'unite', 'qf', 'help', 'ctrlsf']
+
+" function! ReloadWithoutScrolling() abort
+"   let l:currentview = winsaveview()
+"   edit
+"   call winrestview(l:currentview)
+" endfunction
+
+let g:better_whitespace_enabled=1
+let g:strip_whitespace_on_save=1
+let g:strip_whitespace_confirm=0
+
+let g:better_whitespace_ctermcolor='LightYellow'
+let g:better_whitespace_guicolor='#6272a4'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => coc new {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+let g:coc_config_home = '$XDG_CONFIG_HOME/vim'
+let g:coc_data_home = '$XDG_DATA_HOME/coc'
+
 function! ToggleCoc() abort
   if len(coc#status()) == 0
     execute 'CocEnable'
@@ -1127,6 +1065,10 @@ nnoremap <silent> <leader>ref :call CocRequest('clojure-lsp', 'workspace/execute
 "   setl nomodified
 "   setl readonly
 " endfunction
+" Clojure Notes:
+" https://github.com/dense-analysis/ale
+" ale is conflict with clojure-lsp
+" https://clojure-lsp.github.io/clojure-lsp/settings/#clj-kondo
 
 " => commentary {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1467,11 +1409,79 @@ endfunction
 " - `.` to start command-line with `:Git [CURSOR] SHA` à la fugitive
 " - `q` or `gq` to close
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => goyo {{{1
+" => junegunn/limelight {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:goyo_width=100
-let g:goyo_margin_top = 2
-let g:goyo_margin_bottom = 2
+" Plug 'junegunn/limelight.vim'
+
+" autocmd! User GoyoEnter Limelight
+" autocmd! User GoyoLeave Limelight!
+
+" Color name (:help cterm-colors) or ANSI code
+let g:limelight_conceal_ctermfg = 'gray'
+let g:limelight_conceal_ctermfg = 240
+
+" Color name (:help gui-colors) or RGB color
+let g:limelight_conceal_guifg = 'DarkGray'
+let g:limelight_conceal_guifg = '#777777'
+
+" Default: 0.5
+let g:limelight_default_coefficient = 0.7
+
+" Number of preceding/following paragraphs to include (default: 0)
+let g:limelight_paragraph_span = 1
+
+" Beginning/end of paragraph
+"   When there's no empty line between the paragraphs
+"   and each paragraph starts with indentation
+let g:limelight_bop = '^\s'
+let g:limelight_eop = '\ze\n^\s'
+
+" Highlighting priority (default: 10)
+"   Set it to -1 not to overrule hlsearch
+let g:limelight_priority = -1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" => junegunn/goyo {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" goyo_height: goyo is implimented with 4 invisiable window so it is impossible
+" to have full height.
+let g:goyo_width=90
+let g:goyo_height=100
+let g:goyo_margin_top = 0
+let g:goyo_margin_bottom = 0
+
+function! s:goyo_enter()
+  if executable('tmux') && strlen($TMUX)
+    silent !tmux set status off
+    silent !tmux list-panes -F '\#F' | grep -q Z || tmux resize-pane -Z
+  endif
+  set noshowmode
+  set noshowcmd
+  set scrolloff=999
+  " Limelight
+  " ...
+endfunction
+
+function! s:goyo_leave()
+  if executable('tmux') && strlen($TMUX)
+    silent !tmux set status on
+    silent !tmux list-panes -F '\#F' | grep -q Z && tmux resize-pane -Z
+  endif
+  set showmode
+  set showcmd
+  set scrolloff=15
+  syntax on
+  " Limelight!
+  " ...
+endfunction
+
+augroup GoYo
+  autocmd!
+  autocmd User GoyoEnter nested call <SID>goyo_enter()
+  autocmd User GoyoLeave nested call <SID>goyo_leave()
+augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => neoterm {{{1
@@ -1511,93 +1521,41 @@ augroup END
 " let g:qs_hi_priority = 2
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => which-key {{{1
-""""""""""""""""""""""""""""""
-
-let g:which_key_centered = 0
-" Don't put keygroup at start or at end
-let g:which_key_group_dicts=''
-let g:which_key_floating_opts = { 'row': '0', 'col': '-10', 'height': '+0', 'width': '+10'}
-
-
-" TODO: Add description dictionaries so that it's easier to see what each key
-" mapping does. The default display is the command that's run, but that
-" isn't very readable.
-"
-" See: https://github.com/liuchengxu/vim-which-key#configuration
-"
-
-" let g:which_key_map_leader.b = {
-"       \ 'name': '+buffers',
-"       \ 'd': 'delete this buffer',
-"       \ 'D': 'delete all buffers',
-"       \ 'l': 'list buffers',
-"       \ 'o': 'delete all other buffers'
-"       \ }
-"
-" let g:which_key_map_leader.c = {
-"       \ 'name': '+coc',
-"       \ 'c': 'toggle coc',
-"       \ 'd': 'coc diagnostics',
-"       \ 'f': 'coc: format selected',
-"       \ 'i': 'coc info'
-"       \ }
-"
-" let g:which_key_map_leader.e = {
-"       \ 'name': '+edit',
-"       \ 'c': 'config directory',
-"       \ 'm': 'edit mappings',
-"       \ 'p': 'edit plugins',
-"       \ 'P': 'edit plugins config',
-"       \ 'v': 'edit vimrc',
-"       \ }
-
-" NB: This doesn't work:
-"     \ '<Space>': 'enter git command',
-"
-" It seems like a special case that the author of vim-which-key didn't foresee.
-"
-" For now, I'm happy with leaving it out of the map and letting it display as:
-"
-"     SPC → Gina<space>
-let g:which_key_map_leader.g = {
-      \ 'name': '+git',
-      \ 'A': 'git add --all',
-      \ 'b': 'git blame',
-      \ 'c': 'git commit',
-      \ 'd': 'git diff',
-      \ 'D': 'git diff (ignore whitespace)',
-      \ 'g': 'git grep',
-      \ 'i': 'git init',
-      \ 'l': 'git log',
-      \ 'p': 'git push',
-      \ 's': 'git status',
-      \ 'S': 'git show',
-      \ 'v': 'browse git commits',
-      \ }
-
-let g:which_key_map_leader.j = {
-      \ 'name': '+json',
-      \ 'f': 'format JSON',
-      \ 'm': 'minify JSON',
-      \ }
-
-let g:which_key_map_leader.s = {
-      \ 'name': '+source',
-      \ 'v': 'source vimrc',
-      \ }
-
-let g:which_key_map_leader.B = {
-      \ 'name': '+bash',
-      \ 'i': 'initialize Bash script'
-      \ }
-
-""""""""""""""""""""""""""""""
 " => rainbow {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plug 'luochen1990/rainbow'
 let g:rainbow_active = 1
-let g:rainbow_conf = {'separately': {'html': 0}} " disable for html
 
+let g:rainbow_conf = {
+\	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+\	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+\	'guis': [''],
+\	'cterms': [''],
+\	'operators': '_,_',
+\	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+\	'separately': {
+\		'*': {},
+\		'markdown': 0,
+\		'lisp': {
+\			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+\		},
+\		'haskell': {
+\			'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/\v\{\ze[^-]/ end=/}/ fold']
+\		},
+\               'html': 0,
+\		'vim': {
+\			'parentheses_options': 'containedin=vimFuncBody',
+\		},
+\		'vimwiki': 0,
+\		'perl': {
+\			'syn_name_prefix': 'perlBlockFoldRainbow',
+\		},
+\		'stylus': {
+\			'parentheses': ['start=/{/ end=/}/ fold contains=@colorableGroup']
+\		},
+\		'css': 0
+\	}
+\}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => signature (Improve Marks) {{{1
@@ -1653,13 +1611,16 @@ let g:startify_custom_header = [
 let g:startify_files_number = 5
 let g:startify_enable_special = 0
 let g:startify_session_persistence = 1
-let g:startify_bookmarks = [{'c': '~/.config/vim/nvimrc'}, {'z': '~/.config/zsh/zshrc'}]
+let g:startify_bookmarks = [{'n': '~/.config/vim/nvimrc'}, {'z': '~/.config/zsh/zshrc'}]
+
+
+let g:startify_session_before_save = [ 'silent! tabdo NERDTreeClose' ]
 
 
 let g:startify_lists = [
       \ { 'type': 'files',     'header': ['   MRU']            },
       \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
-      \ { 'type': 'sessions',  'header': ['   Sessions']       },
+      \ { 'type': 'sessions',  'header': ['   Sessions'], 'indices': ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']},
       \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
       \ { 'type': 'commands',  'header': ['   Commands']       },
       \ ]
@@ -1842,6 +1803,282 @@ augroup VIM_SEXP_MAPPING
   "   autocmd FileType clojure,scheme,lisp,timl,scheme call g:VIM_lisp_mappings()
   " endif
 augroup END
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" => tagbar {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" nnoremap <leader>T :TagbarToggle<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => vim-tagquery {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plug 'matt-snider/vim-tagquery'
+
+let g:tagquery_ctags_file = '~/vimwiki/.vimwiki_tags'
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" => vim-tmux {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+function! TmuxMappings()
+  " echom "TmuxMapping"
+  " setlocal comments=:#
+  " setlocal commentstring=#\ %s
+
+  nnoremap <silent><buffer> K :call tmux#man()<CR>
+
+  " nnoremap <silent> <Plug>TmuxExec :<C-U>set opfunc=tmux#filterop<CR>g@
+  " xnoremap <silent> <Plug>TmuxExec :<C-U>call tmux#filterop(visualmode())<CR>
+  " nmap <buffer> g! <Plug>TmuxExec
+  " nmap <buffer> g!! <Plug>TmuxExec_
+  " xmap <buffer> g! <Plug>TmuxExec
+
+  " let &cpo = s:cpo_save
+  " unlet s:cpo_save
+endfunction
+
+augroup tmuxMapping
+  autocmd!
+  autocmd BufEnter .tmux.conf call TmuxMappings()
+augroup END
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" => vim-tmux-navigator {{{1
+""""""""""""""""""""""""""""""
+" Quickly switch vim split with tmux panel. However, the C-\ is used for tmux
+" prefix key, and <C-j> and <C-k> is used for scrolling in fzf preview panel or
+" select thing still trying to figure out what is the best solution there
+
+" Custom Key Bindings
+" If you don't want the plugin to create any mappings, you can use the five
+" provided functions to define your own custom maps. You will need to define
+" custom mappings in your ~/.vimrc as well as update the bindings in tmux to match.
+
+let g:tmux_navigator_no_mappings = 1
+nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
+nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
+nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
+" nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
+
+let g:tmux_navigator_save_on_switch = 1
+let g:tmux_navigator_disable_when_zoomed = 1
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => vimwiki {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" let g:vimwiki_list = [{'path': '~/vimwiki', 'path_html': '~/vimwiki/html'}]
+" let g:vimwiki_list = [{'path': '~/vimwiki/',
+"       \ 'path_html': '~/vimwiki/html',
+"       \ 'syntax': 'markdown', 'ext': '.md'}]
+
+let g:automatic_nested_syntaxes=1
+let g:vimwiki_auto_header=1
+let g:vimwiki_conceal_pre=1
+let g:vimwiki_conceallevel=3
+let g:vimwiki_folding = 'custom'
+let g:vimwiki_folding = 'list'
+let g:vimwiki_url_maxsave=15
+
+" :VimwikiToggleListItem
+" Disable lists later after I familiar with vimwiki
+"   'all_maps': 0,
+let g:vimwiki_key_mappings =
+      \ {
+      \   'all_maps': 0,
+      \   'global': 1,
+      \   'headers': 1,
+      \   'text_objs': 1,
+      \   'table_format': 1,
+      \   'table_mappings': 1,
+      \   'lists': 0,
+      \   'links': 1,
+      \   'html': 1,
+      \   'mouse': 0,
+    \ }
+
+let mainWiki = {
+	\ 'path': '~/vimwiki',
+	\ 'template_path': '~/vimwiki/templates/',
+	\ 'template_default': 'default',
+	\ 'syntax': 'markdown',
+	\ 'ext': '.md',
+	\ 'path_html': '~/vimwiki/html/',
+	\ 'custom_wiki2html': 'vimwiki_markdown',
+	\ 'template_ext': '.tpl'}
+let mainWiki.nested_syntaxes = {
+	  \ 'c++': 'cpp',
+          \ 'bash': 'sh',
+          \ 'elixir': 'elixir',
+          \ 'javascript': 'javascript',
+          \ 'python': 'python',
+          \ 'ruby': 'ruby',
+          \ 'sh': 'sh',
+          \ 'shell': 'sh',
+          \ 'tmux': 'tmux',
+          \ 'vi': 'vim',
+          \ 'vim': 'vim',
+          \ 'yaml': 'yaml',
+          \ 'zsh': 'zsh'}
+
+let g:vimwiki_list = [mainWiki]
+function! CreateSkeletonDiaryEntry() abort
+  if line('$') == 1 && getline(1) == ''
+    read !cat ~/Sync/vimwiki/diary/template.wiki
+    " The previous command pastes starting on the line _below_ the cursor (i.e.
+    " line 2), so we have to delete the empty line at the top (line 1).
+    execute "normal! ggdd"
+    " Insert today's date
+    execute "%s/DATE-GOES-HERE/" . strftime('%Y-%m-%d (%A)') . "/"
+  endif
+endfunction
+
+augroup CustomVimwikiMappings
+  autocmd!
+  " Use my own mappings for increment/decrement header level, ( and ) instead of
+  " - and =. This is because I have my own - mapping that I use to open the
+  "   current directory in defx.
+  autocmd FileType vimwiki nmap ( <Plug>VimwikiRemoveHeaderLevel
+  autocmd FileType vimwiki nmap ) <Plug>VimwikiAddHeaderLevel
+
+  " This adds some functionality that vimwiki is missing: if there is no diary
+  " entry for today yet, it creates a skeleton from a template.
+  autocmd BufEnter *vimwiki/diary/*.wiki call CreateSkeletonDiaryEntry()
+augroup end
+
+" I don't use the diary.wiki diary index page. I prefer to use defx to browse
+" the directory of diary entries. So, I'm remapping the keybinding that would
+" otherwise open the diary index page. vimwiki is nice enough not to overwrite
+" this when it loads.
+" nnoremap <leader>wi :e ~/Sync/vimwiki/diary/<CR>
+
+" ,w,w feels a bit awkward. I like ,wt (mnemonic: "wiki today") better.  Vimwiki
+" has its own ,wt mapping, but I never use it (it opens the wiki index page in a
+" tab, and I don't really use tabs).
+" nmap <leader>wt <Plug>VimwikiMakeDiaryNote
+
+function! VimwikiFoldLevelCustom(lnum)
+  let pounds = strlen(matchstr(getline(a:lnum), '^#\+'))
+  if (pounds)
+    return '>' . pounds  " start a fold level
+  endif
+  if getline(a:lnum) =~? '\v^\s*$'
+    if (strlen(matchstr(getline(a:lnum + 1), '^#\+')))
+      return '-1' " don't fold last blank line before header
+    endif
+  endif
+  return '=' " return previous fold level
+endfunction
+
+
+augroup VimrcAuGroup
+  autocmd!
+  autocmd FileType vimwiki setlocal foldmethod=expr |
+	\ setlocal foldenable | set foldexpr=VimwikiFoldLevelCustom(v:lnum)
+augroup END
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" vim-markdown
+" Config for vim-markdown
+" Plug 'plasticboy/vim-markdown'
+" Use vimWiki folding instead
+let g:vim_markdown_folding_disabled = 1
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => which-key {{{1
+""""""""""""""""""""""""""""""
+
+let g:which_key_centered = 0
+" Don't put keygroup at start or at end
+let g:which_key_group_dicts=''
+let g:which_key_floating_opts = { 'row': '0', 'col': '-10', 'height': '+0', 'width': '+10'}
+
+
+" TODO: Add description dictionaries so that it's easier to see what each key
+" mapping does. The default display is the command that's run, but that
+" isn't very readable.
+"
+" See: https://github.com/liuchengxu/vim-which-key#configuration
+"
+
+" let g:which_key_map_leader.b = {
+"       \ 'name': '+buffers',
+"       \ 'd': 'delete this buffer',
+"       \ 'D': 'delete all buffers',
+"       \ 'l': 'list buffers',
+"       \ 'o': 'delete all other buffers'
+"       \ }
+"
+" let g:which_key_map_leader.c = {
+"       \ 'name': '+coc',
+"       \ 'c': 'toggle coc',
+"       \ 'd': 'coc diagnostics',
+"       \ 'f': 'coc: format selected',
+"       \ 'i': 'coc info'
+"       \ }
+"
+" let g:which_key_map_leader.e = {
+"       \ 'name': '+edit',
+"       \ 'c': 'config directory',
+"       \ 'm': 'edit mappings',
+"       \ 'p': 'edit plugins',
+"       \ 'P': 'edit plugins config',
+"       \ 'v': 'edit vimrc',
+"       \ }
+
+" NB: This doesn't work:
+"     \ '<Space>': 'enter git command',
+"
+" It seems like a special case that the author of vim-which-key didn't foresee.
+"
+" For now, I'm happy with leaving it out of the map and letting it display as:
+"
+"     SPC → Gina<space>
+let g:which_key_map_leader.g = {
+      \ 'name': '+git',
+      \ 'A': 'git add --all',
+      \ 'b': 'git blame',
+      \ 'c': 'git commit',
+      \ 'd': 'git diff',
+      \ 'D': 'git diff (ignore whitespace)',
+      \ 'g': 'git grep',
+      \ 'i': 'git init',
+      \ 'l': 'git log',
+      \ 'p': 'git push',
+      \ 's': 'git status',
+      \ 'S': 'git show',
+      \ 'v': 'browse git commits',
+      \ }
+
+let g:which_key_map_leader.j = {
+      \ 'name': '+json',
+      \ 'f': 'format JSON',
+      \ 'm': 'minify JSON',
+      \ }
+
+let g:which_key_map_leader.s = {
+      \ 'name': '+source',
+      \ 'v': 'source vimrc',
+      \ }
+
+let g:which_key_map_leader.B = {
+      \ 'name': '+bash',
+      \ 'i': 'initialize Bash script'
+      \ }
+
+""""""""""""""""""""""""""""""
+" => yaml folds {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plug 'pedrohdz/vim-yaml-folds'
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" => 000 Sample {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 

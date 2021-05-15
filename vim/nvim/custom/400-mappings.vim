@@ -80,8 +80,7 @@ let g:which_key_map_space.f.a = "[operator] vim-easy-align {motion}"
 map <Space>fa <Plug>(EasyAlign)
 
 let g:which_key_map_space.f.e = "Reopen current file"
-nnoremap <Space>fe :mkview<CR><ESC>:e!<CR>
-
+nnoremap <Space>fe :mkview<CR>:e!<CR>:loadview<CR>
 
 let which_key_map_space.f.r = "Open Recent files"
 nnoremap <Space>fr :History<CR>
@@ -198,7 +197,9 @@ let which_key_map_space.t.r = "Toggle relative line number"
 nnoremap <Space>tr :setlocal rnu!<CR>:setlocal rnu?<CR>
 
 let which_key_map_space.t.s = "Toggle auto strip whitespace"
-nnoremap <Space>ts :call ToggleAutoStripSpace()<CR>
+" nnoremap <Space>ts :call ToggleAutoStripSpace()<CR>
+nnoremap <Space>ts :ToggleStripWhitespaceOnSave<CR>
+
 
 let which_key_map_space.t.w = "Toggle word wrap"
 nnoremap <Space>tw :setlocal wrap!<CR>:setlocal wrap?<CR>
@@ -238,19 +239,28 @@ nmap \s :call LoopFoldMethod()<CR>
 let which_key_map_space.w.c = "Window Close"
 nnoremap <Space>wc :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
 
+let which_key_map_space.w.C = "Window Close all except current one"
+nnoremap <Space>wC :call undoquit#SaveWindowQuitHistory()<CR>:only<CR>
+" nnoremap <Space>wo :call undoquit#SaveWindowQuitHistory()<CR>:only<CR>
+
 let which_key_map_space.w.h = "Window Hide"
 nnoremap <Space>wh :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
-
 let which_key_map_space.w.d = "Window Delete and Close"
 nnoremap <Space>wd :call undoquit#SaveWindowQuitHistory()<CR>:bd!<CR>
 
 let which_key_map_space.w.u = "Undo quit window"
 nnoremap <Space>wu :Undoquit<CR>
 
+let which_key_map_space.w.w = "VimWiki Index Page"
+nmap <Space>ww <Plug>VimwikiIndex
+
 " [SpaceMapping] z+: WIP {{{1
 " ------------------------------------------------------------------------------
 nnoremap <silent> <Space>zz :Goyo<cr>
+nnoremap <silent> <Space>zm :ZoomToggle<cr>
+nnoremap <silent> <Space>zo :ZoomToggle<cr>
 
+nnoremap <silent> <Space>zl <Plug>(Limelight)
 
 " [SpaceMapping] +: Misc {{{1
 " ------------------------------------------------------------------------------
@@ -292,7 +302,6 @@ nnoremap <Space>sc :noh<CR>
 " [Other Keys] mappings {{{1
 "--------------------------------------------------------------------------
 
-" easy align: ga <Left>, Indent keep
 " https://stackoverflow.com/a/24717020/2727296
 " :help cmdline-special.
 
@@ -315,12 +324,17 @@ cnoremap <C-P> <Up>
 cnoremap <C-N> <Down>
 
 nnoremap <Space>ec :Defx ~/.config/vim/custom/<CR>
-nnoremap <Space>em :e! ~/.config/vim/custom/400-mappings.vim<CR>
-nnoremap <Space>er :e! ~/.config/vim/custom/999-random.vim<CR>
-nnoremap <Space>ep :e! ~/.config/vim/custom/100-plugins.vim<CR>
-nnoremap <Space>eP :e! ~/.config/vim/custom/500-plugins-config.vim<CR>
-nnoremap <Space>ev :e! ~/.config/vim/vimrc<CR>
-nnoremap <silent><buffer> <C-j> i<CR><Esc>
+nnoremap <Space>ep :e!   ~/.config/vim/custom/100-plugins.vim<CR>
+nnoremap <Space>ef :e!   ~/.config/vim/custom/300-filetypes.vim<CR>
+nnoremap <Space>eP :e!   ~/.config/vim/custom/500-plugins-config.vim<CR>
+nnoremap <Space>em :e!   ~/.config/vim/custom/400-mappings.vim<CR>
+nnoremap <Space>er :e!   ~/.config/vim/custom/999-random.vim<CR>
+nnoremap <Space>ev :e!   ~/.config/vim/vimrc<CR>
+nnoremap <Space>et :e!   ~/vimwiki/TODO.md<CR>
+" nnoremap <silent><buffer> <C-j> i<CR><Esc>
+" unmap <C-j>
+" nunmap <C-j>
+" nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
 
 nnoremap gj <C-W>j
 nnoremap gk <C-W>k
@@ -332,10 +346,13 @@ xmap ga <Plug>(EasyAlign)
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
 nmap ga <Plug>(EasyAlign)
 
+" vim-visual-multi, return to last selection
+nmap gV <Plug>(VM-Reselect-Last)
+
 " Useful thing from vim-sexp
 " Safe full line delete
-omap <silent><buffer> $   <Plug>(sexp_move_to_end_of_line_with_form)
-nmap <silent><buffer> <C-k>           d$
+omap <silent><buffer> $     <Plug>(sexp_move_to_end_of_line_with_form)
+nmap <silent><buffer> <C-k> d$
 
 " }}}1
 
@@ -345,20 +362,16 @@ nmap <silent><buffer> <C-k>           d$
 "  Comments
 " nnoremap <Space>cl i#_<esc>
 
+" Fix paste
 " p will not overwrite register
 " https://vim.fandom.com/wiki/Replace_a_word_with_yanked_text
-"Some draw back for p
 " xnoremap p "_dP
 xnoremap <silent> p p:let @+=@0<CR>:let @"=@0<CR>
-xnoremap <silent> p p:let @"=@0<CR>
-
-nmap gp <Plug>(OpenPluginPage)
 
 function! OpenGithubPlugin()
   " let s:uri = matchstr(getline("."), "'[a-z]*'")
   let s:uri = matchstr(getline("."), "[0-9a-z\-\_\.]*\/[0-9a-z\-\_\.]*")
   let s:uri = "https://www.github.com/".s:uri
-  echom "uri2" s:uri
   if s:uri != ""
     silent exec "!open '".s:uri."'"
     :redraw!

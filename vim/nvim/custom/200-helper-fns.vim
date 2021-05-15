@@ -15,16 +15,32 @@
 
 " [Function] Toggle Strip Whitespace {{{1
 " ------------------------------------------------------------------------------
+" StripWhitespace is provied by ntpeters/vim-better-whitespace
 " Cleanup extra space when save
 " Strip trailing whitespace without affect search and current cursor
-" StripWhitespace is provied by ntpeters/vim-better-whitespace
- function! g:StripWhitespace()
-         let save_cursor = getpos(".")
-         let old_query = getreg('/')
-         :%s/\s\+$//e
-         call setpos('.', save_cursor)
-         call setreg('/', old_query)
- endfunction
+function! g:StripWhitespace()
+  let save_cursor = getpos(".")
+  let old_query = getreg('/')
+  :%s/\s\+$//e
+  call setpos('.', save_cursor)
+  call setreg('/', old_query)
+endfunction
+
+" Mark whitespace as RED, provied by better-whitespace
+let s:whitespace_enable = 0
+function! g:Toggle_whitespace() abort
+  if s:whitespace_enable
+    DisableWhitespace
+    let s:whitespace_enable = 0
+  else
+    EnableWhitespace
+    let s:whitespace_enable = 1
+  endif
+endfunction
+
+" :EnableStripWhitespaceOnSave
+" :DisableStripWhitespaceOnSave
+" :ToggleStripWhitespaceOnSave
 
 let s:autoStripSpaceEnabled = 0
 function! ToggleAutoStripSpace()
@@ -43,7 +59,7 @@ function! ToggleAutoStripSpace()
     augroup END
   endif
 endfunction
-call ToggleAutoStripSpace()
+" call ToggleAutoStripSpace()
 
 " [Function] HighlightCharactersOver80 {{{1
 " ------------------------------------------------------------------------------
@@ -143,21 +159,6 @@ function! RunUsingCurrentFiletype()
 endfunction
 
 " }}}1
-"
-"
-let s:whitespace_enable = 0
-function! g:Toggle_whitespace() abort
-  if s:whitespace_enable
-    DisableWhitespace
-    let s:whitespace_enable = 0
-  else
-    EnableWhitespace
-    let s:whitespace_enable = 1
-  endif
-  call SpaceVim#layers#core#statusline#toggle_section('whitespace')
-  call SpaceVim#layers#core#statusline#toggle_mode('whitespace')
-endfunction
-
 
 
 " https://stackoverflow.com/questions/10572996/passing-command-range-to-a-function/10573044#10573044
@@ -191,6 +192,8 @@ endfunction
 command! -range PassRange <line1>,<line2>call PrintGivenRange()
 
 function! s:DiffWithSaved()
+  " https://stackoverflow.com/questions/749297/can-i-see-changes-before-i-save-my-file-in-vim
+  " Quick check before Save
   let filetype=&ft
   diffthis
   vnew | r # | normal! 1Gdd

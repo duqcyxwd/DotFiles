@@ -19,7 +19,7 @@ syntax on                   " Used by vimwiki
 
 set autoread                    " Set to auto read when a file is changed from the outside
 set clipboard+=unnamed          " use system clipboard
-set cmdheight=5                 " Give more space for displaying messages.
+set cmdheight=1                 " Give more space for displaying messages.
 set cursorline                  " highlights line numbers (vim-airline-colornum)
 set encoding=utf8               " Set utf8 as standard encoding
 set ffs=unix,dos,mac            " Use Unix as the standard file type
@@ -78,6 +78,12 @@ set whichwrap+=<,>,h,l         " Allow specified keys that move the cursor left/
 " https://stackoverflow.com/a/29787362
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
 
+" Update my session setting
+" Don't reuse options, empty buffers
+" Hope this can fix conjure session problem
+set sessionoptions=curdir,folds,tabpages,winpos
+set viewoptions=cursor,folds
+
 
 " * Special *
 
@@ -96,16 +102,16 @@ if has("gui_running")
 endif
 
 
-" augroup i_like_folding_lol
-"   autocmd!
-"   " autocmd BufWinEnter * silent! :%foldopen!
-" augroup END
+augroup i_like_folding_lol
+  autocmd!
+  " autocmd BufWinEnter * silent! :%foldopen!
+augroup END
 
 " auto-Load fold views
 augroup AutoSaveFolds
   autocmd!
   " autocmd BufWinLeave ?* mkview
-  autocmd BufWinEnter ?* silent! loadview!
+  " autocmd BufWinEnter ?* silent! loadview
 augroup END
 
 
@@ -123,6 +129,19 @@ augroup return_to_last_edit_position
         \ if line("'\"") > 0 && line("'\"") <= line("$") |
         \   exe "normal! g`\"" |
         \ endif
+augroup END
+
+augroup autoReloadFile
+  " Triger `autoread` when files changes on disk
+  " https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
+  " https://vi.stackexchange.com/questions/13692/prevent-focusgained-autocmd-running-in-command-line-editing-mode
+  autocmd FocusGained,BufEnter,CursorHold,CursorHoldI *
+        \ if mode() !~ '\v(c|r.?|!|t)' && getcmdwintype() == '' | checktime | endif
+
+  " Notification after file change
+  " https://vi.stackexchange.com/questions/13091/autocmd-event-for-autoread
+  autocmd FileChangedShellPost *
+        \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
 augroup END
 
 " Default =>  {{{1
