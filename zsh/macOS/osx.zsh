@@ -1,6 +1,6 @@
 #!/bin/sh
 # https://dev.to/jeissonk19/macos-development-workspace-2021-2ld6
-# Show file extensions 
+# Show file extensions
 defaults write NSGlobalDomain AppleShowAllExtensions -bool true
 # Disable the warning before emptying the Trash
 defaults write com.apple.finder WarnOnEmptyTrash -bool false
@@ -39,3 +39,9 @@ defaults write com.apple.ActivityMonitor SortDirection -int 0
 sudo nvram SystemAudioVolume=" "
 # Don’t display the annoying prompt when quitting iTerm
 defaults write com.googlecode.iterm2 PromptOnQuit -bool false
+
+
+# for  alacritty
+# https://medium.com/@pezcoder/how-i-migrated-from-iterm-to-alacritty-c50a04705f95
+defaults write -g CGFontRenderingFontSmoothingDisabled -bool NO
+defaults -currentHost write -globalDomain AppleFontSmoothing -int 2

@@ -1,5 +1,5 @@
-ZSH_TMUX_ITERM2=true
-ZSH_TMUX_AUTOCONNECT=true
+# ZSH_TMUX_ITERM2=true
+# ZSH_TMUX_AUTOCONNECT=true
 
 # Tmuxinator
 export EDITOR='nvim'

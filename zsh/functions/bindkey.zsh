@@ -26,7 +26,7 @@ __zsh_cust_bindkey() {
 
   # ^M for enter
   # bindkey "^M"      accept-line
-  bindkey "^T"      forward-word
+  # bindkey "^T"      forward-word
 
   bindkey '^ '      _expand_stuff                           # ctrl+space expand alias/glob/parameter
 

@@ -7,6 +7,8 @@ alias vi='nvim'
 alias vim='nvim'
 
 
+
+# ln -s ~/.SpaceVim ~/.vim to use Spacevim
 alias svi=/usr/local/bin/vi                   # Use vi to open spacevim
 # Macvim still using .vim
 
@@ -74,6 +76,9 @@ alias cgrep='grep --color=always'
 
 ## Fun
 alias test-passed='if [ "$?" -eq "0" ]; then lolcat ~/.tp -a -s 40 -d 2; fi;'
+
+## grc/grcat
+alias gcat="grcat ~/.config/grc/log"
 
 # --------------------------------------------------------------------------
 

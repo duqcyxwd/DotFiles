@@ -125,9 +125,14 @@ brew install watch
 https://wildfly.org/downloads/
 
 
-### 
+###
 [pget](https://github.com/Code-Hex/pget)
 parallel file download client
 
 
 brew install grc
+TODO: Add config for grc
+brew install nnn
+brew install ranger
+brew install alacritty
+

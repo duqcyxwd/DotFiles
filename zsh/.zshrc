@@ -69,7 +69,8 @@ mlog "$(date) : zshrc start loading"
 
   # Path to your oh-my-zsh installation.
   export ZSH=$HOME/.oh-my-zsh
-  export TERM="xterm-256color"
+  # Never set TERM in your config
+  # export TERM="xterm-256color"
   export NVIM_LISTEN_ADDRESS=/tmp/spacevim_nvim_server
 
   [[ $ZPROF_TRACK -eq "1" ]] && zmodload zsh/zprof
@@ -125,10 +126,12 @@ zinit_load() {
       atload"_zsh_autosuggest_start"  zsh-users/zsh-autosuggestions \
 
     zinit wait silent light-mode for \
+      OMZ::plugins/kubectl/kubectl.plugin.zsh \
       OMZ::plugins/git/git.plugin.zsh
 
     zinit wait lucid silent light-mode for \
       as'completion' is-snippet 'https://github.com/Valodim/zsh-curl-completion/blob/master/_curl' \
+      as'completion' is-snippet 'https://github.com/alacritty/alacritty/blob/master/extra/completions/_alacritty' \
       blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions \
 
     }
@@ -167,10 +170,10 @@ zinit_load() {
       OMZ::plugins/brew/brew.plugin.zsh \
       OMZ::plugins/git-extras/git-extras.plugin.zsh \
       OMZ::plugins/iterm2/iterm2.plugin.zsh \
-      OMZ::plugins/kubectl/kubectl.plugin.zsh \
       OMZ::plugins/systemd/systemd.plugin.zsh
 
-
+    zinit ice wait="0" atload'bindkey.zsh' silent;
+    zinit light zpm-zsh/empty
   }
 
   #}}}
