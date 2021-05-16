@@ -1969,18 +1969,114 @@ endfunction
 " tab, and I don't really use tabs).
 " nmap <leader>wt <Plug>VimwikiMakeDiaryNote
 "
-" Wiki folding {{{2
-let g:vimwiki_folding = 'custom'
-" let g:vimwiki_folding = 'list'
+" Wiki folding + Autogroup {{{2
+" let g:vimwiki_folding = 'custom'
+let g:vimwiki_folding = 'syntax'
+let g:vimwiki_folding = 'list'
+let g:vimwiki_folding = 'expr'
+
+function! s:cusVimWikiKeyMap() " {{{3
+
+  echom "cusVimWikiKeyMap"
+
+  let g:vimwiki_folding = 'list'
+
+  let g:which_key_map_space.w.o = "VimWiki Page open"
+  call vimwiki#u#map_key('n', '<Space>wo', '<Plug>VimwikiFollowLink')
+  call vimwiki#u#map_key('v', '<Space>wo', '<Plug>VimwikiNormalizeLinkVisualCR')
+
+  call vimwiki#u#map_key('n', '<S-CR>', '<Plug>VimwikiSplitLink')
+  call vimwiki#u#map_key('n', '<C-CR>', '<Plug>VimwikiVSplitLink')
+  call vimwiki#u#map_key('n', '+', '<Plug>VimwikiNormalizeLink')
+  call vimwiki#u#map_key('v', '+', '<Plug>VimwikiNormalizeLinkVisual')
+  " call vimwiki#u#map_key('v', '<CR>', '<Plug>VimwikiNormalizeLinkVisualCR')
+  call vimwiki#u#map_key('n', '<D-CR>', '<Plug>VimwikiTabnewLink')
+  call vimwiki#u#map_key('n', '<C-S-CR>', '<Plug>VimwikiTabnewLink', 1)
+  call vimwiki#u#map_key('n', '<BS>', '<Plug>VimwikiGoBackLink')
+  " call vimwiki#u#map_key('n', '<TAB>', '<Plug>VimwikiNextLink')
+  " call vimwiki#u#map_key('n', '<S-TAB>', '<Plug>VimwikiPrevLink')
+  call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'n', '<Plug>VimwikiGoto')
+  call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'d', '<Plug>VimwikiDeleteFile')
+  call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'r', '<Plug>VimwikiRenameFile')
+  call vimwiki#u#map_key('n', '<C-Down>', '<Plug>VimwikiDiaryNextDay')
+  call vimwiki#u#map_key('n', '<C-Up>', '<Plug>VimwikiDiaryPrevDay')
+
+  " nunmap <Tab>
+  " nunmap <S-Tab>
+
+  nnoremap <buffer> <Tab> >>
+  nnoremap <buffer> <S-Tab> <<
+  vnoremap <buffer> <Tab> >
+  vnoremap <buffer> <S-Tab> <
+  " inoremap <Tab> >
+  " inoremap <S-Tab> <
+  imap <buffer> <Tab> <C-t>
+  imap <buffer> <S-Tab> <C-d>
+  " nnoremap <CR> <Plug>VimwikiFollowLink
+  " xnoremap <CR> <Plug>VimwikiFollowLink
+
+endfunction
+
+function! VimwikiFoldLevelCustom(lnum) " {{{3
+  let pounds = strlen(matchstr(getline(a:lnum), '^#\+'))
+  if (pounds)
+    return '>' . pounds  " start a fold level
+  endif
+  if getline(a:lnum) =~? '\v^\s*$'
+    if (strlen(matchstr(getline(a:lnum + 1), '^#\+')))
+      return '-1' " don't fold last blank line before header
+    endif
+  endif
+  return '=' " return previous fold level
+endfunction
+
+" Autogroup {{{3
+augroup vimWiki
+  autocmd!
+  " Fix wrong fold method from vim-markdown
+  " autocmd FileType vimwiki set foldexpr=VimwikiFoldListLevel(v:lnum)
+  autocmd FileType vimwiki call s:cusVimWikiKeyMap()
+  " autocmd FileType markdown call s:cusVimWikiKeyMap()
+  " autocmd BufReadPost *.md,*.markdown call s:cusVimWikiKeyMap()
+
+  " autocmd FileType vimwiki setlocal foldmethod=expr |
+	" \ setlocal foldenable | set foldexpr=VimwikiFoldLevelCustom(v:lnum) |
+	" \ call s:cusVimWikiKeyMap()
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" vim-markdown
+  autocmd BufReadPost TODO.md setlocal foldmethod=indent | call s:cusVimWikiKeyMap()
+
+augroup END
+
+
+" augroup VimrcAuGroup
+"   autocmd!
+"   autocmd FileType vimwiki setlocal foldmethod=expr |
+" 	\ setlocal foldenable | set foldexpr=VimwikiFoldLevelCustom(v:lnum)
+" augroup END
+
+""""""""""""""""""""""""""""""""""""""""""""
+" vim-markdown {{{1
 " Config for vim-markdown
 " Plug 'plasticboy/vim-markdown'
 " Use vimWiki folding instead
 let g:vim_markdown_folding_disabled = 1
 
+" => markdown {{{2
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+augroup markdown
+  autocmd!
+  " autocmd BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
+  " "for some reason, I have to set the filetype to ghmarkdown, and then set it to markdown, in order to get all of the syntax highlighting. cool!
+  " autocmd BufNewFile,BufRead *.md,*.markdown setlocal syntax=markdown
+  " autocmd BufReadPost *.md,*.markdown setlocal syntax=markdown
+  " autocmd BufNewFile,BufRead *.md,*.markdown setlocal filetype=markdown
+  " autocmd BufReadPost *.md,*.markdown :%foldopen!
+  " autocmd FileType vimwiki set ft=markdown
+augroup END
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => which-key {{{1
