@@ -150,10 +150,19 @@ function! LoopFoldMethod()
   endif
 endfunction
 
-" [Function] Run current file {{{1
-" ------------------------------------------------------------------------------
+function! s:DiffWithSaved() "{{{1
+  " https://stackoverflow.com/questions/749297/can-i-see-changes-before-i-save-my-file-in-vim
+  " Quick check before Save
+  let filetype=&ft
+  diffthis
+  vnew | r # | normal! 1Gdd
+  diffthis
+  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+endfunction
+command! DiffSaved call s:DiffWithSaved()
 
-function! RunUsingCurrentFiletype()
+function! RunUsingCurrentFiletype() "{{{1
+  " Run current file
   execute 'write'
   execute '! clear; '.&filetype.' <% '
 endfunction
@@ -191,13 +200,19 @@ endfunction
 
 command! -range PassRange <line1>,<line2>call PrintGivenRange()
 
-function! s:DiffWithSaved()
-  " https://stackoverflow.com/questions/749297/can-i-see-changes-before-i-save-my-file-in-vim
-  " Quick check before Save
-  let filetype=&ft
-  diffthis
-  vnew | r # | normal! 1Gdd
-  diffthis
-  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+
+
+" Used for syntax aware text align
+function! GFM()
+  let langs = ['ruby', 'yaml', 'vim', 'c']
+
+  for lang in langs
+    unlet b:current_syntax
+    silent! exec printf("syntax include @%s syntax/%s.vim", lang, lang)
+    exec printf("syntax region %sSnip matchgroup=Snip start='```%s' end='```' contains=@%s",
+                \ lang, lang, lang)
+  endfor
+  let b:current_syntax='mkd'
+
+  syntax sync fromstart
 endfunction
-com! DiffSaved call s:DiffWithSaved()

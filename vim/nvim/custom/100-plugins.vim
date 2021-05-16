@@ -8,7 +8,7 @@
 " /***********************************************/
 
 "
-call plug#begin('$HOME/.local/share/nvim/plug')
+call plug#begin('$XDG_DATA_HOME/nvim-plug')
 
 "New for chuan {{{1
 " ------------------------------------------------------------------------------
@@ -71,8 +71,6 @@ Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'
 Plug 'tpope/vim-surround'
 Plug 'unblevable/quick-scope'
-
-
 " Align text
 Plug 'godlygeek/tabular'
 Plug 'junegunn/vim-easy-align'
@@ -83,11 +81,10 @@ Plug 'preservim/tagbar'
 " Not working
 "Plug 'matt-snider/vim-tagquery', { 'do': 'bash install.sh' }
 
-
 " Markdown
 " Plug 'jtratner/vim-flavored-markdown'
 " Plug 'godlygeek/tabular' " Required by vim-markdown
-Plug 'plasticboy/vim-markdown'
+" Plug 'plasticboy/vim-markdown'
 
 " Languages/Filetypes {{{2
 " ------------------------------------------------------------------------------
@@ -102,6 +99,8 @@ Plug 'keith/swift.vim'
 Plug 'leafgarland/typescript-vim'
 Plug 'mattn/emmet-vim'
 Plug 'pangloss/vim-javascript'
+Plug 'pedrohdz/vim-yaml-folds'
+Plug 'pseewald/vim-anyfold'
 Plug 'rust-lang/rust.vim'
 Plug 'seeamkhan/robotframework-vim'
 Plug 'tfnico/vim-gradle'

@@ -1,7 +1,6 @@
 " terminal color / italics finagling
 let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
-set termguicolors
 
 let g:colorscheme_mode = v:null
 
@@ -10,7 +9,7 @@ let g:colorscheme_mode = v:null
 augroup ColorSchemeMods
   autocmd!
   autocmd ColorScheme *
-        \ highlight Comment cterm=italic
+        \ highlight Comment cterm=italic gui=italic
 augroup END
 
 " Dark {{{1
@@ -31,6 +30,9 @@ function! s:DarkMode() abort
 
   colorscheme dracula
   let g:airline_theme='dracula'
+
+  " Set syntax on to avoid weird color
+  "syntax on
 
 endfunction
 command! DarkMode call s:DarkMode()
@@ -54,6 +56,7 @@ function! s:LightMode() abort
   " colorscheme onehalflight
   " let g:airline_theme='onehalflight'
 
+  " Set syntax on to avoid weird color
 endfunction
 command! LightMode call s:LightMode()
 
@@ -64,8 +67,7 @@ function! s:ToggleColorschemeMode() abort
   else
     call s:DarkMode()
   endif
-  " Set syntax on to avoid weird color
-  syntax on
+syntax enable               " Enable syntax highlighting
 endfunction
 command! ToggleColorschemeMode call s:ToggleColorschemeMode()
 nnoremap <leader>M :ToggleColorschemeMode<CR>
@@ -73,3 +75,8 @@ nnoremap <leader>M :ToggleColorschemeMode<CR>
 " Start in dark mode
 call s:DarkMode()
 
+
+set termguicolors
+
+syntax enable               " Enable syntax highlighting
+syntax on                   " syntax for a lot of stuff

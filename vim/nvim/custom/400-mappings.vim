@@ -328,7 +328,7 @@ nnoremap <Space>ep :e!   ~/.config/vim/custom/100-plugins.vim<CR>
 nnoremap <Space>ef :e!   ~/.config/vim/custom/300-filetypes.vim<CR>
 nnoremap <Space>eP :e!   ~/.config/vim/custom/500-plugins-config.vim<CR>
 nnoremap <Space>em :e!   ~/.config/vim/custom/400-mappings.vim<CR>
-nnoremap <Space>er :e!   ~/.config/vim/custom/999-random.vim<CR>
+nnoremap <Space>er :e!   ~/.config/vim/custom/999-playground.vim<CR>
 nnoremap <Space>ev :e!   ~/.config/vim/vimrc<CR>
 nnoremap <Space>et :e!   ~/vimwiki/TODO.md<CR>
 " nnoremap <silent><buffer> <C-j> i<CR><Esc>

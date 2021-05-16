@@ -14,9 +14,6 @@
 filetype indent on          " Enable filetype plugins
 filetype plugin on          " Enable filetype plugins
 
-syntax enable               " Enable syntax highlighting
-syntax on                   " Used by vimwiki
-
 set autoread                    " Set to auto read when a file is changed from the outside
 set clipboard+=unnamed          " use system clipboard
 set cmdheight=1                 " Give more space for displaying messages.
@@ -192,5 +189,4 @@ if has('persistent_undo')
   set undodir=~/.vim_runtime/temp_dirs/undodir
   set undofile
 endif
-
 

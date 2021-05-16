@@ -773,6 +773,16 @@ nmap <Space>9 <Plug>AirlineSelectTab9
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => anyfold {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plug 'pseewald/vim-anyfold'
+
+" autocmd Filetype * AnyFoldActivate               " activate for all filetypes
+" or
+" autocmd Filetype <your-filetype> AnyFoldActivate " activate for a specific filetype
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " => auto-pairs {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
@@ -1416,19 +1426,19 @@ endfunction
 " autocmd! User GoyoEnter Limelight
 " autocmd! User GoyoLeave Limelight!
 
-" Color name (:help cterm-colors) or ANSI code
-let g:limelight_conceal_ctermfg = 'gray'
-let g:limelight_conceal_ctermfg = 240
+" " Color name (:help cterm-colors) or ANSI code
+" let g:limelight_conceal_ctermfg = 'gray'
+" let g:limelight_conceal_ctermfg = 240
 
-" Color name (:help gui-colors) or RGB color
-let g:limelight_conceal_guifg = 'DarkGray'
-let g:limelight_conceal_guifg = '#777777'
+" " Color name (:help gui-colors) or RGB color
+" let g:limelight_conceal_guifg = 'DarkGray'
+" let g:limelight_conceal_guifg = '#777777'
 
 " Default: 0.5
-let g:limelight_default_coefficient = 0.7
+let g:limelight_default_coefficient = 0.5
 
 " Number of preceding/following paragraphs to include (default: 0)
-let g:limelight_paragraph_span = 1
+let g:limelight_paragraph_span = 0
 
 " Beginning/end of paragraph
 "   When there's no empty line between the paragraphs
@@ -1460,7 +1470,7 @@ function! s:goyo_enter()
   set noshowmode
   set noshowcmd
   set scrolloff=999
-  " Limelight
+  Limelight
   " ...
 endfunction
 
@@ -1473,7 +1483,7 @@ function! s:goyo_leave()
   set showcmd
   set scrolloff=15
   syntax on
-  " Limelight!
+  Limelight!
   " ...
 endfunction
 
@@ -1611,7 +1621,11 @@ let g:startify_custom_header = [
 let g:startify_files_number = 5
 let g:startify_enable_special = 0
 let g:startify_session_persistence = 1
-let g:startify_bookmarks = [{'n': '~/.config/vim/nvimrc'}, {'z': '~/.config/zsh/zshrc'}]
+let g:startify_bookmarks = [{'n': '~/.config/vim/nvimrc'},
+      \ {'z': '~/.config/zsh/zshrc'},
+      \ {'a': '~/.config/alacritty/alacritty.yml'},
+      \ {'t': '~/.tmux.conf'}
+      \]
 
 
 let g:startify_session_before_save = [ 'silent! tabdo NERDTreeClose' ]
@@ -1620,7 +1634,7 @@ let g:startify_session_before_save = [ 'silent! tabdo NERDTreeClose' ]
 let g:startify_lists = [
       \ { 'type': 'files',     'header': ['   MRU']            },
       \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
-      \ { 'type': 'sessions',  'header': ['   Sessions'], 'indices': ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']},
+      \ { 'type': 'sessions',  'header': ['   Sessions'], 'indices': ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']},
       \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
       \ { 'type': 'commands',  'header': ['   Commands']       },
       \ ]
@@ -1870,22 +1884,15 @@ let g:tmux_navigator_disable_when_zoomed = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vimwiki {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" let g:vimwiki_list = [{'path': '~/vimwiki', 'path_html': '~/vimwiki/html'}]
-" let g:vimwiki_list = [{'path': '~/vimwiki/',
-"       \ 'path_html': '~/vimwiki/html',
-"       \ 'syntax': 'markdown', 'ext': '.md'}]
-
 let g:automatic_nested_syntaxes=1
 let g:vimwiki_auto_header=1
 let g:vimwiki_conceal_pre=1
 let g:vimwiki_conceallevel=3
-let g:vimwiki_folding = 'custom'
-let g:vimwiki_folding = 'list'
 let g:vimwiki_url_maxsave=15
 
 " :VimwikiToggleListItem
+" Wiki Mapping {{{2
 " Disable lists later after I familiar with vimwiki
-"   'all_maps': 0,
 let g:vimwiki_key_mappings =
       \ {
       \   'all_maps': 0,
@@ -1900,6 +1907,7 @@ let g:vimwiki_key_mappings =
       \   'mouse': 0,
     \ }
 
+" Wiki Config {{{2
 let mainWiki = {
 	\ 'path': '~/vimwiki',
 	\ 'template_path': '~/vimwiki/templates/',
@@ -1912,19 +1920,20 @@ let mainWiki = {
 let mainWiki.nested_syntaxes = {
 	  \ 'c++': 'cpp',
           \ 'bash': 'sh',
+          \ 'diff': 'diff',
           \ 'elixir': 'elixir',
           \ 'javascript': 'javascript',
           \ 'python': 'python',
           \ 'ruby': 'ruby',
           \ 'sh': 'sh',
-          \ 'shell': 'sh',
           \ 'tmux': 'tmux',
-          \ 'vi': 'vim',
           \ 'vim': 'vim',
           \ 'yaml': 'yaml',
           \ 'zsh': 'zsh'}
 
 let g:vimwiki_list = [mainWiki]
+
+" CreateSkeletonDiaryEntry WIP {{{2
 function! CreateSkeletonDiaryEntry() abort
   if line('$') == 1 && getline(1) == ''
     read !cat ~/Sync/vimwiki/diary/template.wiki
@@ -1936,18 +1945,18 @@ function! CreateSkeletonDiaryEntry() abort
   endif
 endfunction
 
-augroup CustomVimwikiMappings
-  autocmd!
-  " Use my own mappings for increment/decrement header level, ( and ) instead of
-  " - and =. This is because I have my own - mapping that I use to open the
-  "   current directory in defx.
-  autocmd FileType vimwiki nmap ( <Plug>VimwikiRemoveHeaderLevel
-  autocmd FileType vimwiki nmap ) <Plug>VimwikiAddHeaderLevel
-
-  " This adds some functionality that vimwiki is missing: if there is no diary
-  " entry for today yet, it creates a skeleton from a template.
-  autocmd BufEnter *vimwiki/diary/*.wiki call CreateSkeletonDiaryEntry()
-augroup end
+" augroup CustomVimwikiMappings
+"   autocmd!
+"   " Use my own mappings for increment/decrement header level, ( and ) instead of
+"   " - and =. This is because I have my own - mapping that I use to open the
+"   "   current directory in defx.
+"   autocmd FileType vimwiki nmap ( <Plug>VimwikiRemoveHeaderLevel
+"   autocmd FileType vimwiki nmap ) <Plug>VimwikiAddHeaderLevel
+"
+"   " This adds some functionality that vimwiki is missing: if there is no diary
+"   " entry for today yet, it creates a skeleton from a template.
+"   autocmd BufEnter *vimwiki/diary/*.wiki call CreateSkeletonDiaryEntry()
+" augroup end
 
 " I don't use the diary.wiki diary index page. I prefer to use defx to browse
 " the directory of diary entries. So, I'm remapping the keybinding that would
@@ -1959,26 +1968,11 @@ augroup end
 " has its own ,wt mapping, but I never use it (it opens the wiki index page in a
 " tab, and I don't really use tabs).
 " nmap <leader>wt <Plug>VimwikiMakeDiaryNote
+"
+" Wiki folding {{{2
+let g:vimwiki_folding = 'custom'
+" let g:vimwiki_folding = 'list'
 
-function! VimwikiFoldLevelCustom(lnum)
-  let pounds = strlen(matchstr(getline(a:lnum), '^#\+'))
-  if (pounds)
-    return '>' . pounds  " start a fold level
-  endif
-  if getline(a:lnum) =~? '\v^\s*$'
-    if (strlen(matchstr(getline(a:lnum + 1), '^#\+')))
-      return '-1' " don't fold last blank line before header
-    endif
-  endif
-  return '=' " return previous fold level
-endfunction
-
-
-augroup VimrcAuGroup
-  autocmd!
-  autocmd FileType vimwiki setlocal foldmethod=expr |
-	\ setlocal foldenable | set foldexpr=VimwikiFoldLevelCustom(v:lnum)
-augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " vim-markdown
