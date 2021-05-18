@@ -51,12 +51,6 @@ window:
   # Spread additional padding evenly around the terminal content.
   dynamic_padding: true
 
-  # Window decorations
-  #
-  # Values for `decorations`:
-  #     - full: Borders and title bar
-  #     - none: Neither borders nor title bar
-  #
   # Values for `decorations` (macOS only):
   #     - transparent: Title bar, transparent background and title bar buttons
   #     - buttonless: Title bar, transparent background and no title bar buttons
@@ -127,14 +121,14 @@ font:
     style: Bold Italic
 
   # Point size
-  size: 19.0
+  size: 15.0
 
   # Offset is the extra space around each character. `offset.y` can be thought
   # of as modifying the line spacing, and `offset.x` as modifying the letter
   # spacing.
   offset:
     x: 0
-    y: 0
+    y: -2
 
   # Glyph offset determines the locations of the glyphs within their cells with
   # the default being at the bottom. Increasing `x` moves the glyph to the
@@ -150,14 +144,13 @@ font:
   use_thin_strokes: true
 
 
-# Colors (Dracula)
-# Source: https://github.com/eendroroy/alacritty-theme/blob/master/themes/darcula.yaml
 colors:
-  # Default colors
+
+  # Colors (Dracula)
+  # Source: https://github.com/eendroroy/alacritty-theme/blob/master/themes/darcula.yaml
   primary:
     background: '0x282a36'
     foreground: '0xf8f8f2'
-  # Normal colors
   normal:
     black:   '0x000000'
     red:     '0xff5555'
@@ -167,10 +160,9 @@ colors:
     magenta: '0xff79c6'
     cyan:    '0x8be9fd'
     white:   '0xbfbfbf'
-  # Bright colors
   bright:
     black:   '0x282a35'
-    # Update black so it is visiable. (auto suggestion)
+    # Updated black so it is visiable. (auto suggestion)
     black:   '0x444b6a'
     red:     '0xff6e67'
     green:   '0x5af78e'
@@ -181,77 +173,62 @@ colors:
     white:   '0xe6e6e6'
 
 
-# # Colors (Tokyo Night){{{
-# # Source: https://github.com/zatchheems/tokyo-night-alacritty-theme}}}
-# colors:
-#   # Default colors
-#   primary:
-#     background: '0x1a1b26'
-#     foreground: '0xa9b1d6'
-#   # Normal colors
-#   normal:
-#     black:   '0x32344a'
-#     red:     '0xf7768e'
-#     green:   '0x9ece6a'
-#     yellow:  '0xe0af68'
-#     blue:    '0x7aa2f7'
-#     magenta: '0xad8ee6'
-#     cyan:    '0x449dab'
-#     white:   '0x787c99'
-#   # Bright colors
-#   bright:
-#     black:   '0x444b6a'
-#     red:     '0xff7a93'
-#     green:   '0xb9f27c'
-#     yellow:  '0xff9e64'
-#     blue:    '0x7da6ff'
-#     magenta: '0xbb9af7'
-#     cyan:    '0x0db9d7'
-#     white:   '0xacb0d0'
-
-# # Colors (Tokyo Night: Storm variant)
-# # Source: https://github.com/zatchheems/tokyo-night-alacritty-theme
-# colors:
-#   # Default colors
-#   primary:
-#     background: '0x24283b'
-#     foreground: '0xa9b1d6'
-#   # Normal colors
-#   normal:
-#     black:   '0x32344a'
-#     red:     '0xf7768e'
-#     green:   '0x9ece6a'
-#     yellow:  '0xe0af68'
-#     blue:    '0x7aa2f7'
-#     magenta: '0xad8ee6'
-#     cyan:    '0x449dab'
-#     white:   '0x9699a8'
-#   # Bright colors
-#   bright:
-#     black:   '0x444b6a'
-#     red:     '0xff7a93'
-#     green:   '0xb9f27c'
-#     yellow:  '0xff9e64'
-#     blue:    '0x7da6ff'
-#     magenta: '0xbb9af7'
-#     cyan:    '0x0db9d7'
-#     white:   '0xacb0d0'
-
-# Colors (Tomorrow Night)
-# colors:
-  # Default colors
+  # # Colors (Tokyo Night)
+  # # Colors (Tokyo Night)
+  # # Source: https://github.com/zatchheems/tokyo-night-alacritty-theme
   # primary:
-  #   background: '#1d1f21'
-  #   foreground: '#c5c8c6'
+  #   background: '0x1a1b26'
+  #   foreground: '0xa9b1d6'
+  # normal:
+  #   black:   '0x32344a'
+  #   red:     '0xf7768e'
+  #   green:   '0x9ece6a'
+  #   yellow:  '0xe0af68'
+  #   blue:    '0x7aa2f7'
+  #   magenta: '0xad8ee6'
+  #   cyan:    '0x449dab'
+  #   white:   '0x787c99'
+  # bright:
+  #   black:   '0x444b6a'
+  #   red:     '0xff7a93'
+  #   green:   '0xb9f27c'
+  #   yellow:  '0xff9e64'
+  #   blue:    '0x7da6ff'
+  #   magenta: '0xbb9af7'
+  #   cyan:    '0x0db9d7'
+  #   white:   '0xacb0d0'
 
-    # Bright and dim foreground colors
-    #
-    # The dimmed foreground color is calculated automatically if it is not
-    # present. If the bright foreground color is not set, or
-    # `draw_bold_text_with_bright_colors` is `false`, the normal foreground
-    # color will be used.
-    #dim_foreground: '#828482'
-    #bright_foreground: '#eaeaea'
+  # # Colors (Tokyo Night: Storm variant)
+  # # Source: https://github.com/zatchheems/tokyo-night-alacritty-theme
+  # # Default colors
+  # primary:
+  #   background: '0x24283b'
+  #   foreground: '0xa9b1d6'
+  # # Normal colors
+  # normal:
+  #   black:   '0x32344a'
+  #   red:     '0xf7768e'
+  #   green:   '0x9ece6a'
+  #   yellow:  '0xe0af68'
+  #   blue:    '0x7aa2f7'
+  #   magenta: '0xad8ee6'
+  #   cyan:    '0x449dab'
+  #   white:   '0x9699a8'
+  # # Bright colors
+  # bright:
+  #   black:   '0x444b6a'
+  #   red:     '0xff7a93'
+  #   green:   '0xb9f27c'
+  #   yellow:  '0xff9e64'
+  #   blue:    '0x7da6ff'
+  #   magenta: '0xbb9af7'
+  #   cyan:    '0x0db9d7'
+  #   white:   '0xacb0d0'
+
+  cursor:
+    text: CellBackground
+    cursor: CellForeground
+
 
   # Cursor colors
   #
@@ -259,9 +236,6 @@ colors:
   #
   # Allowed values are CellForeground/CellBackground, which reference the
   # affected cell, or hexadecimal colors like #ff00ff.
-  # cursor:
-  #   text: CellBackground
-  #   cursor: CellForeground
 
   # Vi mode cursor colors
   #
@@ -870,7 +844,9 @@ key_bindings:
 
   # Full Screen
   - { key: F,              mods: Command|Control,            action: ToggleFullscreen      }
-  - { key: Return,         mods: Command,                    action: ToggleFullscreen      }
+  - { key: Return,         mods: Command,                    action: ToggleSimpleFullscreen}
+    # Remap Control-space
+  - { key: Space,          mods: Control,                    chars: "\x00"                 }
 
   # Iterm Style Tmux Panel management, Tmux prefix: ^\
 
