@@ -256,6 +256,7 @@
     .shorten_folder_marker
     .svn
     .terraform
+    pom.xml
     CVS
     Cargo.toml
     composer.json
@@ -1537,7 +1538,7 @@
   #   - verbose: Enable instant prompt and print a warning when detecting console output during
   #              zsh initialization. Choose this if you've never tried instant prompt, haven't
   #              seen the warning, or if you are unsure what this all means.
-  typeset -g POWERLEVEL9K_INSTANT_PROMPT=verbose
+  typeset -g POWERLEVEL9K_INSTANT_PROMPT=quiet
 
   # Hot reload allows you to change POWERLEVEL9K options after Powerlevel10k has been initialized.
   # For example, you can type POWERLEVEL9K_BACKGROUND=red and see your prompt turn red. Hot reload
@@ -1555,6 +1556,10 @@
 function p10k-on-pre-prompt() {
   # Show empty line if it's the first prompt in the TTY.
   [[ $P9K_TTY == old ]] && p10k display 'empty_line'=show
+
+  mlog $P9k_TTY
+  mlog "P10k"
+
   # Show the first prompt line.
   p10k display '1|*/left_frame'=show \
     '1/right/powerversion'=show \
@@ -1568,6 +1573,7 @@ function p10k-on-pre-prompt() {
     'empty_line|2|*/left_frame'=show \
     '3/right_frame'=show \
     '3/left_frame'=show
+
 }
 
 function p10k-on-post-prompt() {
@@ -1585,6 +1591,7 @@ function p10k-on-post-prompt() {
 
   fi
 
+  # My manual environment update hook
   if (( P9K_COMMAND_DURATION_SECONDS >= _POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD )); then
     second_line_show=show
     show_last_command_timelapse=show
@@ -1609,6 +1616,7 @@ function p10k-on-post-prompt() {
     '2/right_frame'=hide \
     '3/right_frame'=hide \
     '3/left_frame'=hide
+
 }
 
 # Tell `p10k configure` which file it should overwrite.
