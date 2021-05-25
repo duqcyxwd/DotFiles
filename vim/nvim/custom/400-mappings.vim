@@ -68,6 +68,10 @@ nnoremap <Space>bb :Buffers<CR>
 let which_key_map_space.b.h = "home"
 nnoremap <Space>bh :Startify<CR>
 
+let which_key_map_space.b.c = ":BufOnly Close other buffers"
+nnoremap <Space>bc :BufOnly<CR>
+nnoremap <Space>bC :BufOnly<CR>
+
 " [SpaceMapping] f+: File/Format {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.f.s = "Save current file"
@@ -93,24 +97,47 @@ nnoremap <Space>ft :call StripWhitespace()<CR>
 
 " [SpaceMapping] g+: Git/Go {{{1
 " ------------------------------------------------------------------------------
-let which_key_map_space.g.M = "WIP Vimagit"
-let g:magit_show_magit_mapping='<Space>gM'
 
-let which_key_map_space.g.b = "Git Blame"
+let which_key_map_space.g = {
+      \ 'name': '+git',
+      \ 'A': 'git add --all',
+      \ 'b': 'git blame',
+      \ 'c': 'git commit',
+      \ 'd': 'git diff',
+      \ 'h': 'git history (GV)',
+      \ 'l': 'git open link (GBrwose)',
+      \ 'm': '[WIP]Vimagit',
+      \ 'o': 'git open ** under cursor',
+      \ 'p': 'git gina Patch',
+      \ 'P': 'git push',
+      \ 's': 'git status',
+      \ 'S': 'Search ** in Github',
+      \ 'v': 'browse git commits',
+      \ }
+
+      " \ 'g': 'git grep',
+      " \ 'i': 'git init',
+      " \ 'd': 'git diff',
+      " \ 's': 'git status',
+
+" let g:magit_show_magit_mapping='<Space>gM'
+nnoremap <Space>gA :Git add --all<CR>
+nnoremap <Space>gm :MagitOnly<CR>
 nnoremap <Space>gb :Gblame<CR>
+nnoremap <Space>gd :Gdiffsplit<CR>
+nnoremap <Space>gc :Git commit<CR>
+nnoremap <Space>gs :Gina status<CR>
+nnoremap <Space>gP :Gina push<CR>
 
-let which_key_map_space.g.l = "Git Open Link (GBrwose)"
+
 nnoremap <Space>gl :GBrowse<CR>
-let which_key_map_space.g.h = "Git history (GV)"
 nnoremap <Space>gh :GV<CR>
 
-let which_key_map_space.g.o = "Open ** under cursor"
 nmap <Space>go <Plug>(openbrowser-smart-search)
 vmap <Space>go <Plug>(openbrowser-smart-search)
 
-let which_key_map_space.g.o = "Search ** in Github"
-nmap <Space>gs :OpenBrowserSmartSearch -github <c-r><c-w><CR>
-vmap <Space>gs y:OpenBrowserSmartSearch -github <c-r>0<CR>
+nmap <Space>gS :OpenBrowserSmartSearch -github <c-r><c-w><CR>
+vmap <Space>gS y:OpenBrowserSmartSearch -github <c-r>0<CR>
 
 
 " [SpaceMapping] h+: Help {{{1
@@ -229,8 +256,6 @@ let which_key_map_space.t.f.c = "Toggle Fold Column"
 nnoremap <Space>tfc :call ToggleFoldColumn()<CR>
 
 
-
-
 nmap \s :call LoopFoldMethod()<CR>
 
 " [SpaceMapping] w+: Window {{{1
@@ -241,6 +266,7 @@ nnoremap <Space>wc :call undoquit#SaveWindowQuitHistory()<CR>:close<CR>
 
 let which_key_map_space.w.C = "Window Close all except current one"
 nnoremap <Space>wC :call undoquit#SaveWindowQuitHistory()<CR>:only<CR>
+" wo is used by wiki open
 " nnoremap <Space>wo :call undoquit#SaveWindowQuitHistory()<CR>:only<CR>
 
 let which_key_map_space.w.h = "Window Hide"
@@ -334,7 +360,6 @@ nnoremap <Space>et :e!   ~/vimwiki/TODO.md<CR>
 " nnoremap <silent><buffer> <C-j> i<CR><Esc>
 " unmap <C-j>
 " nunmap <C-j>
-" nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
 
 nnoremap gj <C-W>j
 nnoremap gk <C-W>k
