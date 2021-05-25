@@ -66,6 +66,9 @@ set textwidth=80          " 80 chars <Space>tt to toggle it
 set textwidth=80          " 80 chars or die
 set nowrap                " Wrap lines
 
+set foldlevel=2           " Set to 0 fold all by default
+set foldlevelstart=1      " Set the start fold level
+
 
 " Edit
 set backspace=eol,start,indent " Configure backspace so it acts as it should act
