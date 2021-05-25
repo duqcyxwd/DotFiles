@@ -1501,6 +1501,11 @@ let g:neoterm_autoscroll = 1
 let g:neoterm_keep_term_open = 1
 let g:neoterm_autoinsert = 1
 
+augroup neoterm
+  autocmd!
+  au TermEnter * set scrolloff=0
+augroup END
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => open-browser {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
