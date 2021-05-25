@@ -20,7 +20,7 @@ set cmdheight=1                 " Give more space for displaying messages.
 set cursorline                  " highlights line numbers (vim-airline-colornum)
 set encoding=utf8               " Set utf8 as standard encoding
 set ffs=unix,dos,mac            " Use Unix as the standard file type
-set foldcolumn=0                " Disable fold column by default, <Space>tc to enable it
+set foldcolumn=0                " Disable fold column by default, <Space>tfc to enable it
 set foldmethod=marker           " Use braces by default
 set hidden                      " A buffer becomes hidden when it is abandoned
 set history=700                 " Sets how many lines of history VIM has to remember
@@ -118,7 +118,7 @@ augroup END
 " Save last session using startify
 augroup save_last_session
   autocmd!
-  autocmd VimLeave * SSave! last-open-session
+  autocmd VimLeave * SSave! last-open-session | echom 'Save last session'
 augroup END
 
 " Return to last edit position when opening files (You want this!)
