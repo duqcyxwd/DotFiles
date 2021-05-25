@@ -134,11 +134,12 @@ function! ToggleFoldColumn()
   if &foldcolumn == 3
     set foldcolumn=0
   else
-    set foldcolumn=3
+    set foldcolumn=5
   endif
 endfunction
 
-let s:foldMethodList = ['manual', 'indent', 'expr', 'marker', 'syntax', 'diff']
+" let s:foldMethodList = ['manual', 'indent', 'expr', 'marker', 'syntax', 'diff']
+let s:foldMethodList = ['indent', 'expr', 'marker', 'syntax']
 let s:foldLength=len(s:foldMethodList)
 
 let s:foldMethod = 0

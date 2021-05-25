@@ -180,6 +180,8 @@ augroup clojure_and_hoplon
   autocmd BufNewFile,BufRead  *.cljs.hl,*.boot set filetype=clojure
   autocmd BufNewFile,BufRead  *.html.hl        set filetype=html
 
+  autocmd FileType clojure setlocal foldmethod=indent
+
   " Lookup the tag under cursor, accounting for ns
   autocmd FileType clojure
         \ nnoremap <buffer> <C-]>
