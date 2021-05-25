@@ -48,6 +48,18 @@ Plug 'tpope/vim-fireplace'
 Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
 Plug 'luochen1990/rainbow'
 
+" VimWiki with Markdown {{{2
+" ------------------------------------------------------------------------------
+Plug 'vimwiki/vimwiki'
+Plug 'preservim/tagbar'
+
+" Markdown
+" Plug 'jtratner/vim-flavored-markdown'
+Plug 'plasticboy/vim-markdown'
+" I just need one for folding
+" Plug 'rlue/vim-getting-things-down'
+Plug 'masukomi/vim-markdown-folding'
+
 " Editor enhancements {{{2
 " ------------------------------------------------------------------------------
 
@@ -75,16 +87,8 @@ Plug 'unblevable/quick-scope'
 Plug 'godlygeek/tabular'
 Plug 'junegunn/vim-easy-align'
 
-" VimWiki
-Plug 'vimwiki/vimwiki'
-Plug 'preservim/tagbar'
-" Not working
-"Plug 'matt-snider/vim-tagquery', { 'do': 'bash install.sh' }
 
-" Markdown
-" Plug 'jtratner/vim-flavored-markdown'
-" Plug 'godlygeek/tabular' " Required by vim-markdown
-" Plug 'plasticboy/vim-markdown'
+Plug 'pseewald/vim-anyfold'
 
 " Languages/Filetypes {{{2
 " ------------------------------------------------------------------------------
@@ -95,12 +99,10 @@ Plug 'cespare/vim-toml'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'evedovelli/rst-robotframework-syntax-vim'
 Plug 'kchmck/vim-coffee-script'
-Plug 'keith/swift.vim'
 Plug 'leafgarland/typescript-vim'
 Plug 'mattn/emmet-vim'
 Plug 'pangloss/vim-javascript'
 Plug 'pedrohdz/vim-yaml-folds'
-Plug 'pseewald/vim-anyfold'
 Plug 'rust-lang/rust.vim'
 Plug 'seeamkhan/robotframework-vim'
 Plug 'tfnico/vim-gradle'
@@ -118,10 +120,8 @@ Plug 'junegunn/goyo.vim'
 Plug 'junegunn/gv.vim'
 Plug 'mattn/vim-findroot'
 Plug 'mhinz/vim-startify'
-Plug 'shumphrey/fugitive-gitlab.vim'
 Plug 'szw/vim-dict'
 Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-fugitive'
 Plug 'tyru/open-browser.vim'
 
 " WIP {{{2
