@@ -209,49 +209,6 @@ let g:elm_format_autosave = 0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => gina {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:gina#action#index#discard_directories = 1
-
-" nnoremap <leader>g<space> :Gina<space>
-" nnoremap <leader>gA :Gina add --all<CR>:Gina status<CR>
-" this one actually comes from fugitive because I like its output better than
-" :Gina blame. Putting it here so that I don't have to look in two places for
-" all my git-related keybindings.
-" nnoremap <leader>gb :Git blame<CR>
-" nnoremap <leader>gc :Gina commit -v<CR>gg0i
-" nnoremap <leader>gd :Gina diff<CR>
-" nnoremap <leader>gD :Gina diff -w<CR>
-" nnoremap <leader>gg :Gina grep<space>
-" nnoremap <leader>gi :Gina init<CR>
-" nnoremap <leader>gl :Gina log --graph --pretty=format:"%C(yellow)%h %ad%Cred%d %Creset%s%Cblue [%cn]" --decorate --all --date=short<CR><CR>
-" nnoremap <leader>gp :Gina push<CR>
-" nnoremap <leader>gs :Gina status<CR>
-" nnoremap <leader>gS :Gina show<CR>
-
-" press q to close gina buffers
-augroup gina_buffers
-  autocmd!
-  autocmd BufEnter gina://* nnoremap <buffer> q :bd<CR>
-augroup END
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => gitgutter {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:gitgutter_map_keys = 0
-
-" Update gitgutter on BufEnter instead of on FocusGained. Another approach would
-" be to get vim/tmux focus events working, however I've observed issues with
-" gitgutter not updating even while I'm staying inside Vim, e.g. after making a
-" commit via `:Gina commit`, so reacting to BufEnter seems like a better way to
-" get this working the way I want it to work.
-"
-" ref: https://github.com/airblade/vim-gitgutter#when-signs-dont-update-after-focusing-vim
-let g:gitgutter_terminal_reports_focus=0
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => go {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:go_highlight_functions = 1
@@ -613,83 +570,6 @@ set grepprg=/bin/grep\ -nH
 
 
 """"""""""""""""""""""""""""""
-" => vimux {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Prompt for a command to be run in a 20% lower tmux split, without losing
-" focus on vim :)
-" nnoremap <leader>vp :VimuxPromptCommand<CR>
-" nnoremap <leader>v<space> :VimuxPromptCommand<CR>
-
-" Opens a shell in the split.
-" nnoremap <leader>vo :call VimuxOpenRunner()<CR>
-
-" Re-run the last command.
-" nnoremap <leader>vv :VimuxRunLastCommand<CR>
-
-" Interrupt whatever process is running in the runner pane.
-" nnoremap <leader>vi :VimuxInterruptRunner<CR>
-
-" Zoom the runner pane.
-" nnoremap <leader>vz :VimuxZoomRunner<CR>
-
-" Clear the runner pane. (i.e. Ctrl-L)
-" nnoremap <leader>vc :call VimuxSendKeys("C-l")<CR>
-
-" Close vimux runner pane.
-" nnoremap <leader>vC :VimuxCloseRunner<CR>
-
-" An operator for sending text to Vimux.
-function! VimuxOperator(type, ...) abort
-  let previous = @n
-
-  " yank target/selected text into "n
-  if a:type ==# 'char' || a:type ==# 'line'
-    silent! normal `[v`]"ny
-  else "visual
-    silent! normal gv"ny
-  endif
-
-  let input = @n
-
-  " restore whatever was in "n before
-  let @n = previous
-
-  if exists('a:1')
-    let input = substitute(input, '\n', ' ', 'g')
-  endif
-
-  " if input already ends with a newline, don't send an extra newline
-  if input =~# '\n$'
-    call VimuxRunCommand(input, 0)
-  else
-    call VimuxRunCommand(input)
-  endif
-
-endfunction
-
-" nnoremap <leader>vs :set operatorfunc=VimuxOperator<cr>g@
-" nmap <leader>vss V<leader>vs
-" vnoremap <leader>vs :<c-u>call VimuxOperator(visualmode())<cr>
-" vnoremap <leader>vS :<c-u>call VimuxOperator(visualmode(), 0)<cr>
-
-function! VimuxSendBuffer(...) abort
-  let pos = winsaveview()
-  let arg = exists('a:1') ? ", 0" : ""
-  execute "normal! gg0vG$:\<c-u>call VimuxOperator(visualmode()".arg.")\<cr>"
-  call winrestview(pos)
-endfunction
-
-command! VimuxSendBuffer
-  \ call VimuxSendBuffer()
-
-" nnoremap <buffer> <leader>vf
-"   \ :call VimuxSendBuffer()<CR>
-"
-" nnoremap <buffer> <leader>vF
-"   \ :call VimuxSendBuffer(0)<CR>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vista {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Ensure you have installed some decent font to show these pretty symbols, then you can enable icon for the kind.
@@ -758,8 +638,26 @@ let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
 let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
 let g:airline#extensions#tabline#buffer_idx_mode = 1 " Show buffer index
 
-let g:airline_section_b = airline#section#create(['hunks', 'battery', 'file'])
-let g:airline_section_c = airline#section#create(['%<', 'readonly', 'coc_status', 'lsp_progress'])
+" let spc = g:airline_symbols.space
+call airline#parts#define('cust_line_col', {
+      \ 'raw': '%l/%L',
+      \ 'accent': 'bold'})
+
+call airline#parts#define('cust_line_col_nr', {
+      \ 'raw': '%l:%v/%L',
+      \ 'accent': 'bold'})
+
+let g:airline_section_b = airline#section#create(['hunks', 'file'])
+let g:airline_section_c = airline#section#create(['%<', 'readonly', 'coc_status', 'lsp_progress', 'scrollbar'])
+let g:airline_section_x = airline#section#create_right(['coc_current_function', 'bookmark', 'tagbar', 'vista', 'gutentags', 'gen_tags', 'omnisharp', 'grepper', 'filetype'])
+" let g:airline_section_z = airline#section#create(['windowswap', 'obsession', '%p%%', 'linenr', 'maxlinenr', 'colnr'])
+let g:airline_section_z = airline#section#create(['%p%% ', 'cust_line_col'])
+
+
+
+let g:airline_symbols.linenr = ''
+let g:airline_symbols.maxlinenr = ''
+let g:airline_symbols.colnr = ''
 
 nmap <Space>1 <Plug>AirlineSelectTab1
 nmap <Space>2 <Plug>AirlineSelectTab2
@@ -1419,6 +1317,49 @@ endfunction
 " - `.` to start command-line with `:Git [CURSOR] SHA` à la fugitive
 " - `q` or `gq` to close
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => gina {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:gina#action#index#discard_directories = 1
+
+" nnoremap <leader>g<space> :Gina<space>
+" nnoremap <leader>gA :Gina add --all<CR>:Gina status<CR>
+" this one actually comes from fugitive because I like its output better than
+" :Gina blame. Putting it here so that I don't have to look in two places for
+" all my git-related keybindings.
+" nnoremap <leader>gb :Git blame<CR>
+" nnoremap <leader>gc :Gina commit -v<CR>gg0i
+" nnoremap <leader>gd :Gina diff<CR>
+" nnoremap <leader>gD :Gina diff -w<CR>
+" nnoremap <leader>gg :Gina grep<space>
+" nnoremap <leader>gi :Gina init<CR>
+" nnoremap <leader>gl :Gina log --graph --pretty=format:"%C(yellow)%h %ad%Cred%d %Creset%s%Cblue [%cn]" --decorate --all --date=short<CR><CR>
+" nnoremap <leader>gp :Gina push<CR>
+" nnoremap <leader>gs :Gina status<CR>
+" nnoremap <leader>gS :Gina show<CR>
+
+" press q to close gina buffers
+augroup gina_buffers
+  autocmd!
+  autocmd BufEnter gina://* nnoremap <buffer> q :bd<CR>
+augroup END
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => gitgutter {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:gitgutter_map_keys = 0
+
+" Update gitgutter on BufEnter instead of on FocusGained. Another approach would
+" be to get vim/tmux focus events working, however I've observed issues with
+" gitgutter not updating even while I'm staying inside Vim, e.g. after making a
+" commit via `:Gina commit`, so reacting to BufEnter seems like a better way to
+" get this working the way I want it to work.
+"
+" ref: https://github.com/airblade/vim-gitgutter#when-signs-dont-update-after-focusing-vim
+let g:gitgutter_terminal_reports_focus=0
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => junegunn/limelight {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plug 'junegunn/limelight.vim'
@@ -1632,14 +1573,11 @@ let g:startify_bookmarks = [{'n': '~/.config/vim/nvimrc'},
       \ {'t': '~/.tmux.conf'}
       \]
 
-
 let g:startify_session_before_save = [ 'silent! tabdo NERDTreeClose' ]
 
-
 let g:startify_lists = [
-      \ { 'type': 'files',     'header': ['   MRU']            },
-      \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
-      \ { 'type': 'sessions',  'header': ['   Sessions'], 'indices': ['b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']},
+      \ { 'type': 'dir',       'header': ['   PWD '. getcwd()] },
+      \ { 'type': 'sessions',  'header': ['   Sessions'], 'indices': ['a' ,'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']},
       \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
       \ { 'type': 'commands',  'header': ['   Commands']       },
       \ ]
@@ -1839,6 +1777,83 @@ let g:tagquery_ctags_file = '~/vimwiki/.vimwiki_tags'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" => vimux {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Prompt for a command to be run in a 20% lower tmux split, without losing
+" focus on vim :)
+" nnoremap <leader>vp :VimuxPromptCommand<CR>
+" nnoremap <leader>v<space> :VimuxPromptCommand<CR>
+
+" Opens a shell in the split.
+nnoremap <leader>vo :call VimuxOpenRunner()<CR>
+
+" Re-run the last command.
+nnoremap <leader>vv :VimuxRunLastCommand<CR>
+
+" Interrupt whatever process is running in the runner pane.
+nnoremap <leader>vi :VimuxInterruptRunner<CR>
+
+" Zoom the runner pane.
+nnoremap <leader>vz :VimuxZoomRunner<CR>
+
+" Clear the runner pane. (i.e. Ctrl-L)
+" nnoremap <leader>vc :call VimuxSendKeys("C-l")<CR>
+
+" Close vimux runner pane.
+" nnoremap <leader>vC :VimuxCloseRunner<CR>
+
+" An operator for sending text to Vimux.
+function! VimuxOperator(type, ...) abort
+  let previous = @n
+
+  " yank target/selected text into "n
+  if a:type ==# 'char' || a:type ==# 'line'
+    silent! normal `[v`]"ny
+  else "visual
+    silent! normal gv"ny
+  endif
+
+  let input = @n
+
+  " restore whatever was in "n before
+  let @n = previous
+
+  if exists('a:1')
+    let input = substitute(input, '\n', ' ', 'g')
+  endif
+
+  " if input already ends with a newline, don't send an extra newline
+  if input =~# '\n$'
+    call VimuxRunCommand(input, 0)
+  else
+    call VimuxRunCommand(input)
+  endif
+
+endfunction
+
+nnoremap <leader>vs :set operatorfunc=VimuxOperator<cr>g@
+" nmap <leader>vss V<leader>vs
+vnoremap <leader>vs :<c-u>call VimuxOperator(visualmode())<cr>
+vnoremap <leader>vS :<c-u>call VimuxOperator(visualmode(), 0)<cr>
+
+function! VimuxSendBuffer(...) abort
+  let pos = winsaveview()
+  let arg = exists('a:1') ? ", 0" : ""
+  execute "normal! gg0vG$:\<c-u>call VimuxOperator(visualmode()".arg.")\<cr>"
+  call winrestview(pos)
+endfunction
+
+command! VimuxSendBuffer
+  \ call VimuxSendBuffer()
+
+" nnoremap <buffer> <leader>vf
+"   \ :call VimuxSendBuffer()<CR>
+"
+" nnoremap <buffer> <leader>vF
+"   \ :call VimuxSendBuffer(0)<CR>
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim-tmux {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 function! TmuxMappings()
@@ -1894,6 +1909,13 @@ let g:vimwiki_auto_header=1
 let g:vimwiki_conceal_pre=1
 let g:vimwiki_conceallevel=3
 let g:vimwiki_url_maxsave=15
+
+let g:vimwiki_menu=''
+let g:vimwiki_ext2syntax = {'.md': 'markdown'}
+let g:vimwiki_global_ext = 0
+
+
+let g:vimwiki_filetypes = ['markdown']
 
 " :VimwikiToggleListItem
 " Wiki Mapping {{{2
@@ -1979,12 +2001,10 @@ endfunction
 let g:vimwiki_folding = 'syntax'
 let g:vimwiki_folding = 'list'
 let g:vimwiki_folding = 'expr'
+let g:vimwiki_folding = ''
 
-function! s:cusVimWikiKeyMap() " {{{3
-
-  echom "cusVimWikiKeyMap"
-
-  let g:vimwiki_folding = 'list'
+function! g:CusVimWikiKeyMap() " {{{3
+  echom "CusVimWikiKeyMap"
 
   let g:which_key_map_space.w.o = "VimWiki Page open"
   call vimwiki#u#map_key('n', '<Space>wo', '<Plug>VimwikiFollowLink')
@@ -2019,7 +2039,6 @@ function! s:cusVimWikiKeyMap() " {{{3
   imap <buffer> <S-Tab> <C-d>
   " nnoremap <CR> <Plug>VimwikiFollowLink
   " xnoremap <CR> <Plug>VimwikiFollowLink
-
 endfunction
 
 function! VimwikiFoldLevelCustom(lnum) " {{{3
@@ -2093,12 +2112,7 @@ let g:which_key_group_dicts=''
 let g:which_key_floating_opts = { 'row': '0', 'col': '-10', 'height': '+0', 'width': '+10'}
 
 
-" TODO: Add description dictionaries so that it's easier to see what each key
-" mapping does. The default display is the command that's run, but that
-" isn't very readable.
-"
 " See: https://github.com/liuchengxu/vim-which-key#configuration
-"
 
 " let g:which_key_map_leader.b = {
 "       \ 'name': '+buffers',
@@ -2125,45 +2139,7 @@ let g:which_key_floating_opts = { 'row': '0', 'col': '-10', 'height': '+0', 'wid
 "       \ 'v': 'edit vimrc',
 "       \ }
 
-" NB: This doesn't work:
-"     \ '<Space>': 'enter git command',
-"
-" It seems like a special case that the author of vim-which-key didn't foresee.
-"
-" For now, I'm happy with leaving it out of the map and letting it display as:
-"
-"     SPC → Gina<space>
-let g:which_key_map_leader.g = {
-      \ 'name': '+git',
-      \ 'A': 'git add --all',
-      \ 'b': 'git blame',
-      \ 'c': 'git commit',
-      \ 'd': 'git diff',
-      \ 'D': 'git diff (ignore whitespace)',
-      \ 'g': 'git grep',
-      \ 'i': 'git init',
-      \ 'l': 'git log',
-      \ 'p': 'git push',
-      \ 's': 'git status',
-      \ 'S': 'git show',
-      \ 'v': 'browse git commits',
-      \ }
 
-let g:which_key_map_leader.j = {
-      \ 'name': '+json',
-      \ 'f': 'format JSON',
-      \ 'm': 'minify JSON',
-      \ }
-
-let g:which_key_map_leader.s = {
-      \ 'name': '+source',
-      \ 'v': 'source vimrc',
-      \ }
-
-let g:which_key_map_leader.B = {
-      \ 'name': '+bash',
-      \ 'i': 'initialize Bash script'
-      \ }
 
 """"""""""""""""""""""""""""""
 " => yaml folds {{{1
