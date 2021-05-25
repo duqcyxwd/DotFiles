@@ -74,6 +74,8 @@ set foldlevelstart=1      " Set the start fold level
 set backspace=eol,start,indent " Configure backspace so it acts as it should act
 set whichwrap+=<,>,h,l         " Allow specified keys that move the cursor left/right to move to the previous/next line
 
+set diffopt=internal,filler,vertical
+
 
 " https://stackoverflow.com/a/29787362
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
