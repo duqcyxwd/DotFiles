@@ -1,8 +1,13 @@
 #!/bin/bash
 
-git show --stat --stat-width=80 --color=always --compact-summary $@ --
+echo "Sha1: " "$@"
+
+git show --stat --stat-width=80 --color=always --compact-summary "$@" --
 echo ""
-git show --color=always --format=format:"" $@ --
+git show --color=always --format=format:"" "$@" --
+
+echo ""
+echo ""
 
 # Testing
 # git show --numstat $@

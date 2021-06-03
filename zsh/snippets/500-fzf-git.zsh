@@ -1,6 +1,8 @@
 #!/bin/sh
-#   FUNCTION: __fzf_git_config
-__fzf_git_config(){
+
+# FZF forgit stash show {{{1
+# --------------------------------------------------------------------------
+{
     # Interactive git and rewrite some helper function
     # antigen bundle 'wfxr/forgit'
 
@@ -19,27 +21,15 @@ __fzf_git_config(){
     # forgit_checkout_branch=gcb
     # load fzf default options
 
-
     FORGIT_FZF_DEFAULT_OPTS=" $FZF_DEFAULT_OPTS --height='80%' +1 "
 
     __git_pager=$(git config core.pager || echo 'cat')                           # to use diff-so-fancy
 
-    forgit::stash::show_cust() {
-      # ctrl-d for drop stash
-      forgit::inside_work_tree || return 1
-      local cmd opts
-      cmd="echo {} |cut -d: -f1 |xargs -I% fzf_preview_git_stash % |$__git_pager"
-      opts="
-          $FORGIT_FZF_DEFAULT_OPTS
-          +s +m -0 --tiebreak=index --bind=\"enter:execute($cmd)\"
-          $FORGIT_STASH_FZF_OPTS
-      "
-      git stash list | FZF_DEFAULT_OPTS="$opts" fzf --preview="$cmd"
-    }
+}
 
-
-  # FZF ALIAS {{{1
-  # --------------------------------------------------------------------------
+# FZF forgit ALIAS {{{1
+# --------------------------------------------------------------------------
+{
   alias fga='forgit::add'
   alias fgrs='forgit::restore'
   alias fgclean='forgit::clean'
@@ -54,36 +44,37 @@ __fzf_git_config(){
   alias gstsi0=forgit::stash::show
   alias gstsi=forgit::stash::show_cust
   alias grhi=forgit::reset::head
-
-    # }}}
-    # FZF: GIT COMMIT: log, git rebase/reset/revert {{{1
-  # --------------------------------------------------------------------------
-
-    # glo oneline for fzf select
-    _glo_one_line() {
-      git log --graph --color=always --format='%C(auto)%h%d %s %C(black)%C(bold)%cr' $@
-    }
-
-    __git_commit_preview_cmd="echo {} |grep -Eo '[a-f0-9]+' | head -1 |xargs -I% fzf_preview_git_commit % |$__git_pager | LESS='-R' less"
-    # __git_commit_fzf_opts=" -0" # $FZF_DEFAULT_OPTS is used by default
-    __git_commit_fzf_opts="$FZF_DEFAULT_OPTS -m -0
+}
+ # FZF: GIT COMMIT: log, git rebase/reset/revert {{{1
+# --------------------------------------------------------------------------
+  {
+    # After I updates git_commit_preview, it can also preview its parenets
+    __git_commit_preview_cmd="echo {} | sha1grep | xargs -I% git_commit_preview % |$__git_pager | LESS='-R' less"
+    __git_commit_fzf_opts="$FZF_DEFAULT_OPTS -m +s -0
     --bind=\"ctrl-space:execute($__git_commit_preview_cmd)\"
-    --bind=\"ctrl-y:execute-silent(echo {} |grep -Eo '[a-f0-9]+' | head -1 | tr -d '\\\n' | pbcopy)\"
+    --bind=\"ctrl-y:execute-silent(echo {} | sha1grep | head -1 | tr-newline | pbcopy)\"
     " # $FZF_DEFAULT_OPTS is used by default
 
-    git_log_interactive_preview(){
-      _glo_one_line $@  \
-        | FZF_DEFAULT_OPTS="$__git_commit_fzf_opts" fzf --preview="$__git_commit_preview_cmd"
+    fzf_git_commit_preview(){
+      FZF_DEFAULT_OPTS="$__git_commit_fzf_opts" fzf --preview="$__git_commit_preview_cmd" $@
     }
+    alias fgcp=fzf_git_commit_preview
+
+    # Usage: gloo | fgcp
+
+    # gloo is an alias but we should not use alias in function
+    # https://stackoverflow.com/questions/45601589/zsh-not-recognizing-alias-from-within-function
+    # It works only they are sourced in different stage
+    git_log_interactive_preview(){
+      gloo $@ | fzf_git_commit_preview
+      }
+
     # get git commit SHA1 short
     git_log_interactive_select(){
-      _glo_one_line $@  \
-        | FZF_DEFAULT_OPTS="$__git_commit_fzf_opts" fzf --preview="$__git_commit_preview_cmd" \
-        | /usr/bin/grep -Eo '[a-f0-9]{7,41}' \
+      gloo $@  \
+        | fzf_git_commit_preview \
+        | sha1grep \
         | pbcopy && pbpaste
-
-      # Disable for multi select
-      #   | tr -d '\n' \
     }
 
     git_revert_interactive() {
@@ -102,12 +93,12 @@ __fzf_git_config(){
     alias gloi=git_log_interactive_select
     alias glo=gloi
     # get git commit SHA1 long
-    alias glois='git_log_interactive_select |/usr/bin/grep -Eo "[a-f0-9]{7,41}" | xargs git show | head -1 | cut -d" " -f2'
+    alias gloil='git_log_interactive_select | sha1grep | xargs git show | head -1 | sha1grep'
 
     alias grevi=git_revert_interactive
     alias greseti=git_reset_interactive
     alias grebi=git_rebase_interactive
-
+  }
   # FZF: GIT FILES {{{1
   # --------------------------------------------------------------------------
 
@@ -125,7 +116,7 @@ __fzf_git_config(){
         --bind=\"ctrl-o:execute(echo {} | cut -d ':' -f1 | xargs fzf-exec )\"
         --bind=\"ctrl-v:execute(echo {} | agnvim_open )\"
         --bind=\"ctrl-r:execute-silent(echo {} | agnvim_remote_open )\"
-        --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1 | xargs | tr -d '\\\n' | pbcopy )\"
+        --bind=\"ctrl-y:execute-silent(echo {} | cut -d ':' -f1 | xargs | tr-newline | pbcopy )\"
         --header \"ctrl-o:fzfexec, ctrl-y:pbcopy, ctrl-r:nvim_remote, ctrl-v:nvim\"
       "
 
@@ -150,116 +141,93 @@ __fzf_git_config(){
     # gcleani -x
     alias gcleani=git_clean_interactive
 
-    # }}}3
+    # }}}1
+  # FZF: GIT stash {{{1
+    FORGIT_STASH_FZF_OPTS='
+    --bind="ctrl-d:reload(git stash drop $(cut -d: -f1 <<<{}) 1>/dev/null && git stash list)"
+    '
+
+    forgit::stash::show_cust() {
+      # ctrl-d for drop stash
+      forgit::inside_work_tree || return 1
+      local cmd opts
+      cmd="echo {} |cut -d: -f1 |xargs -I% git_stash_preview % |$__git_pager"
+      opts="
+          $FORGIT_FZF_DEFAULT_OPTS
+          +s +m -0 --tiebreak=index --bind=\"enter:execute($cmd)\"
+          $FORGIT_STASH_FZF_OPTS
+      "
+      git stash list | FZF_DEFAULT_OPTS="$opts" fzf --preview="$cmd"
+    }
+
+
   # FZF: GIT BRANCH {{{1
   # --------------------------------------------------------------------------
-
     # Git loves FZF
     # My personal git preivew scripts
 
     # A, input, B parse selection and preview, C, output
-    #
 
-    __git_branch_fzf_opts="$FORGIT_FZF_DEFAULT_OPTS -m -0
-    --bind=\"ctrl-y:execute-silent(echo {} | $__gb_clean_cmd_str | tr -d '\\\n' | pbcopy)\"
+    # branch FZF config {{{2
+    __git_branch_fzf_opts="$FORGIT_FZF_DEFAULT_OPTS -m -0 +s
+    --bind=\"ctrl-y:execute-silent(echo {} | git_branch_grep | tr-newline | pbcopy)\"
     --preview-window hidden
     --preview-window right:70%
     " # $FZF_DEFAULT_OPTS is used by default
-    # "echo {} |grep -Eo '[a-f0-9]+' | head -1 |xargs -I% fzf_preview_git_commit % |$__git_pager | LESS='-R' less"
 
-    # git branch fzf: show last commit preview (take commit)
-    __git_branch_commit_preview_cmd="xargs -I%% fzf_preview_git_commit %% |$__git_pager | LESS='-R' less"
-    # git branch fzf: history preview (take branch name)
-    __git_branch_history_preview_cmd="xargs -I$$  git log -100 --graph --color=always --format='%C(auto)%d %s %C(bold blue)<%an>%Creset %C(black)%C(bold)%cr%Creset' $$ -- | $__git_pager | LESS='-R' less"
 
-  # fzf: git branch old way {{{1
-    # Old way, can't take parameter
-    # git branch fzf: show last commit preview
-    # alias fzf_gb_commit_after_pipe='FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | cut -c3-1000 | $__git_branch_commit_preview_cmd" '
-    # alias git_branch_interactive_preview_commit="git branch --sort=-committerdate --color=always | fzf_gb_commit_after_pipe"
-
-    # git branch fzf: history preview
-    # alias fzf_gb_history_after_pipe='FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | cut -c3-1000 | $__git_branch_history_preview_cmd" '
-    # alias git_branch_interactive_preview_history="git branch --sort=-committerdate --color=always | fzf_gb_history_after_pipe"
-
-  # fzf: git branch functions {{{1
-
-    __gb_response_clean_pipe() {
-      #  Can't use alias
-      # alias -g __gb_response_clean_pipe="cut -c3-1000 | cut -f1 -d' ' | tr -d '\\\n' | pbcopy && pbpaste"
-      while read data;
-      # Support pipe
-      do;
-        # echo $data | cut -c3-1000 | cut -f1 -d' ' | tr -d '\n' | pbcopy && pbpaste
-        # echo $data | eval $__gb_clean_cmd_str | tr -d '\n' | pbcopy && pbpaste
-        # Keep \n will merges all lines
-        echo $data | eval $__gb_clean_cmd_str | pbcopy && pbpaste
-      done;
+  # fzf: git branch functions {{{2
+    __git_branch_history_preview_cmd="xargs -I$$ git log -50 --stat --graph --color=always --format='$_glog_auth_format' $$"
+    fzf_git_branch_to_history_preview(){
+      FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | git_branch_grep | $__git_branch_history_preview_cmd"  "$@" \
+        | git_branch_grep | tr-newline | pbcopy && pbpaste
     }
 
-    git_branch_interactive(){
-      gb $@ \
-        | FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | $__gb_clean_cmd_str | $__git_branch_history_preview_cmd" \
-        | __gb_response_clean_pipe
-      # This script is depending on format from gb
+    fzf_git_branch_to_commit_preview(){
+      FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | git_branch_grep | xargs -I% git_commit_preview %"  "$@" \
+        | git_branch_grep | tr-newline | pbcopy && pbpaste
     }
+    alias fgbp=fzf_git_branch_to_history_preview
+    alias fgbcp=fzf_git_branch_to_commit_preview
 
-    git_branch_interactive_preview_commit(){
-      gb $@ \
-        | FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | $__gb_clean_cmd_str | $__git_branch_commit_preview_cmd" \
-        | __gb_response_clean_pipe
-      # This script is depending on format from gb
-    }
 
-    # git branch remote + delete + by me
-    git_branch_remote_interactive_select(){
-      gbr $@ \
-        | FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | $__gb_clean_cmd_str | $__git_branch_history_preview_cmd" \
-        | __gb_response_clean_pipe
-      # This script is depending on format from gbr
-    }
+  # fzf: git branch alias {{{2
 
-    # ctrl-y not working since it is using different format
-    git_branch_remote_interactive_select_name(){
-      local __gbr2_clean_cmd_str="cut -d ' ' -f6";             # get commit SHA-1
-      local __gbr2_clean_branch_name_cmd_str="cut -d ' ' -f4"; # get branch name
+    gbi(){ gb $@ | fzf_git_branch_to_history_preview }
+    gbic(){ gb $@ | fzf_git_branch_to_commit_preview }
 
-      gbr2 $@ \
-        | FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | $__gbr2_clean_cmd_str | $__git_branch_history_preview_cmd" \
-        | eval $__gbr2_clean_branch_name_cmd_str \
+
+    # gbri2 is better when branch name is too long
+    gbri(){ gbr $@ | fzf_git_branch_to_history_preview }
+    gbri2(){ gbr2 $@ | fzf_git_branch_to_history_preview \
         | sed 's/origin\///' \
-        | tr -d '\n' \
-        | pbcopy && pbpaste
-      # This script is depending on format from gbr2
-    }
-
-  # fzf: git branch  }}}1
-
-    # Sam as function but function can take parameter
-    alias gbi=git_branch_interactive
-    alias gbic=git_branch_interactive_preview_commit
-
-    # If gbri is working, will deprecate dbri2 later
-    alias gbri=git_branch_remote_interactive_select
-    alias gbri2=git_branch_remote_interactive_select_name
+        | pbcopy && pbpaste }
 
 
     #======================== DELETE BRANCH ===============================
     # Delete branches local
-    git_branch_delete_interactive(){ git_branch_interactive $@ | xargs -n 1 git branch -d }
-    git_branch_delete_interactive_D(){ git_branch_interactive $@ | xargs -n 1 git branch -D }
+    git_branch_delete_interactive(){ gbi $@ | xargs -n 1 git branch -d }
+    git_branch_delete_interactive_D(){ gbi $@ | xargs -n 1 git branch -D }
 
     alias gbdi=git_branch_delete_interactive
     alias gbDi=git_branch_delete_interactive_D
 
 
     # Delete branches remote
-    git_branch_remote_delete_interactive(){ git_branch_remote_interactive_select $@ | xargs -n 1 git push -d origin }
+    git_branch_remote_delete_interactive(){ gbri $@ | xargs -n 1 git push -d origin }
     alias gbrdi=git_branch_remote_delete_interactive
 
     # duplicate with gbrdi, choose one
     # alias gbd_remote='ee "git push -d origin"'
     # alias gbrdi='gbd_remote $(gbri)'
+
+
+    #======================== SWITCH BRANCH ===============================
+    alias gcobi='gbi | xargs git checkout'
+    # Git branch checkout remote
+    alias gcobri="gbri | sed 's/origin\///' | xargs git checkout"
+    # Same as gcobri
+    alias gcobri2="gbri2 | xargs git checkout"
 
     #===== Branch clean up (House Clean) ======
     #
@@ -277,30 +245,9 @@ __fzf_git_config(){
     # gbdi --merged
 
 
-    #======================== SWITCH BRANCH ===============================
-    alias gcobi='git_branch_interactive | xargs git checkout'
-    # Git branch checkout remote
-    alias gcobri="git_branch_remote_interactive_select | sed 's/origin\///' | xargs git checkout"
-    # Same as gcobri
-    alias gcobri2="git_branch_remote_interactive_select_name | xargs git checkout"
-
-
     # gbr show merged branched
     # Cleanup
     # Can be replaced with gbi --merged
     # alias gbri_merged="gb_merged_remote | fzf | cut -d ' ' -f6 | cut -c8-1000"
     # alias gbri_me="gbr | grep chuan | fzf | cut -d ' ' -f6 | cut -c8-1000"
 
-  # fzf: git branch? }}}3
-
-  # Git stash
-    FORGIT_STASH_FZF_OPTS='
-    --bind="ctrl-d:reload(git stash drop $(cut -d: -f1 <<<{}) 1>/dev/null && git stash list)"
-    '
-    __git_stash_preview() {
-      git stash show --color=always --ext-diff $@
-    }
-
-
-}
-__fzf_git_config

@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# grep git branch name form branch list
+
+#   master
+# * new-coc
+#   new-vimrc
+#   testing
+
+# Test: gb |fzf| git_branch_grep
+
+# Method 1
+# sed 's/^\* /  /' "$@" | sed 's/^  //' | cut -f1 -d' '
+
+# Method 2
+sed 's/^\* /  /' "$@" | grep -Eo '[-_a-zA-Z0-9\/\.]{7,200}' | head -1
+

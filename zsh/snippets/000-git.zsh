@@ -7,6 +7,9 @@ git config --global alias.ci commit
 git config --global alias.st status
 git config --global alias.a add
 git config --global alias.root "rev-parse --show-toplevel"
+
+git config --global core.excludesfile $XDG_CONFIG_HOME/gitglobalignore
+
 # Configure git as my personal repo
 alias config-git-local="ee \"git config --local user.name 'Yongqinchuan Du' && git config --local user.email 'duqcyxwd@gmail.com'\""
 
@@ -115,23 +118,71 @@ unalias -m gloga
 unalias -m glp
 unalias -m gb
 unalias -m gbr
-# }}}
-
-
 
 # Git Alias {{{2
 # --------------------------------------------------------------------------
 __git_alias() {
 
+
+# Git Colors {{{3
+# --------------------------------------------------------------------------
+# git log pretty format
+# https://git-scm.com/docs/git-log#_pretty_formats
+
+# git branch format
+# https://git-scm.com/docs/git-for-each-ref#Documentation/git-for-each-ref.txt---formatltformatgt
+
+# A list of colr
+# I do not have an old version of git to verify that the colors other than red, blue and green are supported.
+
+# Although, one thing I noticed even with the recent versions of git (like 1.7.10 I used) is that colors other than red, green and blue need to be within parentheses (). For red, green and blue, the parentheses are optional.
+
+# So give this a try:
+
+# git log --pretty=format:"normal %C(black)black%Creset %Credred%Creset %Cgreengreen%Creset %C(Yellow)yellow%Creset %Cblueblue%Creset %C(magenta)magenta%Creset %C(cyan)cyan%Creset %C(white)white%Creset" --color=always | head -1
+# The list of colors I'm aware of at least are:
+
+# normal
+# black
+# red
+# green
+# yellow
+# blue
+# magenta
+# cyan
+# white
+
+# Better Git branch
+
+_gb_format="%(HEAD) %(align:65,left)%(color:green)%(refname:short)%(color:reset)%(end) - %(align:19,left)%(color:blue)%(authorname)%(color:reset)%(end) %(align:21,right)%(color:green italic)%(committerdate:relative)%(color:reset)%(end) %(align:18,left)%(color:white italic)%(objectname:short)%(color:reset)%(end)"
+gb() { git branch --format="$_gb_format" --sort=-committerdate --color=always $@ }
+
+# alias gbr='git branch --remote'
+_gbr_format=" %(align:0,left)%(color:yellow)%(refname:short)%(color:reset)%(end) - %(align:0,left)%(color:blue)%(authorname)%(color:reset)%(end) - %(align:0,right)(%(color:green italic)%(committerdate:relative)%(color:reset))%(end) "
+alias gbr2='git for-each-ref --sort=-committerdate refs/remotes/ --format="$_gbr_format" --color=always'
+
+
+# alias gbr="git for-each-ref --sort=-committerdate refs/remotes/ --format=\"$_gb_format\" --color=always"
+gbr() { git for-each-ref --sort=-committerdate refs/remotes/ --format="$_gb_format" --color=always $@ }
+
+# Git Others Alias {{{3
+# --------------------------------------------------------------------------
+#
 alias gopen=gitopen
 # Non interactive git log
 alias glos='git log --stat'
 
+
+# git log one line
+_glog_format="%C(green bold)%h%Creset %C(auto)%d%Creset %C(normal)%s$Creset %C(cyan)%cr"
+alias gloo='git log --graph --color=always --format="$_glog_format"'
+
 # git log with author
-alias glog="git log --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(black)%C(bold)%cr%Creset'"
+_glog_auth_format="%C(green bold)%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(cyan)%C(bold)%cr%Creset"
+alias glog="git log --graph --pretty='$_glog_auth_format'"
 
 # git log graph simple graph with stat
-alias glogs="git log --stat --graph --pretty='%Cred%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(black)%C(bold)%cr%Creset'"
+alias glogs="git log --stat --graph --pretty='%C(green bold)%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(cyan)%C(bold)%cr%Creset'"
 
 alias gke='\gitk --all $(git log -g --pretty=%h)'
 
@@ -161,33 +212,15 @@ git_checkout_branch_cust() { git checkout $@ }
 alias gcob=git_checkout_branch_cust
 
 
-_gb_format="%(HEAD) %(align:65,left)%(color:yellow)%(refname:short)%(color:reset)%(end) - %(align:19,left)%(authorname)%(end) %(align:18,left)%(color:black)%(committerdate:relative)%(color:reset)%(end) %(color:red)%(objectname:short)%(color:reset)"
-# alias gb="git branch --format=\"$_gb_format\" --sort=-committerdate --color=always"
-
-gb() {
-  git branch --format="$_gb_format" --sort=-committerdate --color=always $@
-}
-__gb_clean_cmd_str="sed 's/^\\* /  /' | sed 's/^  //' | cut -f1 -d' '"
-
-
-# alias gbr='git branch --remote'
-alias gbr2="git for-each-ref --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
-
-# alias gbr="git for-each-ref --sort=-committerdate refs/remotes/ --format=\"$_gb_format\" --color=always"
-gbr() { git for-each-ref --sort=-committerdate refs/remotes/ --format="$_gb_format" --color=always $@ }
-__gbr_clean_cmd_str=$__gb_clean_cmd_str
 alias gbrr="ee 'gbr |grep r/'"                                      # ggsup or gpsup  git create-branch -r development
 
 
 # Others
-alias gcobr='echo "Create branch and remote branch| Stop using this one, use push remote instead" & git_create_branch'
-alias gcobr2='git create-branch -r'
-
 alias gcam='git commit --amend'
 
 alias gre="ee 'git recent | head'"
 alias grec="ee 'git recent | grep -i chuan | grep -v gone'"
-alias gstau='git stash -u'
+alias gstau='git stash -u'         # git stash include untracked
 alias gstaa='echo "Tip: use gstp instead\n git stash apply" && git stash apply'
 alias gru="ee 'git remote update origin --prune'"
 
