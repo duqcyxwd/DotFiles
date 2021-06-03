@@ -3,17 +3,17 @@
 function zsh_history_bk {
   zparseopts -E r=raw
 
-  newFileName=.zsh_history-$(date +%Y-%m)
+  newFileNameYearMonth=.zsh_history-$(date +%Y-%m)
   mkdir -p ~/.zsh_history_bk
   cp $ZDOTDIR/.zsh_history ~/.zsh_history_bk/.zsh_history-$(date +%Y-%m-%d-%H)
-  cp $ZDOTDIR/.zsh_history ~/.zsh_history_bk/$newFileName
+  cp $ZDOTDIR/.zsh_history ~/.zsh_history_bk/$newFileNameYearMonth
 
   pushd ~/.zsh_history_bk 2> /dev/null 1> /dev/null
 
   if [[ -n "$raw" ]]; then
     # Raw backup, do not commit
   else
-    git add ~/.zsh_history_bk/$newFileName 2> /dev/null 1> /dev/null
+    git add ~/.zsh_history_bk/$newFileNameYearMonth 2> /dev/null 1> /dev/null
     git commit -m "[auto] zsh backup: $(date +%Y-%m-%d-%H) " 2> /dev/null 1> /dev/null
   fi
 
@@ -21,4 +21,3 @@ function zsh_history_bk {
 }
 
 zsh_history_bk $@
-
