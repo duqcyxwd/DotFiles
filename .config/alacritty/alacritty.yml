@@ -96,11 +96,6 @@ scrolling:
 
 # Font configuration
 font:
-  normal:
-    # family: "SauceCodePro Nerd Font"
-    family: "JetBrainsMono Nerd Font"
-    style: Regular
-    # style: Medium
 
     # family: "FiraCode Nerd Font"        # Need this for file icon
     # style: Retina
@@ -110,12 +105,28 @@ font:
     # 2.-> Character lift when hover in ligature build
     # I have stick with JetBrains Font which has less breaked icon
 
+  normal:
+    # family: "SauceCodePro Nerd Font"
+    family: "JetBrainsMono Nerd Font"
+    style: Regular
+
   bold:
     family: "JetBrainsMono Nerd Font"
     style: Bold
+    style: ExtraBold
+
   italic:
     family: "JetBrainsMono Nerd Font"
-    style: Italic
+    family: "JetBrains Mono"
+    # Light/Thin Italic didn't work for JetBrainsMono Nerd Font
+    # I belive this is a problem with my patched font
+    # style: Light Italic
+    # style: Italic
+    style: Light Italic
+    # style: Thin Italic
+    # style: Regular
+    # style: Bold Italic
+
   bold_italic:
     family: "JetBrainsMono Nerd Font"
     style: Bold Italic
@@ -146,24 +157,72 @@ font:
 
 colors:
 
-  # Colors (Dracula)
-  # Source: https://github.com/eendroroy/alacritty-theme/blob/master/themes/darcula.yaml
+  # # Colors (Dracula)
+  # # Source: https://github.com/eendroroy/alacritty-theme/blob/master/themes/darcula.yaml
+  # primary:
+  #   background: '0x282a36'
+  #   foreground: '0xf8f8f2'
+  # normal:
+  #   black:   '0x000000'
+  #   red:     '0xff5555'
+  #   green:   '0x50fa7b'
+  #   yellow:  '0xf1fa8c'
+  #   # Updated Yellow so it looks better
+  #   yellow:  '0xffee95'
+  #   blue:    '0xcaa9fa'
+  #   magenta: '0xff79c6'
+  #   cyan:    '0x8be9fd'
+  #   white:   '0xbfbfbf'
+  # bright:
+  #   black:   '0x282a35'
+  #   # Updated black so it is visiable. (auto suggestion)
+  #   black:   '0x444b6a'
+  #   red:     '0xff6e67'
+  #   green:   '0x5af78e'
+  #   yellow:  '0xf4f99d'
+  #   blue:    '0xcaa9fa'
+  #   magenta: '0xff92d0'
+  #   cyan:    '0x9aedfe'
+  #   white:   '0xe6e6e6'
+
+  # Colors2 (Dracula)
+  # Source: https://github.com/dracula/alacritty/blob/50afeef999f5e97543f91015ae8fb941996c326b/dracula.yml
   primary:
     background: '0x282a36'
     foreground: '0xf8f8f2'
+  cursor:
+    text: CellBackground
+    cursor: CellForeground
+  vi_mode_cursor:
+    text: CellBackground
+    cursor: CellForeground
+  search:
+    matches:
+      foreground: '0x44475a'
+      background: '0x50fa7b'
+    focused_match:
+      foreground: '0x44475a'
+      background: '0xffb86c'
+    bar:
+      background: '0x282a36'
+      foreground: '0xf8f8f2'
+  line_indicator:
+    foreground: None
+    background: None
+  selection:
+    text: CellForeground
+    background: '0x44475a'
   normal:
     black:   '0x000000'
     red:     '0xff5555'
     green:   '0x50fa7b'
     yellow:  '0xf1fa8c'
-    blue:    '0xcaa9fa'
+    blue:    '0xbd93f9'
     magenta: '0xff79c6'
     cyan:    '0x8be9fd'
     white:   '0xbfbfbf'
   bright:
-    black:   '0x282a35'
-    # Updated black so it is visiable. (auto suggestion)
-    black:   '0x444b6a'
+    black:   '0x4d4d4d'
     red:     '0xff6e67'
     green:   '0x5af78e'
     yellow:  '0xf4f99d'
@@ -171,6 +230,15 @@ colors:
     magenta: '0xff92d0'
     cyan:    '0x9aedfe'
     white:   '0xe6e6e6'
+  dim:
+    black:   '0x14151b'
+    red:     '0xff2222'
+    green:   '0x1ef956'
+    yellow:  '0xebf85b'
+    blue:    '0x4d5b86'
+    magenta: '0xff46b0'
+    cyan:    '0x59dffc'
+    white:   '0xe6e6d1'
 
 
   # # Colors (Tokyo Night)
@@ -796,13 +864,18 @@ key_bindings:
   # - { key: Key9,           mods: Command,                     chars: "\x39"              }
 
   # Iterm Style Tmux Panel management, Tmux prefix: ^a
+  # Use xxd -psd to find out chars
   - { key: T,              mods: Command,                     chars: "\x01\x6e"              }
   - { key: N,              mods: Command,                     chars: "\x01\x6e"              }
-  - { key: N,              mods: Command|Shift,               action: SpawnNewInstance     }
+  - { key: N,              mods: Command|Shift,               action: SpawnNewInstance       }
   - { key: W,              mods: Command,                     chars: "\x01\x78"              }
+  - { key: W,              mods: Command|Shift,               action: Quit                   }
   - { key: D,              mods: Command,                     chars: "\x01\x76"              }
   - { key: D,              mods: Command|Shift,               chars: "\x01\x73"              }
-  - { key: K,              mods: Command,                     chars: "\x01\x6b"              }
+# - { key: K,              mods: Command,                     chars: "\x01\x6b"              }
+  - { key: RBracket,       mods: Command,                     chars: "\x01\x6f"              }
+  - { key: LBracket,       mods: Command,                     chars: "\x01\x4f"              }
+  - { key: K,              mods: Command,                     chars: "\x01\x0b"              }
   - { key: L,              mods: Command,                     chars: "\x01\x0c"              }
   - { key: Left,           mods: Command,                     chars: "\x01\x10"              }
   - { key: Right,          mods: Command,                     chars: "\x01\x0e"              }
@@ -815,8 +888,6 @@ key_bindings:
   - { key: Key7,           mods: Command,                     chars: "\x01\x37"              }
   - { key: Key8,           mods: Command,                     chars: "\x01\x38"              }
   - { key: Key9,           mods: Command,                     chars: "\x01\x39"              }
-
-  # Iterm Style Tmux Panel management, Tmux prefix: ^\
 
 # If `true`, bold text is drawn using the bright color variants.
 draw_bold_text_with_bright_colors: false
