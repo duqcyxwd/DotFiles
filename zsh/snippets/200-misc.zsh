@@ -1,6 +1,6 @@
 #!/bin/sh
 
-alias signs="open https://github.com/romkatv/powerlevel10k#what-do-different-symbols-in-git-status-mean"
+alias p10ksigns="open https://github.com/romkatv/powerlevel10k#what-do-different-symbols-in-git-status-mean"
 
 
 # DEVTOOL: : bat {{{1
@@ -9,6 +9,7 @@ alias signs="open https://github.com/romkatv/powerlevel10k#what-do-different-sym
       export MANPAGER="sh -c 'col -bx | bat -l man -p --color=always'"
     fi
 }
+
 # DEVTOOL: : exa {{{1
 {
     if [ $commands[exa] ]; then
@@ -18,6 +19,7 @@ alias signs="open https://github.com/romkatv/powerlevel10k#what-do-different-sym
       alias eaa='exa .?* -d'
 
       alias ls='e'
+      alias lsr='/bin/ls'                                                # Raw ls
 
       # g git, a, all
       alias l='exa -lhbF'                                                # list, size, type
@@ -25,7 +27,7 @@ alias signs="open https://github.com/romkatv/powerlevel10k#what-do-different-sym
       alias lg='l --git'                                                 # list, size, type, git
       alias lss='l -s ext'                                               # list, size, type
 
-      alias la='exa -lbFa'                     
+      alias la='exa -lbFa'
       alias laa='la .?* -d'                                              # Show hidden files only
       alias lag=la --git
 
@@ -38,10 +40,10 @@ alias signs="open https://github.com/romkatv/powerlevel10k#what-do-different-sym
       alias llaa='lla .?* -d'                                            # long list
 
       alias lx='exa -lbhHigUmuSa --time-style=long-iso --color-scale'    # all list
-      alias lxaa='lx .?* -d'                                            
+      alias lxaa='lx .?* -d'
 
 
-      alias lta='exa --group-directories-first -lT'
+      alias lta='exa --group-directories-first -lTa'
       alias lt1='exa --group-directories-first -lT -L 1'
       alias lt2='exa --group-directories-first -lT -L 2'
       alias lt3='exa --group-directories-first -lT -L 3'
@@ -85,17 +87,6 @@ bcp() {
     for prog in $(echo $uninst);
     do; brew uninstall $prog; done;
   fi
-}
-
-# FZF with File {{{3
-# alternative using ripgrep-all (rga) combined with fzf-tmux preview
-# implementation below makes use of "open" on macOS, which can be replaced by other commands if needed.
-# allows to search in PDFs, E-Books, Office documents, zip, tar.gz, etc. (see https://github.com/phiresky/ripgrep-all)
-# find-in-file - usage: fif <searchTerm> or fif "string with spaces" or fif "regex"
-fif() {
-    if [ ! "$#" -gt 0 ]; then echo "Need a string to search for!"; return 1; fi
-    local file
-    file="$(rga --max-count=1 --ignore-case --files-with-matches --no-messages "$@" | fzf-tmux +m --preview="rga --ignore-case --pretty --context 10 '"$@"' {}")" && open "$file"
 }
 
 # FZF with kill {{{3
@@ -160,3 +151,67 @@ nvm() {
 # fi
 # }}}
 
+
+nn () #{{{1
+{
+    # Block nesting of nnn in subshells
+    if [ -n $NNNLVL ] && [ "${NNNLVL:-0}" -ge 1 ]; then
+        echo "nnn is already running"
+        return
+    fi
+
+    # The default behaviour is to cd on quit (nnn checks if NNN_TMPFILE is set)
+    # To cd on quit only on ^G, remove the "export" as in:
+    #     NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+    # NOTE: NNN_TMPFILE is fixed, should not be modified
+    # export NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+
+    nnn "$@"
+
+    if [ -f "$NNN_TMPFILE" ]; then
+            . "$NNN_TMPFILE"
+            rm -f "$NNN_TMPFILE" > /dev/null
+    fi
+}
+
+# Notes: Use ranger instead of nnn
+
+export NNN_BMS='c:~/code/cenx;d:~/duqcyxwd/DotFiles;z:~/.config/zsh/'
+export NNN_FIFO=${XDG_CACHE_HOME}/nnn.fifo
+# -n start in type-to-nav mode
+# -E use $EDITOR for internal undetached edits
+# -o open files only on Enter key
+# -r show cp, mv progress
+# -x show notis on selection cp, mv, rm completion
+# -c indicates that the opener is a cli-only opener (overrides -e) [NOT working]
+# export NNN_OPTS="cErx"
+
+export NNN_OPTS="erxH"
+BLK="04" CHR="04" DIR="04" EXE="00" REG="00" HARDLINK="00" SYMLINK="06" MISSING="00" ORPHAN="01" FIFO="0F" SOCK="0F" OTHER="02"
+export NNN_FCOLORS="$BLK$CHR$DIR$EXE$REG$HARDLINK$SYMLINK$MISSING$ORPHAN$FIFO$SOCK$OTHER"
+
+export BAT_STYLE=plain
+NNN_PLUG=''
+
+NNN_PLUG=$NNN_PLUG'd:diffs;'
+NNN_PLUG=$NNN_PLUG'f:finder;'
+NNN_PLUG=$NNN_PLUG'l:filegitlog;'
+NNN_PLUG=$NNN_PLUG'n:nuke;'
+NNN_PLUG=$NNN_PLUG't:treeview;'
+NNN_PLUG=$NNN_PLUG'v:preview-tui;'
+
+export NNN_PLUG
+
+
+function kube-toggle() { #{{{1
+  if (( ${+POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND} )); then
+    unset POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND
+  else
+    POWERLEVEL9K_KUBECONTEXT_SHOW_ON_COMMAND='kubectl|helm|kubens|kubectx|oc|istioctl|kogito|k9s|helmfile|fluxctl|stern|n|set-ns|set|set-context|context|c|'
+  fi
+  p10k reload
+  if zle; then
+    zle push-input
+    zle accept-line
+  fi
+}

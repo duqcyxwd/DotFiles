@@ -56,7 +56,7 @@
     " # $FZF_DEFAULT_OPTS is used by default
 
     fzf_git_commit_preview(){
-      FZF_DEFAULT_OPTS="$__git_commit_fzf_opts" fzf --preview="$__git_commit_preview_cmd" $@
+      FZF_DEFAULT_OPTS="$__git_commit_fzf_opts" fzf-tmux -p 85% --preview="$__git_commit_preview_cmd" $@
     }
     alias fgcp=fzf_git_commit_preview
 
@@ -128,8 +128,8 @@
         $FORGIT_CLEAN_FZF_OPTS
         "
         # Note: Postfix '/' in directory path should be removed. Otherwise the directory itself will not be removed.
-        files=$(git clean -dfn "$@"| sed 's/^Would remove //' | FZF_DEFAULT_OPTS="$FORGIT_FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA_BORDER $FZF_GIT_FILE_BIND_OPTS" \
-          fzf --preview 'quick-preview {}' | sed 's#/$##')
+        files=$(git clean -dfn "$@"| sed 's/^Would remove //' | FZF_DEFAULT_OPTS="$FORGIT_FZF_DEFAULT_OPTS $FZF_GIT_FILE_BIND_OPTS" \
+          fzf-tmux -p 85% --preview 'quick-preview {}' | sed 's#/$##')
         [[ -n "$files" ]] && echo "$files" | tr '\n' '\0' | xargs -0 -I% git clean -xdf '%' && return
         echo 'Nothing to clean.'
     }
@@ -157,7 +157,7 @@
           +s +m -0 --tiebreak=index --bind=\"enter:execute($cmd)\"
           $FORGIT_STASH_FZF_OPTS
       "
-      git stash list | FZF_DEFAULT_OPTS="$opts" fzf --preview="$cmd"
+      git stash list | FZF_DEFAULT_OPTS="$opts" fzf-tmux -p 85% --preview="$cmd"
     }
 
 

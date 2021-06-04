@@ -1,6 +1,4 @@
-#!/bin/sh
-#   DEVTOOL: : Docker functions {{{
-# --------------------------------------------------------------------------
+#!/bin/bash
 # Docker ps pretty
 
 zinit lucid has'docker' for \
@@ -10,19 +8,21 @@ zinit lucid has'docker' for \
   as'completion' is-snippet \
   'https://github.com/docker/compose/blob/master/contrib/completion/zsh/_docker-compose' \
 
-docker-ps() {
-    docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t'
+#   DEVTOOL: : Docker functions {{{1
+# --------------------------------------------------------------------------
+docker_ps() { #{{{2
+    docker ps "$@" --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t'
 }
 
-docker-ps-more() {
+docker_ps_more() { #{{{2
     # docker ps $@ --format 'table{{ .ID }}\t{{ .Names }}\t{{ .Status }}\t{{ .Image }}\\t{{.Command}}\\t{{.RunningFor}}'
-    docker ps $@ --format 'table {{ .Names }}\t {{ .ID }}\t {{ .Command }}\t {{ .RunningFor }}\t {{ .Status }}\t {{ .Size }}\t {{ .Mounts }}\t {{.Image}}\t'
+    docker ps "$@" --format 'table {{ .Names }}\t {{ .ID }}\t {{ .Command }}\t {{ .RunningFor }}\t {{ .Status }}\t {{ .Size }}\t {{ .Mounts }}\t {{.Image}}\t'
 
 }
 
 # Docker ps pretty with port
-docker-ps-port() {
-    docker ps $@ --format 'table{{ .Image }}\t{{ .Names }}\t{{ .Status }}\t{{ .Ports }}' | awk '
+docker_ps_port() { #{{{2
+    docker ps "$@" --format 'table{{ .Image }}\t{{ .Names }}\t{{ .Status }}\t{{ .Ports }}' | awk '
     NR % 2 == 0 {
       printf "\033[0m";
     }
@@ -50,12 +50,12 @@ docker-ps-port() {
 }
 
 # Print in vertical
-docker-ps-vertical-old() {
+docker_ps_vertical_old() { #{{{2
     local FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nSTATUS\t{{.Status}}\nRunningFor\t{{.RunningFor}}\nCOMMAND\t{{.Command}}\nPORTS\t{{.Ports}}\nLABEL\t{{.Labels}}\nMounts\t{{.Mounts}}\nNetworks\t{{.Networks}}\nSize\t{{.Size}}\n\n"
-    docker ps --filter name=$@ -a --format="$FORMAT" --no-trunc
+    docker ps --filter name="$@" -a --format="$FORMAT" --no-trunc
 }
 
-docker-ps-vertical() {
+docker_ps_vertical() {
     local FORMAT="ID\t{{.ID}}\nNAME\t{{.Names}}\nIMAGE\t{{.Image}}\nSTATUS\t{{.Status}}\nLIVE\t{{.RunningFor}}\nCOMMAND\t{{.Command}}\nPORTS\t{{.Ports}}\nLABEL\t{{.Labels}}\nMOUNTS\t{{.Mounts}}\nNETS\t{{.Networks}}\nSIZE\t{{.Size}}\n\n"
     docker ps --filter name=$@ -a --format="$FORMAT" --no-trunc | awk '
     NR == 1 {
@@ -91,7 +91,7 @@ docker-ps-vertical() {
 }
 
 # Docker exec
-docker-exec-name() {
+docker_exec_name() {
     echo "Docker exec -it by name"
     firstmatch=$(docker ps -q --filter name=$@ | head -1)
     dpsv -f id=$firstmatch
@@ -99,9 +99,10 @@ docker-exec-name() {
 }
 
 # Docker stats
-docker-stats() { docker stats $@ --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
+docker_stats() { #{{{2
+  docker stats $@ --format "table {{.Name}}\t{{.Container}}\t{{.CPUPerc}}\t{{.MemPerc}}\t{{.MemUsage}}\t{{.NetIO}}\t{{.BlockIO}}"; }
 
-docker-stats-peek() {
+docker_stats_peek() { #{{{2
     if [ $# -eq 0 ]; then
         docker stats --no-stream
     else
@@ -110,19 +111,19 @@ docker-stats-peek() {
 }
 
 ### }}}
-#   DEVTOOL: : Docker Alias {{{
+#   DEVTOOL: : Docker Alias {{{1
 # --------------------------------------------------------------------------
-alias dps=docker-ps
+alias dps=docker_ps
 alias dpsa='dps -a'
-alias dpss=docker-ps-more
-alias dpsv=docker-ps-vertical
-alias dpsp=docker-ps-port
-alias dexec=docker-exec-name
+alias dpss=docker_ps_more
+alias dpsv=docker_ps_vertical
+alias dpsp=docker_ps_port
+alias dexec=docker_exec_name
 alias dki='docker images'
 alias dkin='docker inspect'
-alias dstats=docker-stats
-alias dks=docker-stats
-alias dksp=docker-stats-peek
+alias dstats=docker_stats
+alias dks=docker_stats
+alias dksp=docker_stats_peek
 
 # Docker clean
 alias docker-stop='echo "Docker stop all containers" && docker stop $(docker ps -q)'
@@ -141,20 +142,20 @@ alias dklf='docker logs -f'
 alias dkflush='docker rm `docker ps --no-trunc -aq`'
 alias dkflush2='docker rmi $(docker images --filter "dangling=true" -q --no-trunc)'
 
-# More
-dkln() {
-    docker logs -f $(docker ps | grep $1 | awk '{print $1}')
+# More #{{{1
+dkln() { #{{{2
+  docker logs -f "$(docker ps | grep "$1" | awk '{print $1}')"
 }
 
-dke() {
-    docker exec -it $1 /bin/sh
+dke() { #{{{2
+    docker exec -it "$1" /bin/sh
 }
 
-dkexe() {
-    docker exec -it $1 $2
+dkexe() { #{{{2
+    docker exec -it "$1" "$2"
 }
 
-dkreboot() {
+dkreboot() { #{{{2
     osascript -e 'quit app "Docker"'
     countdown 2
     open -a Docker

@@ -77,7 +77,7 @@ function fh() {
 
   print -z $(
     ([ -n "$ZSH_NAME" ] && { cat $HISTORY_CACHED_FILE_INDEXED && __history_search_cache &| } ) | \
-      fzf-tmux --delimiter=': ' \
+      fzf-tmux -p 85% --delimiter=': ' \
       --bind "ctrl-r:reload(cat $HISTORY_CACHED_FILE_INDEXED)" \
       --preview 'bat --color=always --highlight-line {1} '$HISTORY_CACHED_FILE_C --preview-window '+{1}-5' | \
       cut -c 27-

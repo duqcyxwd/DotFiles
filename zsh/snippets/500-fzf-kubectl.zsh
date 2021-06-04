@@ -4,9 +4,11 @@
 export CURRENT_KUBE_NS_FILE=$HOME/.kube/KUBE_NS
 export CURRENT_KUBE_NS_LIST_FILE=$HOME/.kube/KUBE_NS_LIST
 
+unalias kgpn
+
 {
   # Set k8s ns
-  set-ns() {
+  set-ns() { #{{{2
       if [ $# -eq 0 ]; then
           mlog "[set-ns] Require namespace"
           return
@@ -24,7 +26,7 @@ export CURRENT_KUBE_NS_LIST_FILE=$HOME/.kube/KUBE_NS_LIST
       fi
   }
 
-  set-nsi() {
+  set-nsi() { #{{{2
     # change event will wait for input pipe finish
 
     # setopt no_notify no_monitor
@@ -44,12 +46,32 @@ export CURRENT_KUBE_NS_LIST_FILE=$HOME/.kube/KUBE_NS_LIST
     # set-ns $(cat $CURRENT_KUBE_NS_LIST_FILE | fzf \
     # --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" --header-lines=1 -0 | awk '{print $1}')
 
-    # Method 4, manual reload with loading icon
-    set-ns $({ cat $CURRENT_KUBE_NS_LIST_FILE && kgns-cached } | fzf +m \
-    --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" --header-lines=1 -0 | awk '{print $1}')
+    # # Method 4, manual reload with loading icon
+    # set-ns $({ cat $CURRENT_KUBE_NS_LIST_FILE && kgns-cached } | fzf +m \
+    # --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" --header-lines=1 -0 | awk '{print $1}')
+
+    # # Method 5, new one with preview!
+    local tokens=$(
+    { cat $CURRENT_KUBE_NS_LIST_FILE && kgns-cached }  |
+      fzf-tmux -p 85% --info=inline --layout=reverse --header-lines=1 \
+      --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
+      --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" \
+      --preview-window right,follow \
+      --preview 'kubectl get pods --namespace {1}' "$@" \
+      | awk '{print $1}'
+    )
+    set-ns $token
   }
 
-  set-context() {
+  kdelnsi() { #{{{2
+    # set-ns $({{head -n 1 $CURRENT_KUBE_NS_LIST_FILE && cat $CURRENT_KUBE_NS_LIST_FILE | grep chuan} && kgns-cached } | fzf +m \
+    kubectl delete namespace $({ { head -n 1 $CURRENT_KUBE_NS_LIST_FILE && cat $CURRENT_KUBE_NS_LIST_FILE | grep chuan } && kgns-cached } | fzf +m \
+    --bind "ctrl-r:reload({head -n 1 $CURRENT_KUBE_NS_LIST_FILE && cat $CURRENT_KUBE_NS_LIST_FILE | grep chuan})" \
+    --bind "change:reload({head -n 1 $CURRENT_KUBE_NS_LIST_FILE && cat $CURRENT_KUBE_NS_LIST_FILE | grep chuan})" \
+    --header-lines=1 -0 | awk '{print $1}')
+  }
+
+  set-context() { #{{{2
       if [ $# -eq 0 ]; then
           mlog "[set-context] Require a context"
           return
@@ -67,9 +89,9 @@ export CURRENT_KUBE_NS_LIST_FILE=$HOME/.kube/KUBE_NS_LIST
 
   }
 
-  set-contexti() {
+  set-contexti() { #{{{2
     # kubectl config use-context $(kubectl config get-contexts  | awk 'NR>1' | fzf | awk '{print $2}')
-    set-context $(kubectl config get-contexts | fzf +m -0 --header-lines=1 | awk '{print $2}')
+    set-context $(kubectl config get-contexts | fzf-tmux -p +m -0 --header-lines=1 | awk '{print $2}')
   }
 
 }
@@ -119,6 +141,7 @@ export CURRENT_KUBE_NS_LIST_FILE=$HOME/.kube/KUBE_NS_LIST
 
   alias kexecit='kubectl exec -it'
 
+  alias nsl="cat $CURRENT_KUBE_NS_LIST_FILE"
   alias ns=set-ns
   alias nsi=set-nsi
 
@@ -128,8 +151,8 @@ export CURRENT_KUBE_NS_LIST_FILE=$HOME/.kube/KUBE_NS_LIST
   alias ksd='kubectrl scale deployment'
 
   alias kgns='kubectl get namespaces --sort-by=.metadata.creationTimestamp'
-  alias kgdi="kubectl get deployment | fzf --header-lines=1 | awk '{print \$1}'"
-  alias kdelnsi="echo 'Don't be too smart, be careful when delete things"
+  alias kgdi="kubectl get deployment | fzf-tmux -p --header-lines=1 | awk '{print \$1}'"
+  # alias kdelnsi="echo 'Don't be too smart, be careful when delete things"
 }
 
 

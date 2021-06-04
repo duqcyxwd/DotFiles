@@ -22,6 +22,9 @@ __fzf_config() {
     --bind='ctrl-k:preview-half-page-up'
     --bind='ctrl-j:preview-half-page-down'
 
+    --bind='alt-up:preview-half-page-up'
+    --bind='alt-down:preview-half-page-down'
+
     --bind 'ctrl-h:backward-char'
     --bind 'ctrl-l:forward-char'
 
@@ -33,6 +36,8 @@ __fzf_config() {
 
     --bind='change:top'
     "
+    # Notes: In tmux with vim, ctrl-kjhl is used....
+    # Need to find other better keyding
 
     # --bind 'ctrl-p:up'
     # --bind 'ctrl-n:down'
@@ -77,9 +82,7 @@ __fzf_config() {
     # }}}3
   # FZF Theme {{{3
 
-    # export FZF_COLOR_SCHEMA_BORDER=""
-    export FZF_COLOR_SCHEMA_BORDER="--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344,border:#778899' --border"
-
+    export FZF_COLOR_SCHEMA_BORDER="--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344'"
 
 
     # Dracula Theme
@@ -104,23 +107,28 @@ __fzf_config() {
 
     # FZF Theme }}}
   # FZF Default Config {{{3
-    export FZF_MY_OPTS="--reverse --ansi --multi --exit-0 --cycle"
+    # Notes: Can't put FZF_TMUX_OPTS into FZF_DEFAULT_OPTS
+    # fzf-tmux is impliment in a bash script
+    export FZF_TMUX=1
+    export FZF_TMUX_OPTS="-p 85% "
+    export FZF_MY_OPTS="--reverse --ansi --multi --exit-0 --cycle --height 80% --preview-window border-left"
+
 
     # FZF Default options
-    # export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_DRACULA"
-    export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_AYU"
+    export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_DRACULA "
+    # export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_AYU"
     # export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_NORD"
 
 
     export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
 
-    # FZF CTRL_T
+    # FZF C-f
     local FZF_PREVIEW_FILE='bat --style="numbers,changes" --color=always {} -r 0:200| head -200'
-    export FZF_CTRL_T_OPTS="--preview \"${FZF_PREVIEW_FILE}\" $FZF_COLOR_SCHEMA_BORDER"                          #fzf file
+    export FZF_CTRL_T_OPTS=" --preview \"${FZF_PREVIEW_FILE}\" --header 'Searching files' "                          #fzf file
 
-    # FZF CTRL_G
+    # FZF C-g
     local FZF_PREVIEW_DIR='exa --group-directories-first -F --icons --group-directories-first -T -lh -L 2 --color=always {}'
-    export FZF_ALT_C_OPTS="--preview \"${FZF_PREVIEW_DIR}\""                                                      #fzf cd Folder
+    export FZF_ALT_C_OPTS=" --preview \"${FZF_PREVIEW_DIR}\" --header 'Go to directory' "                                                      #fzf cd Folder
 
     # Options to fzf command
     # export FZF_COMPLETION_OPTS='+c -x'

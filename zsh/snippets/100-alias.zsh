@@ -16,6 +16,7 @@ alias svi=/usr/local/bin/vi                   # Use vi to open spacevim
 
 # Remote control Neovim processes.
 # TODO auto complete for nvr
+# https://github.com/mhinz/neovim-remote
 alias vimr='nvr'
 alias vimr='nsvc'
 

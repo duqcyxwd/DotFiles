@@ -9,5 +9,7 @@ alias tca='tmux -CC attach -t'
 alias tcad='tmux -CC attach -d -t' #Detach other client
 alias tcs='tmux -CC new-session -s'
 
+alias ta='tmux a'
+
 # TODO
 # source ~/script/tmuxinator/completion/tmuxinator.zsh        #tmuxinator

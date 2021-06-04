@@ -5,18 +5,20 @@
 # TODO move to functions?
 
 # fd_search_cur_dir{{{1
-export FD_SEARCH_CUR_DIR_DEPTH=1
+export FD_SEARCH_CUR_DIR_DEPTH=99
 __fd_search_cur_dir_dir() {
-  fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type file
+  # fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type file
+  fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --color=always --type file
 }
 
 __fd_search_cur_dir_file() {
-  fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type directory
+  # fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type directory
+  fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --color=always --type directory
 }
 
 fd_search_cur_dir() {
   # fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always
-  { __fd_search_cur_dir_file && __fd_search_cur_dir_dir}
+  { __fd_search_cur_dir_dir && __fd_search_cur_dir_file }
 }
 # }}}1
 # short_pwd{{{1
@@ -32,23 +34,25 @@ short_pwd() {
 }
 
 # ls_fuzzy_preview {{{1
-# Notes: we can mix use of bind and while loop key 
+# Notes: we can mix use of bind and while loop key
 # Can't used execute and while loop key together
 ls_fuzzy_preview() {
 
   local searchTerm=""
-  local FZF_FUZZY_BIND_OPTS=" 
+  local FZF_FUZZY_BIND_OPTS="
     --bind=\"ctrl-r:execute-silent(echo {} | agnvim_remote_open )\"
     --bind=\"ctrl-y:execute-silent(echo {} | pbcopy )\"
   "
-  while out=$( fd_search_cur_dir | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA_BORDER $FZF_FUZZY_BIND_OPTS" fzf-tmux \
+  while out=$( fd_search_cur_dir | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FUZZY_BIND_OPTS" fzf-tmux \
+    -p 85% \
     --preview "quick-preview {}" --exit-0 \
-    --bind "ctrl-d:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type directory )" \
-    --bind "ctrl-f:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type file )" \
-    --bind "ctrl-r:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always )" \
+    --bind "ctrl-d:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore --color=always --type directory )" \
+    --bind "ctrl-f:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore --color=always --type file )" \
+    --bind "ctrl-r:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore --color=always )" \
     --expect=ctrl-v,ctrl-o,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down,shift-left,shift-right \
-    --print-query --header "[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" \
-    --preview-window right:50% --height ${FZF_TMUX_HEIGHT:-100%} \
+    --print-query --header "MIX:[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" \
+    --preview-window right:50% --preview-window border-left \
+    --height ${FZF_TMUX_HEIGHT:-100%} \
     -q "$searchTerm" \
     );
   do
@@ -65,16 +69,18 @@ ls_fuzzy_preview() {
 
     if [[ "$key" == 'alt-left' ]]; then
       pushd +0 1>/dev/null;
-    elif [[ "$key" == 'alt-right' ]] || [[ "$key" == 'alt-down' ]]; then
+    elif [[ "$key" == 'alt-right' ]]; then
       pushd -1 1>/dev/null;
     elif [[ "$key" == 'alt-up' ]]; then
       cd ../
+    elif [[ "$key" == 'alt-down' ]]; then
+      export FD_SEARCH_CUR_DIR_DEPTH=1
     elif [[ "$key" == 'shift-right' ]]; then
-      FD_SEARCH_CUR_DIR_DEPTH=$(expr $FD_SEARCH_CUR_DIR_DEPTH + 1)
+      export FD_SEARCH_CUR_DIR_DEPTH=$(expr $FD_SEARCH_CUR_DIR_DEPTH + 1)
     elif [[ "$key" == 'shift-left' ]]; then
       local new_dept=$(expr $FD_SEARCH_CUR_DIR_DEPTH - 1)
       if [[ "$new_dept" -ge "1" ]];then
-        FD_SEARCH_CUR_DIR_DEPTH=$new_dept
+        export FD_SEARCH_CUR_DIR_DEPTH=$new_dept
       fi
     elif [[ "$key" == 'ctrl-v' ]]; then
       nvim $lastEntry
@@ -94,4 +100,4 @@ ls_fuzzy_preview() {
   done
 }
 
-    alias lf=ls_fuzzy_preview
+alias lf=ls_fuzzy_preview

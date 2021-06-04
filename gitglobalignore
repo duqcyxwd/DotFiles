@@ -1,3 +1,11 @@
+*.code-workspace
 .git
+.lsp
+.projectile
+.vimroot
 node_modules
-
+tags
+tags
+.zsh_history
+.gitignore
+pyrightconfig.json

@@ -40,12 +40,16 @@ zshaddhistory() {
   local line=${1%%$'\n'}
   local cmd=${line%% *}
 
-  # mlog "zshaddhistory"
+  # mlog "zshaddhistory: "
   # mlog ${${(z)1}[1]}
   # mlog ${(z)1}
   # mlog $@
   # mlog $line
   # mlog $cmd
+  # mlog $(pwd)
+  # his="$(date +%s): $(pwd): $@"
+  his="$(date +%s): $(pwd): ${(z)1}"
+  echo $his >> ~/.zsh_history_bk/.zsh_hist_cust_bk
 
   # Modified from https://mollifier.hatenablog.com/entry/20090
   # Not necessary, Most of them will be cleanup by zsh

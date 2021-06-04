@@ -24,7 +24,7 @@ alias ic-darkside='ac "Darkside"'
 alias ic-ocean='ac "OceanicMaterial"'
 alias ic-sd='ac "Solarized Darcula"'
 alias rc='ac_my_colors &&  echo "COLOR THEME: " $_iterm2colors_current'
-    
+
 
 ac_my_colors
 
