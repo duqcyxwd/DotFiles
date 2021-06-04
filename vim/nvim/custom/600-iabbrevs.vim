@@ -7,3 +7,4 @@
 iabbrev liqcode {% highlight text %}<cr><cr>{% endhighlight %}<cr>
 
 iabbrev --- ------------------------------------------------------------------------------
+iabbrev ``s ```sh<cr>```

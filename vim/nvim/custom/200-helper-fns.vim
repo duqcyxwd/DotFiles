@@ -13,54 +13,6 @@
 " /*                                                    */
 " /******************************************************/
 
-" [Function] Toggle Strip Whitespace {{{1
-" ------------------------------------------------------------------------------
-" StripWhitespace is provied by ntpeters/vim-better-whitespace
-" Cleanup extra space when save
-" Strip trailing whitespace without affect search and current cursor
-function! g:StripWhitespace()
-  let save_cursor = getpos(".")
-  let old_query = getreg('/')
-  :%s/\s\+$//e
-  call setpos('.', save_cursor)
-  call setreg('/', old_query)
-endfunction
-
-" Mark whitespace as RED, provied by better-whitespace
-let s:whitespace_enable = 0
-function! g:Toggle_whitespace() abort
-  if s:whitespace_enable
-    DisableWhitespace
-    let s:whitespace_enable = 0
-  else
-    EnableWhitespace
-    let s:whitespace_enable = 1
-  endif
-endfunction
-
-" :EnableStripWhitespaceOnSave
-" :DisableStripWhitespaceOnSave
-" :ToggleStripWhitespaceOnSave
-
-let s:autoStripSpaceEnabled = 0
-function! ToggleAutoStripSpace()
-  if s:autoStripSpaceEnabled
-    let s:autoStripSpaceEnabled = 0
-    echo "autoStripSpaceEnabled off"
-    augroup STRIP_WHITESPACE
-      autocmd!
-    augroup END
-  else
-    let s:autoStripSpaceEnabled = 1
-    " echo "autoStripSpaceEnabled on"
-    augroup STRIP_WHITESPACE
-      autocmd!
-      autocmd BufWritePre * call StripWhitespace()
-    augroup END
-  endif
-endfunction
-" call ToggleAutoStripSpace()
-
 " [Function] HighlightCharactersOver80 {{{1
 " ------------------------------------------------------------------------------
 " Highlight characters in column 81+ with a red background.
@@ -162,6 +114,14 @@ function! s:DiffWithSaved() "{{{1
 endfunction
 command! DiffSaved call s:DiffWithSaved()
 
+function! PlugLoaded(name) "{{{1
+  "https://vi.stackexchange.com/questions/10939/how-to-see-if-a-plugin-is-active
+  return (
+        \ has_key(g:plugs, a:name) &&
+        \ isdirectory(g:plugs[a:name].dir) &&
+        \ stridx(&rtp, g:plugs[a:name].dir) >= 0)
+endfunction
+
 function! RunUsingCurrentFiletype() "{{{1
   " Run current file
   execute 'write'
@@ -200,20 +160,3 @@ function! PrintGivenRange2() range
 endfunction
 
 command! -range PassRange <line1>,<line2>call PrintGivenRange()
-
-
-
-" Used for syntax aware text align
-function! GFM()
-  let langs = ['ruby', 'yaml', 'vim', 'c']
-
-  for lang in langs
-    unlet b:current_syntax
-    silent! exec printf("syntax include @%s syntax/%s.vim", lang, lang)
-    exec printf("syntax region %sSnip matchgroup=Snip start='```%s' end='```' contains=@%s",
-                \ lang, lang, lang)
-  endfor
-  let b:current_syntax='mkd'
-
-  syntax sync fromstart
-endfunction

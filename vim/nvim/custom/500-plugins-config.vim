@@ -59,22 +59,6 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => buffergator {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" horizontal bottom (full screen width)
-let g:buffergator_viewport_split_policy = "B"
-let g:buffergator_split_size = 10
-let g:buffergator_suppress_keymaps = 1
-" nnoremap <space><space> :BuffergatorOpen<CR>
-
-" press ESC to close the buffergator buffer
-augroup buffergator_buffer
-  autocmd!
-  autocmd BufEnter \[\[buffergator-buffers\]\] nnoremap <buffer> <ESC> :bd<CR>
-augroup END
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => calendar {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:calendar_google_calendar = 1
@@ -154,17 +138,6 @@ let g:ctrlsf_extra_backend_args = {'rg': '--glob !tags'}
 " nmap <leader>F :CtrlSFOpen<CR>:CtrlSFUpdate<CR>
 " nmap <leader>td :CtrlSF -R TODO<bar>FIXME<CR>
 " nmap <leader>8 :CtrlSF -R '.{81,}'<CR>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => ctrlspace {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if executable("ag")
-  let g:CtrlSpaceGlobCommand = 'ag -l --nocolor -g ""'
-endif
-
-" <ctrl><space> doesn't seem to be sent to Vim, for some reason.
-" nnoremap <space><space> :CtrlSpace<CR>
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -632,7 +605,7 @@ endif
 let g:airline_theme = 'luna'                         " airline colorscheme
 let g:airline_powerline_fonts = 1                    " Fancy symbols
 let g:airline#extensions#tabline#enabled = 1         " Enable the list of buffers
-let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
+" let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
 let g:airline#extensions#tabline#tab_nr_type = 1     " Show buffer #, not # of splits
 let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
 let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
@@ -664,10 +637,10 @@ nmap <Space>2 <Plug>AirlineSelectTab2
 nmap <Space>3 <Plug>AirlineSelectTab3
 nmap <Space>4 <Plug>AirlineSelectTab4
 nmap <Space>5 <Plug>AirlineSelectTab5
-nmap <Space>6 <Plug>AirlineSelectTab6
-nmap <Space>7 <Plug>AirlineSelectTab7
-nmap <Space>8 <Plug>AirlineSelectTab8
-nmap <Space>9 <Plug>AirlineSelectTab9
+" nmap <Space>6 <Plug>AirlineSelectTab6
+" nmap <Space>7 <Plug>AirlineSelectTab7
+" nmap <Space>8 <Plug>AirlineSelectTab8
+" nmap <Space>9 <Plug>AirlineSelectTab9
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -726,19 +699,26 @@ let g:better_whitespace_ctermcolor='LightYellow'
 let g:better_whitespace_guicolor='#6272a4'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => coc new {{{1
+" => buffergator {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" horizontal bottom (full screen width)
+let g:buffergator_viewport_split_policy = "B"
+let g:buffergator_split_size = 10
+let g:buffergator_suppress_keymaps = 1
+
+" press ESC to close the buffergator buffer
+augroup buffergator_buffer
+  autocmd!
+  autocmd BufEnter \[\[buffergator-buffers\]\] nnoremap <buffer> <ESC> :bd<CR>
+augroup END
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => coc  {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:coc_config_home = '$XDG_CONFIG_HOME/vim'
 let g:coc_data_home = '$XDG_DATA_HOME/coc'
-
-function! ToggleCoc() abort
-  if len(coc#status()) == 0
-    execute 'CocEnable'
-  else
-    execute 'CocDisable'
-  endif
-endfunction
 
 
 " TextEdit might fail if hidden is not set.
@@ -764,202 +744,215 @@ else
   set signcolumn=yes
 endif
 
-" WIP
-" Use tab for trigger completion with characters ahead and navigate.
-" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-" other plugin before putting this into your config.
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? "\<C-n>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+if exists('g:plugs["coc.nvim"]')
 
-function! s:check_back_space() abort
-  let col = col('.') - 1
-  return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
+  function! ToggleCoc() abort
+    if len(coc#status()) == 0
+      execute 'CocEnable'
+    else
+      execute 'CocDisable'
+    endif
+  endfunction
 
-" Use <c-space> to trigger completion.
-if has('nvim')
-  inoremap <silent><expr> <c-space> coc#refresh()
-else
-  inoremap <silent><expr> <c-@> coc#refresh()
-endif
+  " WIP
+  " Use tab for trigger completion with characters ahead and navigate.
+  " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+  " other plugin before putting this into your config.
+  inoremap <silent><expr> <TAB>
+	\ pumvisible() ? "\<C-n>" :
+	\ <SID>check_back_space() ? "\<TAB>" :
+	\ coc#refresh()
+  inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! s:show_documentation()
-  if (index(['vim','help'], &filetype) >= 0)
-    execute 'h '.expand('<cword>')
-  elseif (coc#rpc#ready())
-    call CocActionAsync('doHover')
+  function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~# '\s'
+  endfunction
+
+  " Use <c-space> to trigger completion.
+  if has('nvim')
+    inoremap <silent><expr> <c-space> coc#refresh()
   else
-    execute '!' . &keywordprg . " " . expand('<cword>')
+    inoremap <silent><expr> <c-@> coc#refresh()
   endif
-endfunction
 
-" NOT WORKing
-" " Make <CR> auto-select the first completion item and notify coc.nvim to
-" " format on enter, <cr> could be remapped by other vim plugin
-" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-"                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+  function! s:show_documentation()
+    if (index(['vim','help'], &filetype) >= 0)
+      execute 'h '.expand('<cword>')
+    elseif (coc#rpc#ready())
+      call CocActionAsync('doHover')
+    else
+      execute '!' . &keywordprg . " " . expand('<cword>')
+    endif
+  endfunction
 
-
-" Use `[g` and `]g` to navigate diagnostics
-" Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
-" GoTo code navigation.
-nmap <silent> gd <Plug>(coc-definition)
-nmap <silent> gy <Plug>(coc-type-definition)
-nmap <silent> gi <Plug>(coc-implementation)
-nmap <silent> gr <Plug>(coc-references)
-
-" Use K to show documentation in preview window.
-nnoremap <silent> K :call <SID>show_documentation()<CR>
-
-" Highlight the symbol and its references when holding the cursor.
-" TODO Enable this
-" autocmd CursorHold * silent call CocActionAsync('highlight')
+  " NOT WORKing
+  " " Make <CR> auto-select the first completion item and notify coc.nvim to
+  " " format on enter, <cr> could be remapped by other vim plugin
+  " inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+  "                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 
-" Formatting selected code.
-xmap <Space>cf  <Plug>(coc-format-selected)
-nmap <Space>cf  <Plug>(coc-format-selected)
+  " Use `[g` and `]g` to navigate diagnostics
+  " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+  nmap <silent> [g <Plug>(coc-diagnostic-prev)
+  nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-" augroup mygroup
-"   autocmd!
-"   " Setup formatexpr specified filetype(s).
-"   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
-"   " Update signature help on jump placeholder.
-"   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
-" augroup end
+  " GoTo code navigation.
+  nmap <silent> gd <Plug>(coc-definition)
+  nmap <silent> gy <Plug>(coc-type-definition)
+  nmap <silent> gi <Plug>(coc-implementation)
+  nmap <silent> gr <Plug>(coc-references)
 
-" Applying codeAction to the selected region.
-" Example: `<leader>aap` for current paragraph
-xmap <Space>ca  <Plug>(coc-codeaction-selected)
-nmap <Space>ca  <Plug>(coc-codeaction-selected)
+  " Use K to show documentation in preview window.
+  nnoremap <silent> K :call <SID>show_documentation()<CR>
 
-" Remap keys for applying codeAction to the current buffer.
-nmap <Space>cac  <Plug>(coc-codeaction)
-" Apply AutoFix to problem on the current line.
-nmap <Space>cqf  <Plug>(coc-fix-current)
-
-" Map function and class text objects
-" NOTE: Requires 'textDocument.documentSymbol' support from the language server.
-" xmap if <Plug>(coc-funcobj-i)
-" omap if <Plug>(coc-funcobj-i)
-" xmap af <Plug>(coc-funcobj-a)
-" omap af <Plug>(coc-funcobj-a)
-" xmap ic <Plug>(coc-classobj-i)
-" omap ic <Plug>(coc-classobj-i)
-" xmap ac <Plug>(coc-classobj-a)
-" omap ac <Plug>(coc-classobj-a)
-
-" Remap <C-f> and <C-b> for scroll float windows/popups.
-" WIP C-j and C-k
-if has('nvim-0.4.0') || has('patch-8.2.0750')
-  nnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
-  nnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
-  inoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-  inoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-  vnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
-  vnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
-endif
-
-" Use CTRL-S for selections ranges.
-" Requires 'textDocument/selectionRange' support of language server.
-nmap <silent> <C-s> <Plug>(coc-range-select)
-xmap <silent> <C-s> <Plug>(coc-range-select)
-
-" " Add `:Format` command to format current buffer.
-" command! -nargs=0 Format :call CocAction('format')
-"
-" " Add `:Fold` command to fold current buffer.
-" command! -nargs=? Fold :call     CocAction('fold', <f-args>)
-"
-" " Add `:OR` command for organize imports of the current buffer.
-" command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
-" Mappings for CoCList
-
-" Show COC commands.
-nnoremap <silent><nowait> <space>cc  :<C-u>CocList commands<cr>
-
-" Show COC commands.
-nnoremap <silent><nowait> <space>cl  :CocList<cr>
-nnoremap <silent><nowait> <space>ci  :CocInfo<cr>
-
-" COC Actions
-" nnoremap <silent><nowait> <space>c:  :CocAction<cr>
-" xnoremap <silent><nowait> <space>c:  :CocAction<cr>
-nnoremap <silent><nowait> <space>;  :CocAction<cr>
-xnoremap <silent><nowait> <space>;  :CocAction<cr>
-
-" nnoremap <silent><nowait> <space>:  <Plug>(coc-codeaction-cursor)
-nmap <silent> <space>:            <Plug>(coc-codeaction-line)
-vmap <silent> <space>:            <Plug>(coc-codeaction-selected)
-" nnoremap <leader>ci :CocInfo<CR>
-
-" Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
-" vmap <leader>a  <Plug>(coc-codeaction-selected)
-" nmap <leader>a  <Plug>(coc-codeaction-selected)
-
-" Remap for do codeAction of current line
-" nmap <space>c;  <Plug>(coc-codeaction)
-" Fix autofix problem of current line
-" nmap <leader>qf  <Plug>(coc-fix-current)
+  " Highlight the symbol and its references when holding the cursor.
+  " TODO Enable this
+  " autocmd CursorHold * silent call CocActionAsync('highlight')
 
 
-" vmap <leader>cf <Plug>(coc-format-selected)
-" nmap <leader>cf <Plug>(coc-format-selected)
+  " Formatting selected code.
+  xmap <Space>cf  <Plug>(coc-format-selected)
+  nmap <Space>cf  <Plug>(coc-format-selected)
 
-" Common commands
-nnoremap <silent><nowait> <Space>ce :CocCommand explorer<CR>
+  " augroup mygroup
+  "   autocmd!
+  "   " Setup formatexpr specified filetype(s).
+  "   autocmd FileType typescript,json setl formatexpr=CocAction('formatSelected')
+  "   " Update signature help on jump placeholder.
+  "   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
+  " augroup end
 
-" Show all diagnostics.
-nnoremap <silent><nowait> <space>ca  :<C-u>CocList diagnostics<cr>
-" Manage extensions.
-nnoremap <silent><nowait> <space>cE  :<C-u>CocList extensions<cr>
+  " Applying codeAction to the selected region.
+  " Example: `<leader>aap` for current paragraph
+  xmap <Space>ca  <Plug>(coc-codeaction-selected)
+  nmap <Space>ca  <Plug>(coc-codeaction-selected)
+
+  " Remap keys for applying codeAction to the current buffer.
+  nmap <Space>cac  <Plug>(coc-codeaction)
+  " Apply AutoFix to problem on the current line.
+  nmap <Space>cqf  <Plug>(coc-fix-current)
+
+  " Map function and class text objects
+  " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
+  " xmap if <Plug>(coc-funcobj-i)
+  " omap if <Plug>(coc-funcobj-i)
+  " xmap af <Plug>(coc-funcobj-a)
+  " omap af <Plug>(coc-funcobj-a)
+  " xmap ic <Plug>(coc-classobj-i)
+  " omap ic <Plug>(coc-classobj-i)
+  " xmap ac <Plug>(coc-classobj-a)
+  " omap ac <Plug>(coc-classobj-a)
+
+  " Remap <C-f> and <C-b> for scroll float windows/popups.
+  " WIP C-j and C-k
+  if has('nvim-0.4.0') || has('patch-8.2.0750')
+    nnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
+    nnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
+    inoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+    inoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+    vnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
+    vnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
+  endif
+
+  " Use CTRL-S for selections ranges.
+  " Requires 'textDocument/selectionRange' support of language server.
+  nmap <silent> <C-s> <Plug>(coc-range-select)
+  xmap <silent> <C-s> <Plug>(coc-range-select)
+
+  " " Add `:Format` command to format current buffer.
+  " command! -nargs=0 Format :call CocAction('format')
+  "
+  " " Add `:Fold` command to fold current buffer.
+  " command! -nargs=? Fold :call     CocAction('fold', <f-args>)
+  "
+  " " Add `:OR` command for organize imports of the current buffer.
+  " command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
+
+  " Mappings for CoCList
+
+  " Show COC commands.
+  nnoremap <silent><nowait> <space>cc  :<C-u>CocList commands<cr>
+
+  " Show COC commands.
+  nnoremap <silent><nowait> <space>cl  :CocList<cr>
+  nnoremap <silent><nowait> <space>ci  :CocInfo<cr>
+
+  " COC Actions
+  " nnoremap <silent><nowait> <space>c:  :CocAction<cr>
+  " xnoremap <silent><nowait> <space>c:  :CocAction<cr>
+  nnoremap <silent><nowait> <space>;  :CocAction<cr>
+  xnoremap <silent><nowait> <space>;  :CocAction<cr>
+
+  " nnoremap <silent><nowait> <space>:  <Plug>(coc-codeaction-cursor)
+  nmap <silent> <space>:            <Plug>(coc-codeaction-line)
+  vmap <silent> <space>:            <Plug>(coc-codeaction-selected)
+  " nnoremap <leader>ci :CocInfo<CR>
+
+  " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
+  " vmap <leader>a  <Plug>(coc-codeaction-selected)
+  " nmap <leader>a  <Plug>(coc-codeaction-selected)
+
+  " Remap for do codeAction of current line
+  " nmap <space>c;  <Plug>(coc-codeaction)
+  " Fix autofix problem of current line
+  " nmap <leader>qf  <Plug>(coc-fix-current)
 
 
-" Find symbol of current document.
-nnoremap <silent><nowait> <space>co  :<C-u>CocList outline<cr>
-" Search workspace symbols.
-nnoremap <silent><nowait> <space>cs  :<C-u>CocList -I symbols<cr>
+  " vmap <leader>cf <Plug>(coc-format-selected)
+  " nmap <leader>cf <Plug>(coc-format-selected)
+
+  " Common commands
+  nnoremap <silent><nowait> <Space>ce :CocCommand explorer<CR>
+
+  " Show all diagnostics.
+  nnoremap <silent><nowait> <space>ca  :<C-u>CocList diagnostics<cr>
+  " Manage extensions.
+  nnoremap <silent><nowait> <space>cE  :<C-u>CocList extensions<cr>
 
 
-" Do default action for next item.
-nnoremap <silent><nowait> <space>cj  :<C-u>CocNext<CR>
-" Do default action for previous item.
-nnoremap <silent><nowait> <space>ck  :<C-u>CocPrev<CR>
-" Resume latest coc list.
-nnoremap <silent><nowait> <space>cp  :<C-u>CocListResume<CR>
+  " Find symbol of current document.
+  nnoremap <silent><nowait> <space>co  :<C-u>CocList outline<cr>
+  " Search workspace symbols.
+  nnoremap <silent><nowait> <space>cs  :<C-u>CocList -I symbols<cr>
 
 
-" WIP
-" COC with Clojure
-" https://clojure-lsp.github.io/clojure-lsp/clients/
-function! Expand(exp) abort
+  " Do default action for next item.
+  nnoremap <silent><nowait> <space>cj  :<C-u>CocNext<CR>
+  " Do default action for previous item.
+  nnoremap <silent><nowait> <space>ck  :<C-u>CocPrev<CR>
+  " Resume latest coc list.
+  nnoremap <silent><nowait> <space>cp  :<C-u>CocListResume<CR>
+
+
+  " WIP
+  " COC with Clojure
+  " https://clojure-lsp.github.io/clojure-lsp/clients/
+  function! Expand(exp) abort
     let l:result = expand(a:exp)
     return l:result ==# '' ? '' : "file://" . l:result
-endfunction
+  endfunction
 
-autocmd CursorHold * silent call CocActionAsync('highlight')
+  autocmd CursorHold * silent call CocActionAsync('highlight')
 
-" TODO add mapping for cojure only
-nnoremap <silent> <leader>rcc :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'cycle-coll', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> <leader>rth :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> <leader>rtt :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> <leader>rtf :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> <leader>rtl :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> <leader>ruw :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-thread', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> <leader>rua :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> <leader>rml :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'move-to-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
-nnoremap <silent> <leader>ril :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'introduce-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
-nnoremap <silent> <leader>rel :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'expand-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> <leader>ram :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'add-missing-libspec', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> <leader>rcn :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'clean-ns', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
-nnoremap <silent> <leader>ref :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'extract-function', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Function name: ')]})<CR>
+  " TODO add mapping for cojure only
+  nnoremap <silent> <leader>rcc :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'cycle-coll', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+  nnoremap <silent> <leader>rth :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+  nnoremap <silent> <leader>rtt :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+  nnoremap <silent> <leader>rtf :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-first-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+  nnoremap <silent> <leader>rtl :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'thread-last-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+  nnoremap <silent> <leader>ruw :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-thread', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+  nnoremap <silent> <leader>rua :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'unwind-all', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+  nnoremap <silent> <leader>rml :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'move-to-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
+  nnoremap <silent> <leader>ril :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'introduce-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Binding name: ')]})<CR>
+  nnoremap <silent> <leader>rel :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'expand-let', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+  nnoremap <silent> <leader>ram :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'add-missing-libspec', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+  nnoremap <silent> <leader>rcn :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'clean-ns', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
+  nnoremap <silent> <leader>ref :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'extract-function', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Function name: ')]})<CR>
+
+  " End coc config
+endif
 
 " augroup coc_load_clojure_content
 "   autocmd BufReadCmd,FileReadCmd,SourceCmd jar:file://*
@@ -985,7 +978,8 @@ augroup commentary_config
   autocmd FileType cs,kotlin,adoc setlocal commentstring=//\ %s
   " autocmd FileType lisp,clojure,racket setlocal commentstring=;;\ %s
   autocmd FileType lisp,racket setlocal commentstring=;;\ %s
-  autocmd FileType clojure setlocal commentstring=#_%s
+  autocmd FileType clojure setlocal commentstring=;;\ %s
+  " TODO Add syntax aware comment #_
   autocmd FileType sml,ocaml setlocal commentstring=(*\ %s\ *)
   autocmd FileType resolv,crontab setlocal commentstring=#\ %s
   autocmd FileType sql setlocal commentstring=--\ %s
@@ -1065,72 +1059,72 @@ augroup END
 function! s:defx_my_settings() abort
   " Define mappings
   nnoremap <silent><buffer><expr> <CR>
-        \ defx#do_action('open')
+	\ defx#do_action('open')
   nnoremap <silent><buffer><expr> c
-        \ defx#do_action('copy')
+	\ defx#do_action('copy')
   nnoremap <silent><buffer><expr> m
-        \ defx#do_action('move')
+	\ defx#do_action('move')
   nnoremap <silent><buffer><expr> p
-        \ defx#do_action('paste')
+	\ defx#do_action('paste')
   nnoremap <silent><buffer><expr> l
-        \ defx#do_action('open')
+	\ defx#do_action('open')
   nnoremap <silent><buffer><expr> E
-        \ defx#do_action('open', 'vsplit')
+	\ defx#do_action('open', 'vsplit')
   nnoremap <silent><buffer><expr> P
-        \ defx#do_action('open', 'pedit')
+	\ defx#do_action('open', 'pedit')
   nnoremap <silent><buffer><expr> o
-        \ defx#do_action('open_or_close_tree')
+	\ defx#do_action('open_or_close_tree')
   nnoremap <silent><buffer><expr> K
-        \ defx#do_action('new_directory')
+	\ defx#do_action('new_directory')
   nnoremap <silent><buffer><expr> N
-        \ defx#do_action('new_file')
+	\ defx#do_action('new_file')
   nnoremap <silent><buffer><expr> M
-        \ defx#do_action('new_multiple_files')
+	\ defx#do_action('new_multiple_files')
   nnoremap <silent><buffer><expr> C
-        \ defx#do_action('toggle_columns',
-        \                'mark:indent:icon:filename:type:size:time')
+	\ defx#do_action('toggle_columns',
+	\                'mark:indent:icon:filename:type:size:time')
   nnoremap <silent><buffer><expr> S
-        \ defx#do_action('toggle_sort', 'time')
+	\ defx#do_action('toggle_sort', 'time')
   nnoremap <silent><buffer><expr> d
-        \ defx#do_action('remove')
+	\ defx#do_action('remove')
   nnoremap <silent><buffer><expr> r
-        \ defx#do_action('rename')
+	\ defx#do_action('rename')
   nnoremap <silent><buffer><expr> !
-        \ defx#do_action('execute_command')
+	\ defx#do_action('execute_command')
   nnoremap <silent><buffer><expr> x
-        \ defx#do_action('execute_system')
+	\ defx#do_action('execute_system')
   nnoremap <silent><buffer><expr> yy
-        \ defx#do_action('yank_path')
+	\ defx#do_action('yank_path')
   nnoremap <silent><buffer><expr> .
-        \ defx#do_action('toggle_ignored_files')
+	\ defx#do_action('toggle_ignored_files')
   nnoremap <silent><buffer><expr> ;
-        \ defx#do_action('repeat')
+	\ defx#do_action('repeat')
   nnoremap <silent><buffer><expr> h
-        \ defx#do_action('cd', ['..'])
+	\ defx#do_action('cd', ['..'])
   nnoremap <silent><buffer><expr> ~
-        \ defx#do_action('cd')
+	\ defx#do_action('cd')
   nnoremap <silent><buffer><expr> q
-        \ defx#do_action('quit')
+	\ defx#do_action('quit')
   nnoremap <silent><buffer><expr> <Space>
-        \ defx#do_action('toggle_select') . 'j'
+	\ defx#do_action('toggle_select') . 'j'
   nnoremap <silent><buffer><expr> *
-        \ defx#do_action('toggle_select_all')
+	\ defx#do_action('toggle_select_all')
   nnoremap <silent><buffer><expr> j
-        \ line('.') == line('$') ? 'gg' : 'j'
+	\ line('.') == line('$') ? 'gg' : 'j'
   nnoremap <silent><buffer><expr> k
-        \ line('.') == 1 ? 'G' : 'k'
+	\ line('.') == 1 ? 'G' : 'k'
   nnoremap <silent><buffer><expr> <C-l>
-        \ defx#do_action('redraw')
+	\ defx#do_action('redraw')
   nnoremap <silent><buffer><expr> <C-g>
-        \ defx#do_action('print')
+	\ defx#do_action('print')
   nnoremap <silent><buffer><expr> cd
-        \ defx#do_action('change_vim_cwd')
+	\ defx#do_action('change_vim_cwd')
   call defx#custom#option('_', {
-        \ 'columns': 'mark:indent:icon:filename:type:size:time',
-        \ })
-	call defx#custom#column('time', {
-	      \ 'format': '%Y-%m-%d %I:%M %p',
-	      \ })
+	\ 'columns': 'mark:indent:icon:filename:type:size:time',
+	\ })
+  call defx#custom#column('time', {
+	\ 'format': '%Y-%m-%d %I:%M %p',
+	\ })
 endfunction
 
 function! s:open_defx_if_directory() abort
@@ -1196,18 +1190,22 @@ let g:findroot_patterns = [
 " nnoremap <C-g> :GFiles<CR>
 " nnoremap <C-g> :GFiles<CR>
 
-" source: https://www.reddit.com/r/neovim/comments/djmehv/im_probably_really_late_to_the_party_but_fzf_in_a/f463fxr/
-" https://github.com/junegunn/fzf.vim/issues/664
-let g:fzf_layout = { 'window': 'call FloatingFZF()' }
-let $FZF_DEFAULT_OPTS .= " --ansi --border --layout=reverse --bind 'up:previous-history' "
-let $FZF_DEFAULT_OPTS .= " --bind 'down:next-history' --bind 'ctrl-p:up' --bind 'ctrl-n:down' "
-" let $FZF_DEFAULT_OPTS .= " --margin=1,4"
+let g:fzf_command_prefix="FF"
 
-" https://www.erickpatrick.net/blog/adding-syntax-highlighting-to-fzf.vim-preview-window
-" let $FZF_DEFAULT_OPTS="--ansi --preview-window 'right:60%' --layout reverse --margin=1,4"
+" Update so it will search hiddent file
+command! -bang -nargs=* MyFzfAg
+  \ call fzf#vim#ag(<q-args>,
+  \                 '--ignore "node_modules" --hidden',
+  \                 <bang>0 ? fzf#vim#with_preview('up:60%')
+  \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
+  \                 <bang>0)
 
-function! FloatingFZF() abort
-  " echom $FZF_DEFAULT_OPTS
+" command!      -bang -nargs=* LL                        call fzf#vim#lines(<q-args>, <bang>0),
+
+" command!      -bang -nargs=* Lines                     call fzf#vim#lines(<q-args>, <bang>0),
+" command!      -bang -nargs=* BLines                    call fzf#vim#buffer_lines(<q-args>, <bang>0),
+
+function! FloatingFZF() abort "{{{2
   let buf = nvim_create_buf(v:false, v:true)
   call setbufvar(buf, '&signcolumn', 'no')
 
@@ -1219,25 +1217,32 @@ function! FloatingFZF() abort
   let row = float2nr((&lines - height) / 2)
 
   let opts = {
-        \ 'relative': 'editor',
-        \ 'row': row,
-        \ 'col': col,
-        \ 'width': width,
-        \ 'height': height,
-        \ 'style': 'minimal'
-        \ }
+	\ 'relative': 'editor',
+	\ 'row': row,
+	\ 'col': col,
+	\ 'width': width,
+	\ 'height': height,
+	\ 'style': 'minimal'
+	\ }
 
   call nvim_open_win(buf, v:true, opts)
-endfunction
+endfunction " }}}2
 
-" This is the default extra key bindings
-" let g:fzf_action = {
-"       \ 'ctrl-t': 'tab split',
-"       \ 'ctrl-x': 'split',
-"       \ 'ctrl-v': 'vsplit' }
-
+" source: https://www.reddit.com/r/neovim/comments/djmehv/im_probably_really_late_to_the_party_but_fzf_in_a/f463fxr/
+" https://github.com/junegunn/fzf.vim/issues/664
+" TODO Improve color
+" https://www.erickpatrick.net/blog/adding-syntax-highlighting-to-fzf.vim-preview-window
+let g:fzf_layout = { 'window': 'call FloatingFZF()' }
 let g:fzf_files_options= '--preview "bat {} 2> /dev/null | head 100" --bind "?:toggle-preview"'
 let g:fzf_history_dir = '~/.local/share/fzf-history'
+
+let $FZF_DEFAULT_OPTS .= " --ansi --border --layout=reverse "
+let $FZF_DEFAULT_OPTS .= " --bind 'up:previous-history' "
+let $FZF_DEFAULT_OPTS .= " --bind 'down:next-history' "
+let $FZF_DEFAULT_OPTS .= " --bind 'ctrl-p:up' --bind 'ctrl-n:down' "
+
+" This is the default extra key bindings
+" let g:fzf_action = { 'ctrl-t': 'tab split', 'ctrl-x': 'split', 'ctrl-v': 'vsplit' }
 
 " Customize fzf colors to match your color scheme
 " - fzf#wrap translates this to a set of `--color` options
@@ -1256,47 +1261,11 @@ let g:fzf_colors =
       \ 'spinner': ['fg', 'Label'],
       \ 'header':  ['fg', 'Comment'] }
 
-" Use esc to kill fzf
-
-" augroup FZFVIM
-"   if has("nvim")
-"     autocmd!
-"     au TermOpen * tnoremap <Esc> <c-\><c-n>
-"     au FileType fzf tunmap <Esc>
-"   endif
-" augroup END
-
-
-" Insert mode completion
-" imap <c-x><c-k> <plug>(fzf-complete-word)
-" imap <c-x><c-f> <plug>(fzf-complete-path)
-" imap <c-x><c-l> <plug>(fzf-complete-line)
-
-" When Escape is pressed while in Terminal mode:
-" * If it's the FZF buffer, close it.
-" * Otherwise, enter Normal mode.
-tnoremap <silent> <esc> <C-\><C-n>:silent! call QuitFZFBuffer()<CR>
-
-" This mostly works, but results in errors like this sometimes being printed
-" in the the output that prints to the terminal AFTER exiting Vim:
-"
-" Error detected while processing function 57:
-" line   17:
-" E516: No buffers were deleted: bd! 7
-" Error running ( bash '/tmp/user/1000/nvimdrsnj1/10' )|'/home/dave/.fzf/bin/fzf'  '--multi' '--prompt' '~/.dotfiles/' --expect=ctrl-v,ctrl-x,ctrl-t --no-height > /tmp/user/1000/nvimdrsnj1/9
-"
-" Commenting it out for now, so I just have to use ^C to exit the FZF buffer. It
-" sure would be nice to be able to use Escape to exit it, instead. Oh well.
-function! QuitFZFBuffer() abort
-  " if bufname("%") =~ "fzf"
-  "   normal i<C-c>
-  "   bwipeout!
-  " endif
-endfunction
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => GV {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" A Better Git log viewer
 " ### Commands
 "
 " - `:GV` to open commit browser
@@ -1376,7 +1345,7 @@ let g:gitgutter_terminal_reports_focus=0
 " let g:limelight_conceal_guifg = '#777777'
 
 " Default: 0.5
-let g:limelight_default_coefficient = 0.5
+let g:limelight_default_coefficient = 0.6
 
 " Number of preceding/following paragraphs to include (default: 0)
 let g:limelight_paragraph_span = 0
@@ -1386,6 +1355,10 @@ let g:limelight_paragraph_span = 0
 "   and each paragraph starts with indentation
 let g:limelight_bop = '^\s'
 let g:limelight_eop = '\ze\n^\s'
+
+" To space?
+nmap <Leader>l <Plug>(Limelight)
+xmap <Leader>l <Plug>(Limelight)
 
 " Highlighting priority (default: 10)
 "   Set it to -1 not to overrule hlsearch
@@ -1411,8 +1384,7 @@ function! s:goyo_enter()
   set noshowmode
   set noshowcmd
   set scrolloff=999
-  Limelight
-  " ...
+  # Limelight
 endfunction
 
 function! s:goyo_leave()
@@ -1424,8 +1396,7 @@ function! s:goyo_leave()
   set showcmd
   set scrolloff=15
   syntax on
-  Limelight!
-  " ...
+  # Limelight!
 endfunction
 
 augroup GoYo
@@ -1483,65 +1454,65 @@ augroup END
 let g:rainbow_active = 1
 
 let g:rainbow_conf = {
-\	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
-\	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
-\	'guis': [''],
-\	'cterms': [''],
-\	'operators': '_,_',
-\	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
-\	'separately': {
-\		'*': {},
-\		'markdown': 0,
-\		'lisp': {
-\			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
-\		},
-\		'haskell': {
-\			'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/\v\{\ze[^-]/ end=/}/ fold']
-\		},
-\               'html': 0,
-\		'vim': {
-\			'parentheses_options': 'containedin=vimFuncBody',
-\		},
-\		'vimwiki': 0,
-\		'perl': {
-\			'syn_name_prefix': 'perlBlockFoldRainbow',
-\		},
-\		'stylus': {
-\			'parentheses': ['start=/{/ end=/}/ fold contains=@colorableGroup']
-\		},
-\		'css': 0
-\	}
-\}
+      \	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+      \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+      \	'guis': [''],
+      \	'cterms': [''],
+      \	'operators': '_,_',
+      \	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+      \	'separately': {
+	\		'*': {},
+	\		'markdown': 0,
+	\		'lisp': {
+	  \			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+	  \		},
+	  \		'haskell': {
+	    \			'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/\v\{\ze[^-]/ end=/}/ fold']
+	    \		},
+	    \               'html': 0,
+	    \		'vim': {
+	      \			'parentheses_options': 'containedin=vimFuncBody',
+	      \		},
+	      \		'vimwiki': 0,
+	      \		'perl': {
+		\			'syn_name_prefix': 'perlBlockFoldRainbow',
+		\		},
+		\		'stylus': {
+		  \			'parentheses': ['start=/{/ end=/}/ fold contains=@colorableGroup']
+		  \		},
+		  \		'css': 0
+		  \	}
+		  \}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => signature (Improve Marks) {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-  " mx           Toggle mark 'x' and display it in the leftmost column
-  " dmx          Remove mark 'x' where x is a-zA-Z
+" mx           Toggle mark 'x' and display it in the leftmost column
+" dmx          Remove mark 'x' where x is a-zA-Z
 
-  " m,           Place the next available mark
-  " m.           If no mark on line, place the next available mark. Otherwise, remove (first) existing mark.
-  " m-           Delete all marks from the current line
-  " m<Space>     Delete all marks from the current buffer
-  " ]`           Jump to next mark
-  " [`           Jump to prev mark
-  " ]'           Jump to start of next line containing a mark
-  " ['           Jump to start of prev line containing a mark
-  " `]           Jump by alphabetical order to next mark
-  " `[           Jump by alphabetical order to prev mark
-  " ']           Jump by alphabetical order to start of next line having a mark
-  " '[           Jump by alphabetical order to start of prev line having a mark
-  " m/           Open location list and display marks from current buffer
+" m,           Place the next available mark
+" m.           If no mark on line, place the next available mark. Otherwise, remove (first) existing mark.
+" m-           Delete all marks from the current line
+" m<Space>     Delete all marks from the current buffer
+" ]`           Jump to next mark
+" [`           Jump to prev mark
+" ]'           Jump to start of next line containing a mark
+" ['           Jump to start of prev line containing a mark
+" `]           Jump by alphabetical order to next mark
+" `[           Jump by alphabetical order to prev mark
+" ']           Jump by alphabetical order to start of next line having a mark
+" '[           Jump by alphabetical order to start of prev line having a mark
+" m/           Open location list and display marks from current buffer
 
-  " m[0-9]       Toggle the corresponding marker !@#$%^&*()
-  " m<S-[0-9]>   Remove all markers of the same type
-  " ]-           Jump to next line having a marker of the same type
-  " [-           Jump to prev line having a marker of the same type
-  " ]=           Jump to next line having a marker of any type
-  " [=           Jump to prev line having a marker of any type
-  " m?           Open location list and display markers from current buffer
-  " m<BS>        Remove all markers
+" m[0-9]       Toggle the corresponding marker !@#$%^&*()
+" m<S-[0-9]>   Remove all markers of the same type
+" ]-           Jump to next line having a marker of the same type
+" [-           Jump to prev line having a marker of the same type
+" ]=           Jump to next line having a marker of any type
+" [=           Jump to prev line having a marker of any type
+" m?           Open location list and display markers from current buffer
+" m<BS>        Remove all markers
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => startify {{{1
@@ -1564,13 +1535,13 @@ let g:startify_custom_header = [
       \' /**********************************************************************/',
       \ ]
 
-let g:startify_files_number = 5
+let g:startify_files_number = 6
 let g:startify_enable_special = 0
 let g:startify_session_persistence = 1
-let g:startify_bookmarks = [{'n': '~/.config/vim/nvimrc'},
-      \ {'z': '~/.config/zsh/zshrc'},
-      \ {'a': '~/.config/alacritty/alacritty.yml'},
-      \ {'t': '~/.tmux.conf'}
+let g:startify_bookmarks = [{'zn': '~/.config/vim/nvimrc'},
+      \ {'zz': '~/.config/zsh/.zshrc'},
+      \ {'za': '~/.config/alacritty/alacritty.yml'},
+      \ {'zt': '~/.tmux.conf'}
       \]
 
 let g:startify_session_before_save = [ 'silent! tabdo NERDTreeClose' ]
@@ -1580,6 +1551,7 @@ let g:startify_lists = [
       \ { 'type': 'sessions',  'header': ['   Sessions'], 'indices': ['a' ,'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']},
       \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
       \ { 'type': 'commands',  'header': ['   Commands']       },
+      \ { 'type': 'files',     'header': ['   MRU']            },
       \ ]
 
 
@@ -1591,9 +1563,9 @@ let g:startify_lists = [
 " can't loaded as plugin since I have customized sexp mappings
 function! s:map_sexp_wrap(type, target, left, right, pos)
   execute (a:type ==# 'v' ? 'x' : 'n').'noremap'
-        \ '<buffer><silent>' a:target ':<C-U>let b:sexp_count = v:count<Bar>exe "normal! m`"<Bar>'
-        \ . 'call sexp#wrap("'.a:type.'", "'.a:left.'", "'.a:right.'", '.a:pos.', 0)'
-        \ . '<Bar>silent! call repeat#set("'.a:target.'", v:count)<CR>'
+	\ '<buffer><silent>' a:target ':<C-U>let b:sexp_count = v:count<Bar>exe "normal! m`"<Bar>'
+	\ . 'call sexp#wrap("'.a:type.'", "'.a:left.'", "'.a:right.'", '.a:pos.', 0)'
+	\ . '<Bar>silent! call repeat#set("'.a:target.'", v:count)<CR>'
 endfunction
 
 function! g:VIM_lisp_mappings()  "{{{2
@@ -1738,7 +1710,7 @@ function! g:VIM_lisp_mappings()  "{{{2
 
   " WIP Better D
   nmap <silent><buffer> D               d)
-  nmap <silent><buffer> <C-k>           d$
+  " nmap <silent><buffer> <C-k>           d$
 
   " nmap <silent><buffer> <C-]>           <Plug>(sexp_emit_head_element)
   " nmap <silent><buffer> <C-[>           <Plug>(sexp_capture_prev_element)
@@ -1747,6 +1719,9 @@ function! g:VIM_lisp_mappings()  "{{{2
 
   " WIP Need improve source code
   imap <silent><buffer> <C-right>       <esc><Plug>(sexp_capture_next_element)i
+
+
+  nnoremap gca i#_<esc>
 
 
 endfunction
@@ -1766,6 +1741,8 @@ augroup END
 " => tagbar {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " nnoremap <leader>T :TagbarToggle<CR>
+let g:tagbar_position='left'
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim-tagquery {{{1
@@ -1844,7 +1821,7 @@ function! VimuxSendBuffer(...) abort
 endfunction
 
 command! VimuxSendBuffer
-  \ call VimuxSendBuffer()
+      \ call VimuxSendBuffer()
 
 " nnoremap <buffer> <leader>vf
 "   \ :call VimuxSendBuffer()<CR>
@@ -1896,7 +1873,7 @@ nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
 nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
 nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
 nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
-" nnoremap <silent> <C-\> :TmuxNavigatePrevious<cr>
+" nnoremap <silent> <C-h> :TmuxNavigatePrevious<cr>
 
 let g:tmux_navigator_save_on_switch = 1
 let g:tmux_navigator_disable_when_zoomed = 1
@@ -1918,45 +1895,45 @@ let g:vimwiki_global_ext = 0
 let g:vimwiki_filetypes = ['markdown']
 
 " :VimwikiToggleListItem
-" Wiki Mapping {{{2
+" Wiki Key Mapping {{{2
 " Disable lists later after I familiar with vimwiki
 let g:vimwiki_key_mappings =
       \ {
-      \   'all_maps': 0,
-      \   'global': 1,
-      \   'headers': 1,
-      \   'text_objs': 1,
-      \   'table_format': 1,
-      \   'table_mappings': 1,
-      \   'lists': 0,
-      \   'links': 1,
-      \   'html': 1,
-      \   'mouse': 0,
-    \ }
+	\   'all_maps': 0,
+	\   'global': 1,
+	\   'headers': 1,
+	\   'text_objs': 1,
+	\   'table_format': 1,
+	\   'table_mappings': 1,
+	\   'lists': 1,
+	\   'links': 0,
+	\   'html': 1,
+	\   'mouse': 0,
+	\ }
 
 " Wiki Config {{{2
 let mainWiki = {
-	\ 'path': '~/vimwiki',
-	\ 'template_path': '~/vimwiki/templates/',
-	\ 'template_default': 'default',
-	\ 'syntax': 'markdown',
-	\ 'ext': '.md',
-	\ 'path_html': '~/vimwiki/html/',
-	\ 'custom_wiki2html': 'vimwiki_markdown',
-	\ 'template_ext': '.tpl'}
+      \ 'path': '~/vimwiki',
+      \ 'template_path': '~/vimwiki/templates/',
+      \ 'template_default': 'default',
+      \ 'syntax': 'markdown',
+      \ 'ext': '.md',
+      \ 'path_html': '~/vimwiki/html/',
+      \ 'custom_wiki2html': 'vimwiki_markdown',
+      \ 'template_ext': '.tpl'}
 let mainWiki.nested_syntaxes = {
-	  \ 'c++': 'cpp',
-          \ 'bash': 'sh',
-          \ 'diff': 'diff',
-          \ 'elixir': 'elixir',
-          \ 'javascript': 'javascript',
-          \ 'python': 'python',
-          \ 'ruby': 'ruby',
-          \ 'sh': 'sh',
-          \ 'tmux': 'tmux',
-          \ 'vim': 'vim',
-          \ 'yaml': 'yaml',
-          \ 'zsh': 'zsh'}
+      \ 'c++': 'cpp',
+      \ 'bash': 'sh',
+      \ 'diff': 'diff',
+      \ 'elixir': 'elixir',
+      \ 'javascript': 'javascript',
+      \ 'python': 'python',
+      \ 'ruby': 'ruby',
+      \ 'sh': 'sh',
+      \ 'tmux': 'tmux',
+      \ 'vim': 'vim',
+      \ 'yaml': 'yaml',
+      \ 'zsh': 'zsh'}
 
 let g:vimwiki_list = [mainWiki]
 
@@ -2006,6 +1983,7 @@ let g:vimwiki_folding = ''
 function! g:CusVimWikiKeyMap() " {{{3
   echom "CusVimWikiKeyMap"
 
+  " Links
   let g:which_key_map_space.w.o = "VimWiki Page open"
   call vimwiki#u#map_key('n', '<Space>wo', '<Plug>VimwikiFollowLink')
   call vimwiki#u#map_key('v', '<Space>wo', '<Plug>VimwikiNormalizeLinkVisualCR')
@@ -2025,6 +2003,45 @@ function! g:CusVimWikiKeyMap() " {{{3
   call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'r', '<Plug>VimwikiRenameFile')
   call vimwiki#u#map_key('n', '<C-Down>', '<Plug>VimwikiDiaryNextDay')
   call vimwiki#u#map_key('n', '<C-Up>', '<Plug>VimwikiDiaryPrevDay')
+
+
+  " List
+  call vimwiki#u#map_key('n', 'gnt', '<Plug>VimwikiNextTask')
+  call vimwiki#u#map_key('n', '<C-Space>', '<Plug>VimwikiToggleListItem')
+  call vimwiki#u#map_key('n', '<C-Space>', '<Plug>VimwikiToggleListItem')
+  call vimwiki#u#map_key('v', '<C-Space>', '<Plug>VimwikiToggleListItem', 1)
+  if has('unix')
+    call vimwiki#u#map_key('n', '<C-@>', '<Plug>VimwikiToggleListItem', 1)
+    call vimwiki#u#map_key('v', '<C-@>', '<Plug>VimwikiToggleListItem', 1)
+  endif
+  call vimwiki#u#map_key('n', 'glx', '<Plug>VimwikiToggleRejectedListItem')
+  call vimwiki#u#map_key('v', 'glx', '<Plug>VimwikiToggleRejectedListItem', 1)
+  call vimwiki#u#map_key('n', 'gln', '<Plug>VimwikiIncrementListItem')
+  call vimwiki#u#map_key('v', 'gln', '<Plug>VimwikiIncrementListItem', 1)
+  call vimwiki#u#map_key('n', 'glp', '<Plug>VimwikiDecrementListItem')
+  call vimwiki#u#map_key('v', 'glp', '<Plug>VimwikiDecrementListItem', 1)
+  call vimwiki#u#map_key('i', '<C-D>', '<Plug>VimwikiDecreaseLvlSingleItem')
+  call vimwiki#u#map_key('i', '<C-T>', '<Plug>VimwikiIncreaseLvlSingleItem')
+  call vimwiki#u#map_key('n', 'glh', '<Plug>VimwikiDecreaseLvlSingleItem', 1)
+  call vimwiki#u#map_key('n', 'gll', '<Plug>VimwikiIncreaseLvlSingleItem', 1)
+  call vimwiki#u#map_key('n', 'gLh', '<Plug>VimwikiDecreaseLvlWholeItem')
+  call vimwiki#u#map_key('n', 'gLH', '<Plug>VimwikiDecreaseLvlWholeItem', 1)
+  call vimwiki#u#map_key('n', 'gLl', '<Plug>VimwikiIncreaseLvlWholeItem')
+  call vimwiki#u#map_key('n', 'gLL', '<Plug>VimwikiIncreaseLvlWholeItem', 1)
+  call vimwiki#u#map_key('i', '<C-L><C-J>', '<Plug>VimwikiListNextSymbol')
+  call vimwiki#u#map_key('i', '<C-L><C-K>', '<Plug>VimwikiListPrevSymbol')
+  call vimwiki#u#map_key('i', '<C-L><C-M>', '<Plug>VimwikiListToggle')
+  call vimwiki#u#map_key('n', 'glr', '<Plug>VimwikiRenumberList')
+  call vimwiki#u#map_key('n', 'gLr', '<Plug>VimwikiRenumberAllLists')
+  call vimwiki#u#map_key('n', 'gLR', '<Plug>VimwikiRenumberAllLists', 1)
+  call vimwiki#u#map_key('n', 'gl', '<Plug>VimwikiRemoveSingleCB')
+  call vimwiki#u#map_key('n', 'gL', '<Plug>VimwikiRemoveCBInList')
+  call vimwiki#u#map_key('n', 'o', '<Plug>VimwikiListo')
+  call vimwiki#u#map_key('n', 'O', '<Plug>VimwikiListO')
+endfunction
+
+
+function! g:MarkdownKeyMap() " {{{3
 
   " nunmap <Tab>
   " nunmap <S-Tab>
@@ -2059,16 +2076,15 @@ augroup vimWiki
   autocmd!
   " Fix wrong fold method from vim-markdown
   " autocmd FileType vimwiki set foldexpr=VimwikiFoldListLevel(v:lnum)
-  autocmd FileType vimwiki call s:cusVimWikiKeyMap()
-  " autocmd FileType markdown call s:cusVimWikiKeyMap()
-  " autocmd BufReadPost *.md,*.markdown call s:cusVimWikiKeyMap()
+  " autocmd FileType vimwiki call g:CusVimWikiKeyMap()
+  " autocmd FileType markdown call g:CusVimWikiKeyMap()
+  " autocmd BufReadPost *.md,*.markdown call g:CusVimWikiKeyMap()
 
   " autocmd FileType vimwiki setlocal foldmethod=expr |
-	" \ setlocal foldenable | set foldexpr=VimwikiFoldLevelCustom(v:lnum) |
-	" \ call s:cusVimWikiKeyMap()
+  " \ setlocal foldenable | set foldexpr=VimwikiFoldLevelCustom(v:lnum) |
+  " \ call g:CusVimWikiKeyMap()
 
-
-  autocmd BufReadPost TODO.md setlocal foldmethod=indent | call s:cusVimWikiKeyMap()
+  " autocmd BufReadPost TODO.md setlocal foldmethod=indent | call g:CusVimWikiKeyMap()
 
 augroup END
 
@@ -2080,13 +2096,13 @@ augroup END
 " augroup END
 
 """"""""""""""""""""""""""""""""""""""""""""
-" vim-markdown {{{1
+" => vim-markdown {{{1
 " Config for vim-markdown
 " Plug 'plasticboy/vim-markdown'
 " Use vimWiki folding instead
 let g:vim_markdown_folding_disabled = 1
 
-" => markdown {{{2
+" => markdown augroup {{{2
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 augroup markdown
@@ -2097,7 +2113,32 @@ augroup markdown
   " autocmd BufReadPost *.md,*.markdown setlocal syntax=markdown
   " autocmd BufNewFile,BufRead *.md,*.markdown setlocal filetype=markdown
   " autocmd BufReadPost *.md,*.markdown :%foldopen!
-  " autocmd FileType vimwiki set ft=markdown
+  " autocmd FileType vimwiki set ft=markdown | set syntax=markdown | call g:CusVimWikiKeyMap()
+  " autocmd BufReadPost *.md,*.markdown set ft=markdown | set syntax=markdown | call g:CusVimWikiKeyMap()
+  " autocmd BufNewFile,BufRead *.md,*.markdown set syntax=markdown | call g:CusVimWikiKeyMap()
+  " autocmd BufEnter,BufRead,BufNewFile *.md set filetype=markdown | call g:CusVimWikiKeyMap()
+
+
+
+
+  " autocmd BufEnter,BufRead,BufNewFile *.md set filetype=markdown
+  autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
+	\ setlocal foldmethod=expr | set foldexpr=NestedMarkdownFolds() |
+	\ echom 'fileType markdown'
+
+
+
+  " Use expr for vim-getting-things-down folding. It is nice problem but I am
+  " just using the folding syntax for now
+  " foldexpr=getting_things_down#fold_expr(v:lnum)
+  " autocmd BufEnter TODO.md setlocal foldmethod=expr
+
+  " Plugin: masukomi/vim-markdown-folding
+  " set foldexpr=NestedMarkdownFolds()
+
+
+  autocmd BufEnter TODO.md setlocal foldmethod=expr | set foldexpr=getting_things_down#fold_expr(v:lnum)
+
 augroup END
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2153,3 +2194,68 @@ let g:which_key_floating_opts = { 'row': '0', 'col': '-10', 'height': '+0', 'wid
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+" => WIP Tree sitter Sample {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if exists('g:plugs["nvim-treesitter"]')
+  lua <<EOF
+  require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained",                             -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  ignore_install = { "javascript", "zsh", "vim", "bash" },     -- List of parsers to ignore installing
+  highlight = {
+  enable = true,                                               -- false will disable the whole extension
+  disable = { "c", "rust", "vim", "clojure", "bash", "zsh" },  -- list of language that will be disabled
+  },
+}
+EOF
+
+endif
+
+
+
+" => LSP pyright {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" lua << EOF
+" require'lspconfig'.pyright.setup{}
+" EOF
+
+" lua << EOF
+" local nvim_lsp = require('lspconfig')
+" -- Use an on_attach function to only map the following keys
+" -- after the language server attaches to the current buffer
+" local on_attach = function(client, bufnr)
+"   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+"   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+"   --Enable completion triggered by <c-x><c-o>
+"   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+"   -- Mappings.
+"   local opts = { noremap=true, silent=true }
+"   -- See `:help vim.lsp.*` for documentation on any of the below functions
+"   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+"   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+"   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+"   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+"   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+"   buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+"   buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+"   buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+"   buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+"   buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+"   buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+"   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+"   buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+"   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+"   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+"   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+"   buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+" end
+" -- Use a loop to conveniently call 'setup' on multiple servers and
+" -- map buffer local keybindings when the language server attaches
+" local servers = { "pyright", "rust_analyzer", "tsserver" }
+" for _, lsp in ipairs(servers) do
+"   nvim_lsp[lsp].setup { on_attach = on_attach }
+" end
+" EOF

@@ -70,7 +70,6 @@ function! s:ToggleColorschemeMode() abort
 syntax enable               " Enable syntax highlighting
 endfunction
 command! ToggleColorschemeMode call s:ToggleColorschemeMode()
-nnoremap <leader>M :ToggleColorschemeMode<CR>
 
 " Start in dark mode
 call s:DarkMode()

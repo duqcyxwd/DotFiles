@@ -10,10 +10,7 @@
 "
 call plug#begin('$XDG_DATA_HOME/nvim-plug')
 
-"New for chuan {{{1
-" ------------------------------------------------------------------------------
-
-" Aesthetic {{{2
+" Aesthetic {{{1
 " ------------------------------------------------------------------------------
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
@@ -27,7 +24,7 @@ Plug 'ayu-theme/ayu-vim'
 Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'cormacrelf/vim-colors-github'
 
-" Clojure things {{{2
+" Clojure things {{{1
 " ------------------------------------------------------------------------------
 " Plug 'eraserhd/parinfer-rust'
 " Plug 'bhurlow/vim-parinfer'
@@ -36,22 +33,24 @@ Plug 'cormacrelf/vim-colors-github'
 " Plug 'clojure-vim/acid.nvim'|                      "Asynchronous Clojure Interactive Development
 Plug 'Olical/conjure'
 
+" Plug 'guns/vim-clojure-static'
 Plug 'clojure-vim/clojure.vim'|                      " Replace guns/vim-clojure-static
 " Plug 'guns/vim-sexp'
 " Plug 'duqcyxwd/vim-sexp'                           "My version of vim-sexp
 " Or load it locally
-source /Users/EYONDUU/duqcyxwd/vim-sexp/autoload/sexp.vim
-source /Users/EYONDUU/duqcyxwd/vim-sexp/plugin/sexp.vim
+" source /Users/EYONDUU/duqcyxwd/vim-sexp/autoload/sexp.vim
+" source /Users/EYONDUU/duqcyxwd/vim-sexp/plugin/sexp.vim
+Plug '~/duqcyxwd/vim-sexp'
 " Plug 'tpope/vim-sexp-mappings-for-regular-people'| " Tesing
 
+" Interesting tag jumping!
 Plug 'tpope/vim-fireplace'
 Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
 Plug 'luochen1990/rainbow'
 
-" VimWiki with Markdown {{{2
+" VimWiki with Markdown {{{1
 " ------------------------------------------------------------------------------
 Plug 'vimwiki/vimwiki'
-Plug 'preservim/tagbar'
 
 " Markdown
 " Plug 'jtratner/vim-flavored-markdown'
@@ -60,37 +59,62 @@ Plug 'plasticboy/vim-markdown'
 " Plug 'rlue/vim-getting-things-down'
 Plug 'masukomi/vim-markdown-folding'
 
-" Editor enhancements {{{2
+
+" Not working
+"Plug 'matt-snider/vim-tagquery', { 'do': 'bash install.sh' }
+
+" Git {{{1
+" ------------------------------------------------------------------------------
+Plug 'jreybert/vimagit'
+Plug 'lambdalisue/gina.vim'
+Plug 'shumphrey/fugitive-gitlab.vim'|                  "Open gitlab link
+Plug 'tpope/vim-fugitive'|                             "Raw git command, Gblame
+Plug 'airblade/vim-gitgutter'|                         "shows a git diff in the sign column
+
+
+
+" Editor enhancements {{{1
 " ------------------------------------------------------------------------------
 
 Plug 'AndrewRadev/undoquit.vim'
+Plug 'jeetsukumaran/vim-buffergator'
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
-Plug 'junegunn/fzf.vim'
+" Plug 'junegunn/fzf.vim'
+Plug 'duqcyxwd/fzf.vim'|                           " My quick fix for fzf vim
 Plug 'junegunn/limelight.vim'
 Plug 'kassio/neoterm'
 Plug 'kshenoy/vim-signature'
 Plug 'liuchengxu/vim-which-key'
+Plug 'ludovicchabant/vim-gutentags'|               "Good way to generate tags
 Plug 'machakann/vim-sandwich'
-Plug 'mg979/vim-visual-multi'
+Plug 'mg979/vim-visual-multi'|                     "vim multi cursor
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'osyo-manga/vim-over'
+Plug 'preservim/tagbar'|                           "Create tag on fly, used by markdown
 Plug 'schickling/vim-bufonly'
-Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-commentary'|                       "Gcc
 Plug 'tpope/vim-endwise'
 Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-sleuth'
+Plug 'tpope/vim-sleuth'|                           "Automatically adjusts 'shiftwidth' and 'expandtab'
 Plug 'tpope/vim-surround'
-Plug 'unblevable/quick-scope'
+Plug 'unblevable/quick-scope'|                     "Quick highlight for f/F
+
+
+" Telescope
+Plug 'nvim-lua/popup.nvim'| "required by telescope
+Plug 'nvim-lua/plenary.nvim'| "required by telescope
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-symbols.nvim'
+
 " Align text
 Plug 'godlygeek/tabular'
 Plug 'junegunn/vim-easy-align'
 
-
 Plug 'pseewald/vim-anyfold'
 
-" Languages/Filetypes {{{2
+" Languages/Filetypes {{{1
 " ------------------------------------------------------------------------------
 
 Plug 'OrangeT/vim-csharp'
@@ -112,55 +136,58 @@ Plug 'udalov/kotlin-vim'
 Plug 'zah/nim.vim'
 Plug 'zinit-zsh/zinit-vim-syntax'
 
-" Misc+ {{{2
+" Misc+ {{{1
 " ------------------------------------------------------------------------------
 
 Plug 'chrisbra/unicode.vim'
 Plug 'junegunn/goyo.vim'
-Plug 'junegunn/gv.vim'
+Plug 'junegunn/gv.vim'|                                "A git commit browser.
 Plug 'mattn/vim-findroot'
 Plug 'mhinz/vim-startify'
-Plug 'szw/vim-dict'
-Plug 'tpope/vim-eunuch'
+Plug 'szw/vim-dict'|                                   "A dict client
+Plug 'tpope/vim-eunuch'|                               "Vim sugar from tpope
 Plug 'tyru/open-browser.vim'
 
-" WIP {{{2
+" WIP {{{1
 " ------------------------------------------------------------------------------
 
-Plug 'yuki-yano/fzf-preview.vim'
-" https://github.com/clojure-vim/clj-refactor.nvim
+Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/remote', 'do': ':UpdateRemotePlugins' }
+" preview buffer tags, not working in clojure yet
 
-"Default {{{1
+" Disable default highlight before use this
+" Not working yet
+" Plug 'folke/todo-comments.nvim'
+
+Plug 'mbbill/undotree'
+Plug 'daveyarwood/vim-alda'|                             "editing and playing Alda scores.
+Plug 'habamax/vim-asciidoctor'
+Plug 'junegunn/vader.vim'|                               "use Vader to test Vimscript.
+Plug 'vlime/vlime', {'rtp': 'vim/'}|                     "Common Lisp dev environment
+
+" WIP
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " Better syntax highlight
+
+Plug 'neovim/nvim-lspconfig'
+
+
+" }}}1
+
+"Default
 " ------------------------------------------------------------------------------
-" editor enhancements {{{2
+" editor enhancements {{{1
 " ------------------------------------------------------------------------------
 
 Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'airblade/vim-gitgutter'
 Plug 'benmills/vimux'
 Plug 'dyng/ctrlsf.vim'
-Plug 'embear/vim-localvimrc'
-Plug 'jeetsukumaran/vim-buffergator'
 Plug 'liuchengxu/vista.vim'
-Plug 'ludovicchabant/vim-gutentags'
 Plug 'machakann/vim-highlightedyank'
 Plug 'tpope/vim-unimpaired'
+
+
 " Not sure why this plugin: https://github.com/tpope/vim-unimpaired/blob/master/plugin/unimpaired.vim
 " Plug 'vim-scripts/gitignore'
 
-" other languages/filetypes {{{2
-" ------------------------------------------------------------------------------
-
-Plug 'daveyarwood/vim-alda'
-Plug 'habamax/vim-asciidoctor'
-Plug 'junegunn/vader.vim'
-Plug 'vlime/vlime', {'rtp': 'vim/'}
-
-" misc {{{2
-" ------------------------------------------------------------------------------
-
-Plug 'jreybert/vimagit'
-Plug 'lambdalisue/gina.vim'
-
 "}}}1
 call plug#end()
+

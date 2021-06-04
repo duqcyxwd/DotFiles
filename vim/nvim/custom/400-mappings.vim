@@ -47,6 +47,7 @@ let g:which_key_map_space.b = { 'name' : '+buffers' }
 let g:which_key_map_space.f = { 'name' : '+file/format' }
 let g:which_key_map_space.g = { 'name' : '+Git' }
 let g:which_key_map_space.h = { 'name' : '+Help' }
+let g:which_key_map_space.j = { 'name' : '+Jump' }
 let g:which_key_map_space.p = { 'name' : '+Projects/Packages' }
 let g:which_key_map_space.q = { 'name' : '+Quit' }
 let g:which_key_map_space.r = { 'name' : '+Run' }
@@ -63,7 +64,7 @@ let which_key_map_space.b.D = "Force delete this buffer"
 nnoremap <Space>bD :bp<bar>sp<bar>bn<bar>bd!<CR>
 
 let which_key_map_space.b.b = "List all buffers"
-nnoremap <Space>bb :Buffers<CR>
+nnoremap <Space>bb :BuffergatorOpen<CR>
 
 let which_key_map_space.b.h = "home"
 nnoremap <Space>bh :Startify<CR>
@@ -87,13 +88,13 @@ let g:which_key_map_space.f.e = "Reopen current file"
 nnoremap <Space>fe :mkview<CR>:e!<CR>:loadview<CR>
 
 let which_key_map_space.f.r = "Open Recent files"
-nnoremap <Space>fr :History<CR>
+nnoremap <Space>fr :FFHistory<CR>
 
 let which_key_map_space.f.h = "Open History files"
-nnoremap <Space>fh :History<CR>
+nnoremap <Space>fh :FFHistory<CR>
 
 let which_key_map_space.f.t = "[format] Clean trailing space"
-nnoremap <Space>ft :call StripWhitespace()<CR>
+nnoremap <Space>ft :StripWhitespace<CR>
 
 " [SpaceMapping] g+: Git/Go {{{1
 " ------------------------------------------------------------------------------
@@ -125,7 +126,7 @@ nnoremap <Space>gA :Git add --all<CR>
 nnoremap <Space>gm :MagitOnly<CR>
 nnoremap <Space>gb :Gblame<CR>
 nnoremap <Space>gd :Gdiffsplit<CR>
-nnoremap <Space>gc :Git commit<CR>
+nnoremap <Space>gc :Git commit -v<CR>
 nnoremap <Space>gs :Gina status<CR>
 nnoremap <Space>gP :Gina push<CR>
 
@@ -142,13 +143,14 @@ vmap <Space>gS y:OpenBrowserSmartSearch -github <c-r>0<CR>
 
 " [SpaceMapping] h+: Help {{{1
 " ------------------------------------------------------------------------------
-"['FzfHelpTags SpaceVim', 'find-SpaceVim-help']
 
 let g:which_key_map_space.h.t = "Fzf Help tag"
-nnoremap <silent> <Space>ht :Helptags<CR>
+let g:which_key_map_space.h.h = "Fzf Help tag"
+nnoremap <silent> <Space>ht <CMD>Telescope help_tags<CR>
+nnoremap <silent> <Space>hh :FFHelptags<CR>
 
 let g:which_key_map_space.h.m = "[normal] Key Maps"
-nnoremap <silent> <Space>hm :Maps<CR>
+nnoremap <silent> <Space>hm :FFMaps<CR>
 
 command! -bar -bang IMaps  call fzf#vim#maps("i", <bang>0)',
 command! -bar -bang VMaps  call fzf#vim#maps("v", <bang>0)',
@@ -166,10 +168,30 @@ nnoremap <silent> <Space>hv :VMaps<CR>
 
 
 
+" [SpaceMapping] j+: Jump {{{1
+" ------------------------------------------------------------------------------
+
+let g:which_key_map_space.j.i = "Fzf Jump def"
+nnoremap <silent> <Space>ji :FFLines (def<CR>
+" nnoremap <silent> <Space>ji :FFBLines (def<CR>
+
+let g:which_key_map_space.j.I = "Fzf Jump def in project"
+nnoremap <silent> <Space>jI :MyFzfAg \(def[n]? <CR>
+
+let g:which_key_map_space.j.t = "Fzf Jump Tags"
+nnoremap <silent> <Space>jt :FFTags<CR>
+
+
+let g:which_key_map_space.b.t = "Fzf BTags"
+nnoremap <silent> <Space>bt :FFBTags<CR>
+
+
+
+
 " [SpaceMapping] p+: Project/Install {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.p.f = "Project files"
-nnoremap <Space>pf :Files<CR>
+nnoremap <Space>pf :FFFiles<CR>
 
 let which_key_map_space.p.i = "Plug Install"
 nnoremap <Space>pi :execute "tabnew\| PlugInstall"<CR>
@@ -207,13 +229,17 @@ xmap <Space>rt <Plug>(neoterm-repl-send)
 " [SpaceMapping] s+: Search {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.s.b = "FZF Search Current Files"
-nnoremap <Space>sb :lines<CR>
+nnoremap <Space>sb :FFBLines<CR>
+
 let which_key_map_space.s.l = "FZF <Rg> Search Current Project"
-nnoremap <Space>sl :Rg<CR>
-let which_key_map_space.s.p = "FZF <ag> Search Current Project"
-nnoremap <Space>sp :Ag<CR>
+nnoremap <Space>sl :FFRg<CR>
+
+let which_key_map_space.s.p = "FZF <Ag> Search Current Project"
+" nnoremap <Space>sp :Ag '--hidden'<CR>
+nnoremap <Space>sp :MyFzfAg <CR>
+
 let which_key_map_space.s.s = "FZF Search All Open Files"
-nnoremap <Space>ss :BLines<CR>
+nnoremap <Space>ss :Telescope current_buffer_fuzzy_find<CR>
 
 " [SpaceMapping] t+: Toggler {{{1
 " ------------------------------------------------------------------------------
@@ -224,7 +250,6 @@ let which_key_map_space.t.r = "Toggle relative line number"
 nnoremap <Space>tr :setlocal rnu!<CR>:setlocal rnu?<CR>
 
 let which_key_map_space.t.s = "Toggle auto strip whitespace"
-" nnoremap <Space>ts :call ToggleAutoStripSpace()<CR>
 nnoremap <Space>ts :ToggleStripWhitespaceOnSave<CR>
 
 
@@ -236,9 +261,16 @@ nnoremap <Space>tt :call ToggleTextWidth()<CR>
 " nnoremap <Space>tt :call ToggleHighlightCharacterOver80()<CR>
 
 
+let which_key_map_space.t.T = "Toggle TagBar"
+nnoremap <Space>tT :TagbarToggle<CR>
+
+
 let which_key_map_space.t.l = "Toggle list for special char "
 nnoremap <Space>tl :set list!<CR>
 " nnoremap <Space>tt :call ToggleHighlightCharacterOver80()<CR>
+
+let which_key_map_space.t.M = "Toggle ColorScheme"
+nnoremap <Space>tM :ToggleColorschemeMode<CR>
 
 " WIP
 let g:which_key_map_space.t.f = { 'name' : 'Fold+' }
@@ -292,23 +324,14 @@ nnoremap <silent> <Space>zl <Plug>(Limelight)
 " ------------------------------------------------------------------------------
 " Search all open buffer
 let which_key_map_space['Space'] = "FZF Command Search"
-nnoremap <Space><Space> :Commands<CR>
+nnoremap <Space><Space> :FFCommands<CR>
 
 let which_key_map_space['\'] = "FZF Command History Search"
-nnoremap <silent> <Space>\ :History:<CR>
+nnoremap <silent> <Space>\ :FFHistory:<CR>
 
 " https://stackoverflow.com/questions/51644477/reuse-vim-terminal-buffer
 let which_key_map_space["'"] = "Terminal"
-" nnoremap <silent> <Space>' :sp term://zsh<CR>
 nnoremap <silent> <Space>' :above Ttoggle<CR>
-
-" prompt to use the default terminal or terminals 1-3
-" Usage: ,t<space>ls<CR>
-"nnoremap ,t<space> :above T<space>
-"nnoremap ,t1 :above T1<space>
-"nnoremap ,t2 :above T2<space>
-"nnoremap ,t3 :above T3<space>
-
 
 let which_key_map_space['<Tab>'] = "last buffer"
 nnoremap <silent> <Space><Tab> :e#<cr>
@@ -376,8 +399,10 @@ nmap gV <Plug>(VM-Reselect-Last)
 
 " Useful thing from vim-sexp
 " Safe full line delete
-omap <silent><buffer> $     <Plug>(sexp_move_to_end_of_line_with_form)
-nmap <silent><buffer> <C-k> d$
+"
+" nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
+" omap <silent><buffer> $     <Plug>(sexp_move_to_end_of_line_with_form)
+" nmap <silent><buffer> <C-k> d$
 
 " }}}1
 
@@ -385,7 +410,7 @@ nmap <silent><buffer> <C-k> d$
 " --------------------------------------------------------------------------------
 "
 "  Comments
-" nnoremap <Space>cl i#_<esc>
+" nnoremap gca i#_<esc>
 
 " Fix paste
 " p will not overwrite register

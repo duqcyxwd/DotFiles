@@ -47,8 +47,10 @@ mlog "$(date) : zshrc start loading"
   export PATH="/usr/local/opt/ruby/bin:$PATH"
   export PATH="./node_modules/.bin:$PATH"
 
-  export KAFKA_HOME=/usr/local/kafka-2.1.0
+  # export KAFKA_HOME=/usr/local/kafka-2.1.0
+  export KAFKA_HOME=/usr/local/kafka_2.12-2.5.1
   # export KAFKA_HOME=/usr/local/Cellar/kafka/2.7.0/libexec   #Homebrew installed
+
   export KAFKA_CONFIG=$KAFKA_HOME/config
   export PATH="$KAFKA_HOME/bin:$PATH"
 
@@ -71,7 +73,7 @@ mlog "$(date) : zshrc start loading"
   export ZSH=$HOME/.oh-my-zsh
   # Never set TERM in your config
   # export TERM="xterm-256color"
-  export NVIM_LISTEN_ADDRESS=/tmp/spacevim_nvim_server
+  # export NVIM_LISTEN_ADDRESS=
 
   [[ $ZPROF_TRACK -eq "1" ]] && zmodload zsh/zprof
 # }}}
@@ -94,7 +96,7 @@ zinit_load() {
   # zpcompinit; zpcdreplay
 
   # Stage 0 Try Random Plugins
-  zinit load larkery/zsh-histdb
+  # zinit load larkery/zsh-histdb
 
   # Stage 1 Must have plugins before prompt {{{2
   {
@@ -234,6 +236,9 @@ zsh_plugins_config() {
 
 # }}}1
 
+alias vim='nvim'
+alias vi='nvim'
+
 zinit_load
 zsh_plugins_config
 
@@ -250,8 +255,14 @@ zsh_plugins_config
   zstyle ':completion:*:descriptions' format '[%d]'
   # zstyle ":completion:*:descriptions" format "---- %d ----"
 
+  zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+
   zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+  zstyle ':fzf-tab:complete:cd:*' fzf-command
+
   zstyle ':fzf-tab:complete:__enhancd::cd:*' fzf-preview 'exa -1 --color=always $realpath'
+  zstyle ':fzf-tab:complete:__enhancd::cd:*' fzf-command
+
 }
 
 # due to a bug in fzf-tab, bell is always, triggered https://github.com/Aloxaf/fzf-tab/issues/187

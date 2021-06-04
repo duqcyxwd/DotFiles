@@ -37,6 +37,7 @@ set noerrorbells                " No annoying sound on errors
 set nojoinspaces                " No extra space when join line
 set nonumber                    " No line numbers to start
 set number
+set rnu
 set ruler                       " Always show current position
 set scroll=4                    " Number of lines to scroll with ^U/^D
 set scrolloff=15                " Keep cursor away from this many chars top/bot
@@ -63,7 +64,6 @@ set tabstop=2
 set textwidth=80          " 80 chars <Space>tt to toggle it
 
 " WIP Add toggle for this
-set textwidth=80          " 80 chars or die
 set nowrap                " Wrap lines
 
 set foldlevel=2           " Set to 0 fold all by default
