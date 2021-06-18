@@ -198,8 +198,10 @@ colors:
     cursor: CellForeground
   search:
     matches:
-      foreground: '0x44475a'
-      background: '0x50fa7b'
+      # foreground: '0x44475a'
+      # background: '0x50fa7b'
+      foreground: 'CellForeground'
+      background: '0x44475a'
     focused_match:
       foreground: '0x44475a'
       background: '0xffb86c'
