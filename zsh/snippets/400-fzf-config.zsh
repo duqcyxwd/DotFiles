@@ -78,7 +78,6 @@ __fzf_config() {
     #
     # alt-up/down/left/right
     #
-    #### Fag fzf ag
     # }}}3
   # FZF Theme {{{3
 
@@ -111,7 +110,12 @@ __fzf_config() {
     # fzf-tmux is impliment in a bash script
     export FZF_TMUX=1
     export FZF_TMUX_OPTS="-p 85% "
+    export TMUX_FZF_OPTIONS=$FZF_TMUX_OPTS
     export FZF_MY_OPTS="--reverse --ansi --multi --exit-0 --cycle --height 80% --preview-window border-left"
+
+    # Use fzf-tp instead
+    alias fzfp='fzf-tmux -p 85%'
+
 
 
     # FZF Default options

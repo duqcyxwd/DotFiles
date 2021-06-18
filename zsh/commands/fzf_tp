@@ -1,0 +1,4 @@
+#!/bin/sh
+# A test script for fzfp
+
+fzf-tmux -p 85% "$@"

@@ -13,20 +13,6 @@ _clean_my_cache() {
 
 
 # WIP fzf_ls_widget {{{1
-fzf_ls_widget() {
-
-  local selected num
-  setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
-  setopt localoptions pipefail no_aliases 2> /dev/null
-
-  # --bind=ctrl-z:ignore
-  LBUFFER="${LBUFFER}$(ls_fuzzy_preview)"
-  local ret=$?
-
-  zle reset-prompt
-  return $ret
-}
-zle -N fzf_ls_widget
 
 # WIP fh - repeat history {{{1
 # FZF history

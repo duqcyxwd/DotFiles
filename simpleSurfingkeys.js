@@ -537,3 +537,23 @@ devMapping();
 googleMapping();
 
 console.log('Load all simple surfingKeys config'); // REMOVETAG
+
+// var interval=5000, br=false
+// function loop(i) {
+//   setTimeout(()=>{
+//     if (br) return;
+//     console.log("Running " + i)
+//     if ((i%2) == 0)
+//       document.querySelectorAll('div button.calendar__next')[0].click()
+//     else
+//       document.querySelectorAll('div button.calendar__prev')[0].click()
+//     if (--i) loop(i);
+//   }, interval)
+// }
+// stop=()=>{br=true}
+// run=(i=1000)=>{br=false; loop(i)}
+
+// run()
+// stop()
+
+

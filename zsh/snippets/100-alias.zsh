@@ -5,6 +5,7 @@ alias mvimr='mvim --remote'
 
 alias vi='nvim'
 alias vim='nvim'
+alias mypath='echo ${PATH//:/\\n}'
 
 
 

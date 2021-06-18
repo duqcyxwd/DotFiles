@@ -37,7 +37,7 @@ set noerrorbells                " No annoying sound on errors
 set nojoinspaces                " No extra space when join line
 set nonumber                    " No line numbers to start
 set number
-set rnu
+set relativenumber
 set ruler                       " Always show current position
 set scroll=4                    " Number of lines to scroll with ^U/^D
 set scrolloff=15                " Keep cursor away from this many chars top/bot
@@ -56,12 +56,13 @@ set visualbell
 
 " Text Related
 set autoindent
-set expandtab             " Use spaces instead of tabs
-set lbr                   " Automatically break lines at 80 characters.
-set shiftwidth=2          " 1 tab == 2 spaces
-set smarttab              " Be smart when using tabs ;)
+set expandtab                   " Use spaces instead of tabs
+set nolinebreak                 " Automatically break lines at 80 characters.
+set shiftwidth=2                " 1 tab == 2 spaces
+set smarttab                    " Be smart when using tabs ;)
 set tabstop=2
-set textwidth=80          " 80 chars <Space>tt to toggle it
+" set textwidth=80                " 80 chars <Space>tt to toggle it
+set textwidth=0                " I hope this can disable auto break line
 
 " WIP Add toggle for this
 set nowrap                " Wrap lines

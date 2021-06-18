@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+
+read -ra tokens < <(
+  kubectl get pods "$@" |
+    fzf-tmux -p 85% --info=inline --layout=reverse --header-lines=1 \
+        --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
+        --header $'Press CTRL-O to describle that pod\n\n' \
+        --preview-window right,follow \
+        --preview 'kubectl describe pods {1}'
+)
+[ ${#tokens} -gt 1 ] &&
+  kubectl describe pods "${tokens[0]}"
+
+# https://gist.github.com/so0k/42313dbb3b547a0f51a547bb968696ba
+# More reading about kgp
+
+# kubectl get pod   -o 'custom-columns=NAMESPACE:.metadata.namespace,Name:.metadata.name,PHASE:.status.phase,RESTARTS:RESTART:.status.containerStatuses[0].restartCount,CREATED:.metadata.creationTimestamp'
+# https://github.com/kubernetes/kubernetes/issues/98368
+
+# kubectl get pod kafka-0 -o jsonpath='{.spec.containers[*].name}'
+
+
+kubectl get pods -o 'custom-columns=POD:metadata.name,Containers:spec.containers[*].name'| column -t -s,
+
+# https://www.starkandwayne.com/blog/silly-kubectl-trick-2-listing-images/

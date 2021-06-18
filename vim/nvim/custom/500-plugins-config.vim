@@ -1418,6 +1418,13 @@ augroup neoterm
   au TermEnter * set scrolloff=0
 augroup END
 
+# tnoremap <Esc> <C-\><C-n>
+tnoremap <c-h> <C-\><C-N><C-w>h
+" tnoremap <c-j> <C-\><C-N><C-w>j
+" tnoremap <c-k> <C-\><C-N><C-w>k
+" tnoremap <c-l> <C-\><C-N><C-w>l
+
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => open-browser {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

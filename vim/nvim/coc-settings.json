@@ -1,6 +1,5 @@
 {
   "diagnostic.virtualText": true,
-  "coc.source.conjure.priority": 999999,
   // diagnostic-languageserver
   "diagnostic-languageserver.filetypes": {
     "sh": "shellcheck",
@@ -37,9 +36,6 @@
   },
   "codeLens.enable": true,
   "suggest.removeDuplicateItems": true,
-  // python config
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": true,
   "coc.preferences.formatOnSaveFiletypes": [
     "css",
     "markdown",
@@ -62,5 +58,38 @@
   },
   "coc.preferences.extensionUpdateCheck": "daily",
   "coc.preferences.useQuickfixForLocations": true,
-  "suggest.snippetIndicator": "🍦"
+  "suggest.snippetIndicator": "🍦",
+
+  // python config
+  "python.linting.enabled": true,
+  "python.linting.pylintEnabled": true,
+
+  // COC pyright
+  "pyright.enable": true,
+
+  // Coc jedi
+  "jedi.enable": false,
+  "jedi.startupMessage": false,
+  "jedi.markupKindPreferred": "plaintext",
+  "jedi.trace.server": "off",
+  "jedi.jediSettings.autoImportModules": [],
+  "jedi.executable.command": "jedi-language-server",
+  "jedi.executable.args": [],
+  "jedi.codeAction.nameExtractFunction": "jls_extract_def",
+  "jedi.codeAction.nameExtractVariable": "jls_extract_var",
+  "jedi.completion.disableSnippets": false,
+  "jedi.completion.resolveEagerly": false,
+  "jedi.diagnostics.enable": true,
+  "jedi.diagnostics.didOpen": true,
+  "jedi.diagnostics.didChange": true,
+  "jedi.diagnostics.didSave": true,
+  "jedi.workspace.extraPaths": [],
+  "jedi.workspace.symbols.maxSymbols": 20,
+  "jedi.workspace.symbols.ignoreFolders": [
+    ".nox",
+    ".tox",
+    ".venv",
+    "__pycache__",
+    "venv"
+  ]
 }

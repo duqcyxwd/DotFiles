@@ -51,15 +51,14 @@ unalias kgpn
     # --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" --header-lines=1 -0 | awk '{print $1}')
 
     # # Method 5, new one with preview!
-    local tokens=$(
-    { cat $CURRENT_KUBE_NS_LIST_FILE && kgns-cached }  |
+    local token=$({ cat $CURRENT_KUBE_NS_LIST_FILE && kgns-cached }  |
       fzf-tmux -p 85% --info=inline --layout=reverse --header-lines=1 \
       --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
       --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" \
-      --preview-window right,follow \
-      --preview 'kubectl get pods --namespace {1}' "$@" \
-      | awk '{print $1}'
-    )
+      --preview-window right \
+      --preview 'kube_namespace_preview {1}' "$@" \
+      | awk '{print $1}')
+    echo "Change namespace to" $token
     set-ns $token
   }
 
@@ -67,7 +66,7 @@ unalias kgpn
     # set-ns $({{head -n 1 $CURRENT_KUBE_NS_LIST_FILE && cat $CURRENT_KUBE_NS_LIST_FILE | grep chuan} && kgns-cached } | fzf +m \
     kubectl delete namespace $({ { head -n 1 $CURRENT_KUBE_NS_LIST_FILE && cat $CURRENT_KUBE_NS_LIST_FILE | grep chuan } && kgns-cached } | fzf +m \
     --bind "ctrl-r:reload({head -n 1 $CURRENT_KUBE_NS_LIST_FILE && cat $CURRENT_KUBE_NS_LIST_FILE | grep chuan})" \
-    --bind "change:reload({head -n 1 $CURRENT_KUBE_NS_LIST_FILE && cat $CURRENT_KUBE_NS_LIST_FILE | grep chuan})" \
+    --preview 'kube_namespace_preview {1}' "$@" \
     --header-lines=1 -0 | awk '{print $1}')
   }
 
@@ -94,6 +93,16 @@ unalias kgpn
     set-context $(kubectl config get-contexts | fzf-tmux -p +m -0 --header-lines=1 | awk '{print $2}')
   }
 
+}
+kgseci() { #{{{1
+  # Get and preview secre
+  # kubectl config use-context $(kubectl config get-contexts  | awk 'NR>1' | fzf | awk '{print $2}')
+   kubectl get secret |
+      fzf-tmux -p 85% --info=inline --layout=reverse --header-lines=1 \
+      --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
+      --preview-window right \
+      --preview "kubectl describe secret {1} && kubectl get secret {1} -o json | jq '.data | map_values(@base64d)'" "$@" \
+      | awk '{print $1}'
 }
 #     K8S: scale deployment {{{1
 # Useage:
@@ -148,7 +157,7 @@ unalias kgpn
   alias context=set-context
   alias contexti=set-contexti
 
-  alias ksd='kubectrl scale deployment'
+  # alias ksd='kubectl scale deployment'
 
   alias kgns='kubectl get namespaces --sort-by=.metadata.creationTimestamp'
   alias kgdi="kubectl get deployment | fzf-tmux -p --header-lines=1 | awk '{print \$1}'"

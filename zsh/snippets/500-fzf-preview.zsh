@@ -41,7 +41,7 @@ ls_fuzzy_preview() {
   local searchTerm=""
   local FZF_FUZZY_BIND_OPTS="
     --bind=\"ctrl-r:execute-silent(echo {} | agnvim_remote_open )\"
-    --bind=\"ctrl-y:execute-silent(echo {} | pbcopy )\"
+    --bind=\"ctrl-y:execute-silent(echo {} | tr-newline | pbcopy )\"
   "
   while out=$( fd_search_cur_dir | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FUZZY_BIND_OPTS" fzf-tmux \
     -p 85% \
@@ -83,7 +83,9 @@ ls_fuzzy_preview() {
         export FD_SEARCH_CUR_DIR_DEPTH=$new_dept
       fi
     elif [[ "$key" == 'ctrl-v' ]]; then
-      nvim $lastEntry
+      # nvim $lastEntry
+      echo "nvim" $multiInput
+      break;
     elif [[ "$key" == 'ctrl-o' ]]; then
       fzf-exec $lastEntry
       break;
@@ -101,3 +103,19 @@ ls_fuzzy_preview() {
 }
 
 alias lf=ls_fuzzy_preview
+
+
+fzf_ls_widget() {
+
+  local selected num
+  setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
+  setopt localoptions pipefail no_aliases 2> /dev/null
+
+  # --bind=ctrl-z:ignore
+  LBUFFER="${LBUFFER}$(ls_fuzzy_preview)"
+  local ret=$?
+
+  zle reset-prompt
+  return $ret
+}
+zle -N fzf_ls_widget

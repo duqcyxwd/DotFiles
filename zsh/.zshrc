@@ -1,9 +1,12 @@
-#   __  ____     __  ______ _____ _    _ _____   _____
-#  |  \/  \ \   / / |___  // ____| |  | |  __ \ / ____|
-#  | \  / |\ \_/ /     / /| (___ | |__| | |__) | |
-#  | |\/| | \   /     / /  \___ \|  __  |  _  /| |
-#  | |  | |  | |     / /__ ____) | |  | | | \ \| |____
-#  |_|  |_|  |_|    /_____|_____/|_|  |_|_|  \_\\_____|
+#
+#
+# ███╗   ███╗██╗   ██╗    ███████╗███████╗██╗  ██╗██████╗  ██████╗
+# ████╗ ████║╚██╗ ██╔╝    ╚══███╔╝██╔════╝██║  ██║██╔══██╗██╔════╝
+# ██╔████╔██║ ╚████╔╝       ███╔╝ ███████╗███████║██████╔╝██║
+# ██║╚██╔╝██║  ╚██╔╝       ███╔╝  ╚════██║██╔══██║██╔══██╗██║
+# ██║ ╚═╝ ██║   ██║       ███████╗███████║██║  ██║██║  ██║╚██████╗
+# ╚═╝     ╚═╝   ╚═╝       ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
+#
 #
 #  My .zshrc to save some coffee time and keep my hair on my head
 
@@ -13,10 +16,14 @@
 export P10K_INSTANT_PROMOT=1
 export ZPROF_TRACK=0
 
-export ZSH_CONFIG_HOME=$HOME/.config/zsh
+# export ZSH_CONFIG_HOME=$HOME/.config/zsh
 
-PATH=$ZSH_CONFIG_HOME/commands:$PATH
-PATH=$ZSH_CONFIG_HOME/functions:$PATH
+# moved to zshenv
+# PATH=$ZSH_CONFIG_HOME/commands:$PATH
+# for d in $ZSH_CONFIG_HOME/commands/*; do PATH="$PATH:$d"; done
+
+# WIP Not sure if I still need to leave this in regular path
+# PATH=$ZSH_CONFIG_HOME/functions:$PATH
 
 FPATH=$FPATH:$ZSH_CONFIG_HOME/functions:$ZSH_CONFIG_HOME/completions
 autoload -Uz $ZSH_CONFIG_HOME/functions/*(:t)
@@ -61,7 +68,8 @@ mlog "$(date) : zshrc start loading"
   export GOPATH=$HOME/go
   export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
-  export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
+  # export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
+  export KUBECONFIG=$HOME/.kube/config
 
   export NODE_PATH=/usr/lib/node_modules
 
@@ -122,9 +130,9 @@ zinit_load() {
     # such as zsh-autosuggestions or fast-syntax-highlighting!!
     # The order to load plug is important below
     zinit wait lucid light-mode for \
+      Aloxaf/fzf-tab \
       zdharma/history-search-multi-word \
       atinit"zicompinit; zicdreplay"  zdharma/fast-syntax-highlighting \
-      Aloxaf/fzf-tab \
       atload"_zsh_autosuggest_start"  zsh-users/zsh-autosuggestions \
 
     zinit wait silent light-mode for \
@@ -164,7 +172,6 @@ zinit_load() {
     # 3. Plugins
     zinit wait lucid silent light-mode for \
       agkozak/zsh-z \
-      b4b4r07/enhancd \
       djui/alias-tips \
       psprint/zsh-cmd-architect \
       wfxr/forgit \
@@ -174,8 +181,13 @@ zinit_load() {
       OMZ::plugins/iterm2/iterm2.plugin.zsh \
       OMZ::plugins/systemd/systemd.plugin.zsh
 
-    zinit ice wait="0" atload'bindkey.zsh' silent;
+    zinit ice wait="0" atload'bindkey.zsh && source /Users/EYONDUU/.zinit/plugins/bonnefoa---kubectl-fzf/kubectl_fzf.plugin.zsh' silent;
     zinit light zpm-zsh/empty
+
+    zinit ice wait="2" silent;
+    zinit light bonnefoa/kubectl-fzf
+    # source /Users/EYONDUU/.zinit/plugins/bonnefoa---kubectl-fzf/kubectl_fzf.plugin.zsh
+
   }
 
   #}}}
@@ -281,3 +293,4 @@ unsetopt LIST_BEEP
 [ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
 
 mlog "zshrc loaded"
+

@@ -330,7 +330,8 @@ let which_key_map_space['\'] = "FZF Command History Search"
 nnoremap <silent> <Space>\ :FFHistory:<CR>
 
 " https://stackoverflow.com/questions/51644477/reuse-vim-terminal-buffer
-let which_key_map_space["'"] = "Terminal"
+" Toggles the neoterm
+let which_key_map_space["'"] = "Toggles the neoterm"
 nnoremap <silent> <Space>' :above Ttoggle<CR>
 
 let which_key_map_space['<Tab>'] = "last buffer"
