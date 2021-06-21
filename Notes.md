@@ -9,24 +9,16 @@ Custom configurations and settings
 - Install Useful tools
 
 ```sh
-brew install git
-brew install coreutils #provide gdate
-brew install tmux
-brew install vim
 
 # brew install emacs
 brew cask install emacs
-brew install ag
-brew install bat
-brew install lolcat
-brew install boxes
 brew install molovo/revolver/revolver
 
-brew install node
 brew install zookeeper #zkcli
 # Better zkcli https://github.com/let-us-go/zkcli
 # brew tap let-us-go/zkcli
 # brew install zkcli
+
 brew install cassandra
 
 brew tap AdoptOpenJDK/openjdk
@@ -39,14 +31,10 @@ brew cask install adoptopenjdk/openjdk/adoptopenjdk8
 export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
 
 
-#https://github.com/rajivkanaujia/alphaworks/wiki/Installing-Maven
-brew install maven
-
 #export M2_HOME=/usr/local/Cellar/maven/3.5.0/libexec
 #export M2=${M2_HOME}/bin
 #export PATH=${PATH}:${M2_HOME}/bin
 
-brew install helm
 
 brew cask install graphiql
 # hotoo/gitopen
@@ -93,31 +81,16 @@ https://github.com/powerline/fonts
 #### Install other scripts
 
 ```sh
-brew install exa
 brew install fzf
 $(brew --prefix)/opt/fzf/install
-
-brew install autojump
 
 brew tap "rhysd/git-brws" "https://github.com/rhysd/git-brws"
 brew install git-brws
 
-brew install git-extras
-
 python < <(curl -s https://bootstrap.pypa.io/get-pip.py)
 pip install psutil #for paulmelnikow/zsh-startup-timer
 
-brew install watch
-
-
 ```
-
-### SpaceVim
-
-[QuickStartGuild](https://spacevim.org/quick-start-guide/)
-
-`curl -sLf https://spacevim.org/install.sh | bash`
-
 ---
 
 ### Wildfly
@@ -125,14 +98,4 @@ brew install watch
 https://wildfly.org/downloads/
 
 
-###
-[pget](https://github.com/Code-Hex/pget)
-parallel file download client
-
-
-brew install grc
-TODO: Add config for grc
-brew install nnn
-brew install ranger
-brew install alacritty
 
