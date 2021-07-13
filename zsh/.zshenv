@@ -21,4 +21,8 @@ export ZSH_CONFIG_HOME=$HOME/.config/zsh
 export PATH=$ZSH_CONFIG_HOME/commands:$PATH
 export PATH=$ZSH_CONFIG_HOME/commands/kubectl:$PATH
 
-# for d in $ZSH_CONFIG_HOME/commands/*; do export PATH="$d:$PATH"; done
+# Some env which could be used in fzf_tp
+export ZSH_LOADING_LOG=$XDG_CACHE_HOME/.startup.log
+export RUNCACHED_CACHE_DIR=$XDG_CACHE_HOME/.runcached
+export RUNCACHED_MAX_AGE=500
+

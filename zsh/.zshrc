@@ -23,7 +23,8 @@ export ZPROF_TRACK=0
 # for d in $ZSH_CONFIG_HOME/commands/*; do PATH="$PATH:$d"; done
 
 # WIP Not sure if I still need to leave this in regular path
-# PATH=$ZSH_CONFIG_HOME/functions:$PATH
+# I have some fucntion and I want they to be loaded as soon as possible
+PATH=$ZSH_CONFIG_HOME/functions:$PATH
 
 FPATH=$FPATH:$ZSH_CONFIG_HOME/functions:$ZSH_CONFIG_HOME/completions
 autoload -Uz $ZSH_CONFIG_HOME/functions/*(:t)
@@ -70,6 +71,7 @@ mlog "$(date) : zshrc start loading"
 
   # export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
   export KUBECONFIG=$HOME/.kube/config
+  # [[ ! -v KUBECONFIG ]] && export KUBECONFIG=$HOME/.kube/config
 
   export NODE_PATH=/usr/lib/node_modules
 

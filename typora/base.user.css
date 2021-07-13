@@ -1,0 +1,8 @@
+
+#write {
+    max-width: 900px;
+  }
+
+#write ol > li, #write ul > li {
+    /* line-height: 1.2; */
+}

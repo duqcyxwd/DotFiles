@@ -1,0 +1,11 @@
+#!/bin/zsh
+
+# Context based way to create Cache ID
+local RUNCACHED_CACHE_KEY
+(
+kubectl config current-context
+echo "$KUBECONFIG"
+echo -E "$@"
+) | md5sum | read RUNCACHED_CACHE_KEY RUNCACHED__crap__
+
+echo "$RUNCACHED_CACHE_KEY"

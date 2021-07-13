@@ -2,24 +2,10 @@
 #
 #   DEVTOOL: __ls_fuzzy_preview
 # -------------------------------------------------------
-# TODO move to functions?
 
 # fd_search_cur_dir{{{1
 export FD_SEARCH_CUR_DIR_DEPTH=99
-__fd_search_cur_dir_dir() {
-  # fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type file
-  fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --color=always --type file
-}
 
-__fd_search_cur_dir_file() {
-  # fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always --type directory
-  fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --color=always --type directory
-}
-
-fd_search_cur_dir() {
-  # fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore-vcs --color=always
-  { __fd_search_cur_dir_dir && __fd_search_cur_dir_file }
-}
 # }}}1
 # short_pwd{{{1
 # Short pwd for ls_fuzzy_preview
@@ -43,12 +29,16 @@ ls_fuzzy_preview() {
     --bind=\"ctrl-r:execute-silent(echo {} | agnvim_remote_open )\"
     --bind=\"ctrl-y:execute-silent(echo {} | tr-newline | pbcopy )\"
   "
+
+  # Remove --no-ingore
+  # --bind "ctrl-d:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore --color=always --type directory )"
+
   while out=$( fd_search_cur_dir | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FUZZY_BIND_OPTS" fzf-tmux \
     -p 85% \
     --preview "quick-preview {}" --exit-0 \
-    --bind "ctrl-d:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore --color=always --type directory )" \
-    --bind "ctrl-f:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore --color=always --type file )" \
-    --bind "ctrl-r:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore --color=always )" \
+    --bind "ctrl-d:reload( fd_search_cur_dir_dir )" \
+    --bind "ctrl-f:reload( fd_search_cur_dir_file )" \
+    --bind "ctrl-r:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --color=always )" \
     --expect=ctrl-v,ctrl-o,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down,shift-left,shift-right \
     --print-query --header "MIX:[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" \
     --preview-window right:50% --preview-window border-left \

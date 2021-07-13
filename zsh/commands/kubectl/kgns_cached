@@ -1,18 +1,9 @@
 #!/bin/zsh
 
-# TODO Move this to another command?
-__KUBE_CACHE_KEY() { #{{{1
-  local RUNCACHED_CACHE_KEY
-  (
-  kubectl config current-context
-  echo "$KUBECONFIG"
-  echo -E "$@"
-  ) | md5sum | read RUNCACHED_CACHE_KEY RUNCACHED__crap__
+CACHE_DIR=$RUNCACHED_CACHE_DIR/$(kube_cache_key)
 
-  echo "$RUNCACHED_CACHE_KEY"
-}
+# Namepsace with 2 hours ttl
+TTL=${1:-7200}
 
-CACHE_DIR=$RUNCACHED_CACHE_DIR/$(__KUBE_CACHE_KEY "$@")
-
-runcached --cache-dir $CACHE_DIR kubectl get namespaces --sort-by=.metadata.creationTimestamp | awk 'NR == 1; NR > 1 {print $0 | "tac"}'
+runcached --ignore-pwd --ignore-env --ttl $TTL --cache-dir $CACHE_DIR kubectl get namespaces --sort-by=.metadata.creationTimestamp | awk 'NR == 1; NR > 1 {print $0 | "tac"}'
 

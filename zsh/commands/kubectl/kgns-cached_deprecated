@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Deprecated. I was using CURRENT_KUBE_NS_LIST_FILE as cached file for kgns info. After I start to use
+# runcached, this should be deprecated
+
 mlog "[kgns-cached] update ns list cache"
 # cat $CURRENT_KUBE_NS_LIST_FILE
 

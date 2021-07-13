@@ -2,15 +2,15 @@
 
 Script Directories
 
-- commands
+- *commands*
   - General scripts will be add to PATH
   - Standalone script should not impact zsh environment
-- functions
+- *functions*
   - ZSH scripts will be added in FPATH
   - those scripts will be evalated on use. (Lazy load)
   - Lazy load environment variables as well
-- snippets
-  - Random snippets
+- *snippets*
+  - Random snippets that can't be lazy load
 
 TODO
 - lib

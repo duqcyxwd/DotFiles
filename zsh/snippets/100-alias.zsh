@@ -87,3 +87,7 @@ alias gcat="grcat ~/.config/grc/log"
 function take() {
   mkdir -p $@ && cd ${@:$#}
 }
+
+function whichl() {
+  exa -lbFa -la $(which $@)
+}
