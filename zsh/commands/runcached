@@ -81,6 +81,9 @@ mkdir -p "$RUNCACHED_CACHE_DIR" >/dev/null 2>/dev/null
 	# Almost(?) nothing uses OLDPWD, but taking it into account potentially reduces cache efficency.
 	# Thus, we ignore it for the purpose of coming up with a cache key.
 	unset OLDPWD
+	# I added this so I can use --ttl to invalid old cache
+	unset RUNCACHED_MAX_AGE
+
 	((RUNCACHED_IGNORE_PWD)) && unset PWD
 	((RUNCACHED_IGNORE_ENV)) || env
 	echo -E "$@"
