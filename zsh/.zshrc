@@ -16,18 +16,15 @@
 export P10K_INSTANT_PROMOT=1
 export ZPROF_TRACK=0
 
-# export ZSH_CONFIG_HOME=$HOME/.config/zsh
-
-# moved to zshenv
-# PATH=$ZSH_CONFIG_HOME/commands:$PATH
-# for d in $ZSH_CONFIG_HOME/commands/*; do PATH="$PATH:$d"; done
+# PATH=$ZDOTDIR/commands:$PATH
+# for d in $ZDOTDIR/commands/*; do PATH="$PATH:$d"; done
 
 # WIP Not sure if I still need to leave this in regular path
 # I have some fucntion and I want they to be loaded as soon as possible
-PATH=$ZSH_CONFIG_HOME/functions:$PATH
+PATH=$ZDOTDIR/functions:$PATH
 
-FPATH=$FPATH:$ZSH_CONFIG_HOME/functions:$ZSH_CONFIG_HOME/completions
-autoload -Uz $ZSH_CONFIG_HOME/functions/*(:t)
+FPATH=$FPATH:$ZDOTDIR/functions:$ZDOTDIR/completions
+autoload -Uz $ZDOTDIR/functions/*(:t)
 
 mlog "$(date) : zshrc start loading"
 
@@ -151,7 +148,7 @@ zinit_load() {
   # Stage 3 Lazy load Personal scripts {{{2
   {
     : '
-    for snippet in $ZSH_CONFIG_HOME/snippets/*.zsh; do
+    for snippet in $ZDOTDIR/snippets/*.zsh; do
       mlog "snippet loading $snippet"
       # zinit update $snippet
       zinit ice wait silent;

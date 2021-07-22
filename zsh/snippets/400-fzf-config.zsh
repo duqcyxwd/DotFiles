@@ -106,33 +106,23 @@ __fzf_config() {
 
     # FZF Theme }}}
   # FZF Default Config {{{3
-    # Notes: Can't put FZF_TMUX_OPTS into FZF_DEFAULT_OPTS
-    # fzf-tmux is impliment in a bash script
-    export FZF_TMUX=1
-    export FZF_TMUX_OPTS="-p 85% "
-    export TMUX_FZF_OPTIONS=$FZF_TMUX_OPTS
     export FZF_MY_OPTS="--reverse --ansi --multi --exit-0 --cycle --height 80% --preview-window border-left"
-
-    # Use fzf-tp instead
-    alias fzfp='fzf-tmux -p 85%'
-
-
 
     # FZF Default options
     export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_DRACULA "
     # export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_AYU"
     # export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_NORD"
 
+    # Not sure if this is used
+    # export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
 
-    export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
-
-    # FZF C-f
+    # FZF C-f (file name completions)
     local FZF_PREVIEW_FILE='bat --style="numbers,changes" --color=always {} -r 0:200| head -200'
-    export FZF_CTRL_T_OPTS=" --preview \"${FZF_PREVIEW_FILE}\" --header 'Searching files' "                          #fzf file
+    export FZF_CTRL_T_OPTS=" --preview \"${FZF_PREVIEW_FILE}\" --prompt 'Files> ' "                          #fzf file
 
-    # FZF C-g
+    # FZF C-g (go to directories)
     local FZF_PREVIEW_DIR='exa --group-directories-first -F --icons --group-directories-first -T -lh -L 2 --color=always {}'
-    export FZF_ALT_C_OPTS=" --preview \"${FZF_PREVIEW_DIR}\" --header 'Go to directory' "                                                      #fzf cd Folder
+    export FZF_ALT_C_OPTS=" --preview \"${FZF_PREVIEW_DIR}\" --prompt 'Goto> ' "                                                      #fzf cd Folder
 
     # Options to fzf command
     # export FZF_COMPLETION_OPTS='+c -x'

@@ -1,0 +1,11 @@
+#!/bin/zsh
+# Namepsace with 15 second ttl
+POD_ID=$1
+TTL=${2:-15}
+NS=${3:-$(kcgcn)}
+
+
+# Use pod id as cached key
+local CACHE_DIR=$RUNCACHED_CACHE_DIR/$(kube_cache_key $POD_ID)
+
+runcached --ignore-pwd --ignore-env --ttl $TTL --cache-dir $CACHE_DIR kubectl describe pods --namespace $NS $POD_ID --kubeconfig $KUBECONFIG

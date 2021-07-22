@@ -28,7 +28,9 @@ KUBECONFIG=${2:-$HOME/.kube/config}
 f1=$(mktemp)
 f2=$(mktemp)
 
-{ kubectl get pods --namespace $1 --kubeconfig $KUBECONFIG } > $f1 &
+# { kubectl get pods --namespace $1 --kubeconfig $KUBECONFIG } > $f1 &
+# kgp_cached use to update cache
+{ kgp_cached 0 $1 } > $f1 &
 P1=$!
 
 { kubectl get svc --namespace $1 --kubeconfig $KUBECONFIG } > $f2 &

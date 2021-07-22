@@ -1,0 +1,14 @@
+#!/bin/zsh
+# Namepsace with 5 minutes ttl
+TTL=${1:-300}
+NS=${2:-$(kcgcn)}
+
+
+# Pods list live under namespace cached folder
+local CACHE_DIR=$RUNCACHED_CACHE_DIR/$(kube_cache_key)
+
+# echo "kgp_cached DIR: $CACHE_DIR"
+# echo "par: $TTL $namespace"
+
+runcached --ignore-pwd --ignore-env --ttl $TTL --cache-dir $CACHE_DIR kubectl get pods --namespace $NS --kubeconfig $KUBECONFIG
+

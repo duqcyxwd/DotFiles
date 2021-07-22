@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for snippet in $ZSH_CONFIG_HOME/snippets/*.zsh; do
+for snippet in $ZDOTDIR/snippets/*.zsh; do
   mlog "source loading $snippet "
   source $snippet
 done

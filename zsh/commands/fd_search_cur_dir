@@ -4,5 +4,5 @@
 
 # fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --color=always --type directory
 
-fd_search_cur_dir_dir && fd_search_cur_dir_file
+fd_search_cur_dir_dir "$@" && fd_search_cur_dir_file "$@"
 

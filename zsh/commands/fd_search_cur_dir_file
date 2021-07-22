@@ -2,5 +2,5 @@
 
 DEPTH=${FD_SEARCH_CUR_DIR_DEPTH2:-98}
 
-fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --color=always --type file
+fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --color=always --type file --type symlink "$@"
 

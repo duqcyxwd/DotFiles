@@ -31,7 +31,7 @@ setopt AUTO_CD                # ZSH AUTO CD into directories
 
 # Notes
 # https://scarff.id.au/blog/2019/zsh-history-conditional-on-command-success/
-zshaddhistory() {
+zshaddhistory() { # {{{1
   emulate -L zsh
 
   # return 1 when first command is unknown command
@@ -70,6 +70,44 @@ zshaddhistory() {
   # https://superuser.com/questions/352788/how-to-prevent-a-command-in-the-zshell-from-being-saved-into-history
 }
 
+
+function fh() { # {{{1
+  # WIP
+  # print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g')
+
+  # Use fzf delimiter
+  HISTORY_CACHED_FILE=~/.cache/zsh/__history_reverse_cached
+  HISTORY_CACHED_FILE_C=~/.cache/zsh/__history_reverse_cached_c
+  HISTORY_CACHED_FILE_INDEXED=~/.cache/zsh/__history_reverse_cached_indexed
+  # HISTORY_CACHED_FILE_ORIGINAL=~/.cache/zsh/__history_cached
+  # tail -r $HISTORY_CACHED_FILE > $HISTORY_CACHED_FILE_ORIGINAL
+
+  __history_search_cache() {
+    fc -nrli 1 > $HISTORY_CACHED_FILE
+    cat $HISTORY_CACHED_FILE | nl -s ': ' -b a > $HISTORY_CACHED_FILE_INDEXED
+    cp $HISTORY_CACHED_FILE $HISTORY_CACHED_FILE_C
+    mlog "cached created"
+  }
+
+  # __history_search_cache &|
+
+  print -z $(
+    ([ -n "$ZSH_NAME" ] && { cat $HISTORY_CACHED_FILE_INDEXED && __history_search_cache &| } ) | \
+      fzf-tmux -p 85% --delimiter=': ' \
+      --bind "ctrl-r:reload(cat $HISTORY_CACHED_FILE_INDEXED)" \
+      --preview 'bat --color=always --highlight-line {1} '$HISTORY_CACHED_FILE_C --preview-window '+{1}-5' | \
+      cut -c 27-
+  )
+
+
+  unset HISTORY_CACHED_FILE
+  unset HISTORY_CACHED_FILE_INDEXED
+  unset HISTORY_CACHED_FILE_ORIGINAL
+}
+
+# }}}
+
+
 alias history_count="cat $ZDOTDIR/.zsh_history| wc -l"
 dis_zsh_history() { local HISTSIZE=0; }
 # fc -p "$HISTFILE" This will chagne history file
@@ -92,3 +130,5 @@ uuu() {
 
 function bla() { return 1 }
 function bla2() { return 0 }
+
+

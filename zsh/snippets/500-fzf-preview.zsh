@@ -3,10 +3,7 @@
 #   DEVTOOL: __ls_fuzzy_preview
 # -------------------------------------------------------
 
-# fd_search_cur_dir{{{1
 export FD_SEARCH_CUR_DIR_DEPTH=99
-
-# }}}1
 # short_pwd{{{1
 # Short pwd for ls_fuzzy_preview
 short_pwd() {
@@ -33,14 +30,15 @@ ls_fuzzy_preview() {
   # Remove --no-ingore
   # --bind "ctrl-d:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore --color=always --type directory )"
 
-  while out=$( fd_search_cur_dir | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FUZZY_BIND_OPTS" fzf-tmux \
+  while out=$( fd_search_cur_dir "$@" | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FUZZY_BIND_OPTS" fzf-tmux \
     -p 85% \
     --preview "quick-preview {}" --exit-0 \
-    --bind "ctrl-d:reload( fd_search_cur_dir_dir )" \
-    --bind "ctrl-f:reload( fd_search_cur_dir_file )" \
-    --bind "ctrl-r:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --color=always )" \
+    --bind "ctrl-d:reload( fd_search_cur_dir_dir )+change-prompt(Dir> )" \
+    --bind "ctrl-f:reload( fd_search_cur_dir_file )+change-prompt(File> )" \
+    --bind "ctrl-r:reload( fd_search_cur_dir "$@" )+change-prompt(Search> )" \
     --expect=ctrl-v,ctrl-o,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down,shift-left,shift-right \
-    --print-query --header "MIX:[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" \
+    --print-query --header "DEP:[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" \
+    --prompt 'Search> ' \
     --preview-window right:50% --preview-window border-left \
     --height ${FZF_TMUX_HEIGHT:-100%} \
     -q "$searchTerm" \

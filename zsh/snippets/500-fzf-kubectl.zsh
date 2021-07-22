@@ -4,6 +4,7 @@ export CURRENT_KUBE_NS_FILE=$HOME/.kube/KUBE_NS
 export CURRENT_KUBE_NS_LIST_FILE=$HOME/.kube/KUBE_NS_LIST
 
 unalias kgpn
+unalias kgpw
 unalias kgns
 
 {
@@ -95,15 +96,17 @@ nsi() { #{{{2
   }
 
   kdelnsi() { #{{{2
+    # Similar with kgns_cached with grep chuan
     # set-ns $({{head -n 1 $CURRENT_KUBE_NS_LIST_FILE && cat $CURRENT_KUBE_NS_LIST_FILE | grep chuan} && kgns-cached } | fzf +m \
 
     local CACHE_DIR=$RUNCACHED_CACHE_DIR/$(kube_cache_key)
+
     local namespace=$( { kgns_cached | head -n 1 && kgns_cached | grep chuan } |
       fzf_tp --info=inline --layout=reverse --header-lines=1 \
       --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
       --bind "ctrl-r:reload(/bin/rm -rf $CACHE_DIR && kgns_cached | head -n 1 && kgns_cached | grep chuan)" \
       --preview-window right \
-      --preview "runcached --cache-dir $CACHE_DIR --prune-cache kube_namespace_preview {1} $KUBECONFIG" "$@" \
+      --preview "runcached --ignore-pwd --ignore-env --cache-dir $CACHE_DIR kube_namespace_preview {1} $KUBECONFIG" "$@" \
       | awk '{print $1}');
 
     if [ "$namespace" -eq "" ]; then
@@ -146,22 +149,24 @@ nsi() { #{{{2
 
 }
 
+kgpi() { #{{{1
+  # No need to clean kdp_cached since ttl is 15 second. I can add job to clean pod cache dir
+  # in future if it is needed.
+
+  kgp_cached|
+      fzf-tmux -p 85% --info=inline --layout=reverse --header-lines=1 \
+      --bind "ctrl-r:reload(kgp_cached 0 $(kcgcn))" \
+      --prompt "$(kubectl config current-context | sed 's/-context$//')/$(kcgcn) pods> " \
+      --preview-window right \
+      --preview 'kdp_cached {1}' \
+      "$@" \
+      | awk '{print $1}'
+}
+
 kgseci() { #{{{1
   # Get and preview secre
-
-  # kubectl config use-context $(kubectl config get-contexts  | awk 'NR>1' | fzf | awk '{print $2}')
-  # WIP, use ctrl-r to reload current list and current secret preview, need refresh preview to see change
-  # runcached --ignore-env kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG|
-  #     fzf-tmux -p 85% --info=inline --layout=reverse --header-lines=1 \
-  #     --bind "ctrl-r:reload(runcached --ignore-env --ttl 0 kube_secret_preview {1} $KUBECONFIG 1&> /dev/null && runcached --ignore-env --ttl 0 kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
-  #     --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
-  #     --preview-window right \
-  #     --preview "runcached --ignore-env kube_secret_preview {1} $KUBECONFIG" "$@" \
-  #     | awk '{print $1}'
-
   # CACHE_DIR is namespaced based, so ctrl-r will not updates others
   local CACHE_DIR=$RUNCACHED_CACHE_DIR/$(kube_cache_key $(kcgcn))
-  echo $CACHE_DIR
 
   runcached --ignore-pwd --ignore-env --cache-dir $CACHE_DIR kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG|
       fzf-tmux -p 85% --info=inline --layout=reverse --header-lines=1 \
@@ -171,6 +176,7 @@ kgseci() { #{{{1
       --preview "runcached --ignore-pwd --ignore-env --cache-dir $CACHE_DIR kube_secret_preview {1} $KUBECONFIG" "$@" \
       | awk '{print $1}'
 }
+
 #     K8S: scale deployment {{{1
 # Useage:
 #   kgdi | ksd0
@@ -227,6 +233,8 @@ kgseci() { #{{{1
 
   alias kgdi="kubectl get deployment | fzf-tmux -p --header-lines=1 | awk '{print \$1}'"
   alias kgns='kgns_cached'
+  alias kgp='kgp_cached'
+  alias kgpw='kubectl get pods --watch'
   alias kgnsi=nsi
   alias ns='kgns'
   alias snsi=set-nsi
