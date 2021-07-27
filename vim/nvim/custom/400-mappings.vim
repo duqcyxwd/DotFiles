@@ -44,6 +44,7 @@ let g:which_key_map_g = {}
 
 
 let g:which_key_map_space.b = { 'name' : '+buffers' }
+let g:which_key_map_space.c = { 'name' : '+COC' }
 let g:which_key_map_space.f = { 'name' : '+file/format' }
 let g:which_key_map_space.g = { 'name' : '+Git' }
 let g:which_key_map_space.h = { 'name' : '+Help' }
@@ -72,6 +73,41 @@ nnoremap <Space>bh :Startify<CR>
 let which_key_map_space.b.c = ":BufOnly Close other buffers"
 nnoremap <Space>bc :BufOnly<CR>
 nnoremap <Space>bC :BufOnly<CR>
+
+" [SpaceMapping] c+: Coc {{{1
+" ------------------------------------------------------------------------------
+
+if exists('g:plugs["coc.nvim"]')
+    let which_key_map_space.c.e = "Coc Explorer"
+    nnoremap <silent><nowait> <Space>ce :CocCommand explorer<CR>
+
+    " Show COC commands.
+    nnoremap <silent><nowait> <space>cc  :<C-u>CocList commands<cr>
+
+    " Show COC commands.
+    nnoremap <silent><nowait> <space>cl  :CocList<cr>
+    nnoremap <silent><nowait> <space>ci  :CocInfo<cr>
+
+    " Show all diagnostics.
+    nnoremap <silent><nowait> <space>ca  :<C-u>CocList diagnostics<cr>
+    " Manage extensions.
+    nnoremap <silent><nowait> <space>cE  :<C-u>CocList extensions<cr>
+
+
+    " Find symbol of current document.
+    nnoremap <silent><nowait> <space>co  :<C-u>CocList outline<cr>
+    " Search workspace symbols.
+    nnoremap <silent><nowait> <space>cs  :<C-u>CocList -I symbols<cr>
+
+
+    " Do default action for next item.
+    nnoremap <silent><nowait> <space>cj  :<C-u>CocNext<CR>
+    " Do default action for previous item.
+    nnoremap <silent><nowait> <space>ck  :<C-u>CocPrev<CR>
+    " Resume latest coc list.
+    nnoremap <silent><nowait> <space>cp  :<C-u>CocListResume<CR>
+endif
+
 
 " [SpaceMapping] f+: File/Format {{{1
 " ------------------------------------------------------------------------------

@@ -166,7 +166,7 @@ zinit_load() {
 
   # Stage 4 Lazy load Other scripts  {{{2
   {
-    # 1. Plugins takes with long loading time
+    # 1. Plugins with long loading time
     # 2. Plugins need to be loaded after config
     # 3. Plugins
     zinit wait lucid silent light-mode for \
@@ -183,8 +183,10 @@ zinit_load() {
     zinit ice wait="0" atload'bindkey.zsh && source /Users/EYONDUU/.zinit/plugins/bonnefoa---kubectl-fzf/kubectl_fzf.plugin.zsh' silent;
     zinit light zpm-zsh/empty
 
-    zinit ice wait="2" silent;
-    zinit light bonnefoa/kubectl-fzf
+    # zinit ice wait="2" silent;
+    # zinit ice wait="0" atload'bindkey.zsh && source /Users/EYONDUU/.zinit/plugins/bonnefoa---kubectl-fzf/kubectl_fzf.plugin.zsh' silent;
+    # zinit light bonnefoa/kubectl-fzf
+    # Need to run cache_builder
     # source /Users/EYONDUU/.zinit/plugins/bonnefoa---kubectl-fzf/kubectl_fzf.plugin.zsh
 
   }

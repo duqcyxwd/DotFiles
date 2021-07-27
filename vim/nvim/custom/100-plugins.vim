@@ -34,18 +34,14 @@ Plug 'cormacrelf/vim-colors-github'
 Plug 'Olical/conjure'
 
 " Plug 'guns/vim-clojure-static'
-Plug 'clojure-vim/clojure.vim'|                      " Replace guns/vim-clojure-static
-" Plug 'guns/vim-sexp'
-" Plug 'duqcyxwd/vim-sexp'                           "My version of vim-sexp
-" Or load it locally
-" source /Users/EYONDUU/duqcyxwd/vim-sexp/autoload/sexp.vim
-" source /Users/EYONDUU/duqcyxwd/vim-sexp/plugin/sexp.vim
-Plug '~/duqcyxwd/vim-sexp'
+Plug 'clojure-vim/clojure.vim'|                      " Replace guns/vim-clojure-static, code style
+Plug '~/duqcyxwd/vim-sexp'                           " My version of vim-sexp
+
 " Plug 'tpope/vim-sexp-mappings-for-regular-people'| " Tesing
 
 " Interesting tag jumping!
 Plug 'tpope/vim-fireplace'
-Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }
+Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }    " uses a vim-fireplace REPL connection to only format the current file
 Plug 'luochen1990/rainbow'
 
 " VimWiki with Markdown {{{1
@@ -86,7 +82,10 @@ Plug 'junegunn/limelight.vim'
 Plug 'kassio/neoterm'
 Plug 'kshenoy/vim-signature'
 Plug 'liuchengxu/vim-which-key'
-Plug 'ludovicchabant/vim-gutentags'|               "Good way to generate tags
+
+" SOmehow it cause problem on exists
+" Plug 'ludovicchabant/vim-gutentags'|               "Good way to generate tags
+
 Plug 'machakann/vim-sandwich'
 Plug 'mg979/vim-visual-multi'|                     "vim multi cursor
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -166,8 +165,6 @@ Plug 'vlime/vlime', {'rtp': 'vim/'}|                     "Common Lisp dev enviro
 
 " WIP
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " Better syntax highlight
-
-Plug 'neovim/nvim-lspconfig'
 
 
 " }}}1

@@ -1,5 +1,7 @@
 {
   "diagnostic.virtualText": true,
+  "diagnostic.checkCurrentLine": true,
+
   // diagnostic-languageserver
   "diagnostic-languageserver.filetypes": {
     "sh": "shellcheck",
@@ -11,11 +13,12 @@
     "sh": "shfmt"
   },
   "languageserver": {
-    "bash": {
+    "bashServer": {
       "command": "bash-language-server",
       "args": [
         "start"
       ],
+      "trace.server": "verbose",
       "filetypes": [
         "sh", "zsh"
       ],
@@ -26,7 +29,8 @@
     "clojure-lsp": {
       "command": "clojure-lsp",
       "filetypes": ["clojure"],
-      "rootPatterns": ["project.clj"],
+      "disableDiagnostics": false,
+      "rootPatterns": ["deps.edn", "project.clj"],
       "additionalSchemes": ["jar", "zipfile"],
       "trace.server": "verbose",
       "initializationOptions": {
@@ -34,7 +38,7 @@
       }
     }
   },
-  "codeLens.enable": true,
+  "codeLens.enable": false,
   "suggest.removeDuplicateItems": true,
   "coc.preferences.formatOnSaveFiletypes": [
     "css",

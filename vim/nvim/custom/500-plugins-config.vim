@@ -97,7 +97,7 @@ let g:colorizer_disable_bufleave = 1
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" " => ctrlp {{{1
+" => ctrlp {{{1
 " """"""""""""""""""""""""""""""
 " let g:ctrlp_working_path_mode = 'ra'
 "
@@ -238,84 +238,25 @@ let g:highlightedyank_highlight_duration = 250
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => iced {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" nmap <localleader>'   <Plug>(iced_connect)
-" nmap <localleader>ei  <Plug>(iced_eval)<Plug>(sexp_inner_element)``
-" nmap <localleader>ee  <Plug>(iced_eval)<Plug>(sexp_outer_list)``
-" nmap <localleader>et  <Plug>(iced_eval_outer_top_list)
-" " nmap <localleader>er  <Plug>(iced_eval_repl)<Plug>(sexp_outer_top_list)``
-" nmap <localleader>er  :<C-u>IcedEval *e<CR>
-" nmap <localleader>E   :<C-u>IcedEval<space>
-" nmap <localleader>en  <Plug>(iced_eval_ns)
-" nmap <localleader>ep  <Plug>(iced_print_last)
-" nmap <localleader>eb  <Plug>(iced_require)
-" nmap <localleader>eB  <Plug>(iced_require_all)
-" nmap <localleader>eu  <Plug>(iced_undef)
-" nmap <localleader>eM  <Plug>(iced_macroexpand_outer_list)
-" nmap <localleader>em  <Plug>(iced_macroexpand_1_outer_list)
-" nmap <localleader>tt  <Plug>(iced_test_under_cursor)
-" nmap <localleader>tl  <Plug>(iced_test_rerun_last)
-" nmap <localleader>ts  <Plug>(iced_test_spec_check)
-" nmap <localleader>to  <Plug>(iced_test_buffer_open)
-" nmap <localleader>tn  <Plug>(iced_test_ns)
-" nmap <localleader>tp  <Plug>(iced_test_all)
-" nmap <localleader>tr  <Plug>(iced_test_redo)
-" nmap <localleader>ss  <Plug>(iced_stdout_buffer_open)
-" nmap <localleader>sl  <Plug>(iced_stdout_buffer_clear)
-" nmap <localleader>sq  <Plug>(iced_stdout_buffer_close)
-" nmap <localleader>rcn <Plug>(iced_clean_ns)
-" nmap <localleader>ram <Plug>(iced_add_missing)
-" nmap <localleader>ran <Plug>(iced_add_ns)
-" nmap <localleader>rtf <Plug>(iced_thread_first)
-" nmap <localleader>rtl <Plug>(iced_thread_last)
-" nmap <localleader>ref <Plug>(iced_extract_function)
-" nmap <localleader>rml <Plug>(iced_move_to_let)
-" nmap <localleader>hs  <Plug>(iced_source_show)
-" nmap <localleader>hg  <Plug>(iced_grimoire_open)
-" nmap <localleader>hh  <Plug>(iced_command_palette)
-" nmap <localleader>br  <Plug>(iced_related_namespace)
-" nmap <localleader>bs  <Plug>(iced_browse_spec)
-" nmap <localleader>bt  <Plug>(iced_browse_test_under_cursor)
-" nmap <localleader>jn  <Plug>(iced_jump_to_next_sign)
-" nmap <localleader>jN  <Plug>(iced_jump_to_prev_sign)
-" nmap <localleader>gl  <Plug>(iced_goto_let)
-" nmap <localleader>*   <Plug>(iced_iced)
-" nmap <localleader>fr  <Plug>(iced_find_var_references)
-" nmap <localleader>fR  <Plug>(iced_find_var_references!)
-" nmap <localleader>/   :<C-u>IcedGrep<Space>
-" " nmap <C-]>       <Plug>(iced_def_jump)
-" " nmap <C-t>       <Plug>(iced_def_back)
-" nmap K           <Plug>(iced_document_open)
-" nmap ==          <Plug>(iced_format)
+"" => jack-in {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" nnoremap <leader>L :Lein<CR>
+"" nnoremap <leader>B :Boot<CR>
+"" nnoremap <leader>C :Clj<CR>
 
-" press q to close iced buffers
-augroup iced_buffers
-  autocmd!
-  autocmd BufEnter iced_* nnoremap <buffer> q :bd!<CR>
-augroup END
+"" Not really part of jack-in, but it's as if it were
+"" nnoremap <leader>I :Start! iced repl<CR>
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => jack-in {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" nnoremap <leader>L :Lein<CR>
-" nnoremap <leader>B :Boot<CR>
-" nnoremap <leader>C :Clj<CR>
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"" => LanguageClient {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" Not really part of jack-in, but it's as if it were
-" nnoremap <leader>I :Start! iced repl<CR>
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => LanguageClient {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" https://github.com/autozimu/LanguageClient-neovim
 let g:LanguageClient_serverCommands = {
-    \ 'reason': ['ocaml-language-server', '--stdio'],
-    \ 'ocaml': ['ocaml-language-server', '--stdio'],
-    \ 'clojure': ['bash', '~/bin/clojure-lsp'],
+    \ 'clojure': ['bash', '/usr/local/bin/clojure-lsp'],
+    \ 'sh': ['bash-language-server', 'start']
     \ }
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => lightline {{{1
@@ -352,49 +293,6 @@ let g:lightline.tabline = {
 
 
 """""""""""""""""""""""""""""""
-" => Merlin (OCAML) {{{1
-"""""""""""""""""""""""""""""""
-if executable('opam')
-  let g:opamshare = substitute(system('opam config var share 2>/dev/null'),'\n$','','''')
-  execute "set rtp+=" . g:opamshare . "/merlin/vim"
-endif
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => ncm2 (fka nvim-completion-manager) {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" enable ncm2 for all buffers
-" autocmd BufEnter * call ncm2#enable_for_buffer()
-
-" IMPORTANTE: :help Ncm2PopupOpen for more information
-" set completeopt=noinsert,menuone,noselect
-
-" enter inserts newline when completion window is open
-" inoremap <expr> <CR> pumvisible() ? "\<c-y>\<cr>" : "\<CR>"
-
-" A variation on the above that plays nicely with vim-endwise.
-" source: https://github.com/roxma/nvim-completion-manager/issues/49#issuecomment-285923119
-" let g:endwise_no_mappings = 1
-" imap <C-X><CR>   <CR><Plug>AlwaysEnd
-" imap <expr> <CR> (pumvisible() ? "\<C-Y>\<CR>\<Plug>DiscretionaryEnd" : "\<CR>\<Plug>DiscretionaryEnd")
-
-" tab completion
-" inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
-" inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-" from :help Ncm2PopupOpen
-" autocmd User Ncm2PopupOpen set completeopt=noinsert,menuone,noselect
-" autocmd User Ncm2PopupClose set completeopt=menuone
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => neomake {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Run neomake on insert and normal mode change and upon reading or writing a
-" buffer, with a 500ms delay.
-" call neomake#configure#automake('nrwi', 500)
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => sandwich {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
@@ -637,10 +535,10 @@ nmap <Space>2 <Plug>AirlineSelectTab2
 nmap <Space>3 <Plug>AirlineSelectTab3
 nmap <Space>4 <Plug>AirlineSelectTab4
 nmap <Space>5 <Plug>AirlineSelectTab5
-" nmap <Space>6 <Plug>AirlineSelectTab6
-" nmap <Space>7 <Plug>AirlineSelectTab7
-" nmap <Space>8 <Plug>AirlineSelectTab8
-" nmap <Space>9 <Plug>AirlineSelectTab9
+nmap <Space>6 <Plug>AirlineSelectTab6
+nmap <Space>7 <Plug>AirlineSelectTab7
+nmap <Space>8 <Plug>AirlineSelectTab8
+nmap <Space>9 <Plug>AirlineSelectTab9
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -806,6 +704,7 @@ if exists('g:plugs["coc.nvim"]')
 
   " Use K to show documentation in preview window.
   nnoremap <silent> K :call <SID>show_documentation()<CR>
+  nnoremap <silent> <Space>cd :call <SID>show_documentation()<CR>
 
   " Highlight the symbol and its references when holding the cursor.
   " TODO Enable this
@@ -872,12 +771,6 @@ if exists('g:plugs["coc.nvim"]')
 
   " Mappings for CoCList
 
-  " Show COC commands.
-  nnoremap <silent><nowait> <space>cc  :<C-u>CocList commands<cr>
-
-  " Show COC commands.
-  nnoremap <silent><nowait> <space>cl  :CocList<cr>
-  nnoremap <silent><nowait> <space>ci  :CocInfo<cr>
 
   " COC Actions
   " nnoremap <silent><nowait> <space>c:  :CocAction<cr>
@@ -902,28 +795,6 @@ if exists('g:plugs["coc.nvim"]')
 
   " vmap <leader>cf <Plug>(coc-format-selected)
   " nmap <leader>cf <Plug>(coc-format-selected)
-
-  " Common commands
-  nnoremap <silent><nowait> <Space>ce :CocCommand explorer<CR>
-
-  " Show all diagnostics.
-  nnoremap <silent><nowait> <space>ca  :<C-u>CocList diagnostics<cr>
-  " Manage extensions.
-  nnoremap <silent><nowait> <space>cE  :<C-u>CocList extensions<cr>
-
-
-  " Find symbol of current document.
-  nnoremap <silent><nowait> <space>co  :<C-u>CocList outline<cr>
-  " Search workspace symbols.
-  nnoremap <silent><nowait> <space>cs  :<C-u>CocList -I symbols<cr>
-
-
-  " Do default action for next item.
-  nnoremap <silent><nowait> <space>cj  :<C-u>CocNext<CR>
-  " Do default action for previous item.
-  nnoremap <silent><nowait> <space>ck  :<C-u>CocPrev<CR>
-  " Resume latest coc list.
-  nnoremap <silent><nowait> <space>cp  :<C-u>CocListResume<CR>
 
 
   " WIP
@@ -1286,6 +1157,17 @@ let g:fzf_colors =
 " - `.` to start command-line with `:Git [CURSOR] SHA` à la fugitive
 " - `q` or `gq` to close
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => guntentags {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" No tag generate for git commit. This will remove the error message in git
+" commit: https://github.com/ludovicchabant/vim-gutentags/issues/269
+let g:gutentags_exclude_filetypes = ['gitcommit', 'gitconfig', 'gitrebase', 'gitsendemail', 'git']
+" WIP, not sure if it is working
+let g:gutentags_project_root = ['pom.xml', '.p4ignore', 'project.clj', '.git']
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => gina {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:gina#action#index#discard_directories = 1
@@ -1418,11 +1300,12 @@ augroup neoterm
   au TermEnter * set scrolloff=0
 augroup END
 
-# tnoremap <Esc> <C-\><C-n>
-tnoremap <c-h> <C-\><C-N><C-w>h
-" tnoremap <c-j> <C-\><C-N><C-w>j
-" tnoremap <c-k> <C-\><C-N><C-w>k
-" tnoremap <c-l> <C-\><C-N><C-w>l
+tnoremap <Esc> <C-\><C-n>
+tnoremap <C-h> <C-\><C-N><C-w>h
+
+" tnoremap <C-j> <C-\><C-N><C-w>j
+" tnoremap <C-k> <C-\><C-N><C-w>k
+" tnoremap <C-l> <C-\><C-N><C-w>l
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2200,7 +2083,6 @@ let g:which_key_floating_opts = { 'row': '0', 'col': '-10', 'height': '+0', 'wid
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 " => WIP Tree sitter Sample {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 

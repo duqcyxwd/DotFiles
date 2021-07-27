@@ -30,7 +30,8 @@ alias mvimdiff="mvim -d"
 
 
 #============= zshrc config =============
-alias mz='nvim $ZDOTDIR/.zshrc && shfmt -i 4 -s -w -ci $ZDOTDIR/.zshrc'
+# alias mz='nvim $ZDOTDIR/.zshrc && shfmt -i 4 -s -w -ci $ZDOTDIR/.zshrc'
+alias mz='nvim $ZDOTDIR/.zshrc'
 
 alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'
 
