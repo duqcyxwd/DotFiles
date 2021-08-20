@@ -1,6 +1,7 @@
 #!/bin/zsh
-# Namepsace with 5 minutes ttl
-TTL=${1:-300}
+# Namepsace with 20 minutes ttl
+
+RUNCAHED_TTL=${1:-${TTL:-1200}}
 NS=${2:-$(kcgcn)}
 
 
@@ -10,5 +11,8 @@ local CACHE_DIR=$RUNCACHED_CACHE_DIR/$(kube_cache_key)
 # echo "kgp_cached DIR: $CACHE_DIR"
 # echo "par: $TTL $namespace"
 
-runcached --ignore-pwd --ignore-env --ttl $TTL --cache-dir $CACHE_DIR kubectl get pods --namespace $NS --kubeconfig $KUBECONFIG
+runcached --ignore-pwd --ignore-env --ttl $RUNCAHED_TTL --cache-dir $CACHE_DIR kubectl get pods --namespace $NS --kubeconfig $KUBECONFIG
+
+# WIP
+runcached --ignore-pwd --ignore-env --ttl 0 --cache-dir $CACHE_DIR kubectl get pods --namespace $NS --kubeconfig $KUBECONFIG > /dev/null &|
 

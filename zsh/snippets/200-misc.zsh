@@ -48,6 +48,9 @@ alias p10ksigns="open https://github.com/romkatv/powerlevel10k#what-do-different
       alias lt2='exa --group-directories-first -lT -L 2'
       alias lt3='exa --group-directories-first -lT -L 3'
       alias lt4='exa --group-directories-first -lT -L 4'
+      alias lt5='exa --group-directories-first -lT -L 5'
+      alias lt6='exa --group-directories-first -lT -L 6'
+      alias lt7='exa --group-directories-first -lT -L 7'
       alias lt=lt2
     fi
 }

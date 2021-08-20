@@ -26,18 +26,13 @@ ls_fuzzy_preview() {
     --bind=\"ctrl-r:execute-silent(echo {} | agnvim_remote_open )\"
     --bind=\"ctrl-y:execute-silent(echo {} | tr-newline | pbcopy )\"
   "
-
-  # Remove --no-ingore
-  # --bind "ctrl-d:reload( fd -d $FD_SEARCH_CUR_DIR_DEPTH --hidden --no-ignore --color=always --type directory )"
-
-  while out=$( fd_search_cur_dir "$@" | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FUZZY_BIND_OPTS" fzf-tmux \
-    -p 85% \
+  while out=$( fd_search_cur_dir "$@" | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FUZZY_BIND_OPTS" fzf_tp \
     --preview "quick-preview {}" --exit-0 \
     --bind "ctrl-d:reload( fd_search_cur_dir_dir )+change-prompt(Dir> )" \
     --bind "ctrl-f:reload( fd_search_cur_dir_file )+change-prompt(File> )" \
     --bind "ctrl-r:reload( fd_search_cur_dir "$@" )+change-prompt(Search> )" \
     --expect=ctrl-v,ctrl-o,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down,shift-left,shift-right \
-    --print-query --header "DEP:[${FD_SEARCH_CUR_DIR_DEPTH}]:$(short_pwd)" \
+    --print-query --header "DEP:[$FD_SEARCH_CUR_DIR_DEPTH]:$(short_pwd)" \
     --prompt 'Search> ' \
     --preview-window right:50% --preview-window border-left \
     --height ${FZF_TMUX_HEIGHT:-100%} \
@@ -79,6 +74,7 @@ ls_fuzzy_preview() {
       break;
     elif [[ "$key" == 'ctrl-space' ]] || ; then
       if [[ -d "${lastEntry}" ]] ; then
+        searchTerm=""
         cd "${lastEntry}"
       elif [[ -f "${lastEntry}" ]]; then
         bat --color always --paging always --style full $lastEntry

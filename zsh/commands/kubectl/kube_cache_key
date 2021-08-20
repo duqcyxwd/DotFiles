@@ -1,6 +1,6 @@
 #!/bin/zsh
 
-# Context based way to create Cache ID
+# Create a cache ID as cache diretory based on current context
 local RUNCACHED_CACHE_KEY
 (
 kubectl config current-context

@@ -1,0 +1,8 @@
+#!/bin/bash
+
+CACHE_DIR="$RUNCACHED_CACHE_DIR/$(kube_cache_key $(kcgcn))"
+
+
+rm -rf $CACHE_DIR
+
+

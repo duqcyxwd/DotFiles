@@ -83,6 +83,7 @@ function fh() { # {{{1
   # tail -r $HISTORY_CACHED_FILE > $HISTORY_CACHED_FILE_ORIGINAL
 
   __history_search_cache() {
+    # nl to add index, can't use default index because delimiter limit with fzf
     fc -nrli 1 > $HISTORY_CACHED_FILE
     cat $HISTORY_CACHED_FILE | nl -s ': ' -b a > $HISTORY_CACHED_FILE_INDEXED
     cp $HISTORY_CACHED_FILE $HISTORY_CACHED_FILE_C
@@ -93,12 +94,11 @@ function fh() { # {{{1
 
   print -z $(
     ([ -n "$ZSH_NAME" ] && { cat $HISTORY_CACHED_FILE_INDEXED && __history_search_cache &| } ) | \
-      fzf-tmux -p 85% --delimiter=': ' \
+      fzf_tp --delimiter=': ' \
       --bind "ctrl-r:reload(cat $HISTORY_CACHED_FILE_INDEXED)" \
       --preview 'bat --color=always --highlight-line {1} '$HISTORY_CACHED_FILE_C --preview-window '+{1}-5' | \
       cut -c 27-
   )
-
 
   unset HISTORY_CACHED_FILE
   unset HISTORY_CACHED_FILE_INDEXED

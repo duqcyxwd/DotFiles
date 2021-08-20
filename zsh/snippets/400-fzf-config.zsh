@@ -113,8 +113,13 @@ __fzf_config() {
     # export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_AYU"
     # export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_NORD"
 
-    # Not sure if this is used
+    # Following options are only used by fzf default zsh widget
+    export FZF_TMUX=0
+    # export FZF_TMUX_OPTS="-p 80% "
     # export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
+
+
+    export FZF_TP=1
 
     # FZF C-f (file name completions)
     local FZF_PREVIEW_FILE='bat --style="numbers,changes" --color=always {} -r 0:200| head -200'

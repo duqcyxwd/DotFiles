@@ -92,3 +92,7 @@ function take() {
 function whichl() {
   exa -lbFa -la $(which $@)
 }
+
+function whichv() {
+  vim $(which $@)
+}

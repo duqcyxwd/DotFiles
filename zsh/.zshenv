@@ -22,5 +22,8 @@ export PATH=$ZDOTDIR/commands/kubectl:$PATH
 # Some env which could be used in fzf_tp
 export ZSH_LOADING_LOG=$XDG_CACHE_HOME/.startup.log
 export RUNCACHED_CACHE_DIR=$XDG_CACHE_HOME/.runcached
-export RUNCACHED_MAX_AGE=500
+
+export RUNCACHED_MAX_AGE=300
+export RUNCACHED_IGNORE_ENV=1
+export RUNCACHED_IGNORE_PWD=1
 

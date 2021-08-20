@@ -77,9 +77,9 @@ set whichwrap+=<,>,h,l         " Allow specified keys that move the cursor left/
 
 set diffopt=internal,filler,vertical
 
-
 " https://stackoverflow.com/a/29787362
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
+set nolist
 
 " Update my session setting
 " Don't reuse options, empty buffers

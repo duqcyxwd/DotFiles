@@ -1,9 +1,11 @@
 #!/bin/zsh
 # Namepsace with 2 hours ttl
-TTL=${1:-7200}
-
+RUNCAHED_TTL=${1:-${TTL:-7200}}
 
 CACHE_DIR=$RUNCACHED_CACHE_DIR/$(kube_cache_key)
 
-runcached --ignore-pwd --ignore-env --ttl $TTL --cache-dir $CACHE_DIR kubectl get namespaces --sort-by=.metadata.creationTimestamp | awk 'NR == 1; NR > 1 {print $0 | "tac"}'
+runcached --ignore-pwd --ignore-env --ttl $RUNCAHED_TTL --cache-dir $CACHE_DIR kubectl get namespaces --sort-by=.metadata.creationTimestamp | awk 'NR == 1; NR > 1 {print $0 | "tac"}'
+
+# WIP
+runcached --ignore-pwd --ignore-env --ttl 0 --cache-dir $CACHE_DIR kubectl get namespaces --sort-by=.metadata.creationTimestamp > /dev/null &|
 

@@ -1,10 +1,19 @@
 #!/bin/sh
-# A test script for fzf tmux pop
+# My wrapper for fzf-tmux, default with pop
 
-# # Notes: Can't put FZF_TMUX_OPTS into FZF_DEFAULT_OPTS
-# # fzf-tmux is impliment in a bash script
-# export FZF_TMUX=1
-# export FZF_TMUX_OPTS="-p 85% "
-# export TMUX_FZF_OPTIONS=$FZF_TMUX_OPTS
+IS_FZF_TP="${FZF_TP:-0}"
+FZF_TP_OPTS_DEFAULT="-p 85%"
+FZF_TP_OPTS_NEW="${FZF_TP_OPTS:-$FZF_TP_OPTS_DEFAULT}"
 
-fzf-tmux -p 85% "$@"
+
+# FZF_TP_OPTS="-p 60%" nsi
+
+__fzfcmd() {
+    echo "fzf-tmux $FZF_TP_OPTS_NEW -- "
+}
+
+if [ "$IS_FZF_TP" -eq "1" ]; then
+    $(__fzfcmd) "$@"
+else
+    fzf "$@"
+fi

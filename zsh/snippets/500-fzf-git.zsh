@@ -56,7 +56,7 @@
     " # $FZF_DEFAULT_OPTS is used by default
 
     fzf_git_commit_preview(){
-      FZF_DEFAULT_OPTS="$__git_commit_fzf_opts" fzf-tmux -p 85% --preview="$__git_commit_preview_cmd" $@
+      FZF_DEFAULT_OPTS="$__git_commit_fzf_opts" fzf_tp --preview="$__git_commit_preview_cmd" $@
     }
     alias fgcp=fzf_git_commit_preview
 
@@ -129,7 +129,7 @@
         "
         # Note: Postfix '/' in directory path should be removed. Otherwise the directory itself will not be removed.
         files=$(git clean -dfn "$@"| sed 's/^Would remove //' | FZF_DEFAULT_OPTS="$FORGIT_FZF_DEFAULT_OPTS $FZF_GIT_FILE_BIND_OPTS" \
-          fzf-tmux -p 85% --preview 'quick-preview {}' | sed 's#/$##')
+          fzf_tp --preview 'quick-preview {}' | sed 's#/$##')
         [[ -n "$files" ]] && echo "$files" | tr '\n' '\0' | xargs -0 -I% git clean -xdf '%' && return
         echo 'Nothing to clean.'
     }
@@ -157,7 +157,7 @@
           +s +m -0 --tiebreak=index --bind=\"enter:execute($cmd)\"
           $FORGIT_STASH_FZF_OPTS
       "
-      git stash list | FZF_DEFAULT_OPTS="$opts" fzf-tmux -p 85% --preview="$cmd"
+      git stash list | FZF_DEFAULT_OPTS="$opts" fzf_tp --preview="$cmd"
     }
 
 
@@ -179,13 +179,15 @@
   # fzf: git branch functions {{{2
     __git_branch_history_preview_cmd="xargs -I$$ git log -50 --stat --graph --color=always --format='$_glog_auth_format' $$"
     fzf_git_branch_to_history_preview(){
-      FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | git_branch_grep | $__git_branch_history_preview_cmd"  "$@" \
-        | git_branch_grep | tr-newline | pbcopy && pbpaste
+      FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf -m --preview="echo {} | git_branch_grep | $__git_branch_history_preview_cmd"  "$@" \
+        | git_branch_grep
+        # | git_branch_grep | tr-newline | pbcopy && pbpaste
     }
 
     fzf_git_branch_to_commit_preview(){
       FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | git_branch_grep | xargs -I% git_commit_preview %"  "$@" \
         | git_branch_grep | tr-newline | pbcopy && pbpaste
+        # | git_branch_grep | tr-newline | pbcopy && pbpaste
     }
     alias fgbp=fzf_git_branch_to_history_preview
     alias fgbcp=fzf_git_branch_to_commit_preview
@@ -214,7 +216,11 @@
 
 
     # Delete branches remote
-    git_branch_remote_delete_interactive(){ gbri $@ | xargs -n 1 git push -d origin }
+    # xargs will run command per line
+    # https://unix.stackexchange.com/questions/7558/execute-a-command-once-per-line-of-piped-input
+    # printf "foo bar\nbaz bat" | xargs -n1 printf "message %s\n"
+    # Now gbrdi works for delete multiple branch at same time
+    git_branch_remote_delete_interactive(){ gbri $@ | sed 's/origin\///' | xargs -n1 git push -d origin }
     alias gbrdi=git_branch_remote_delete_interactive
 
     # duplicate with gbrdi, choose one
@@ -236,7 +242,7 @@
     # alias gb_merged_remote_me='ee "gb_merged_remote |grep chuan"'
     # alias gb-merged='git branch --merged'
     # Replaced by
-    # gbdri --merged
+    # gbrdi --merged
     #
     #
     # Clean merged Branch (Delete local branches which are already merged)

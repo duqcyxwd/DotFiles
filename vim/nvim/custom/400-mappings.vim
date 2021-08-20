@@ -52,7 +52,7 @@ let g:which_key_map_space.j = { 'name' : '+Jump' }
 let g:which_key_map_space.p = { 'name' : '+Projects/Packages' }
 let g:which_key_map_space.q = { 'name' : '+Quit' }
 let g:which_key_map_space.r = { 'name' : '+Run' }
-let g:which_key_map_space.s = { 'name' : '+Search' }
+let g:which_key_map_space.s = { 'name' : '+Search/Source' }
 let g:which_key_map_space.t = { 'name' : '+Togglers' }
 let g:which_key_map_space.w = { 'name' : '+Windows' }
 
@@ -262,7 +262,7 @@ xmap <Space>rt <Plug>(neoterm-repl-send)
 " xmap gt <Plug>(neoterm-repl-send)
 " nmap gtt <Plug>(neoterm-repl-send-line)
 
-" [SpaceMapping] s+: Search {{{1
+" [SpaceMapping] s+: Search/Source {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.s.b = "FZF Search Current Files"
 nnoremap <Space>sb :FFBLines<CR>
@@ -276,6 +276,17 @@ nnoremap <Space>sp :MyFzfAg <CR>
 
 let which_key_map_space.s.s = "FZF Search All Open Files"
 nnoremap <Space>ss :Telescope current_buffer_fuzzy_find<CR>
+
+
+let which_key_map_space.s.v = "Source vimrc"
+nnoremap <Space>sv :so ~/.config/vim/vimrc<CR>
+
+" sc -> used by Search clean
+" let which_key_map_space.s.c = "Source current file!"
+" nnoremap <Space>sc :so %<CR>
+
+let which_key_map_space.s.c = "Search highlight clean"
+nnoremap <Space>sc :noh<CR>
 
 " [SpaceMapping] t+: Toggler {{{1
 " ------------------------------------------------------------------------------
@@ -301,7 +312,7 @@ let which_key_map_space.t.T = "Toggle TagBar"
 nnoremap <Space>tT :TagbarToggle<CR>
 
 
-let which_key_map_space.t.l = "Toggle list for special char "
+let which_key_map_space.t.l = "Toggle invisible char (set list)"
 nnoremap <Space>tl :set list!<CR>
 " nnoremap <Space>tt :call ToggleHighlightCharacterOver80()<CR>
 
@@ -348,6 +359,10 @@ nnoremap <Space>wu :Undoquit<CR>
 let which_key_map_space.w.w = "VimWiki Index Page"
 nmap <Space>ww <Plug>VimwikiIndex
 
+
+let which_key_map_space.w.q = "Save file and quit"
+nmap <Space>wq :wq<CR>
+
 " [SpaceMapping] z+: WIP {{{1
 " ------------------------------------------------------------------------------
 nnoremap <silent> <Space>zz :Goyo<cr>
@@ -373,9 +388,6 @@ nnoremap <silent> <Space>' :above Ttoggle<CR>
 let which_key_map_space['<Tab>'] = "last buffer"
 nnoremap <silent> <Space><Tab> :e#<cr>
 
-let which_key_map_space.s.c = "Search highlight Clean"
-nnoremap <Space>sc :noh<CR>
-
 
 " [Slash Key] mappings {{{1
 "--------------------------------------------------------------------------
@@ -390,9 +402,6 @@ nnoremap <Space>sc :noh<CR>
 
 " https://stackoverflow.com/a/24717020/2727296
 " :help cmdline-special.
-
-nnoremap <Space>es :so %<CR>|                   " Srouce current file
-nnoremap <Space>sv :so ~/.config/vim/vimrc<CR>| " Srouce .vimrc
 
 " Map Enter to folding
 nnoremap <CR> za
