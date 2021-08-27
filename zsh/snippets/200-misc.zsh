@@ -19,12 +19,13 @@ alias p10ksigns="open https://github.com/romkatv/powerlevel10k#what-do-different
       alias eaa='exa .?* -d'
 
       alias ls='e'
+      alias lsa='exa -a'
       alias lsr='/bin/ls'                                                # Raw ls
 
       # g git, a, all
       alias l='exa -lhbF'                                                # list, size, type
       alias ld='exa -lhbFD'                                              # list, size, type
-      alias lg='l --git'                                                 # list, size, type, git
+      alias lg='l --git --no-user --no-permissions'                                                 # list, size, type, git
       alias lss='l -s ext'                                               # list, size, type
 
       alias la='exa -lbFa'

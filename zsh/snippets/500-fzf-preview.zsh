@@ -31,7 +31,7 @@ ls_fuzzy_preview() {
     --bind "ctrl-d:reload( fd_search_cur_dir_dir )+change-prompt(Dir> )" \
     --bind "ctrl-f:reload( fd_search_cur_dir_file )+change-prompt(File> )" \
     --bind "ctrl-r:reload( fd_search_cur_dir "$@" )+change-prompt(Search> )" \
-    --expect=ctrl-v,ctrl-o,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down,shift-left,shift-right \
+    --expect=ctrl-v,ctrl-o,ctrl-space,enter,alt-left,alt-right,alt-up,alt-down,shift-left,shift-right,shift-up,shift-down \
     --print-query --header "DEP:[$FD_SEARCH_CUR_DIR_DEPTH]:$(short_pwd)" \
     --prompt 'Search> ' \
     --preview-window right:50% --preview-window border-left \
@@ -49,6 +49,9 @@ ls_fuzzy_preview() {
     # echo "key: " $key
     # echo "searchT: " $searchTerm
     # echo "lastEntry: " $lastEntry
+    #
+    # shift change preview
+    # alt change directory, I think I should remove alt from here
 
     if [[ "$key" == 'alt-left' ]]; then
       pushd +0 1>/dev/null;
@@ -57,6 +60,10 @@ ls_fuzzy_preview() {
     elif [[ "$key" == 'alt-up' ]]; then
       cd ../
     elif [[ "$key" == 'alt-down' ]]; then
+      pushd -1 1>/dev/null;
+    elif [[ "$key" == 'shift-up' ]]; then
+      export FD_SEARCH_CUR_DIR_DEPTH=99
+    elif [[ "$key" == 'shift-down' ]]; then
       export FD_SEARCH_CUR_DIR_DEPTH=1
     elif [[ "$key" == 'shift-right' ]]; then
       export FD_SEARCH_CUR_DIR_DEPTH=$(expr $FD_SEARCH_CUR_DIR_DEPTH + 1)
