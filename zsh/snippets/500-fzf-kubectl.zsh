@@ -123,6 +123,7 @@ kgpci(){ #{{{2
     | FZF_TP_OPTS="-p 95%" fzf_tp -1 \
       --header-lines=1 \
       --preview-window "border-top" \
+      --preview-window "bottom:85%" \
       --preview-window "follow" \
       --preview "kubectl logs -c {1} -f $POD_ID" \
       --prompt "container: ")
@@ -158,24 +159,9 @@ klpi() { #{{{2
 }
 
 kli() { #{{{2
-  POD_ID=$(FZF_TP_OPTS="-p 95%" kgpi)
+  read -r POD_ID CONTAINER_ID < <(kgpci)
 
-  if [[ "$POD_ID" == "" ]] ; then
-    return 1
-  fi
-
-  CONTAINER_ID=$(runcached kubectl get pod $POD_ID -o jsonpath="{.spec.containers[*].name}" \
-    | awk 'NR == 1; NR > 1 {gsub(" ","\n", $0); print $0}' \
-    | FZF_TP_OPTS="-p 85%" fzf_tp -1 \
-      --header-lines=1 \
-      --preview-window "border-top" \
-      --preview-window "down,80%" \
-      --preview-window "follow" \
-      --preview "kubectl logs -c {1} -f $POD_ID" \
-      --prompt "container: ")
-
-
-  if [[ "$CONTAINER_ID" == "" ]] ; then
+  if [[ "$POD_ID" == "" || "$CONTAINER_ID" == "" ]] ; then
     return 1
   fi
 
