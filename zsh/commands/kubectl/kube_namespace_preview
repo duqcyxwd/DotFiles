@@ -30,7 +30,7 @@ f2=$(mktemp)
 
 # { kubectl get pods --namespace $1 --kubeconfig $KUBECONFIG } > $f1 &
 # kgp_cached use to update cache
-{ kgp_cached 300 $1 } > $f1 &
+{ KGP_TTL=300 kgp_cached --namespace $1 } > $f1 &
 P1=$!
 
 { kubectl get svc --namespace $1 --kubeconfig $KUBECONFIG } > $f2 &

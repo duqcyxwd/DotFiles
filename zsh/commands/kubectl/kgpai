@@ -9,9 +9,9 @@ read -ra tokens < <(
   #       --preview-window right,follow \
   #       --preview 'kubectl describe pods --namespace {1} {2}' "$@"
 
-  runcached_ns kubectl get pods --all-namespaces |
+  kgp_cached --all-namespaces |
       fzf_tp --info=inline --layout=reverse --header-lines=2 \
-      --bind "ctrl-r:reload(kgp_cached 0 $(kcgcn))" \
+      --bind "ctrl-r:reload(KGP_TTL=0 kgp_cached --all-namespaces)" \
       --prompt "$(kubectl config current-context | sed 's/-context$//') pods> " \
       --preview-window right \
       --preview 'kdp_cached {2} 35 {1}' \

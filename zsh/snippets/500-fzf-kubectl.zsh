@@ -137,6 +137,8 @@ kgpci(){ #{{{2
 }
 
 # 2}}}
+#
+alias kgci=kgpci
 
 # KUBECTL Logs #{{{1
 # kli : kube logs
@@ -145,10 +147,10 @@ kgpci(){ #{{{2
 
 klpi() { #{{{2
   # k log preview from all containers interactive
-  kgp_cached|
+  kgp_cached --namespace $(kcgcn)|
     FZF_TP_OPTS="-p 100%" \
       fzf_tp --info=inline --layout=reverse --header-lines=2 \
-      --bind "ctrl-r:reload(kgp_cached 0 $(kcgcn))" \
+      --bind "ctrl-r:reload(KGP_TTL=0 kgp_cached --namespace $(kcgcn))" \
       --prompt "$(kubectl config current-context | sed 's/-context$//')/$(kcgcn) pods> " \
       --preview-window "bottom:85%" \
       --preview-window "border-top" \

@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# Example: lai | xargs rm
+
+exa -lbFa --color=always | fzf -n 7 \
+    --preview-window right:50% --preview-window border-left \
+    --preview "quick-preview ./{7}" --exit-0 \
+    | awk '{print $7}'
+
