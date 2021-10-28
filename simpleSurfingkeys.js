@@ -213,6 +213,7 @@ const atlassianJIRAMapping = () => {
 //  --------------------------------------------------------------------------
 // github default shortcut lists
 // https://help.github.com/articles/using-keyboard-shortcuts/
+
 const githubMapping = () => {
   mapkey(
     ',yg',
@@ -310,6 +311,7 @@ const githubMapping = () => {
     }
   );
 };
+
 // ==========================
 // }}}
 // Section: Gitlab {{{2
@@ -343,12 +345,19 @@ const gitlabMapping = () => {
       }
     });
 
+    console.log('Hide detached');
     let pipeline = document.querySelectorAll('.ci-table .commit');
     pipeline.forEach((r) => {
-      if (!String(r.children[2].children[0].href).includes('yongqinchuan')) {
+      // if (!String(r.children[2].children[0].href).includes('yongqinchuan')) {
+      //   r.hidden = state.scheduleHidden;
+      // }
+
+      if ( r.children[1].innerText.match('detached') != null){
         r.hidden = state.scheduleHidden;
       }
+
     });
+
 
     state.scheduleHidden = !state.scheduleHidden;
   };
@@ -384,6 +393,67 @@ const gitlabMapping = () => {
     Clipboard.write(md);
   };
 
+  const createTLink = () => {
+    console.log('github convert link');
+    // let c = document.querySelectorAll('.pipeline-schedule-table-row')[0].children[2]
+
+    // Update schedule page
+    let rows = document.querySelectorAll('.pipeline-schedule-table-row');
+    rows.forEach((r) => {
+
+      let pipe = r.children[2];
+      let branch = r.children[1].innerText.replace(" ", "");
+      let url = branch == "develop" ? "http://pipeline/robot/develop/" :  "http://pipeline/robot/mr/"
+
+
+      if (pipe.children.length == 1) {
+        let newC = pipe.children[0].cloneNode(true);
+        let number = newC.innerText.replace("\n", "").replace(" ", "").replace("#", "")
+
+        newC.children[0].href = url + number + "/report.html"
+        newC.children[0].target="_blank"
+        newC.children[0].children[1].textContent="Report"
+
+
+        pipe.appendChild(newC)
+
+
+
+        // Cleanup pipe number
+        let C = pipe.children[0]
+        C.children[0].children[1].textContent=number
+
+      } else if (pipe.children.length == 2) {
+        pipe.removeChild(pipe.children[1]);
+      }
+    });
+
+    // Update header link
+    let ciButtons = document.querySelectorAll(".ci-status");
+    ciButtons.forEach((ciStatusButton)=> {
+
+      let url = "http://pipeline/robot/mr/",
+        knownPathRegex = /(pipelines\/\d*)/,
+        number = "",
+        PUrl = ciStatusButton.href,
+        knownPath = PUrl.match(knownPathRegex);
+
+      if (knownPath != null) {
+        number = knownPath[0].replace(/pipelines\//, '');
+
+        newButton=ciStatusButton.cloneNode(true)
+        newButton.textContent="Report"
+        newButton.target="_blank"
+        newButton.href = url + number + "/report.html"
+
+        ciStatusButton.parentElement.appendChild(newButton)
+      }
+
+    })
+
+  };
+
+  mapkey(',,l', 'Gitlab: Create Test link', createTLink, gitlabDomain);
   mapkey(',,y', 'Gitlab: copy mr/pipeline link', gitlabCopyUrl, gitlabDomain);
   mapkey(',,c', 'Gitlab: github clean', cleanSchedule, gitlabDomain);
   mapkey(',,u', 'Gitlab: go one level up', gitlabOneLevelUp, gitlabDomain);
@@ -393,7 +463,9 @@ const gitlabMapping = () => {
   mapkey(',,p', 'Gitlab: go to pipeline', eClick('.shortcuts-pipelines'), gitlabDomain);
   mapkey(',,f', 'Gitlab: go to Files', tClick('Files'), gitlabDomain);
   mapkey(',,g', 'Gitlab: go to Find file', tClick('Find file'), gitlabDomain);
+  mapkey(',,w', 'Gitlab: Wiki', tClick('Wiki'), gitlabDomain);
   mapkey(',,zm', 'Gitlab: fold all diff', eClick('.file-title'), gitlabDomain);
+
   // mapkey(',,f', 'Gitlab: go to search', () => window.location('/cenx/cenx/-/find_file/develop'), gitlabDomain);
   // https://gitlab.rosetta.ericssondevops.com/cenx/cenx/-/find_file/develop
 };

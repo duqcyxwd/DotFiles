@@ -30,12 +30,12 @@ brew install coreutils
 # brew install bash
 
 PACKAGES=( # Brew Package {{{2
-
     ack
     alacritty
     bat
     boxes
     cmake               # Cross-platform make
+    clojure-lsp-native  # clojure-lsp
     exa
     ffmpeg
     fzf
@@ -179,6 +179,9 @@ PYTHON_PACKAGES=(
 # # upgrade kafkactl
 # brew upgrade deviceinsight/packages/kafkactl
 
+WIP
+brew tap conduktor/brew
+brew install conduktor
 
 
 
