@@ -77,7 +77,16 @@ mlog "$(date) : zshrc start loading"
   # --------------------------------------------------------------------------
 
   # Path to your oh-my-zsh installation.
-  export ZSH=$HOME/.oh-my-zsh
+  # 20210824 I removed it and not sure if I still need it
+  # export ZSH=$HOME/.oh-my-zsh
+
+  # Specified in .zshenv but it is overwrite by /etc/zshrc
+  # Sometimes when script goes wrong, it will mess up my history. Add this to prevent issues.
+  # All history script should goes to 300-history.zsh
+  export HIST_STAMPS="yyyy-mm-dd" # ZSH History time format
+  export HISTSIZE=10000003          #The maximum number of events stored in the internal history list.
+  export SAVEHIST=10000004          #The maximum number of history events to save in the history file.
+
   # Never set TERM in your config
   # export TERM="xterm-256color"
   # export NVIM_LISTEN_ADDRESS=
@@ -110,6 +119,8 @@ zinit_load() {
     zinit ice wait atload'ac_my_colors' silent;
     zinit light shayneholmes/zsh-iterm2colors
 
+    zinit light ~/duqcyxwd/kube-int
+
     # Load p10k
     zinit ice depth=1 ; zinit light romkatv/powerlevel10k
     # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
@@ -133,6 +144,7 @@ zinit_load() {
       zdharma/history-search-multi-word \
       atinit"zicompinit; zicdreplay"  zdharma/fast-syntax-highlighting \
       atload"_zsh_autosuggest_start"  zsh-users/zsh-autosuggestions \
+
 
     zinit wait silent light-mode for \
       OMZ::plugins/kubectl/kubectl.plugin.zsh \
@@ -171,6 +183,7 @@ zinit_load() {
     # 3. Plugins
     zinit wait lucid silent light-mode for \
       agkozak/zsh-z \
+      bonnefoa/kubectl-fzf \
       djui/alias-tips \
       psprint/zsh-cmd-architect \
       wfxr/forgit \
@@ -249,8 +262,10 @@ zsh_plugins_config() {
 
 # }}}1
 
+# Add some quick dirty useful alias so I can use them before they are loaded
 alias vim='nvim'
 alias vi='nvim'
+[[ $commands[exa] ]] && alias la="exa -lbFa"
 
 zinit_load
 zsh_plugins_config

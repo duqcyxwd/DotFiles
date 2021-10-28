@@ -1,92 +1,19 @@
 #!/bin/sh
 
 unalias kgpn
-unalias kgp
 unalias kgns
 
 # unalias kgcmi
 
 #     K8S: NAMESPACE/CONTEXT {{{1
-
-nsi-old() { #{{{2
-  # change event will wait for input pipe finish
-
-    # setopt no_notify no_monitor
-    # setopt LOCAL_OPTIONS no_monitor
-
-    # Method 1, precached and reload on type
-    # kgns-cached &|
-    # set-ns $(cat $CURRENT_KUBE_NS_LIST_FILE | fzf --bind "change:reload:cat $CURRENT_KUBE_NS_LIST_FILE || true" \
-    # --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" --header-lines=1 -0 | awk '{print $1}')
-
-    # Method 2, manual reload
-    # set-ns $(cat $CURRENT_KUBE_NS_LIST_FILE | fzf --bind "ctrl-r:reload(kubectl get namespaces --sort-by=.metadata.creationTimestamp)" --header-lines=1 -0 | awk '{print $1}')
-    # kgns-cached &|
-
-    # Method 3, mix, preload and reload on demand
-    # kgns-cached &|
-    # set-ns $(cat $CURRENT_KUBE_NS_LIST_FILE | fzf \
-    # --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" --header-lines=1 -0 | awk '{print $1}')
-
-    # # Method 4, manual reload with loading icon
-    # set-ns $({ cat $CURRENT_KUBE_NS_LIST_FILE && kgns-cached } | fzf +m \
-    # --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" --header-lines=1 -0 | awk '{print $1}')
-
-    # # # Method 5, new one with preview!
-    # local token=$({ cat $CURRENT_KUBE_NS_LIST_FILE && kgns-cached }  |
-    #   fzf_tp --info=inline --layout=reverse --header-lines=1 \
-    #   --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
-    #   --bind "ctrl-r:reload(cat $CURRENT_KUBE_NS_LIST_FILE)" \
-    #   --preview-window right \
-    #   --preview "kube_namespace_preview {1} $KUBECONFIG" "$@" \
-    #   | awk '{print $1}')
-    # echo $token
-
-
-    # # Method 6, The one caches!!!!
-    # local token=$({ cat $CURRENT_KUBE_NS_LIST_FILE && kgns-cached }  |
-    #   fzf_tp --info=inline --layout=reverse --header-lines=1 \
-    #   --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
-    #   --bind "ctrl-r:reload(/bin/rm -rf $RUNCACHED_CACHE_DIR && cat $CURRENT_KUBE_NS_LIST_FILE)" \
-    #   --preview-window right \
-    #   --preview "runcached --prune-cache kube_namespace_preview {1} $KUBECONFIG" "$@" \
-    #   | awk '{print $1}');
-    # echo $token
-
-
-    # Method 7, The one caches!!!!
-    local CACHE_DIR=$RUNCACHED_CACHE_DIR/$(kube_cache_key)
-
-    local token=$( kgns_cached |
-      fzf_tp --info=inline --layout=reverse --header-lines=2 \
-      --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
-      --bind "ctrl-r:reload(/bin/rm -rf $CACHE_DIR && kgns_cached)" \
-      --preview-window right \
-      --preview "runcached --ignore-pwd --ignore-env --cache-dir $CACHE_DIR kube_namespace_preview {1} $KUBECONFIG" "$@" \
-      | awk '{print $1}');
-
-    echo $token
-
-  }
-
   # Notes: runcached in fzf --ttl vs remove $RUNCACHED_CACHE_DIR
   # --ttl can't invalid the cache for preview window
 
 
 
   kdelnsi() { #{{{2
-    # Similar with kgns_cached with grep chuan
-    # set-ns $({{head -n 1 $CURRENT_KUBE_NS_LIST_FILE && cat $CURRENT_KUBE_NS_LIST_FILE | grep chuan} && kgns-cached } | fzf +m \
-
-    local CACHE_DIR=$RUNCACHED_CACHE_DIR/$(kube_cache_key)
-
-    local namespace=$( { kgns_cached | grep -e chuan -e STATUS } |
-      fzf_tp --info=inline --layout=reverse --header-lines=1 \
-      --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
-      --bind "ctrl-r:reload(/bin/rm -rf $CACHE_DIR && kgns_cached | head -n 1 && kgns_cached | grep chuan)" \
-      --preview-window right \
-      --preview "runcached --ignore-pwd --ignore-env --cache-dir $CACHE_DIR kube_namespace_preview {1} $KUBECONFIG" "$@" \
-      | awk '{print $1}');
+    # Prefilter with my name to avoid accident delete important namespace
+    local namespace=$(nsi --query "chuan ")
 
     if [ "$namespace" = "" ]; then
       echo "No namespace from chuan found"
@@ -99,95 +26,16 @@ nsi-old() { #{{{2
 
     # Update cached namespace list
     TTL=0 kgns_cached > /dev/null &|
-
-    # kubectl delete namespace $( kgns_cached | grep chuan | fzf +m \
-    # --bind "ctrl-r:reload(/bin/rm -rf $CACHE_DIR && kgns_cached | grep chuan)" \
-    # --preview "kube_namespace_preview {1} $KUBECONFIG" "$@" \
-    # --header-lines=1 -0 | awk '{print $1}')
   }
 
 
 # }}}2
 # KUBECTL get pod id and container ID ###{{{1
 
-kgpci(){ #{{{2
-  # Kubectl get pod and container id
-  POD_ID=$(FZF_TP_OPTS="-p 95%" kgpi)
-
-  if [[ "$POD_ID" == "" ]] ; then
-    return 1
-  fi
-
-  CONTAINER_ID=$(runcached kubectl get pod $POD_ID -o jsonpath="{.spec.containers[*].name}" \
-    | awk 'NR == 1; NR > 1 {gsub(" ","\n", $0); print $0}' \
-    | FZF_TP_OPTS="-p 95%" fzf_tp -1 \
-      --header-lines=1 \
-      --preview-window "border-top" \
-      --preview-window "bottom:85%" \
-      --preview-window "follow" \
-      --preview "kubectl logs -c {1} -f $POD_ID" \
-      --prompt "container: ")
-
-
-  if [[ "$CONTAINER_ID" == "" ]] ; then
-    return 1
-  fi
-
-  echo "$POD_ID $CONTAINER_ID"
-}
-
-# 2}}}
-#
 alias kgci=kgpci
 
 # KUBECTL Logs #{{{1
-# kli : kube logs
-# klfp kube logs preview
-# klai kube logs all container
 
-klpi() { #{{{2
-  # k log preview from all containers interactive
-  kgp_cached --namespace $(kcgcn)|
-    FZF_TP_OPTS="-p 100%" \
-      fzf_tp --info=inline --layout=reverse --header-lines=2 \
-      --bind "ctrl-r:reload(KGP_TTL=0 kgp_cached --namespace $(kcgcn))" \
-      --prompt "$(kubectl config current-context | sed 's/-context$//')/$(kcgcn) pods> " \
-      --preview-window "bottom:85%" \
-      --preview-window "border-top" \
-      --preview-window "follow" \
-      --preview 'kubectl logs --all-containers -f {1}' \
-      "$@" \
-      | awk '{print $1}'
-}
-
-kli() { #{{{2
-  read -r POD_ID CONTAINER_ID < <(kgpci)
-
-  if [[ "$POD_ID" == "" || "$CONTAINER_ID" == "" ]] ; then
-    return 1
-  fi
-
-  echo "POD ID: $POD_ID"
-  echo "Container ID: $CONTAINER_ID"
-
-  kubectl logs -c $CONTAINER_ID $@ $POD_ID
-}
-
-klai() { #{{{2
-
-  POD_ID=$(kgpi)
-
-  if [[ "$POD_ID" == "" ]] ; then
-    return 1
-  fi
-
-  echo "POD ID: $POD_ID"
-
-  kubectl logs --all-containers $@ $POD_ID
-}
-
-
-# }}}2
 
 alias klffi=klpi
 alias klp=klpi
@@ -209,7 +57,6 @@ kexeciti() { #{{{1
 }
 #}}}1
 # KUBECTL Secret {{{1
-#
 kgseci() { #{{{2
   # Get and preview secre
   # CACHE_DIR is namespaced based, so ctrl-r will not updates others
@@ -236,10 +83,27 @@ kgcmi() { #{{{2
   echo $RES
 }
 
+# KUBECTL statefulset #{{{1
+# alias kgst="kubectl get statefulset"
+kgssi() { #{{{2
+  runcached_ns kubectl get statefulset --namespace $(kcgcn) --kubeconfig $KUBECONFIG\
+    | fzf_tp --header-lines=2 \
+    --bind "ctrl-r:reload(runcached_ns_clean && runcached_ns kubectl get statefulset --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
+    --preview-window right \
+    --preview 'runcached_ns kubectl describe statefulset {1}' \
+    | awk '{print $1}'
+}
+
 # KUBECTL Deployment #{{{1
 kgdi() { #{{{2
-  runcached_ns kubectl get deployment | fzf_tp --header-lines=2 --preview-window right --preview 'runcached_ns kubectl describe deployment {1}' | awk '{print $1}'
+  runcached_ns kubectl get deployment --namespace $(kcgcn) --kubeconfig $KUBECONFIG \
+    | fzf_tp --header-lines=2 \
+    --bind "ctrl-r:reload(runcached_ns_clean && runcached_ns kubectl get deployment --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
+    --preview-window right \
+    --preview 'runcached_ns kubectl describe deployment {1}' \
+    | awk '{print $1}'
 }
+
 
 kddi() { #{{{2
   local deploy=$(kgdi);
@@ -249,10 +113,22 @@ kddi() { #{{{2
   kubectl describe deployment $deploy
 }
 
+# KUBECTL service #{{{1
+kgsi() { #{{{2
+  runcached_ns kubectl get svc --namespace $(kcgcn) --kubeconfig $KUBECONFIG \
+    | fzf_tp --header-lines=2 \
+    --bind "ctrl-r:reload(runcached_ns_clean && runcached_ns kubectl get svc --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
+    --preview-window right \
+    --preview 'runcached_ns kubectl describe svc {1}' \
+    | awk '{print $1}'
+}
+
+
 #    K8S: scale deployment {{{1
 # Useage:
-#   kgdi | ksd0
 #   kubectl scale deployment $(kgdi) --replicas=1
+#   kgdi | ksd0
+#   kgdi | xargs -n 1 kubectl scale deployment $@ --replicas=0
 {
   ksd0() {
     # Support pipe
@@ -267,6 +143,23 @@ kddi() { #{{{2
     while read data;
     do;
       kubectl scale deployment $data --replicas=1
+    done;
+  }
+
+  ksss0() {
+    # Kubectl scale stateful set
+    # Support pipe
+    while read data;
+    do;
+      kubectl scale statefulset $data --replicas=0
+    done;
+  }
+
+  ksss1() {
+    # Support pipe
+    while read data;
+    do;
+      kubectl scale statefulset $data --replicas=1
     done;
   }
 
@@ -289,12 +182,6 @@ kddi() { #{{{2
 # alias kgdi="kubectl get deployment | fzf_tp --header-lines=1 --preview-window right --preview 'kubectl describe deployment {1}' | awk '{print \$1}'"
 #     K8S: SETUP ALIAS {{{1
 
-
-#  TODO Deprecate this one
-# export CURRENT_KUBE_NS_FILE=$HOME/.kube/KUBE_NS
-# if [ -f $CURRENT_KUBE_NS_FILE ]; then
-#   export KUBE_NS=$(cat $CURRENT_KUBE_NS_FILE)
-# fi
 {
 
   # use kcgc to get context
@@ -302,8 +189,9 @@ kddi() { #{{{2
   alias kcuci=set-contexti
 
   alias kgnsi=nsi
-  alias ns='kgns'
   alias snsi=set-nsi
+  alias kgns='kgns_cached'
+  alias ns='kgns_cached'
 
   alias kgsec=kube_secret_preview
   alias kgsecl="runcached_ns kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG"
@@ -312,7 +200,6 @@ kddi() { #{{{2
 
 
   alias kexecit='kubectl exec -it'
-  alias kgns='kgns_cached'
   # alias kgp='kgp_cached'
 
 

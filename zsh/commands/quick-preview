@@ -1,15 +1,15 @@
 #!/bin/bash
 
-input_path=$1
+input_path="$@"
 
 echo "$@" >> /Users/EYONDUU/work_credential/temp/log/log
 if [[ -d "${input_path}" ]] ; then
     # echo "$PASSED is a directory";
-    exa --group-directories-first -F --icons --group-directories-first -T -lh -L 2 --color=always $1
+    exa --group-directories-first -F --icons --group-directories-first -T -lh -L 2 --color=always "$@"
 else
     if [[ -f "${input_path}" ]]; then
         # echo "${PASSED} is a file";
-        exa -lbFa --color=always $input_path
+        exa -lbFa --color=always "$input_path"
         echo ""
         bat --paging=never --style=numbers --color=always "${input_path}"  -r 0:300
     else

@@ -1,7 +1,8 @@
 #!/bin/sh
 
+mlog "source all snippets"
 for snippet in $ZDOTDIR/snippets/*.zsh; do
-  mlog "source loading $snippet "
+  mlog "source loading $snippet"
   source $snippet
 done
 unset snippet

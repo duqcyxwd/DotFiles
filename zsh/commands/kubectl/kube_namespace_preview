@@ -27,14 +27,22 @@ KUBECONFIG=${2:-$HOME/.kube/config}
 #  "-------------------------------------------------------------------------------"
 f1=$(mktemp)
 f2=$(mktemp)
+f3=$(mktemp)
+f4=$(mktemp)
 
 # { kubectl get pods --namespace $1 --kubeconfig $KUBECONFIG } > $f1 &
 # kgp_cached use to update cache
 { KGP_TTL=300 kgp_cached --namespace $1 } > $f1 &
 P1=$!
 
-{ kubectl get svc --namespace $1 --kubeconfig $KUBECONFIG } > $f2 &
+{ runcached_ns kubectl get svc --namespace $1 --kubeconfig $KUBECONFIG } > $f2 &
 P2=$!
+
+{ runcached_ns kubectl get deployment --namespace $1 --kubeconfig $KUBECONFIG } > $f3 &
+P3=$!
+
+{ runcached_ns kubectl get statefulset --namespace $1 --kubeconfig $KUBECONFIG } > $f4 &
+P4=$!
 
 echo "------------------------ PODS INFO --------------------------------------------"
 echo "-------------------------------------------------------------------------------"
@@ -48,10 +56,26 @@ echo "--------------------------------------------------------------------------
 
 wait $P2 && cat $f2
 
+
+echo ""
+echo "----------------------- DEPLOYMENT INFO -----------------------------------------"
+echo "-------------------------------------------------------------------------------"
+
+
+wait $P3 && cat $f3
+
+
+echo ""
+echo "----------------------- STATEFULSET INFO -----------------------------------------"
+echo "-------------------------------------------------------------------------------"
+
+
+wait $P4 && cat $f4
+
 echo ""
 echo "-------------------------------------------------------------------------------"
 echo "KUBECONFIG: " $KUBECONFIG
-echo "NAMESPACE : " $(kcgcn)
+echo "DEFAULT NAMESPACE : " $(kcgcn)
 
-rm $f1 $f2
+rm $f1 $f2 $f3 $f4
 

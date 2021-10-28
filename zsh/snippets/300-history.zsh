@@ -8,8 +8,8 @@
 # http://zsh.sourceforge.net/Guide/zshguide02.html#l18 History option
 
 export HIST_STAMPS="yyyy-mm-dd" # ZSH History time format
-export HISTSIZE=990000          #The maximum number of events stored in the internal history list.
-export SAVEHIST=990000          #The maximum number of history events to save in the history file.
+export HISTSIZE=990009          #The maximum number of events stored in the internal history list.
+export SAVEHIST=990009          #The maximum number of history events to save in the history file.
 
 # Need to update file /ect/zshrc
 # Need to update file OMZ::lib/history.zsh/history.zsh

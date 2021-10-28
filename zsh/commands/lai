@@ -2,8 +2,9 @@
 
 # Example: lai | xargs rm
 
-exa -lbFa --color=always | fzf -n 7 \
+exa -lbFa --color=always | fzf -n 7..100 \
     --preview-window right:50% --preview-window border-left \
-    --preview "quick-preview ./{7}" --exit-0 \
-    | awk '{print $7}'
+    --preview "quick-preview {7..100}" --exit-0 \
+    | awk '{$1=$2=$3=$4=$5=$6="";print $0}' \
+    | sed 's/^ *//g'
 

@@ -221,7 +221,7 @@
     # printf "foo bar\nbaz bat" | xargs -n1 printf "message %s\n"
     # Now gbrdi works for delete multiple branch at same time
     git_branch_remote_delete_interactive(){ gbri $@ | sed 's/origin\///' | xargs -n1 git push -d origin }
-    alias gbrdi=git_branch_remote_delete_interactive
+    alias gbrDi=git_branch_remote_delete_interactive
 
     # duplicate with gbrdi, choose one
     # alias gbd_remote='ee "git push -d origin"'

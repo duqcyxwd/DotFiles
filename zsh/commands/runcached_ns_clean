@@ -1,8 +1,17 @@
-#!/bin/bash
+#!/bin/zsh
 
-CACHE_DIR="$RUNCACHED_CACHE_DIR/$(kube_cache_key $(kcgcn))"
+NS=$(kcgcn)
+CACHE_DIR="$RUNCACHED_CACHE_DIR/$(kube_cache_key $NS)"
 
 
 rm -rf $CACHE_DIR
 
 
+# runcached --cache-dir $CACHE_DIR kubectl get statefulset --namespace $NS --kubeconfig $KUBECONFIG > /dev/null &|
+# runcached --cache-dir $CACHE_DIR kubectl get deployment --namespace $NS --kubeconfig $KUBECONFIG > /dev/null &|
+# runcached_ns kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG > /dev/null &|
+
+runcached_ns kubectl get secret --namespace $NS --kubeconfig $KUBECONFIG > /dev/null &|
+runcached_ns kubectl get statefulset --namespace $NS --kubeconfig $KUBECONFIG > /dev/null &|
+runcached_ns kubectl get deployment --namespace $NS --kubeconfig $KUBECONFIG > /dev/null &|
+runcached_ns kubectl get svc --namespace $NS --kubeconfig $KUBECONFIG > /dev/null &|

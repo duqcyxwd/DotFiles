@@ -1,5 +1,6 @@
 #!/bin/sh
 
+# Clean and update zinit
 zinit self-update
 zinit delete --clean
 zinit update --all

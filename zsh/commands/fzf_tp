@@ -2,10 +2,12 @@
 # My wrapper for fzf-tmux, default with pop
 
 IS_FZF_TP="${FZF_TP:-0}"
+# My default FZF_TP Config
 FZF_TP_OPTS_DEFAULT="-p 85%"
 FZF_TP_OPTS_NEW="${FZF_TP_OPTS:-$FZF_TP_OPTS_DEFAULT}"
 
 
+# Example
 # FZF_TP_OPTS="-p 60%" nsi
 
 __fzfcmd() {

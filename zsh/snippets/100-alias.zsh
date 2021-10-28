@@ -39,9 +39,24 @@ alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'
 alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
 alias notes="mvim ~/repo/Notes/CLojure.md"
 
+
+#============= Kafka =============
+
+alias kafkacat=kcat
+alias topics="kcat -b localhost:9092 -L -J | jq -S -r '.topics |=sort_by(.topic) | .topics[].topic'"
+alias topics0='kafka-topics.sh --list --zookeeper localhost'
+alias topics1='kafka-topics.sh --bootstrap-server localhost:9092 --command-config $KAFKA_CONFIG/cust.properties --list'
+
+alias offset='ee "kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --time -1 --topic"'
+# coffset --group groupID
+alias coffset='ee "kafka-run-class.sh kafka.tools.ConsumerOffsetChecker --zookeeper localhost:2181 --topic"'
+# kafka-run-class.sh kafka.tools.GetOffsetShell --broker-list localhost:9092 --time -1 --topic
+# kafka-consumer-groups --bootstrap-server localhost:9092 --describe --group nbi-adaptor-2
+
 # Not use this anymore
 alias kafka21="cd /usr/local && ln -s kafka_2.12-2.1.0 kafka"
 alias kafka08="cd /usr/local && ln -s kafka_2.9.1-0.8.2.2 kafka"
+
 
 #============= Applications =============
 alias copen='open -a Google\ Chrome'

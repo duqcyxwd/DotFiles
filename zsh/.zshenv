@@ -6,8 +6,9 @@ export XDG_CACHE_HOME=$HOME/.cache
 export ZDOTDIR=$HOME/.config/zsh
 
 # Overwrite by /etc/zshrc
+export HIST_STAMPS="yyyy-mm-dd" # ZSH History time format
 export HISTSIZE=10000002          #The maximum number of events stored in the internal history list.
-export SAVEHIST=10000002        #The maximum number of history events to save in the history file.
+export SAVEHIST=10000002          #The maximum number of history events to save in the history file.
 
 HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
 

@@ -1,7 +1,7 @@
 #!/bin/bash
+# Predefine cache folder per kubectl namespace
 
 CACHE_DIR="$RUNCACHED_CACHE_DIR/$(kube_cache_key $(kcgcn))"
 
 runcached --cache-dir $CACHE_DIR $@
-
 

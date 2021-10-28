@@ -9,3 +9,4 @@ atom/git-time-machine/
 Session.vim
 .DS_Store
 tags
+yarn.lock
