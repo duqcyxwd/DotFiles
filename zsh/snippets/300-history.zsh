@@ -70,39 +70,20 @@ zshaddhistory() { # {{{1
   # https://superuser.com/questions/352788/how-to-prevent-a-command-in-the-zshell-from-being-saved-into-history
 }
 
-
 function fh() { # {{{1
-  # WIP
-  # print -z $( ([ -n "$ZSH_NAME" ] && fc -l 1 || history) | fzf +s --tac | sed -E 's/ *[0-9]*\*? *//' | sed -E 's/\\/\\\\/g')
+  # My history search with preview
 
-  # Use fzf delimiter
-  HISTORY_CACHED_FILE=~/.cache/zsh/__history_reverse_cached
-  HISTORY_CACHED_FILE_C=~/.cache/zsh/__history_reverse_cached_c
-  HISTORY_CACHED_FILE_INDEXED=~/.cache/zsh/__history_reverse_cached_indexed
-  # HISTORY_CACHED_FILE_ORIGINAL=~/.cache/zsh/__history_cached
-  # tail -r $HISTORY_CACHED_FILE > $HISTORY_CACHED_FILE_ORIGINAL
-
-  __history_search_cache() {
-    # nl to add index, can't use default index because delimiter limit with fzf
-    fc -nrli 1 > $HISTORY_CACHED_FILE
-    cat $HISTORY_CACHED_FILE | nl -s ': ' -b a > $HISTORY_CACHED_FILE_INDEXED
-    cp $HISTORY_CACHED_FILE $HISTORY_CACHED_FILE_C
-    mlog "cached created"
-  }
-
-  # __history_search_cache &|
+  TEMPFILE=$(mktemp)
+  fc -nrli 1 > $TEMPFILE
 
   print -z $(
-    ([ -n "$ZSH_NAME" ] && { cat $HISTORY_CACHED_FILE_INDEXED && __history_search_cache &| } ) | \
+    ([ -n "$ZSH_NAME" ] && { cat $TEMPFILE | nl -s ': ' -b a} ) | \
       fzf_tp --delimiter=': ' \
-      --bind "ctrl-r:reload(cat $HISTORY_CACHED_FILE_INDEXED)" \
-      --preview 'bat --color=always --highlight-line {1} '$HISTORY_CACHED_FILE_C --preview-window '+{1}-5' | \
+      --preview 'bat --color=always --highlight-line {1} '$TEMPFILE --preview-window '+{1}-5' | \
       cut -c 27-
   )
 
-  unset HISTORY_CACHED_FILE
-  unset HISTORY_CACHED_FILE_INDEXED
-  unset HISTORY_CACHED_FILE_ORIGINAL
+  rm $TEMPFILE
 }
 
 # }}}

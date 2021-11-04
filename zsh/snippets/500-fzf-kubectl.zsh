@@ -1,7 +1,8 @@
-#!/bin/sh
+#!/bin/zsh
 
 unalias kgpn
 unalias kgns
+unalias kgp
 
 # unalias kgcmi
 
