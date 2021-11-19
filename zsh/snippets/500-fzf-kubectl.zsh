@@ -65,7 +65,7 @@ kgseci() { #{{{2
 
   local SEC=$( runcached_ns kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG|
       fzf_tp --info=inline --layout=reverse --header-lines=2 \
-      --bind "ctrl-r:reload(runcached_ns_clean && runcached_ns --ttl 0 kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
+      --bind "ctrl-r:reload(runcached_ns kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
       --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
       --preview-window right \
       --preview "runcached_ns kube_secret_preview {1} $KUBECONFIG" "$@" \
@@ -84,12 +84,15 @@ kgcmi() { #{{{2
   echo $RES
 }
 
+alias kdcmi='kubectl describe configmap $(kgcmi)'
+alias kgcmdi=kdcmi
+
 # KUBECTL statefulset #{{{1
 # alias kgst="kubectl get statefulset"
 kgssi() { #{{{2
   runcached_ns kubectl get statefulset --namespace $(kcgcn) --kubeconfig $KUBECONFIG\
     | fzf_tp --header-lines=2 \
-    --bind "ctrl-r:reload(runcached_ns_clean && runcached_ns kubectl get statefulset --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
+    --bind "ctrl-r:reload(runcached_ns kubectl get statefulset --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
     --preview-window right \
     --preview 'runcached_ns kubectl describe statefulset {1}' \
     | awk '{print $1}'
@@ -99,7 +102,7 @@ kgssi() { #{{{2
 kgdi() { #{{{2
   runcached_ns kubectl get deployment --namespace $(kcgcn) --kubeconfig $KUBECONFIG \
     | fzf_tp --header-lines=2 \
-    --bind "ctrl-r:reload(runcached_ns_clean && runcached_ns kubectl get deployment --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
+    --bind "ctrl-r:reload(runcached_ns kubectl get deployment --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
     --preview-window right \
     --preview 'runcached_ns kubectl describe deployment {1}' \
     | awk '{print $1}'
@@ -118,7 +121,7 @@ kddi() { #{{{2
 kgsi() { #{{{2
   runcached_ns kubectl get svc --namespace $(kcgcn) --kubeconfig $KUBECONFIG \
     | fzf_tp --header-lines=2 \
-    --bind "ctrl-r:reload(runcached_ns_clean && runcached_ns kubectl get svc --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
+    --bind "ctrl-r:reload(runcached_ns kubectl get svc --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
     --preview-window right \
     --preview 'runcached_ns kubectl describe svc {1}' \
     | awk '{print $1}'

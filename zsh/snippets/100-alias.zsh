@@ -111,3 +111,12 @@ function whichl() {
 function whichv() {
   vim $(which $@)
 }
+
+function whichc() {
+  cat $(which $@)
+}
+
+
+function whichb() {
+  bat $(which $@)
+}

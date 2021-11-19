@@ -12,9 +12,9 @@ fi
 
 while (( "$#" )); do
 
-if [[ $(ls "$1") == "" ]]; then 
+if [[ $(ls "$1") == "" ]]; then
 	echo "Empty directory, nothing to be done."
-  else 
+  else
 	find "$1" -type f -a -atime +365 -exec rm -i {} \;
 fi
 

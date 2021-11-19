@@ -181,9 +181,10 @@ zinit_load() {
     # 1. Plugins with long loading time
     # 2. Plugins need to be loaded after config
     # 3. Plugins
+    # Don't use kubectl-fzf, it will disable auto complte
+    # bonnefoa/kubectl-fzf \
     zinit wait lucid silent light-mode for \
       agkozak/zsh-z \
-      bonnefoa/kubectl-fzf \
       djui/alias-tips \
       psprint/zsh-cmd-architect \
       wfxr/forgit \
@@ -193,7 +194,8 @@ zinit_load() {
       OMZ::plugins/iterm2/iterm2.plugin.zsh \
       OMZ::plugins/systemd/systemd.plugin.zsh
 
-    zinit ice wait="0" atload'bindkey.zsh && source /Users/EYONDUU/.zinit/plugins/bonnefoa---kubectl-fzf/kubectl_fzf.plugin.zsh' silent;
+    # zinit ice wait="0" atload'bindkey.zsh && source /Users/EYONDUU/.zinit/plugins/bonnefoa---kubectl-fzf/kubectl_fzf.plugin.zsh' silent;
+    zinit ice wait="0" atload'bindkey.zsh' silent;
     zinit light zpm-zsh/empty
 
     # zinit ice wait="2" silent;

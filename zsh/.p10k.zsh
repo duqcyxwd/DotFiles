@@ -1684,7 +1684,7 @@ function p10k-on-post-prompt() {
   fi
 
 
-  mlog "Second line $second_line_show dir: $dir_change exe $show_last_command_timelapse"
+  # mlog "Second line $second_line_show dir: $dir_change show_last_command_timelapse: $show_last_command_timelapse"
 
   # 1. Show pwd when pwd changes
   # 2. Show execution time, with time when bigger than threshold
