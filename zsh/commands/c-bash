@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]; then
+    echo "Create bash Script $1"
+    return
+fi
+
+
+touch $1
+chmod +x $1
+cat $(dirname "${BASH_SOURCE[0]}")/../template/bash-script-template >$1
+

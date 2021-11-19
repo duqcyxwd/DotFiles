@@ -221,7 +221,6 @@ alias gcam='git commit --amend'
 alias gre="ee 'git recent | head'"
 alias grec="ee 'git recent | grep -i chuan | grep -v gone'"
 alias gstau='git stash -u'         # git stash include untracked
-alias gstaa='echo "Tip: use gstp instead\n git stash apply" && git stash apply'
 alias gru="ee 'git remote update origin --prune'"
 
 #======================= Git Alias for work  =========================================
