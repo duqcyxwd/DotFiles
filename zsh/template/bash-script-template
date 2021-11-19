@@ -7,9 +7,28 @@
 VERSION=0.1.0
 USAGE="Usage: command -vhm VARIABLE"
 
+usage() {
+    cat <<USAGE_TEXT
+Usage: ${script_name} [-h | --help] [-a] [-ac] [-A]
+DESCRIPTION
+    Run robot test based on selection and copy down report
+OPTIONS:
+-h, --help
+        Print this help and exit.
+-t,
+        -- test single test keyword
+-i,
+        -- Include robot tags
+-d,
+        -- dry-run
+
+USAGE_TEXT
+}
+
 # --- Options processing -------------------------------------------
 if [ $# == 0 ] ; then
-    echo $USAGE
+    # echo $USAGE
+    usage
     exit 1;
 fi
 
@@ -22,7 +41,7 @@ while getopts ":t:m:vh" optname
         ;;
       "m")
         echo "Message Number: $OPTARG"
-        option=$OPTARG
+        option="$OPTARG"
         ;;
       "h")
         echo $USAGE

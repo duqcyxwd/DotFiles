@@ -1,0 +1,61 @@
+#!/bin/bash
+#================================================================
+# HEADER
+#================================================================
+#% SYNOPSIS
+#+    ${SCRIPT_NAME} [-hv] [-o[file]] args ...
+#%
+#% DESCRIPTION
+#%    This is a script template
+#%    to start any good shell script.
+#%
+#% OPTIONS
+#%    -o [file], --output=[file]    Set log file (default=/dev/null)
+#%                                  use DEFAULT keyword to autoname file
+#%                                  The default value is /dev/null.
+#%    -t, --timelog                 Add timestamp to log ("+%y/%m/%d@%H:%M:%S")
+#%    -x, --ignorelock              Ignore if lock file exists
+#%    -h, --help                    Print this help
+#%    -v, --version                 Print script information
+#%
+#% EXAMPLES
+#%    ${SCRIPT_NAME} -o DEFAULT arg1 arg2
+#%
+#================================================================
+#- IMPLEMENTATION
+#-    version         ${SCRIPT_NAME} (www.uxora.com) 0.0.4
+#-    author          Michel VONGVILAY
+#-    copyright       Copyright (c) http://www.uxora.com
+#-    license         GNU General Public License
+#-    script_id       12345
+#-
+#================================================================
+#  HISTORY
+#     2015/03/01 : mvongvilay : Script creation
+#     2015/04/01 : mvongvilay : Add long options and improvements
+#
+#================================================================
+#  DEBUG OPTION
+#    set -n  # Uncomment to check your syntax, without execution.
+#    set -x  # Uncomment to debug this shell script
+#
+#================================================================
+# END_OF_HEADER
+#================================================================
+
+# Example from https://stackoverflow.com/questions/14008125/shell-script-common-template
+
+  #== needed variables ==#
+SCRIPT_HEADSIZE=$(head -200 ${0} |grep -n "^# END_OF_HEADER" | cut -f1 -d:)
+SCRIPT_NAME="$(basename ${0})"
+
+  #== usage functions ==#
+usage() { printf "Usage: "; head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#+" | sed -e "s/^#+[ ]*//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g" ; }
+usagefull() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#[%+-]" | sed -e "s/^#[%+-]//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g" ; }
+scriptinfo() { head -${SCRIPT_HEADSIZE:-99} ${0} | grep -e "^#-" | sed -e "s/^#-//g" -e "s/\${SCRIPT_NAME}/${SCRIPT_NAME}/g"; }
+
+
+usage
+# usagefull
+scriptinfo
+
