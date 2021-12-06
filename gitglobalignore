@@ -7,3 +7,4 @@ node_modules
 tags
 .zsh_history
 pyrightconfig.json
+clojure-lsp.out
