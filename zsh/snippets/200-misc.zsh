@@ -23,14 +23,14 @@ alias p10ksigns="open https://github.com/romkatv/powerlevel10k#what-do-different
       alias lsr='/bin/ls'                                                # Raw ls
 
       # g git, a, all
-      alias l='exa -lhbF'                                                # list, size, type
-      alias ld='exa -lhbFD'                                              # list, size, type
-      alias lg='l --git --no-user --no-permissions'                                                 # list, size, type, git
+      alias l='exa -lhF'                                                 # list, size, type
+      alias ld='exa -lhFD'                                               # list, size, type
+      alias lg='l --git --no-user --no-permissions'                      # list, size, type, git
       alias lss='l -s ext'                                               # list, size, type
 
       alias la='exa -lbFa'
       alias laa='la .?* -d'                                              # Show hidden files only
-      alias lag=la --git
+      alias lag='la --git'
 
       alias ll='l -G'                                                    # long list
       alias lls='ll -s ext'                                              # long list sort

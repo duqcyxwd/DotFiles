@@ -175,11 +175,12 @@ alias glos='git log --stat'
 
 # git log one line
 _glog_format="%C(green bold)%h%Creset %C(auto)%d%Creset %C(normal)%s$Creset %C(cyan)%cr"
-alias gloo='git log --graph --color=always --format="$_glog_format"'
+alias gloo="git log --graph --color=always --format='$_glog_format'"
 
 # git log with author
+# glog git log graph with author
 _glog_auth_format="%C(green bold)%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(cyan)%C(bold)%cr%Creset"
-alias glog="git log --graph --pretty='$_glog_auth_format'"
+alias glog="git log --graph --pretty='$_glog_auth_format' --color=always"
 
 # git log graph simple graph with stat
 alias glogs="git log --stat --graph --pretty='%C(green bold)%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(cyan)%C(bold)%cr%Creset'"
