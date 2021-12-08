@@ -51,6 +51,7 @@ mlog "$(date) : zshrc start loading"
   export PATH="/usr/local/heroku/bin:$PATH"
   export PATH="/usr/local/opt/ruby/bin:$PATH"
   export PATH="./node_modules/.bin:$PATH"
+  export PATH=/usr/local/opt/python/libexec/bin:$PATH         #Use brew install python/pip as default
 
   # export KAFKA_HOME=/usr/local/kafka-2.1.0
   export KAFKA_HOME=/usr/local/kafka_2.12-2.5.1
