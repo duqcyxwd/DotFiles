@@ -113,7 +113,6 @@ for program in $UNINSTALL_PROGRAMS ; do brew uninstall --force $program ; done
 # Brew Cask #{{{2
 echo "Installing cask..."
 CASKS=(
-
     # rectangle
     amethyst
     emacs
@@ -159,7 +158,11 @@ PYTHON_PACKAGES=(
     ipython
     virtualenv
     virtualenvwrapper
+    
+    kafka-python
+    python-snappy
 )
+# Uninstall other kafka and snappy
 # sudo pip install ${PYTHON_PACKAGES[@]}
 
 # MY others  {{{1

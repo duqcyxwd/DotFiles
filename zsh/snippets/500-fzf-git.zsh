@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# FZF forgit stash show {{{1
+# FZF forgit basic config {{{1
 # --------------------------------------------------------------------------
 {
     # Interactive git and rewrite some helper function
@@ -27,24 +27,6 @@
 
 }
 
-# FZF forgit ALIAS {{{1
-# --------------------------------------------------------------------------
-{
-  alias fga='forgit::add'
-  alias fgrs='forgit::restore'
-  alias fgclean='forgit::clean'
-  alias fgd='forgit::diff'
-  # alias fgl='forgit::log'
-  # alias fgss='forgit::stash::show'
-  alias fgrh='forgit::reset::head'
-  alias fgi='forgit::ignore'
-
-  alias gai=forgit::add
-  alias gdi=forgit::diff
-  alias gstsi0=forgit::stash::show
-  alias gstsi=forgit::stash::show_cust
-  alias grhi=forgit::reset::head
-}
  # FZF: GIT COMMIT: log, git rebase/reset/revert {{{1
 # --------------------------------------------------------------------------
   {
@@ -71,7 +53,8 @@
 
     # get git commit SHA1 short
     git_log_interactive_select(){
-      gloo $@  \
+      # gloo $@  \
+      glog $@  \
         | fzf_git_commit_preview \
         | sha1grep \
         | pbcopy && pbpaste
@@ -134,6 +117,43 @@
         echo 'Nothing to clean.'
     }
 
+    gsti() {
+      # WIP, find a way to show changed file
+      # this can be used in git checkout/add/reset or diff?
+      forgit::inside_work_tree || return 1
+      # Add files if passed as arguments
+      [[ $# -ne 0 ]] && git add "$@" && git status -su && return
+
+      local changed unmerged untracked files opts preview extract
+      changed=$(git config --get-color color.status.changed red)
+      unmerged=$(git config --get-color color.status.unmerged red)
+      untracked=$(git config --get-color color.status.untracked red)
+      # NOTE: paths listed by 'git status -su' mixed with quoted and unquoted style
+      # remove indicators | remove original path for rename case | remove surrounding quotes
+      extract="
+          sed 's/^.*]  //' |
+          sed 's/.* -> //' |
+          sed -e 's/^\\\"//' -e 's/\\\"\$//'"
+      preview="
+          file=\$(echo {} | $extract)
+          if (git status -s -- \$file | grep '^??') &>/dev/null; then  # diff with /dev/null for untracked files
+              git diff --color=always --no-index -- /dev/null \$file | $forgit_diff_pager | sed '2 s/added:/untracked:/'
+          else
+              git diff --color=always -- \$file | $forgit_diff_pager
+          fi"
+      opts="
+          $FORGIT_FZF_DEFAULT_OPTS
+          -0 -m --nth 2..,..
+          $FORGIT_ADD_FZF_OPTS
+      "
+      git -c color.status=always -c status.relativePaths=true status -su |
+          grep -F -e "$changed" -e "$unmerged" -e "$untracked" |
+          sed -E 's/^(..[^[:space:]]*)[[:space:]]+(.*)$/[\1]  \2/' |
+          FZF_DEFAULT_OPTS="$opts" fzf_tp --preview="$preview" |
+          sh -c "$extract"
+    }
+
+
     # Cleanup untracked file include ignore file
     alias gcleani0=forgit::clean
 
@@ -147,17 +167,17 @@
     --bind="ctrl-d:reload(git stash drop $(cut -d: -f1 <<<{}) 1>/dev/null && git stash list)"
     '
 
-    forgit::stash::show_cust() {
+    git_stash_list_interactive() {
       # ctrl-d for drop stash
       forgit::inside_work_tree || return 1
       local cmd opts
       cmd="echo {} |cut -d: -f1 |xargs -I% git_stash_preview % |$__git_pager"
       opts="
           $FORGIT_FZF_DEFAULT_OPTS
-          +s +m -0 --tiebreak=index --bind=\"enter:execute($cmd)\"
+          +s +m -0
           $FORGIT_STASH_FZF_OPTS
       "
-      git stash list | FZF_DEFAULT_OPTS="$opts" fzf_tp --preview="$cmd"
+      git stash list | FZF_DEFAULT_OPTS="$opts" fzf_tp --preview="$cmd" | cut -d: -f1
     }
 
 
@@ -256,4 +276,25 @@
     # Can be replaced with gbi --merged
     # alias gbri_merged="gb_merged_remote | fzf | cut -d ' ' -f6 | cut -c8-1000"
     # alias gbri_me="gbr | grep chuan | fzf | cut -d ' ' -f6 | cut -c8-1000"
+
+# FZF: ALIAS {{{1
+# --------------------------------------------------------------------------
+{
+  alias fga='forgit::add'
+  alias fgrs='forgit::restore'
+  alias fgclean='forgit::clean'
+  alias fgd='forgit::diff'
+  # alias fgl='forgit::log'
+  # alias fgss='forgit::stash::show'
+  alias fgrh='forgit::reset::head'
+  alias fgi='forgit::ignore'
+
+  alias gai=forgit::add
+  alias gdi=forgit::diff
+  alias gstsi0=forgit::stash::show
+  alias gstsi=git_stash_list_interactive
+  alias gstli=git_stash_list_interactive
+  alias gstaai='git_stash_list_interactive | git stash apply'
+  alias grhi=forgit::reset::head
+}
 

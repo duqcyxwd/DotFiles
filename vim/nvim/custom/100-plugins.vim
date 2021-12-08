@@ -102,8 +102,8 @@ Plug 'unblevable/quick-scope'|                     "Quick highlight for f/F
 
 
 " Telescope
-Plug 'nvim-lua/popup.nvim'| "required by telescope
-Plug 'nvim-lua/plenary.nvim'| "required by telescope
+Plug 'nvim-lua/popup.nvim'|                        "required by telescope
+Plug 'nvim-lua/plenary.nvim'|                      "required by telescope
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-symbols.nvim'
 
@@ -121,13 +121,13 @@ Plug 'adimit/prolog.vim'
 Plug 'cespare/vim-toml'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'evedovelli/rst-robotframework-syntax-vim'
+Plug 'seeamkhan/robotframework-vim'
 Plug 'kchmck/vim-coffee-script'
 Plug 'leafgarland/typescript-vim'
 Plug 'mattn/emmet-vim'
 Plug 'pangloss/vim-javascript'
 Plug 'pedrohdz/vim-yaml-folds'
 Plug 'rust-lang/rust.vim'
-Plug 'seeamkhan/robotframework-vim'
 Plug 'tfnico/vim-gradle'
 Plug 'tmux-plugins/vim-tmux'
 Plug 'tweekmonster/gofmt.vim'

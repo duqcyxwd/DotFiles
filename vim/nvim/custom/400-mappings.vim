@@ -52,7 +52,8 @@ let g:which_key_map_space.j = { 'name' : '+Jump' }
 let g:which_key_map_space.p = { 'name' : '+Projects/Packages' }
 let g:which_key_map_space.q = { 'name' : '+Quit' }
 let g:which_key_map_space.r = { 'name' : '+Run' }
-let g:which_key_map_space.s = { 'name' : '+Search/Source' }
+let g:which_key_map_space.s = { 'name' : '+Search' }
+let g:which_key_map_space.S = { 'name' : '+Source' }
 let g:which_key_map_space.t = { 'name' : '+Togglers' }
 let g:which_key_map_space.w = { 'name' : '+Windows' }
 
@@ -262,7 +263,7 @@ xmap <Space>rt <Plug>(neoterm-repl-send)
 " xmap gt <Plug>(neoterm-repl-send)
 " nmap gtt <Plug>(neoterm-repl-send-line)
 
-" [SpaceMapping] s+: Search/Source {{{1
+" [SpaceMapping] s+: Search {{{1
 " ------------------------------------------------------------------------------
 let which_key_map_space.s.b = "FZF Search Current Files"
 nnoremap <Space>sb :FFBLines<CR>
@@ -277,44 +278,52 @@ nnoremap <Space>sp :MyFzfAg <CR>
 let which_key_map_space.s.s = "FZF Search All Open Files"
 nnoremap <Space>ss :Telescope current_buffer_fuzzy_find<CR>
 
-
-let which_key_map_space.s.v = "Source vimrc"
-nnoremap <Space>sv :so ~/.config/vim/vimrc<CR>
-
-" sc -> used by Search clean
-" let which_key_map_space.s.c = "Source current file!"
-" nnoremap <Space>sc :so %<CR>
-
 let which_key_map_space.s.c = "Search highlight clean"
 nnoremap <Space>sc :noh<CR>
 
+
+" [SpaceMapping] S+: Source {{{1
+" ------------------------------------------------------------------------------
+let which_key_map_space.S.V = "Source vimrc"
+nnoremap <Space>sv :so $XDG_CONFIG_HOME/nvim/init.vim<CR>
+nnoremap <Space>SV :so $XDG_CONFIG_HOME/nvim/init.vim<CR>
+
+let which_key_map_space.S.C = "Source current file!"
+nnoremap <Space>SC :so %<CR>
+nnoremap <Space>SE :so %<CR>
+nnoremap <Space>se :so %<CR>
+
 " [SpaceMapping] t+: Toggler {{{1
 " ------------------------------------------------------------------------------
-let which_key_map_space.t.n = "Toggle line number"
-nnoremap <Space>tn :setlocal number!<CR>:setlocal number?<CR>
 
-let which_key_map_space.t.r = "Toggle relative line number"
-nnoremap <Space>tr :setlocal rnu!<CR>:setlocal rnu?<CR>
+function! s:toggle_opt_map(option, letter, mode, doc) abort
+   " Example:
+   " let which_key_map_space.t.c = "Toggle line cursorcolumn"
+   " nnoremap <Space>tc :setlocal cursorcolumn!<CR>:setlocal cursorcolumn?<CR>
+   "
+   exe 'let g:which_key_map_space.t.' .a:letter ' = "' .a:doc '"'
+   exe 'nnoremap <Space>t'.a:letter.' :'.a:mode.' '.a:option.'!<CR>:'.a:mode.' '.a:option.'?<CR>'
+endfunction
+
+
+call s:toggle_opt_map('cursorline',     'l', 'setlocal', 'Toggle line cursorline')
+call s:toggle_opt_map('cursorcolumn',   'c', 'setlocal', 'Toggle line cursorcolumn')
+call s:toggle_opt_map('number',         'n', 'set',      'Toggle line number ')
+call s:toggle_opt_map('relativenumber', 'r', 'set',      'Toggle relative line number')
+call s:toggle_opt_map('wrap',           'w', 'set',      'Toggle line wrap')
+call s:toggle_opt_map('hlsearch',       'h', 'set',      'Toggle highlight matches')
+call s:toggle_opt_map('list',           'i', 'set',      'Toggle invisible char (set list)')
+
 
 let which_key_map_space.t.s = "Toggle auto strip whitespace"
 nnoremap <Space>ts :ToggleStripWhitespaceOnSave<CR>
-
-
-let which_key_map_space.t.w = "Toggle word wrap"
-nnoremap <Space>tw :setlocal wrap!<CR>:setlocal wrap?<CR>
 
 let which_key_map_space.t.t = "Toggle 80 text width"
 nnoremap <Space>tt :call ToggleTextWidth()<CR>
 " nnoremap <Space>tt :call ToggleHighlightCharacterOver80()<CR>
 
-
 let which_key_map_space.t.T = "Toggle TagBar"
 nnoremap <Space>tT :TagbarToggle<CR>
-
-
-let which_key_map_space.t.l = "Toggle invisible char (set list)"
-nnoremap <Space>tl :set list!<CR>
-" nnoremap <Space>tt :call ToggleHighlightCharacterOver80()<CR>
 
 let which_key_map_space.t.M = "Toggle ColorScheme"
 nnoremap <Space>tM :ToggleColorschemeMode<CR>
@@ -331,11 +340,16 @@ nnoremap <Space>tfm :set foldmethod=marker<CR>zv
 let which_key_map_space.t.f.s = "change foldmethod to syntax"
 nnoremap <Space>tfs :set foldmethod=syntax<CR>zv
 
+let which_key_map_space.t.f.i = "change foldmethod to indent"
+nnoremap <Space>tfi :set foldmethod=ident<CR>zv
+
+
 let which_key_map_space.t.f.c = "Toggle Fold Column"
 nnoremap <Space>tfc :call ToggleFoldColumn()<CR>
 
 
-nmap \s :call LoopFoldMethod()<CR>
+nmap \s :call LoopFoldMethod()<CR>:set foldmethod<CR>zv
+
 
 " [SpaceMapping] w+: Window {{{1
 " ------------------------------------------------------------------------------
@@ -388,14 +402,6 @@ nnoremap <silent> <Space>' :above Ttoggle<CR>
 let which_key_map_space['<Tab>'] = "last buffer"
 nnoremap <silent> <Space><Tab> :e#<cr>
 
-
-" [Slash Key] mappings {{{1
-"--------------------------------------------------------------------------
-
-"   call SpaceVim#mapping#space#def( 'nnoremap', ['t', 'T', 's'], "set foldmethod=syntax", 'Set foldmethod syntax', 1)
-"   call SpaceVim#mapping#space#def( 'nnoremap', ['t', 'T', 'm'], "set foldmethod=marker", 'Set foldmethod marker', 1)
-"   call SpaceVim#mapping#space#def( 'nnoremap', ['t', 'T', 'c'], "set foldcolumn=2", 'Set column to 2', 1)
-"   call SpaceVim#mapping#space#def( 'nnoremap', ['t', 'T', 'C'], "set foldcolumn=0", 'Set column to 0', 1)
 
 " [Other Keys] mappings {{{1
 "--------------------------------------------------------------------------
@@ -452,7 +458,7 @@ nmap gV <Plug>(VM-Reselect-Last)
 
 " }}}1
 
-" Other random / WIP
+" Other random / WIP {{{1
 " --------------------------------------------------------------------------------
 "
 "  Comments

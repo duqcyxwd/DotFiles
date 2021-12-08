@@ -854,6 +854,7 @@ augroup commentary_config
   autocmd FileType sml,ocaml setlocal commentstring=(*\ %s\ *)
   autocmd FileType resolv,crontab setlocal commentstring=#\ %s
   autocmd FileType sql setlocal commentstring=--\ %s
+  autocmd FileType robot setlocal commentstring=#\ %s
 augroup END
 
 
@@ -1926,7 +1927,8 @@ function! g:CusVimWikiKeyMap() " {{{3
   call vimwiki#u#map_key('n', 'gLR', '<Plug>VimwikiRenumberAllLists', 1)
   call vimwiki#u#map_key('n', 'gl', '<Plug>VimwikiRemoveSingleCB')
   call vimwiki#u#map_key('n', 'gL', '<Plug>VimwikiRemoveCBInList')
-  call vimwiki#u#map_key('n', 'o', '<Plug>VimwikiListo')
+  " Not sure if need this
+  " call vimwiki#u#map_key('n', 'o', '<Plug>VimwikiListo')
   call vimwiki#u#map_key('n', 'O', '<Plug>VimwikiListO')
 endfunction
 
@@ -2036,40 +2038,11 @@ augroup END
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => which-key {{{1
 """"""""""""""""""""""""""""""
-
 let g:which_key_centered = 0
 " Don't put keygroup at start or at end
 let g:which_key_group_dicts=''
 let g:which_key_floating_opts = { 'row': '0', 'col': '-10', 'height': '+0', 'width': '+10'}
-
-
 " See: https://github.com/liuchengxu/vim-which-key#configuration
-
-" let g:which_key_map_leader.b = {
-"       \ 'name': '+buffers',
-"       \ 'd': 'delete this buffer',
-"       \ 'D': 'delete all buffers',
-"       \ 'l': 'list buffers',
-"       \ 'o': 'delete all other buffers'
-"       \ }
-"
-" let g:which_key_map_leader.c = {
-"       \ 'name': '+coc',
-"       \ 'c': 'toggle coc',
-"       \ 'd': 'coc diagnostics',
-"       \ 'f': 'coc: format selected',
-"       \ 'i': 'coc info'
-"       \ }
-"
-" let g:which_key_map_leader.e = {
-"       \ 'name': '+edit',
-"       \ 'c': 'config directory',
-"       \ 'm': 'edit mappings',
-"       \ 'p': 'edit plugins',
-"       \ 'P': 'edit plugins config',
-"       \ 'v': 'edit vimrc',
-"       \ }
-
 
 
 """"""""""""""""""""""""""""""

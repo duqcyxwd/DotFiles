@@ -46,7 +46,7 @@ set showcmd
 set showmatch                   " Show matching brackets when text indicator is over them
 set smartcase                   " When searching try to be smart about cases
 set startofline                 " When "on" the commands listed below move the cursor to the first non-blank of the line.
-set timeoutlen=500              " The default timeoutlen is 1000 ms.
+set timeoutlen=250              " The default timeoutlen is 1000 ms.
 set updatetime=250
 " set viminfo^=%                  " Remember info about open buffers on close, will reopen buffer Replaced with shada
 set visualbell
@@ -64,7 +64,6 @@ set tabstop=2
 " set textwidth=80                " 80 chars <Space>tt to toggle it
 set textwidth=0                " I hope this can disable auto break line
 
-" WIP Add toggle for this
 set nowrap                " Wrap lines
 
 set foldlevel=2           " Set to 0 fold all by default

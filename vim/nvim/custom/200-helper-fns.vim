@@ -83,10 +83,10 @@ endfunction
 " [Function] Fold Related Fns {{{1
 " ------------------------------------------------------------------------------
 function! ToggleFoldColumn()
-  if &foldcolumn == 3
-    set foldcolumn=0
+  if &foldcolumn == 0
+    set foldcolumn=3
   else
-    set foldcolumn=5
+    set foldcolumn=0
   endif
 endfunction
 

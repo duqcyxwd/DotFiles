@@ -75,6 +75,7 @@ function getElementsByText(str, tag = 'a') {
 
 // https://gist.github.com/idelem/a2b15c4fe7613487e16fb55ba3af1be9
 function copyToClipboard(text) {
+  Front.showBanner('Coping: ' + text);
   if (window.clipboardData && window.clipboardData.setData) {
     /*IE specific code path to prevent textarea being shown while dialog is visible.*/
     return clipboardData.setData('Text', text);
@@ -464,7 +465,14 @@ const devMapping = () => {
   mapkey(',,f', 'Select first', () => document.querySelectorAll('.network-view-card')[0].click(), devDomain);
   mapkey(',,c', 'Clean all notification', () => document.querySelectorAll('.notifications-tc .notification').forEach((e) => e.click()), devDomain);
   mapkey(',,b', 'Net Back', () => document.querySelectorAll('.network-back-btn').forEach((e) => e.click()), devDomain);
-  mapkey( ',,d', 'debug', () => debugger , {});
+  mapkey(
+    ',,d',
+    'debug',
+    () => {
+      debugger;
+    },
+    {}
+  );
 };
 
 // }}}1
