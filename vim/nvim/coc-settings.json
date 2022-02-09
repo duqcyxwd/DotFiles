@@ -42,7 +42,7 @@
   "suggest.removeDuplicateItems": true,
   "coc.preferences.formatOnSaveFiletypes": [
     "css",
-    "markdown",
+    // "markdown",
     "javascript",
     "graphql",
     "html",
@@ -71,7 +71,8 @@
   // COC pyright
   "pyright.enable": true,
 
-  // Coc jedi
+  // COC jedi
+  // wrapper for Python's jedi-language-server.
   "jedi.enable": false,
   "jedi.startupMessage": false,
   "jedi.markupKindPreferred": "plaintext",
