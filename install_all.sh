@@ -158,7 +158,7 @@ PYTHON_PACKAGES=(
     ipython
     virtualenv
     virtualenvwrapper
-    
+
     kafka-python
     python-snappy
 )
@@ -185,6 +185,8 @@ PYTHON_PACKAGES=(
 WIP
 brew tap conduktor/brew
 brew install conduktor
+
+brew install borkdude/brew/jet
 
 
 

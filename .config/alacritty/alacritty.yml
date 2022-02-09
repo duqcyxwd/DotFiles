@@ -86,6 +86,15 @@ window:
   # and `light`. Set this to `None` to use the default theme variant.
   #gtk_theme_variant: None
 
+
+  # Background opacity
+  #
+  # Window opacity as a floating point number from `0.0` to `1.0`.
+  # The value `0.0` is completely transparent and `1.0` is opaque.
+  # background_opacity: 1.0
+  # background_opacity: 0.5
+  opacity: 1.0
+
 scrolling:
   # Maximum number of lines in the scrollback buffer.
   # Specifying '0' will disable scrolling.
@@ -839,7 +848,7 @@ key_bindings:
   #- { key: B,              mods: Command, mode: ~Search,     action: SearchBackward        }
 
   # Full Screen
-  - { key: F,              mods: Command|Control,            action: ToggleFullscreen      }
+  # - { key: F,              mods: Command|Control,            action: ToggleFullscreen      }
   - { key: Return,         mods: Command,                    action: ToggleSimpleFullscreen}
     # Remap Control-space
   - { key: Space,          mods: Control,                    chars: "\x00"                 }
@@ -898,7 +907,7 @@ draw_bold_text_with_bright_colors: false
 #
 # Window opacity as a floating point number from `0.0` to `1.0`.
 # The value `0.0` is completely transparent and `1.0` is opaque.
-background_opacity: 1.0
+# background_opacity: 1.0
 # background_opacity: 0.5
 
 # Live config reload (changes require restart)
