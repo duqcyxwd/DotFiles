@@ -1065,6 +1065,7 @@ let g:findroot_patterns = [
 let g:fzf_command_prefix="FF"
 
 " Update so it will search hiddent file
+" This method will run ag with given <q-args> and filter result in fzf
 command! -bang -nargs=* MyFzfAg
   \ call fzf#vim#ag(<q-args>,
   \                 '--ignore "node_modules" --hidden',
@@ -1239,10 +1240,6 @@ let g:limelight_paragraph_span = 0
 let g:limelight_bop = '^\s'
 let g:limelight_eop = '\ze\n^\s'
 
-" To space?
-nmap <Leader>l <Plug>(Limelight)
-xmap <Leader>l <Plug>(Limelight)
-
 " Highlighting priority (default: 10)
 "   Set it to -1 not to overrule hlsearch
 let g:limelight_priority = -1
@@ -1254,7 +1251,7 @@ let g:limelight_priority = -1
 
 " goyo_height: goyo is implimented with 4 invisiable window so it is impossible
 " to have full height.
-let g:goyo_width=90
+let g:goyo_width=120
 let g:goyo_height=100
 let g:goyo_margin_top = 0
 let g:goyo_margin_bottom = 0
@@ -1267,7 +1264,7 @@ function! s:goyo_enter()
   set noshowmode
   set noshowcmd
   set scrolloff=999
-  # Limelight
+  " Limelight
 endfunction
 
 function! s:goyo_leave()
@@ -1279,7 +1276,7 @@ function! s:goyo_leave()
   set showcmd
   set scrolloff=15
   syntax on
-  # Limelight!
+  " Limelight!
 endfunction
 
 augroup GoYo
@@ -1302,8 +1299,9 @@ augroup neoterm
 augroup END
 
 tnoremap <Esc> <C-\><C-n>
-tnoremap <C-h> <C-\><C-N><C-w>h
 
+" Can't use this. This is unfocus the fzf floating window
+" tnoremap <C-h> <C-\><C-N><C-w>h
 " tnoremap <C-j> <C-\><C-N><C-w>j
 " tnoremap <C-k> <C-\><C-N><C-w>k
 " tnoremap <C-l> <C-\><C-N><C-w>l
@@ -1318,8 +1316,8 @@ tnoremap <C-h> <C-\><C-N><C-w>h
 " would see the HTML.
 
 let g:netrw_nogx = 1 " disable netrw's gx mapping.
-nmap gx <Plug>(openbrowser-smart-search)
-vmap gx <Plug>(openbrowser-smart-search)
+" nmap gx <Plug>(openbrowser-smart-search)
+" vmap gx <Plug>(openbrowser-smart-search)
 
 let g:openbrowser_search_engines = {
       \   'favorite': 'http://example.com/search?q={query}',
@@ -1872,64 +1870,67 @@ let g:vimwiki_folding = 'expr'
 let g:vimwiki_folding = ''
 
 function! g:CusVimWikiKeyMap() " {{{3
-  echom "CusVimWikiKeyMap"
+  if exists('g:plugs["vimwiki.nvim"]')
+    echom "CusVimWikiKeyMap"
 
-  " Links
-  let g:which_key_map_space.w.o = "VimWiki Page open"
-  call vimwiki#u#map_key('n', '<Space>wo', '<Plug>VimwikiFollowLink')
-  call vimwiki#u#map_key('v', '<Space>wo', '<Plug>VimwikiNormalizeLinkVisualCR')
+    " Links
+    let g:which_key_map_space.w.o = "VimWiki Page open"
+    call vimwiki#u#map_key('n', '<Space>wo', '<Plug>VimwikiFollowLink')
+    call vimwiki#u#map_key('v', '<Space>wo', '<Plug>VimwikiNormalizeLinkVisualCR')
 
-  call vimwiki#u#map_key('n', '<S-CR>', '<Plug>VimwikiSplitLink')
-  call vimwiki#u#map_key('n', '<C-CR>', '<Plug>VimwikiVSplitLink')
-  call vimwiki#u#map_key('n', '+', '<Plug>VimwikiNormalizeLink')
-  call vimwiki#u#map_key('v', '+', '<Plug>VimwikiNormalizeLinkVisual')
-  " call vimwiki#u#map_key('v', '<CR>', '<Plug>VimwikiNormalizeLinkVisualCR')
-  call vimwiki#u#map_key('n', '<D-CR>', '<Plug>VimwikiTabnewLink')
-  call vimwiki#u#map_key('n', '<C-S-CR>', '<Plug>VimwikiTabnewLink', 1)
-  call vimwiki#u#map_key('n', '<BS>', '<Plug>VimwikiGoBackLink')
-  " call vimwiki#u#map_key('n', '<TAB>', '<Plug>VimwikiNextLink')
-  " call vimwiki#u#map_key('n', '<S-TAB>', '<Plug>VimwikiPrevLink')
-  call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'n', '<Plug>VimwikiGoto')
-  call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'d', '<Plug>VimwikiDeleteFile')
-  call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'r', '<Plug>VimwikiRenameFile')
-  call vimwiki#u#map_key('n', '<C-Down>', '<Plug>VimwikiDiaryNextDay')
-  call vimwiki#u#map_key('n', '<C-Up>', '<Plug>VimwikiDiaryPrevDay')
+    call vimwiki#u#map_key('n', '<S-CR>', '<Plug>VimwikiSplitLink')
+    call vimwiki#u#map_key('n', '<C-CR>', '<Plug>VimwikiVSplitLink')
+    call vimwiki#u#map_key('n', '+', '<Plug>VimwikiNormalizeLink')
+    call vimwiki#u#map_key('v', '+', '<Plug>VimwikiNormalizeLinkVisual')
+    " call vimwiki#u#map_key('v', '<CR>', '<Plug>VimwikiNormalizeLinkVisualCR')
+    call vimwiki#u#map_key('n', '<D-CR>', '<Plug>VimwikiTabnewLink')
+    call vimwiki#u#map_key('n', '<C-S-CR>', '<Plug>VimwikiTabnewLink', 1)
+    call vimwiki#u#map_key('n', '<BS>', '<Plug>VimwikiGoBackLink')
+    " call vimwiki#u#map_key('n', '<TAB>', '<Plug>VimwikiNextLink')
+    " call vimwiki#u#map_key('n', '<S-TAB>', '<Plug>VimwikiPrevLink')
+    call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'n', '<Plug>VimwikiGoto')
+    call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'d', '<Plug>VimwikiDeleteFile')
+    call vimwiki#u#map_key('n', vimwiki#vars#get_global('map_prefix').'r', '<Plug>VimwikiRenameFile')
+    call vimwiki#u#map_key('n', '<C-Down>', '<Plug>VimwikiDiaryNextDay')
+    call vimwiki#u#map_key('n', '<C-Up>', '<Plug>VimwikiDiaryPrevDay')
 
 
-  " List
-  call vimwiki#u#map_key('n', 'gnt', '<Plug>VimwikiNextTask')
-  call vimwiki#u#map_key('n', '<C-Space>', '<Plug>VimwikiToggleListItem')
-  call vimwiki#u#map_key('n', '<C-Space>', '<Plug>VimwikiToggleListItem')
-  call vimwiki#u#map_key('v', '<C-Space>', '<Plug>VimwikiToggleListItem', 1)
-  if has('unix')
-    call vimwiki#u#map_key('n', '<C-@>', '<Plug>VimwikiToggleListItem', 1)
-    call vimwiki#u#map_key('v', '<C-@>', '<Plug>VimwikiToggleListItem', 1)
+    " List
+    call vimwiki#u#map_key('n', 'gnt', '<Plug>VimwikiNextTask')
+    call vimwiki#u#map_key('n', '<C-Space>', '<Plug>VimwikiToggleListItem')
+    call vimwiki#u#map_key('n', '<C-Space>', '<Plug>VimwikiToggleListItem')
+    call vimwiki#u#map_key('v', '<C-Space>', '<Plug>VimwikiToggleListItem', 1)
+    if has('unix')
+      call vimwiki#u#map_key('n', '<C-@>', '<Plug>VimwikiToggleListItem', 1)
+      call vimwiki#u#map_key('v', '<C-@>', '<Plug>VimwikiToggleListItem', 1)
+    endif
+    call vimwiki#u#map_key('n', 'glx', '<Plug>VimwikiToggleRejectedListItem')
+    call vimwiki#u#map_key('v', 'glx', '<Plug>VimwikiToggleRejectedListItem', 1)
+    call vimwiki#u#map_key('n', 'gln', '<Plug>VimwikiIncrementListItem')
+    call vimwiki#u#map_key('v', 'gln', '<Plug>VimwikiIncrementListItem', 1)
+    call vimwiki#u#map_key('n', 'glp', '<Plug>VimwikiDecrementListItem')
+    call vimwiki#u#map_key('v', 'glp', '<Plug>VimwikiDecrementListItem', 1)
+    call vimwiki#u#map_key('i', '<C-D>', '<Plug>VimwikiDecreaseLvlSingleItem')
+    call vimwiki#u#map_key('i', '<C-T>', '<Plug>VimwikiIncreaseLvlSingleItem')
+    call vimwiki#u#map_key('n', 'glh', '<Plug>VimwikiDecreaseLvlSingleItem', 1)
+    call vimwiki#u#map_key('n', 'gll', '<Plug>VimwikiIncreaseLvlSingleItem', 1)
+    call vimwiki#u#map_key('n', 'gLh', '<Plug>VimwikiDecreaseLvlWholeItem')
+    call vimwiki#u#map_key('n', 'gLH', '<Plug>VimwikiDecreaseLvlWholeItem', 1)
+    call vimwiki#u#map_key('n', 'gLl', '<Plug>VimwikiIncreaseLvlWholeItem')
+    call vimwiki#u#map_key('n', 'gLL', '<Plug>VimwikiIncreaseLvlWholeItem', 1)
+    call vimwiki#u#map_key('i', '<C-L><C-J>', '<Plug>VimwikiListNextSymbol')
+    call vimwiki#u#map_key('i', '<C-L><C-K>', '<Plug>VimwikiListPrevSymbol')
+    call vimwiki#u#map_key('i', '<C-L><C-M>', '<Plug>VimwikiListToggle')
+    call vimwiki#u#map_key('n', 'glr', '<Plug>VimwikiRenumberList')
+    call vimwiki#u#map_key('n', 'gLr', '<Plug>VimwikiRenumberAllLists')
+    call vimwiki#u#map_key('n', 'gLR', '<Plug>VimwikiRenumberAllLists', 1)
+    call vimwiki#u#map_key('n', 'gl', '<Plug>VimwikiRemoveSingleCB')
+    call vimwiki#u#map_key('n', 'gL', '<Plug>VimwikiRemoveCBInList')
+    " Not sure if need this
+    " call vimwiki#u#map_key('n', 'o', '<Plug>VimwikiListo')
+    call vimwiki#u#map_key('n', 'O', '<Plug>VimwikiListO')
+
   endif
-  call vimwiki#u#map_key('n', 'glx', '<Plug>VimwikiToggleRejectedListItem')
-  call vimwiki#u#map_key('v', 'glx', '<Plug>VimwikiToggleRejectedListItem', 1)
-  call vimwiki#u#map_key('n', 'gln', '<Plug>VimwikiIncrementListItem')
-  call vimwiki#u#map_key('v', 'gln', '<Plug>VimwikiIncrementListItem', 1)
-  call vimwiki#u#map_key('n', 'glp', '<Plug>VimwikiDecrementListItem')
-  call vimwiki#u#map_key('v', 'glp', '<Plug>VimwikiDecrementListItem', 1)
-  call vimwiki#u#map_key('i', '<C-D>', '<Plug>VimwikiDecreaseLvlSingleItem')
-  call vimwiki#u#map_key('i', '<C-T>', '<Plug>VimwikiIncreaseLvlSingleItem')
-  call vimwiki#u#map_key('n', 'glh', '<Plug>VimwikiDecreaseLvlSingleItem', 1)
-  call vimwiki#u#map_key('n', 'gll', '<Plug>VimwikiIncreaseLvlSingleItem', 1)
-  call vimwiki#u#map_key('n', 'gLh', '<Plug>VimwikiDecreaseLvlWholeItem')
-  call vimwiki#u#map_key('n', 'gLH', '<Plug>VimwikiDecreaseLvlWholeItem', 1)
-  call vimwiki#u#map_key('n', 'gLl', '<Plug>VimwikiIncreaseLvlWholeItem')
-  call vimwiki#u#map_key('n', 'gLL', '<Plug>VimwikiIncreaseLvlWholeItem', 1)
-  call vimwiki#u#map_key('i', '<C-L><C-J>', '<Plug>VimwikiListNextSymbol')
-  call vimwiki#u#map_key('i', '<C-L><C-K>', '<Plug>VimwikiListPrevSymbol')
-  call vimwiki#u#map_key('i', '<C-L><C-M>', '<Plug>VimwikiListToggle')
-  call vimwiki#u#map_key('n', 'glr', '<Plug>VimwikiRenumberList')
-  call vimwiki#u#map_key('n', 'gLr', '<Plug>VimwikiRenumberAllLists')
-  call vimwiki#u#map_key('n', 'gLR', '<Plug>VimwikiRenumberAllLists', 1)
-  call vimwiki#u#map_key('n', 'gl', '<Plug>VimwikiRemoveSingleCB')
-  call vimwiki#u#map_key('n', 'gL', '<Plug>VimwikiRemoveCBInList')
-  " Not sure if need this
-  " call vimwiki#u#map_key('n', 'o', '<Plug>VimwikiListo')
-  call vimwiki#u#map_key('n', 'O', '<Plug>VimwikiListO')
 endfunction
 
 
@@ -1992,33 +1993,22 @@ augroup END
 " Config for vim-markdown
 " Plug 'plasticboy/vim-markdown'
 " Use vimWiki folding instead
-let g:vim_markdown_folding_disabled = 1
+let g:vim_markdown_folding_disabled = 0
+let g:vim_markdown_conceal = 1
+set conceallevel=2
 
 " => markdown augroup {{{2
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 augroup markdown
   autocmd!
-  " autocmd BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
-  " "for some reason, I have to set the filetype to ghmarkdown, and then set it to markdown, in order to get all of the syntax highlighting. cool!
-  " autocmd BufNewFile,BufRead *.md,*.markdown setlocal syntax=markdown
-  " autocmd BufReadPost *.md,*.markdown setlocal syntax=markdown
-  " autocmd BufNewFile,BufRead *.md,*.markdown setlocal filetype=markdown
-  " autocmd BufReadPost *.md,*.markdown :%foldopen!
-  " autocmd FileType vimwiki set ft=markdown | set syntax=markdown | call g:CusVimWikiKeyMap()
-  " autocmd BufReadPost *.md,*.markdown set ft=markdown | set syntax=markdown | call g:CusVimWikiKeyMap()
-  " autocmd BufNewFile,BufRead *.md,*.markdown set syntax=markdown | call g:CusVimWikiKeyMap()
-  " autocmd BufEnter,BufRead,BufNewFile *.md set filetype=markdown | call g:CusVimWikiKeyMap()
-
-
-
-
-  " autocmd BufEnter,BufRead,BufNewFile *.md set filetype=markdown
   autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
-	\ setlocal foldmethod=expr | set foldexpr=NestedMarkdownFolds() |
+	\ setlocal foldmethod=expr |
 	\ echom 'fileType markdown'
 
-
+  " autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
+	" \ setlocal foldmethod=expr | set foldexpr=NestedMarkdownFolds() |
+	" \ echom 'fileType markdown'
 
   " Use expr for vim-getting-things-down folding. It is nice problem but I am
   " just using the folding syntax for now
@@ -2028,8 +2018,7 @@ augroup markdown
   " Plugin: masukomi/vim-markdown-folding
   " set foldexpr=NestedMarkdownFolds()
 
-
-  autocmd BufEnter TODO.md setlocal foldmethod=expr | set foldexpr=getting_things_down#fold_expr(v:lnum)
+  " autocmd BufEnter TODO.md setlocal foldmethod=expr | set foldexpr=getting_things_down#fold_expr(v:lnum)
 
 augroup END
 

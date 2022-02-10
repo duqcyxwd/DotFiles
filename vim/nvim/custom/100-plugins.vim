@@ -46,14 +46,15 @@ Plug 'luochen1990/rainbow'
 
 " VimWiki with Markdown {{{1
 " ------------------------------------------------------------------------------
-Plug 'vimwiki/vimwiki'
+"  vim-markdown's color is better but it is slow
+" Plug 'vimwiki/vimwiki'
 
 " Markdown
 " Plug 'jtratner/vim-flavored-markdown'
-Plug 'plasticboy/vim-markdown'
+Plug 'plasticboy/vim-markdown'                      " A better markdown plugin
 " I just need one for folding
 " Plug 'rlue/vim-getting-things-down'
-Plug 'masukomi/vim-markdown-folding'
+" Plug 'masukomi/vim-markdown-folding'
 
 
 " Not working
@@ -61,11 +62,13 @@ Plug 'masukomi/vim-markdown-folding'
 
 " Git {{{1
 " ------------------------------------------------------------------------------
-Plug 'jreybert/vimagit'
+Plug 'jreybert/vimagit'                                "viMagit to stage changes
 Plug 'lambdalisue/gina.vim'
-Plug 'shumphrey/fugitive-gitlab.vim'|                  "Open gitlab link
 Plug 'tpope/vim-fugitive'|                             "Raw git command, Gblame
+Plug 'shumphrey/fugitive-gitlab.vim'|                  "Open gitlab link
+Plug 'tpope/vim-rhubarb'                               "Open github link
 Plug 'airblade/vim-gitgutter'|                         "shows a git diff in the sign column
+Plug 'junegunn/gv.vim'|                                "A git commit browser.
 
 
 
@@ -83,7 +86,7 @@ Plug 'kassio/neoterm'
 Plug 'kshenoy/vim-signature'
 Plug 'liuchengxu/vim-which-key'
 
-" SOmehow it cause problem on exists
+" Somehow it cause problem on exists
 " Plug 'ludovicchabant/vim-gutentags'|               "Good way to generate tags
 
 Plug 'machakann/vim-sandwich'
@@ -133,14 +136,14 @@ Plug 'tmux-plugins/vim-tmux'
 Plug 'tweekmonster/gofmt.vim'
 Plug 'udalov/kotlin-vim'
 Plug 'zah/nim.vim'
-Plug 'zinit-zsh/zinit-vim-syntax'
+" Plug 'zinit-zsh/zinit-vim-syntax'
+Plug 'zdharma-continuum/zinit-vim-syntax'
 
 " Misc+ {{{1
 " ------------------------------------------------------------------------------
 
 Plug 'chrisbra/unicode.vim'
 Plug 'junegunn/goyo.vim'
-Plug 'junegunn/gv.vim'|                                "A git commit browser.
 Plug 'mattn/vim-findroot'
 Plug 'mhinz/vim-startify'
 Plug 'szw/vim-dict'|                                   "A dict client
@@ -150,8 +153,8 @@ Plug 'tyru/open-browser.vim'
 " WIP {{{1
 " ------------------------------------------------------------------------------
 
-Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/remote', 'do': ':UpdateRemotePlugins' }
 " preview buffer tags, not working in clojure yet
+Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/remote', 'do': ':UpdateRemotePlugins' }
 
 " Disable default highlight before use this
 " Not working yet

@@ -66,7 +66,8 @@ let which_key_map_space.b.D = "Force delete this buffer"
 nnoremap <Space>bD :bp<bar>sp<bar>bn<bar>bd!<CR>
 
 let which_key_map_space.b.b = "List all buffers"
-nnoremap <Space>bb :BuffergatorOpen<CR>
+" nnoremap <Space>bb :BuffergatorOpen<CR>
+nnoremap <Space>bb :FFBuffers <CR>
 
 let which_key_map_space.b.h = "home"
 nnoremap <Space>bh :Startify<CR>
@@ -138,7 +139,7 @@ nnoremap <Space>ft :StripWhitespace<CR>
 
 let which_key_map_space.g = {
       \ 'name': '+git',
-      \ 'A': 'git add --all',
+      \ 'a': 'git action',
       \ 'b': 'git blame',
       \ 'c': 'git commit',
       \ 'd': 'git diff',
@@ -160,16 +161,20 @@ let which_key_map_space.g = {
 
 " let g:magit_show_magit_mapping='<Space>gM'
 nnoremap <Space>gA :Git add --all<CR>
+nnoremap <Space>ga :FzfPreviewGitActions<CR>
 nnoremap <Space>gm :MagitOnly<CR>
-nnoremap <Space>gb :Gblame<CR>
+nnoremap <Space>gb :Git blame<CR>
+" nnoremap <Space>gb :Gina blame<CR>
 nnoremap <Space>gd :Gdiffsplit<CR>
 nnoremap <Space>gc :Git commit -v<CR>
-nnoremap <Space>gs :Gina status<CR>
+" nnoremap <Space>gs :Gina statu<CR>
+nnoremap <Space>gs :FzfPreviewGitStatus<CR>
 nnoremap <Space>gP :Gina push<CR>
 
 
 nnoremap <Space>gl :GBrowse<CR>
 nnoremap <Space>gh :GV<CR>
+nnoremap <Space>gv :GV<CR>
 
 nmap <Space>go <Plug>(openbrowser-smart-search)
 vmap <Space>go <Plug>(openbrowser-smart-search)
@@ -181,7 +186,7 @@ vmap <Space>gS y:OpenBrowserSmartSearch -github <c-r>0<CR>
 " [SpaceMapping] h+: Help {{{1
 " ------------------------------------------------------------------------------
 
-let g:which_key_map_space.h.t = "Fzf Help tag"
+let g:which_key_map_space.h.t = "Telescope Help tag"
 let g:which_key_map_space.h.h = "Fzf Help tag"
 nnoremap <silent> <Space>ht <CMD>Telescope help_tags<CR>
 nnoremap <silent> <Space>hh :FFHelptags<CR>
@@ -265,18 +270,27 @@ xmap <Space>rt <Plug>(neoterm-repl-send)
 
 " [SpaceMapping] s+: Search {{{1
 " ------------------------------------------------------------------------------
-let which_key_map_space.s.b = "FZF Search Current Files"
-nnoremap <Space>sb :FFBLines<CR>
+let which_key_map_space.s.s = "FZF Search Current Files"
+nnoremap <Space>ss :Telescope current_buffer_fuzzy_find<CR>
+" nnoremap <Space>ss :FFBLines<CR>
+nnoremap <Space>sS :execute ':FFBLines ' . expand('<cWORD>')<CR>
+vnoremap <Space>ss y:FFBLines <C-R>=escape(@",'/\()')<CR><CR>
 
-let which_key_map_space.s.l = "FZF <Rg> Search Current Project"
-nnoremap <Space>sl :FFRg<CR>
+let which_key_map_space.s.r = "FZF <Rg> Search Current Project"
+nnoremap <Space>sr :FFRg<CR>
+nnoremap <Space>sR :execute ':FFRg ' . expand('<cWORD>')<CR>
+vnoremap <Space>sr y:FFRg <C-R>=escape(@",'/\()')<CR><CR>
 
 let which_key_map_space.s.p = "FZF <Ag> Search Current Project"
 " nnoremap <Space>sp :Ag '--hidden'<CR>
 nnoremap <Space>sp :MyFzfAg <CR>
+nnoremap <Space>sP :execute ':MyFzfAg ' . expand('<cWORD>')<CR>
+vnoremap <Space>sp y:MyFzfAg <C-R>=escape(@",'/\()')<CR><CR>
 
-let which_key_map_space.s.s = "FZF Search All Open Files"
-nnoremap <Space>ss :Telescope current_buffer_fuzzy_find<CR>
+let which_key_map_space.s.b = "FZF Search All Opened Buffers"
+nnoremap <Space>sb :FFBLines<CR>
+nnoremap <Space>sB :execute ':FFBLines ' . expand('<cWORD>')<CR>
+vnoremap <Space>sb y:FFBLines <C-R>=escape(@",'/\()')<CR><CR>
 
 let which_key_map_space.s.c = "Search highlight clean"
 nnoremap <Space>sc :noh<CR>
@@ -341,7 +355,7 @@ let which_key_map_space.t.f.s = "change foldmethod to syntax"
 nnoremap <Space>tfs :set foldmethod=syntax<CR>zv
 
 let which_key_map_space.t.f.i = "change foldmethod to indent"
-nnoremap <Space>tfi :set foldmethod=ident<CR>zv
+nnoremap <Space>tfi :set foldmethod=indent<CR>zv
 
 
 let which_key_map_space.t.f.c = "Toggle Fold Column"
@@ -379,11 +393,11 @@ nmap <Space>wq :wq<CR>
 
 " [SpaceMapping] z+: WIP {{{1
 " ------------------------------------------------------------------------------
-nnoremap <silent> <Space>zz :Goyo<cr>
-nnoremap <silent> <Space>zm :ZoomToggle<cr>
-nnoremap <silent> <Space>zo :ZoomToggle<cr>
+nnoremap <silent> <Space>zz :Goyo<CR>
+nnoremap <silent> <Space>zm :ZoomToggle<CR>
+nnoremap <silent> <Space>zo :ZoomToggle<CR>
 
-nnoremap <silent> <Space>zl <Plug>(Limelight)
+nnoremap <silent> <Space>zl :Limelight!!<CR>
 
 " [SpaceMapping] +: Misc {{{1
 " ------------------------------------------------------------------------------

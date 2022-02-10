@@ -64,10 +64,10 @@ set tabstop=2
 " set textwidth=80                " 80 chars <Space>tt to toggle it
 set textwidth=0                " I hope this can disable auto break line
 
-set nowrap                " Wrap lines
+set nowrap                     " Wrap lines
 
-set foldlevel=2           " Set to 0 fold all by default
-set foldlevelstart=1      " Set the start fold level
+set foldlevel=2                " Set to 0 fold all by default
+set foldlevelstart=1           " Set the start fold level
 
 
 " Edit
