@@ -24,7 +24,11 @@ setup_colors() {
 }
 
 msg() {
-  echo >&2 -e "${1-}"
+  echo >&2 -e "${1-}${NOFORMAT}"
+}
+
+msgt() {
+  echo >&2 -e "[$(date +"%H:%M:%S")]${1-}${NOFORMAT}"
 }
 
 die() {
@@ -59,11 +63,12 @@ parse_params() {
 
   while :; do
     case "${1-}" in
+
     -h | --help) usage ;;
     -v | --verbose) set -x ;;
     --no-color) NO_COLOR=1 ;;
     -f | --flag) flag=1 ;; # example flag
-    -p | --param) # example named parameter
+    -p | --param)          # example named parameter
       param="${2-}"
       shift
       ;;
@@ -75,9 +80,9 @@ parse_params() {
 
   args=("$@")
 
-  # check required params and arguments
-  [[ -z "${param-}" ]] && die "Missing required parameter: param"
-  [[ ${#args[@]} -eq 0 ]] && die "Missing script arguments"
+  # # check required params and arguments
+  # [[ -z "${param-}" ]] && die "Missing required parameter: param"
+  # [[ ${#args[@]} -eq 0 ]] && die "Missing script arguments"
 
   return 0
 }
@@ -88,7 +93,21 @@ setup_colors
 # Section: Main Script logic {{{1
 # --------------------------------------------------------------------------
 
-msg "${RED}Read parameters:${NOFORMAT}"
+msg "${GREEN}Read parameters:${NOFORMAT}"
 msg "- flag: ${flag}"
 msg "- param: ${param}"
 msg "- arguments: ${args[*]-}"
+
+
+msg "\n${YELLOW} Color test"
+
+
+msg "${RED} RED"
+msg "${GREEN} GREEN"
+msg "${ORANGE} ORANGE"
+msg "${BLUE} BLUE"
+msg "${PURPLE} PURPLE"
+msg "${CYAN} CYAN"
+msg "${YELLOW} YELLOW"
+msg "${NOFORMAT} NOFORMAT"
+
