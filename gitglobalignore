@@ -6,5 +6,6 @@
 node_modules
 tags
 .zsh_history
+.clj-kondo
 pyrightconfig.json
 clojure-lsp.out

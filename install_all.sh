@@ -53,6 +53,7 @@ PACKAGES=( # Brew Package {{{2
     ripgrep             # rg, https://github.com/BurntSushi/ripgrep
     terminal-notifier
     the_silver_searcher # ag
+    grep                # grep
     tmux
     tree
     vim
