@@ -530,16 +530,6 @@ let g:airline_symbols.linenr = ''
 let g:airline_symbols.maxlinenr = ''
 let g:airline_symbols.colnr = ''
 
-nmap <Space>1 <Plug>AirlineSelectTab1
-nmap <Space>2 <Plug>AirlineSelectTab2
-nmap <Space>3 <Plug>AirlineSelectTab3
-nmap <Space>4 <Plug>AirlineSelectTab4
-nmap <Space>5 <Plug>AirlineSelectTab5
-nmap <Space>6 <Plug>AirlineSelectTab6
-nmap <Space>7 <Plug>AirlineSelectTab7
-nmap <Space>8 <Plug>AirlineSelectTab8
-nmap <Space>9 <Plug>AirlineSelectTab9
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => anyfold {{{1
@@ -581,6 +571,10 @@ augroup END
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => better-whitespace {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Handles all tailling whitespace problem
+" ToggleStripWhitespaceOnSave
+" StripWhitespace
+" StripWhitespaceOnChangedLines
 let g:better_whitespace_filetypes_blacklist = ['diff', 'gitcommit', 'unite', 'qf', 'help', 'ctrlsf']
 
 " function! ReloadWithoutScrolling() abort
@@ -592,6 +586,8 @@ let g:better_whitespace_filetypes_blacklist = ['diff', 'gitcommit', 'unite', 'qf
 let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
 let g:strip_whitespace_confirm=0
+
+" g:strip_only_modified_lines
 
 let g:better_whitespace_ctermcolor='LightYellow'
 let g:better_whitespace_guicolor='#6272a4'
@@ -1073,6 +1069,9 @@ command! -bang -nargs=* MyFzfAg
   \                         : fzf#vim#with_preview('right:50%:hidden', '?'),
   \                 <bang>0)
 
+
+command! -bang -nargs=? -complete=dir MyFzfFiles       call fzf#vim#queryfiles(<q-args>, fzf#vim#with_preview(), <bang>0)
+
 " command!      -bang -nargs=* LL                        call fzf#vim#lines(<q-args>, <bang>0),
 
 " command!      -bang -nargs=* Lines                     call fzf#vim#lines(<q-args>, <bang>0),
@@ -1084,8 +1083,8 @@ function! FloatingFZF() abort "{{{2
 
   " let height = float2nr(15)
   " let width = float2nr(80)
+  let height = float2nr(&lines * 0.85)
   let width = float2nr(&columns * 0.9)
-  let height = float2nr(&lines * 0.6)
   let col = float2nr((&columns - width) / 2)
   let row = float2nr((&lines - height) / 2)
 
@@ -1119,7 +1118,7 @@ let $FZF_DEFAULT_OPTS .= " --bind 'ctrl-p:up' --bind 'ctrl-n:down' "
 
 " Customize fzf colors to match your color scheme
 " - fzf#wrap translates this to a set of `--color` options
-let g:fzf_colors =
+let g:fzf_colors = 
       \ { 'fg':      ['fg', 'Normal'],
       \ 'bg':      ['bg', 'Normal'],
       \ 'hl':      ['fg', 'Comment'],
@@ -1134,6 +1133,45 @@ let g:fzf_colors =
       \ 'spinner': ['fg', 'Label'],
       \ 'header':  ['fg', 'Comment'] }
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => FzfLua {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+if exists('g:plugs["fzf-lua"]')
+" set border to none to avoid conflict between fzf-lua and fzf.vim
+lua << EOF
+  require('fzf-lua').setup{
+    fzf_opts = {
+      ['--border']        = 'none',
+    },
+    manpages = { previewer = { _ctor = require'fzf-lua.previewer'.fzf.man_pages } },
+    border           = 'none',
+    winopts = {
+      -- (i.e. when 'split' is not defined, default)
+      height           = 0.85,            -- window height
+      width            = 0.90,            -- window width
+      row              = 0.50,            -- window row position (0=top, 1=bottom)
+      col              = 0.50,            -- window col position (0=left, 1=right)
+      hl = {
+        normal         = 'Normal',        -- window normal color (fg+bg)
+        border         = 'FloatBorder',        -- border color (try 'FloatBorder')
+      },
+    },
+    keymap = {
+       -- These override the default tables completely
+       -- no need to set to `false` to disable a bind
+       -- delete or modify is sufficient
+       builtin = {
+         ["?"]          = "toggle-preview",
+         ["<C-j>"]      = "preview-page-down",
+         ["<C-k>"]      = "preview-page-up",
+         ["<C-w>"]      = "toggle-preview-wrap",
+         }
+    }
+  }
+EOF
+endif
+
+" :enew|pu=execute('echo g:plugs')
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => GV {{{1
@@ -1321,7 +1359,8 @@ let g:netrw_nogx = 1 " disable netrw's gx mapping.
 
 let g:openbrowser_search_engines = {
       \   'favorite': 'http://example.com/search?q={query}',
-      \     'github': 'https://github.com/search?q={query}',
+      \       'google': 'https://google.com/search?q={query}',
+      \    'github': 'https://github.com/search?q={query}',
       \}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => quick-scope {{{1
@@ -1995,7 +2034,6 @@ augroup END
 " Use vimWiki folding instead
 let g:vim_markdown_folding_disabled = 0
 let g:vim_markdown_conceal = 1
-set conceallevel=2
 
 " => markdown augroup {{{2
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2004,7 +2042,8 @@ augroup markdown
   autocmd!
   autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
 	\ setlocal foldmethod=expr |
-	\ echom 'fileType markdown'
+	\ echom 'fileType markdown' | 
+  \ setlocal conceallevel=2
 
   " autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
 	" \ setlocal foldmethod=expr | set foldexpr=NestedMarkdownFolds() |

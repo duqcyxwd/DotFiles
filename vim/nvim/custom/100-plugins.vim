@@ -79,17 +79,21 @@ Plug 'AndrewRadev/undoquit.vim'
 Plug 'jeetsukumaran/vim-buffergator'
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
+Plug '~/duqcyxwd/fzf.vim'
 " Plug 'junegunn/fzf.vim'
-Plug 'duqcyxwd/fzf.vim'|                           " My quick fix for fzf vim
+" Plug 'duqcyxwd/fzf.vim'|                           " My quick fix for fzf vim
+" WIP
+Plug 'ibhagwan/fzf-lua'
+" optional for icon support
+Plug 'kyazdani42/nvim-web-devicons'
+
 Plug 'junegunn/limelight.vim'
 Plug 'kassio/neoterm'
 Plug 'kshenoy/vim-signature'
 Plug 'liuchengxu/vim-which-key'
-
-" Somehow it cause problem on exists
-" Plug 'ludovicchabant/vim-gutentags'|               "Good way to generate tags
-
+Plug 'machakann/vim-highlightedyank'                 " Show highlight for yank
 Plug 'machakann/vim-sandwich'
+Plug 'mbbill/undotree'
 Plug 'mg979/vim-visual-multi'|                     "vim multi cursor
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'ntpeters/vim-better-whitespace'
@@ -104,17 +108,19 @@ Plug 'tpope/vim-surround'
 Plug 'unblevable/quick-scope'|                     "Quick highlight for f/F
 
 
+" Somehow it cause problem on exists
+" Plug 'ludovicchabant/vim-gutentags'|               "Good way to generate tags
+
+
 " Telescope
-Plug 'nvim-lua/popup.nvim'|                        "required by telescope
-Plug 'nvim-lua/plenary.nvim'|                      "required by telescope
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-telescope/telescope-symbols.nvim'
+" Plug 'nvim-lua/popup.nvim'|                        "required by telescope
+" Plug 'nvim-lua/plenary.nvim'|                      "required by telescope
+" Plug 'nvim-telescope/telescope.nvim'
+" Plug 'nvim-telescope/telescope-symbols.nvim'
 
 " Align text
 Plug 'godlygeek/tabular'
 Plug 'junegunn/vim-easy-align'
-
-Plug 'pseewald/vim-anyfold'
 
 " Languages/Filetypes {{{1
 " ------------------------------------------------------------------------------
@@ -153,6 +159,8 @@ Plug 'tyru/open-browser.vim'
 " WIP {{{1
 " ------------------------------------------------------------------------------
 
+
+
 " preview buffer tags, not working in clojure yet
 Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/remote', 'do': ':UpdateRemotePlugins' }
 
@@ -160,7 +168,6 @@ Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/remote', 'do': ':UpdateRe
 " Not working yet
 " Plug 'folke/todo-comments.nvim'
 
-Plug 'mbbill/undotree'
 Plug 'daveyarwood/vim-alda'|                             "editing and playing Alda scores.
 Plug 'habamax/vim-asciidoctor'
 Plug 'junegunn/vader.vim'|                               "use Vader to test Vimscript.
@@ -181,7 +188,6 @@ Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'benmills/vimux'
 Plug 'dyng/ctrlsf.vim'
 Plug 'liuchengxu/vista.vim'
-Plug 'machakann/vim-highlightedyank'
 Plug 'tpope/vim-unimpaired'
 
 

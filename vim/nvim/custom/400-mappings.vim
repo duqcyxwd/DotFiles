@@ -7,9 +7,6 @@
 "              |_|   |_|            |___/
 " Mapping
 
-" Debug keys
-noremap <Space>hk :verbose map
-
 " [SpaceMapping] 00: Leader keymap setting {{{1
 " ------------------------------------------------------------------------------
 
@@ -19,6 +16,7 @@ let g:mapleader = ","
 
 let g:maplocalleader = ","
 let maplocalleader = ","
+
 
 " Random notes: <c-u> will clean command line
 " <C-R><C-W> inserts the word object.
@@ -30,7 +28,9 @@ vnoremap <silent> <localleader> :<c-u>WhichKeyVisual '\'<CR>
 vnoremap <silent> <Space>       :<c-u>WhichKeyVisual '<Space>'<CR>
 
 " WIP
-vnoremap <silent> g             :<c-u>WhichKeyVisual 'g'<CR>
+" vnoremap <silent> g             :<c-u>WhichKeyVisual 'g'<CR>
+
+let g:which_key_vertical = 1
 
 call which_key#register(',', "g:which_key_map_leader")
 call which_key#register('\', "g:which_key_map_localleader")
@@ -45,6 +45,7 @@ let g:which_key_map_g = {}
 
 let g:which_key_map_space.b = { 'name' : '+buffers' }
 let g:which_key_map_space.c = { 'name' : '+COC' }
+let g:which_key_map_space.e = { 'name' : '+Edit' }
 let g:which_key_map_space.f = { 'name' : '+file/format' }
 let g:which_key_map_space.g = { 'name' : '+Git' }
 let g:which_key_map_space.h = { 'name' : '+Help' }
@@ -56,41 +57,57 @@ let g:which_key_map_space.s = { 'name' : '+Search' }
 let g:which_key_map_space.S = { 'name' : '+Source' }
 let g:which_key_map_space.t = { 'name' : '+Togglers' }
 let g:which_key_map_space.w = { 'name' : '+Windows' }
+let g:which_key_map_space.z = { 'name' : '+Mix' }
 
 
-function! s:key_map_cmd(mode, l1, l2, doc, cmd) abort
-   echom 'let g:which_key_map_space.' .a:l1. '.' .a:l2. ' = "' .a:doc. '"'
+function! s:map_cmd_debug(mode, l1, l2, doc, cmd) abort
+   " echom 'let g:which_key_map_space.' .a:l1. '.' .a:l2. ' = "' .a:doc. '"'
    echom ''.a:mode.' <Space>'.a:l1.''.a:l2.' '.a:cmd
+   map_cmd_2(mode, l1, l2, doc, cmd)
 endfunction
 
-function! s:nmap_cmdl(l1, l2, doc, cmd) abort
-   call s:key_map_cmd('nmap', a:l1, a:l2, a:doc, ':'.a:cmd.'<CR>')
+function! s:nmap_cmd_debug(l1, l2, doc, cmd) abort
+   call s:map_cmd_debug('nmap', a:l1, a:l2, a:doc, ':'.a:cmd.'<CR>')
 endfunction
 
 
-" call s:nmap_cmdl('z', 'z', 'docs for zzzz', 'CocExplore')
+function! s:map_cmd_3_debug(mode, l1, l2, l3, doc, cmd) abort
+   echom 'let g:which_key_map_space.' .a:l1. '.' .a:l2. '.' .a:l3.' = "' .a:doc. '"'
+   echom ''.a:mode.' <Space>'.a:l1.''.a:l2.''.a:l3.' '.a:cmd
+   echom a:cmd
+
+   map_cmd_3(mode, l1, l2, l3, doc, cmd)
+endfunction
 
 
-function! s:map_cmd(mode, l1, l2, doc, cmd) abort
+function! s:map_cmd_2(mode, l1, l2, doc, cmd) abort
    exec 'let g:which_key_map_space.' .a:l1. '.' .a:l2. ' = "' .a:doc. '"'
    exec ''.a:mode.' <Space>'.a:l1.''.a:l2.' '.a:cmd
 endfunction
 
-function! s:nmap_cmd(l1, l2, doc, cmd) abort
-   call s:map_cmd('nnoremap', a:l1, a:l2, a:doc, ':'.a:cmd.'<CR>')
+function! s:map_cmd_3(mode, l1, l2, l3, doc, cmd) abort
+   exec 'let g:which_key_map_space.' .a:l1. '.' .a:l2. '.' .a:l3.' = "' .a:doc. '"'
+   exec ''.a:mode.' <Space>'.a:l1.''.a:l2.''.a:l3.' '.a:cmd
 endfunction
 
+function! s:nmap_cmd_2(l1, l2, doc, cmd) abort
+   call s:map_cmd_2('nnoremap', a:l1, a:l2, a:doc, ''.a:cmd.'<CR>')
+endfunction
+
+function! s:vmap_cmd_2(l1, l2, doc, cmd) abort
+   call s:map_cmd_2('vnoremap', a:l1, a:l2, a:doc, ''.a:cmd.'<CR>')
+endfunction
 
 
 " [SpaceMapping] b+: Buffers {{{1
 " ------------------------------------------------------------------------------
 
-call s:nmap_cmd('b', 'D', 'Force delete this buffer',     ':bp<bar>sp<bar>bn<bar>bd!')
-" call s:nmap_cmd('b', 'b', 'List all buffers', ':BuffergatorOpen ')
-call s:nmap_cmd('b', 'b', 'List all buffers',             ':FFBuffers ')
-call s:nmap_cmd('b', 'c', ':BufOnly Close other buffers', ':BufOnly')
-call s:nmap_cmd('b', 'd', 'Delete this buffer',           ':call undoquit#SaveWindowQuitHistory()<CR>:Bclose')
-call s:nmap_cmd('b', 'h', 'home',                         ':Startify')
+call s:nmap_cmd_2('b', 'D', 'Force delete this buffer',     ':bp<bar>sp<bar>bn<bar>bd!')
+" call s:nmap_cmd_2('b', 'b', 'List all buffers', ':BuffergatorOpen ')
+call s:nmap_cmd_2('b', 'b', 'List all buffers',             ':FFBuffers ')
+call s:nmap_cmd_2('b', 'c', ':BufOnly Close other buffers', ':BufOnly')
+call s:nmap_cmd_2('b', 'd', 'Delete this buffer',           ':call undoquit#SaveWindowQuitHistory()<CR>:Bclose')
+call s:nmap_cmd_2('b', 'h', 'home',                         ':Startify')
 
 
 " [SpaceMapping] c+: COC {{{1
@@ -131,35 +148,44 @@ endif
 " [SpaceMapping] f+: File/Format {{{1
 " ------------------------------------------------------------------------------
 
-call s:nmap_cmd('f', 'S', 'Save all files',                     ':wa!')
-call s:nmap_cmd('f', 'e', 'Reopen current file',                ':mkview<CR>:e!<CR>:loadview')
-call s:nmap_cmd('f', 'h', 'Open History files',                 ':FFHistory')
-call s:nmap_cmd('f', 'r', 'Open Recent files',                  ':FFHistory')
-call s:nmap_cmd('f', 't', '[format] Clean trailing space',      ':StripWhitespace')
-call s:nmap_cmd('f', 's', 'Save current file',                  ':mkview<CR>:w')
+call s:nmap_cmd_2('f', 'S', 'Save all files',                     ':wa!')
+call s:nmap_cmd_2('f', 'h', 'Open History files',                 ':FFHistory')
+call s:nmap_cmd_2('f', 'r', 'Open Recent files',                  ':FFHistory')
+call s:nmap_cmd_2('f', 't', '[format] Clean trailing space',      ':StripWhitespace')
+call s:nmap_cmd_2('f', 's', 'Save current file',                  ':mkview<CR>:w')
+
+
+call s:map_cmd_2('nnoremap', 'w', 'o', 'FZF Open Files', ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('n'))<CR>")
+call s:map_cmd_2('vnoremap', 'w', 'o', 'FZF Open Files', ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('v'))<CR>")
+
+" Check whne to use SafeFzfQuery
+" let which_key_map_space.w.o = 'FZF search current file'
+" nnoremap <silent> <Space>wo :execute  ':MyFzfFiles ' . SafeFzfQuery(expand('<cfile>'))<CR>
+" vnoremap <silent> <Space>wo y:execute ':MyFzfFiles ' . SafeFzfQuery(@*)<CR>
+
 
 " [SpaceMapping] g+: Git/Go {{{1
 " ------------------------------------------------------------------------------
 
-let which_key_map_space.g = { 'name': '+git' }
+call s:nmap_cmd_2('g', 'a', 'Git action',        ':FzfPreviewGitActions')
+call s:nmap_cmd_2('g', 'b', 'Git blame',         ':Git blame')
+" call s:nmap_cmd_2('g', 'b', 'Git bale', ':Gina blame')
+call s:nmap_cmd_2('g', 'c', 'Git commit',        ':Git commit -v')
+call s:nmap_cmd_2('g', 'd', 'Git diff',          ':Gdiffsplit')
+call s:nmap_cmd_2('g', 'm', 'Git Magit',         ':MagitOnly')
+call s:nmap_cmd_2('g', 's', 'Git status',        ':FzfPreviewGitStatus')
+call s:nmap_cmd_2('g', 'p', 'Git push',          ':Gina push')
+call s:nmap_cmd_2('g', 'l', 'Git link open',     ':GBrowse')
+call s:nmap_cmd_2('g', 'h', 'Git history view',  ':GV')
+call s:nmap_cmd_2('g', 'v', 'Git history view ', ':GV')
 
-call s:nmap_cmd('g', 'a', 'Git action',        ':FzfPreviewGitActions')
-call s:nmap_cmd('g', 'b', 'Git blame',         ':Git blame')
-" call s:nmap_cmd('g', 'b', 'Git bale', ':Gina blame')
-call s:nmap_cmd('g', 'c', 'Git commit',        ':Git commit -v')
-call s:nmap_cmd('g', 'd', 'Git diff',          ':Gdiffsplit')
-call s:nmap_cmd('g', 'm', 'Git Magit',         ':MagitOnly')
-call s:nmap_cmd('g', 's', 'Git status',        ':FzfPreviewGitStatus')
-call s:nmap_cmd('g', 'p', 'Git push',          ':Gina push')
-call s:nmap_cmd('g', 'l', 'Git link open',     ':GBrowse')
-call s:nmap_cmd('g', 'h', 'Git history view',  ':GV')
-call s:nmap_cmd('g', 'v', 'Git history view ', ':GV')
 
-nmap <Space>go <Plug>(openbrowser-smart-search)
-vmap <Space>go <Plug>(openbrowser-smart-search)
-
-nmap <Space>gS :OpenBrowserSmartSearch -github <c-r><c-w><CR>
-vmap <Space>gS y:OpenBrowserSmartSearch -github <c-r>0<CR>
+call s:map_cmd_2('nmap', 'g', 'o', 'Search and open in browser ', '<Plug>(openbrowser-smart-search)')
+call s:map_cmd_2('vmap', 'g', 'o', 'Search and open in browser ', '<Plug>(openbrowser-smart-search)')
+call s:map_cmd_2('nmap', 'g', 'x', 'Search and open in browser ', '<Plug>(openbrowser-smart-search)')
+call s:map_cmd_2('vmap', 'g', 'x', 'Search and open in browser ', '<Plug>(openbrowser-smart-search)')
+call s:map_cmd_2('nmap', 'g', 'S', 'Search and open in Github ',  ':OpenBrowserSmartSearch -github <C-R><C-W><CR>')
+call s:map_cmd_2('vmap', 'g', 'S', 'Search and open in Github ',  'y:OpenBrowserSmartSearch -github <C-R>0<CR>')
 
 
 " [SpaceMapping] h+: Help {{{1
@@ -168,86 +194,95 @@ vmap <Space>gS y:OpenBrowserSmartSearch -github <c-r>0<CR>
 command! -bar -bang IMaps  call fzf#vim#maps("i", <bang>0)',
 command! -bar -bang VMaps  call fzf#vim#maps("v", <bang>0)',
 
-call s:nmap_cmd('h', 'h', 'Fzf Help tag',       ':FFHelptags')
-call s:nmap_cmd('h', 'm', '[normal] Key Maps',  ':FFMaps')
-call s:nmap_cmd('h', 't', 'Telescope Help tag', ':Telescope help_tags')
-call s:nmap_cmd('h', 'i', '[insert] Key Maps',  ':IMaps')
-call s:nmap_cmd('h', 'v', '[visual] Key Maps',  ':VMaps')
+" call s:nmap_cmd_2('h', 't', 'Help tag', ':FFHelptags')
+call s:nmap_cmd_2('h', 't', 'Help tag', ':FzfLua help_tags ')
+call s:nmap_cmd_2('h', 'm', 'Man Page', ':FzfLua man_pages')
 
+
+" Debug keys
+" noremap <Space>hk :verbose map
+
+let g:which_key_map_space.h.k = { 'name' : '+Kemap' }
+
+call s:map_cmd_3('nnoremap', 'h', 'k', 'v', '[visual] Key Maps', ':VMaps<CR>')
+call s:map_cmd_3('nnoremap', 'h', 'k', 'i', '[insert] Key Maps', ':IMaps<CR>')
+call s:map_cmd_3('nnoremap', 'h', 'k', 'm', '[normal] Key Maps', ':FFMaps<CR>')
+call s:map_cmd_3('nnoremap', 'h', 'k', 'd', 'Debug Key Maps',    ':verbose map ')
+
+" :enew|pu=execute('verbose map')
 
 
 " [SpaceMapping] j+: Jump {{{1
 " ------------------------------------------------------------------------------
 
-call s:nmap_cmd('j', 'i', 'Fzf Jump def', 'FFLines (def')
-call s:nmap_cmd('j', 'I', 'Fzf Jump def in project', 'MyFzfAg \(def[n]? ')
-call s:nmap_cmd('j', 't', 'Fzf Jump Tags', 'FFTags')
-call s:nmap_cmd('b', 't', 'Fzf BTags', 'FFBTags')
+call s:nmap_cmd_2('j', 'i', 'Fzf Jump def', 'FFLines (def')
+call s:nmap_cmd_2('j', 'I', 'Fzf Jump def in project', 'MyFzfAg \(def[n]? ')
+call s:nmap_cmd_2('j', 't', 'Fzf Jump Tags', 'FFTags')
+call s:nmap_cmd_2('b', 't', 'Fzf BTags', 'FFBTags')
 
+
+call s:map_cmd_2('nnoremap', 'j', 'j', 'FZF Jump jumps', ":FzfLua jumps<CR>")
+call s:map_cmd_2('nnoremap', 'j', 'm', 'FZF Jump marks', ":FzfLua marks<CR>")
 
 " [SpaceMapping] p+: Project/Install {{{1
 " ------------------------------------------------------------------------------
-call s:nmap_cmd('p', 'f', 'Project files', ':FFFiles')
-call s:nmap_cmd('p', 'i', 'Plug Install',  ':execute "tabnew\| PlugInstall"')
-call s:nmap_cmd('p', 'u', 'Plug Update',   ':execute "tabnew\| PlugUpdate"')
+call s:nmap_cmd_2('p', 'f', 'Project files', ':FFFiles')
+call s:nmap_cmd_2('p', 'i', 'Plug Install',  ':execute "tabnew\| PlugInstall"')
+call s:nmap_cmd_2('p', 'u', 'Plug Update',   ':execute "tabnew\| PlugUpdate"')
 
 " [SpaceMapping] q+: Quit {{{1
 " ------------------------------------------------------------------------------
-call s:nmap_cmd('q', 'q', 'Quit',             ':q')
-call s:nmap_cmd('q', 'Q', 'Force Quit',       ':q')
-call s:nmap_cmd('q', 'a', 'Quit all',         ':qa')
-call s:nmap_cmd('q', 'A', 'Quit all (Force)', ':qa!')
+call s:nmap_cmd_2('q', 'q', 'Quit',             ':q')
+call s:nmap_cmd_2('q', 'Q', 'Force Quit',       ':q')
+call s:nmap_cmd_2('q', 'a', 'Quit all',         ':qa')
+call s:nmap_cmd_2('q', 'A', 'Quit all (Force)', ':qa!')
 
 " [SpaceMapping] r+: Run {{{1
 " ------------------------------------------------------------------------------
-call s:map_cmd('nnoremap', 'r', 'r', 'Run Current file',            ':call RunUsingCurrentFiletype()')
-call s:map_cmd('nmap',     'r', 'l', 'Run Current line in neoterm', '<Plug>(neoterm-repl-send-line)<CR>')
-call s:map_cmd('nmap',     'r', 't', 'Run in neoterm',              '<Plug>(neoterm-repl-send)<CR>')
+call s:map_cmd_2('nnoremap', 'r', 'r', 'Run Current file',            ':call RunUsingCurrentFiletype()')
+call s:map_cmd_2('nnoremap', 'r', 'f', 'Run FzfLua',                  ':FzfLua<CR>')
+call s:map_cmd_2('nmap',     'r', 'l', 'Run Current line in neoterm', '<Plug>(neoterm-repl-send-line)<CR>')
+call s:map_cmd_2('nmap',     'r', 'n', 'Run in neoterm',              '<Plug>(neoterm-repl-send)<CR>')
+call s:map_cmd_2('nmap',     'r', 't', 'Run test fn',                 '<Plug>(mytestFn)')
+call s:map_cmd_2('vmap',     'r', 't', 'Run test fn',                 '<Plug>(mytestFn)')
 
 
 
-" [SpaceMapping] s+: Search {{{1
+" [SpaceMapping] s+: Search/Source {{{1
 " ------------------------------------------------------------------------------
-let which_key_map_space.s.s = 'FZF Search Current Files'
-nnoremap <Space>ss :Telescope current_buffer_fuzzy_find<CR>
-" nnoremap <Space>ss :FFBLines<CR>
-nnoremap <Space>sS :execute ':FFBLines ' . expand('<cWORD>')<CR>
-vnoremap <Space>ss y:FFBLines <C-R>=escape(@",'/\()')<CR><CR>
 
-let which_key_map_space.s.r = "FZF <Rg> Search Current Project"
-nnoremap <Space>sr :FFRg<CR>
-nnoremap <Space>sR :execute ':FFRg ' . expand('<cWORD>')<CR>
-vnoremap <Space>sr y:FFRg <C-R>=escape(@",'/\()')<CR><CR>
+function! s:map_args_cmd(l1, l2, doc, cmd) abort
+   call s:map_cmd_2('nnoremap', a:l1, a:l2,          a:doc, ':'.a:cmd.'<CR>')
+   call s:map_cmd_2('nnoremap', a:l1, toupper(a:l2), a:doc, ":<C-U>execute ':".a:cmd."' GetCurrentWord('n')<CR>")
+   call s:map_cmd_2('vnoremap', a:l1, a:l2,          a:doc, ":<C-U>execute ':".a:cmd."' GetCurrentWord('v')<CR>")
+endfunctio
 
-let which_key_map_space.s.p = 'FZF <Ag> Search Current Project'
-" nnoremap <Space>sp :Ag '--hidden'<CR>
-nnoremap <Space>sp :MyFzfAg <CR>
-nnoremap <Space>sP :execute ':MyFzfAg ' . expand('<cWORD>')<CR>
-vnoremap <Space>sp y:MyFzfAg <C-R>=escape(@",'/\()')<CR><CR>
+call s:map_args_cmd('s', 's', 'FZF Search Lines in Current Files', "FFBLines")
+call s:map_args_cmd('s', 'r', 'FZF <Rg> Search Current Project',   "FFRg")
+call s:map_args_cmd('s', 'p', 'FZF <Ag> Search Current Project',   "MyFzfAg")
+call s:map_args_cmd('s', 'b', 'FZF Search All Opened Buffers',     "FFLines")
 
-let which_key_map_space.s.b = 'FZF Search All Opened Buffers'
-nnoremap <Space>sb :FFBLines<CR>
-nnoremap <Space>sB :execute ':FFBLines ' . expand('<cWORD>')<CR>
-vnoremap <Space>sb y:FFBLines <C-R>=escape(@",'/\()')<CR><CR>
+call s:nmap_cmd_2('s', 'c', 'Search highlight clean',            ':nohlsearch')
+call s:nmap_cmd_2('s', 'e', 'Source current file!',              ':so %')
+call s:nmap_cmd_2('s', 'v', 'Source vimrc',                      ':so $XDG_CONFIG_HOME/nvim/init.vim')
+call s:nmap_cmd_2('s', 'h', 'Search history',                    ":FzfLua search_history")
+call s:nmap_cmd_2('c', 's', 'FZF Schema',                        ":FzfLua colorschemes")
 
-call s:nmap_cmd('s', 'c', 'Search highlight clean', ':nohlsearch')
+" Overwrite some search
+call s:nmap_cmd_2('s', 's', 'FZF Search Lines in Current Files', ":FzfLua blines<CR>")
 
 
-" [SpaceMapping] S+: Source {{{1
-" ------------------------------------------------------------------------------
-call s:nmap_cmd('s', 'v', 'Source vimrc',         ':so $XDG_CONFIG_HOME/nvim/init.vim')
-call s:nmap_cmd('s', 'e', 'Source current file!', ':so %')
-
-" [SpaceMapping] t+: Toggler {{{1
+" [SpaceMapping] t+: Toggle {{{1
 " ------------------------------------------------------------------------------
 
 function! s:map_toggle_opt(letter, option, mode, doc) abort
    " Example:
    " let which_key_map_space.t.c = "Toggle line cursorcolumn"
    " nnoremap <Space>tc :setlocal cursorcolumn!<CR>:setlocal cursorcolumn?<CR>
+   " echom 'let g:which_key_map_space.t.' .a:letter ' = "' .a:doc '"'
+   " echom 'nnoremap <Space>t'.a:letter.' :'.a:mode.' '.a:option.'!<CR>:'.a:mode.' '.a:option.'?<CR>'
    "
-   exe 'let g:which_key_map_space.t.' .a:letter ' = "' .a:doc '"'
-   exe 'nnoremap <Space>t'.a:letter.' :'.a:mode.' '.a:option.'!<CR>:'.a:mode.' '.a:option.'?<CR>'
+   call s:map_cmd_2('nnoremap', 't', a:letter, a:doc, ':'.a:mode.' '.a:option.'!<CR>:'.a:mode.' '.a:option.'?<CR>')
 endfunction
 
 call s:map_toggle_opt('l', 'cursorline',     'setlocal', 'Toggle line cursorline')
@@ -259,14 +294,13 @@ call s:map_toggle_opt('h', 'hlsearch',       'set',      'Toggle highlight match
 call s:map_toggle_opt('i', 'list',           'set',      'Toggle invisible char (set list)')
 
 
-call s:nmap_cmd('t', 's', 'Toggle Trailling whitespace indicator', ':ToggleWhitespace')
-call s:nmap_cmd('t', 'z', 'Toggle Trailling whitespace indicator', ':ToggleWhitespace')
-call s:nmap_cmd('t', 'S', 'Toggle Strip Whitespace On Save',       ':ToggleStripWhitespaceOnSave')
-call s:nmap_cmd('t', 'M', 'ToggleColorschemeMode',                 ':ToggleColorschemeMode')
-call s:nmap_cmd('t', 'm', 'ToggleColorschemeMode',                 ':ToggleColorschemeMode')
-call s:nmap_cmd('t', 't', 'call ToggleTextWidth()',                ':Toggle 80 text width')
-call s:nmap_cmd('t', 'T', 'TagbarToggle',                          ':TagbarToggle')
-" call s:nmap_cmd('t', 't', 'call ToggleHighlightCharacterOver80()',       ':Toggle 80 text width')
+call s:nmap_cmd_2('t', 's', 'Toggle Trailling whitespace indicator', ':ToggleWhitespace')
+call s:nmap_cmd_2('t', 'S', 'Toggle Strip Whitespace On Save',       ':ToggleStripWhitespaceOnSave')
+call s:nmap_cmd_2('t', 'm', 'Color: Dark/Light Mode',                ':ToggleColorschemeMode')
+call s:nmap_cmd_2('t', 'M', 'Color: FZF Schema',                     ':FzfLua colorschemes')
+call s:nmap_cmd_2('t', 't', 'Toggle 80 text width',                  ':call ToggleTextWidth()')
+call s:nmap_cmd_2('t', 'T', 'TagbarToggle',                          ':TagbarToggle')
+" call s:nmap_cmd_2('t', 't', 'call ToggleHighlightCharacterOver80()',       ':Toggle 80 text width')
 
 " Fold method {{{2
 let g:which_key_map_space.t.f = { 'name' : 'Fold+' }
@@ -295,31 +329,28 @@ nmap \s :call LoopFoldMethod()<CR>:set foldmethod<CR>zv
 " ------------------------------------------------------------------------------
 
 
-call s:nmap_cmd('w', 'c', 'Window Close',            ':call undoquit#SaveWindowQuitHistory()<CR>:close')
-call s:nmap_cmd('w', 'h', 'Window Hide',             ':call undoquit#SaveWindowQuitHistory()<CR>:close')
-call s:nmap_cmd('w', 'd', 'Window Close and Delete', ':call undoquit#SaveWindowQuitHistory()<CR>:bd!')
-call s:nmap_cmd('w', 'u', 'Undoquit Window',         ':Undoquit')
-call s:nmap_cmd('w', 'q', 'Write and quit',          ':wq')
+call s:nmap_cmd_2('w', 'c', 'Window Close',            ':call undoquit#SaveWindowQuitHistory()<CR>:close')
+call s:nmap_cmd_2('w', 'h', 'Window Hide',             ':call undoquit#SaveWindowQuitHistory()<CR>:close')
+call s:nmap_cmd_2('w', 'd', 'Window Close and Delete', ':call undoquit#SaveWindowQuitHistory()<CR>:bd!')
+call s:nmap_cmd_2('w', 'u', 'Undoquit Window',         ':Undoquit')
+call s:nmap_cmd_2('w', 'q', 'Write and quit',          ':wq')
+call s:nmap_cmd_2('w', 'w', 'VimWiki Index Page',      ':e ~/vimwiki/index.md')
 
-
-let which_key_map_space.w.w = 'VimWiki Index Page'
-" nmap <Space>ww <Plug>VimwikiIndex
-nnoremap <Space>ww :e ~/vimwiki/index.md<CR>
-
-
-let which_key_map_space.w.o = 'FZF search current file'
-nnoremap <silent> <Space>wo :execute ':MyFzfFiles ' . SafeFzfQuery(expand('<cfile>'))<CR>
-vnoremap <silent> <Space>wo y:execute ':MyFzfFiles ' . SafeFzfQuery(@*)<CR>
 
 
 
 " [SpaceMapping] z+: WIP {{{1
 " ------------------------------------------------------------------------------
-nnoremap <silent> <Space>zz :Goyo<CR>
-nnoremap <silent> <Space>zm :ZoomToggle<CR>
-nnoremap <silent> <Space>zo :ZoomToggle<CR>
+" nnoremap <silent> <Space>zz :Goyo<CR>
+" nnoremap <silent> <Space>zm :ZoomToggle<CR>
+" nnoremap <silent> <Space>zo :ZoomToggle<CR>
+" nnoremap <silent> <Space>zl :Limelight!!<CR>
 
-nnoremap <silent> <Space>zl :Limelight!!<CR>
+call s:nmap_cmd_2('z', 'z', 'Goyo', ':Goyo')
+call s:nmap_cmd_2('z', 'm', 'Zoom', ':ZoomToggle')
+call s:nmap_cmd_2('z', 'o', 'Zoom', ':ZoomToggle')
+call s:nmap_cmd_2('z', 'l', 'Limelight', ':Limelight!!')
+call s:nmap_cmd_2('z', 'u', 'Undo tree', ':UndotreeToggle')
 
 " [SpaceMapping] +: Misc {{{1
 " ------------------------------------------------------------------------------
@@ -337,6 +368,28 @@ nnoremap <silent> <Space>' :above Ttoggle<CR>
 
 let which_key_map_space['<Tab>'] = 'last buffer'
 nnoremap <silent> <Space><Tab> :e#<cr>
+
+
+let which_key_map_space.1 = 'which_key_ignore'
+let which_key_map_space.2 = 'which_key_ignore'
+let which_key_map_space.3 = 'which_key_ignore'
+let which_key_map_space.4 = 'which_key_ignore'
+let which_key_map_space.5 = 'which_key_ignore'
+let which_key_map_space.6 = 'which_key_ignore'
+let which_key_map_space.7 = 'which_key_ignore'
+let which_key_map_space.8 = 'which_key_ignore'
+let which_key_map_space.9 = 'which_key_ignore'
+
+nmap <Space>1 <Plug>AirlineSelectTab1
+nmap <Space>2 <Plug>AirlineSelectTab2
+nmap <Space>3 <Plug>AirlineSelectTab3
+nmap <Space>4 <Plug>AirlineSelectTab4
+nmap <Space>5 <Plug>AirlineSelectTab5
+nmap <Space>6 <Plug>AirlineSelectTab6
+nmap <Space>7 <Plug>AirlineSelectTab7
+nmap <Space>8 <Plug>AirlineSelectTab8
+nmap <Space>9 <Plug>AirlineSelectTab9
+
 
 
 " [Other Keys] mappings {{{1
@@ -368,9 +421,18 @@ nnoremap <Space>em :e!   ~/.config/vim/custom/400-mappings.vim<CR>
 nnoremap <Space>er :e!   ~/.config/vim/custom/999-playground.vim<CR>
 nnoremap <Space>ev :e!   ~/.config/vim/vimrc<CR>
 nnoremap <Space>et :e!   ~/vimwiki/TODO.md<CR>
-" nnoremap <silent><buffer> <C-j> i<CR><Esc>
-" unmap <C-j>
-" nunmap <C-j>
+
+
+" call s:nmap_cmd_2('f', 'e', 'Reopen current file',                ':mkview<CR>:e!<CR>:loadview')
+nnoremap <Space>fee :mkview<CR>:e!<CR>:loadview<CR>
+nnoremap <Space>fec :Defx ~/.config/vim/custom/<CR>
+nnoremap <Space>fep :e!   ~/.config/vim/custom/100-plugins.vim<CR>
+nnoremap <Space>fef :e!   ~/.config/vim/custom/300-filetypes.vim<CR>
+nnoremap <Space>feP :e!   ~/.config/vim/custom/500-plugins-config.vim<CR>
+nnoremap <Space>fem :e!   ~/.config/vim/custom/400-mappings.vim<CR>
+nnoremap <Space>fer :e!   ~/.config/vim/custom/999-playground.vim<CR>
+nnoremap <Space>fev :e!   ~/.config/vim/vimrc<CR>
+nnoremap <Space>fet :e!   ~/vimwiki/TODO.md<CR>
 
 nnoremap gj <C-W>j
 nnoremap gk <C-W>k
@@ -384,13 +446,6 @@ nmap ga <Plug>(EasyAlign)
 
 " vim-visual-multi, return to last selection
 nmap gV <Plug>(VM-Reselect-Last)
-
-" Useful thing from vim-sexp
-" Safe full line delete
-"
-" nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
-" omap <silent><buffer> $     <Plug>(sexp_move_to_end_of_line_with_form)
-" nmap <silent><buffer> <C-k> d$
 
 " }}}1
 
@@ -434,35 +489,3 @@ vnoremap 9 c()<Esc>hp
 " vnoremap { c{}<Esc>hp
 
 
-" Not vim stype but I am used to it. Similar to vscode, atom and sublime
-" nnoremap <C-P> :Files<CR>
-" https://www.javaer101.com/en/article/16363554.html
-" nnoremap J :s/\s*$//<cr>J
-" vnoremap J :s/\s*$//<cr>gvJ
-
-
-" map <Leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
-
-
-" nnoremap <leader>gb :Git blame<CR>
-" nnoremap <leader>gc :Gina commit -v<CR>gg0i
-" nnoremap <leader>gd :Gina diff<CR>
-" nnoremap <leader>gD :Gina diff -w<CR>
-" nnoremap <leader>gg :Gina grep<space>
-" nnoremap <leader>gi :Gina init<CR>
-" nnoremap <leader>gl :Gina log --graph --pretty=format:"%C(yellow)%h %ad%Cred%d %Creset%s%Cblue [%cn]" --decorate --all --date=short<CR><CR>
-" nnoremap <leader>gp :Gina push<CR>
-" nnoremap <leader>gs :Gina status<CR>
-" nnoremap <leader>gS :Gina show<CR>
-"
-"
-" let g:magit_show_help = 0
-" let g:magit_toggle_help_mapping = '?'
-" let g:magit_discard_untracked_do_delete=1
-" let g:magit_show_magit_mapping='<leader>G'
-"
-"
-" nnoremap <leader>wi :e ~/Sync/vimwiki/diary/<CR>
-
-"
-"

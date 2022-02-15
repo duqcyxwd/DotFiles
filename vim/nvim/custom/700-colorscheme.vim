@@ -28,11 +28,10 @@ function! s:DarkMode() abort
   " colorscheme OceanicNext
   " let g:airline_theme='oceanicnext'
 
+  " Hack: Call colorschem twice to get correct corlor
+  colorscheme dracula
   colorscheme dracula
   let g:airline_theme='dracula'
-
-  " Set syntax on to avoid weird color
-  "syntax on
 
 endfunction
 command! DarkMode call s:DarkMode()
@@ -55,8 +54,6 @@ function! s:LightMode() abort
 
   " colorscheme onehalflight
   " let g:airline_theme='onehalflight'
-
-  " Set syntax on to avoid weird color
 endfunction
 command! LightMode call s:LightMode()
 
@@ -67,7 +64,7 @@ function! s:ToggleColorschemeMode() abort
   else
     call s:DarkMode()
   endif
-syntax enable               " Enable syntax highlighting
+ syntax enable               " Enable syntax highlighting
 endfunction
 command! ToggleColorschemeMode call s:ToggleColorschemeMode()
 

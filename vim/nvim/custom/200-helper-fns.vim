@@ -128,8 +128,81 @@ function! RunUsingCurrentFiletype() "{{{1
   execute '! clear; '.&filetype.' <% '
 endfunction
 
-" }}}1
+function! g:SafeFzfQuery(str) "{{{1
+  " echom substitute("test/test[x[x[x[x]]]] ok (TEST) * - # ok\"", "[\"\n\/\.\\][()#*-]", " ", "g")
+  " echom substitute(a:str, "[\"\n\/\.\\][()#*-]", " ", "g")
+  return substitute(a:str, "[\"\n\/\.\\][()#*-]", " ", "g")
+endfunc
 
+" [Functions] GET Last selections {{{1
+" -------------------------------------------------------------------------------
+"
+" An Sample code work with n mode and v mode
+" Example from https://github.com/tyru/open-browser.vim/blob/master/autoload/vital/__openbrowser__/OpenBrowser.vim#L444
+"
+
+function! s:_get_last_selected() abort    " {{{2
+  " https://github.com/tyru/open-browser.vim/blob/master/autoload/vital/_openbrowser/Vim/Buffer.vim#L94
+  if visualmode() ==# "\<C-v>"
+    let save = getreg('"', 1)
+    let save_type = getregtype('"')
+    try
+      normal! gv""y
+      return @"
+    finally
+      call setreg('"', save, save_type)
+    endtry
+  else
+    let [begin, end] = [getpos("'<"), getpos("'>")]
+    let lastchar = matchstr(getline(end[1])[end[2]-1 :], '.')
+    if begin[1] ==# end[1]
+      let lines = [getline(begin[1])[begin[2]-1 : end[2]-2]]
+    else
+      let lines = [getline(begin[1])[begin[2]-1 :]]
+      \         + (end[1] - begin[1] <# 2 ? [] : getline(begin[1]+1, end[1]-1))
+      \         + [getline(end[1])[: end[2]-2]]
+    endif
+    return join(lines, "\n") . lastchar . (visualmode() ==# 'V' ? "\n" : '')
+  endif
+endfunction
+
+
+function! g:GetLastSelect() abort "{{{2
+  let selected_text = s:_get_last_selected()
+  let text = substitute(selected_text, '[\n\r]\+', ' ', 'g')
+  return substitute(text, '^\s*\|\s*$', '', 'g')
+endfunction
+
+function! g:GetCurrentWord(mode) abort "{{{2
+  if a:mode is# 'n'
+    return expand('<cword>')
+  else
+    return GetLastSelect()
+  endif
+endfunction
+
+
+function! g:TestFn(mode) abort " {{{2
+  echom "Message from TESTFN"
+  if a:mode is# 'n'
+    echom "n mode"
+    echom 'Text:' expand('<cword>')
+  else
+    echom "v mode"
+    echom 'Text:' GetCurrentWord('v')
+  endif
+endfunction
+
+" Mapping {{{2
+nnoremap <silent> <Plug>(mytestFn) :<C-u>call TestFn('n')<CR>
+xnoremap <silent> <Plug>(mytestFn) :<C-u>call TestFn('v')<CR>
+" I can avoid using
+" vnoremap <Space>ss y:FFBLines <C-R>=escape(@",'/\()')<CR><CR>
+
+"}}}2
+
+
+" }}}1
 
 " https://stackoverflow.com/questions/10572996/passing-command-range-to-a-function/10573044#10573044
 function! PrintGivenRange() range

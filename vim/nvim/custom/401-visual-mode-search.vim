@@ -35,6 +35,7 @@ endfunction
 
 " Search based current word
 " :echo expand('<cWORD>')
+" :echo expand('<cfile>')
 " nnoremap <Space>* :execute '/' . expand('<cWORD>')<CR>
 " nnoremap <Space>sB :execute ':FFBLines ' . expand('<cWORD>')<CR>
 
