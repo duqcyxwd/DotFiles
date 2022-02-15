@@ -294,7 +294,7 @@
   alias gstsi0=forgit::stash::show
   alias gstsi=git_stash_list_interactive
   alias gstli=git_stash_list_interactive
-  alias gstaai='git_stash_list_interactive | git stash apply'
+  alias gstaai='git_stash_list_interactive | xargs git stash apply $@'
   alias grhi=forgit::reset::head
 }
 

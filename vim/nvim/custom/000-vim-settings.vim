@@ -24,7 +24,7 @@ set foldcolumn=0                " Disable fold column by default, <Space>tfc to 
 set foldmethod=marker           " Use braces by default
 set hidden                      " A buffer becomes hidden when it is abandoned
 set history=700                 " Sets how many lines of history VIM has to remember
-set hlsearch                    " Highlight search results
+" set hlsearch                    " Highlight search results
 set ignorecase                  " Ignore case when searching
 set incsearch                   " Makes search act like search in modern browsers
 set langmenu=en

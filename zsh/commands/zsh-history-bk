@@ -5,16 +5,38 @@ function zsh_history_bk {
 
   newFileNameYearMonth=.zsh_history-$(date +%Y-%m)
   mkdir -p ~/.zsh_history_bk
-  cp $ZDOTDIR/.zsh_history ~/.zsh_history_bk/.zsh_history-$(date +%Y-%m-%d-%H)
+  cp $ZDOTDIR/.zsh_history ~/.zsh_history_bk/bk_by_date/.zsh_history-$(date +%Y-%m-%d-%H)
   cp $ZDOTDIR/.zsh_history ~/.zsh_history_bk/$newFileNameYearMonth
+  cp $ZDOTDIR/.zsh_history ~/.zsh_history_bk/.zsh_history
 
   pushd ~/.zsh_history_bk 2> /dev/null 1> /dev/null
 
   if [[ -n "$raw" ]]; then
     # Raw backup, do not commit
   else
-    git add ~/.zsh_history_bk/$newFileNameYearMonth 2> /dev/null 1> /dev/null
-    git commit -m "[auto] zsh backup: $(date +%Y-%m-%d-%H) " 2> /dev/null 1> /dev/null
+
+    # git add ~/.zsh_history_bk/.zsh_hist_cust_bk 2> /dev/null 1> /dev/null
+    # git commit -m "[auto][cust] .zsh_hist_cust_bk backup: $(date +%Y-%m-%d-%H) " 2> /dev/null 1> /dev/null
+
+    diff_count=$(git diff ~/.zsh_history_bk/$newFileNameYearMonth | wc -l)
+    if (( $diff_count > 10 )); then
+      # Regular backup in a monthly created file
+      git add ~/.zsh_history_bk/$newFileNameYearMonth 2> /dev/null 1> /dev/null
+      git commit -m "[auto][mont] .zsh_history backup: $(date +%Y-%m-%d-%H) " 2> /dev/null 1> /dev/null
+    fi
+
+    diff_count=$(git diff ~/.zsh_history_bk/.zsh_hist_cust_bk | wc -l)
+    if (( $diff_count > 40 )); then
+      git add ~/.zsh_history_bk/.zsh_hist_cust_bk 2> /dev/null 1> /dev/null
+      git commit -m "[auto][cust] .zsh_hist_cust_bk backup: $(date +%Y-%m-%d-%H) " 2> /dev/null 1> /dev/null
+    fi
+
+    diff_count=$(git diff .zsh_history | wc -l)
+    if (( $diff_count > 40 )); then
+      # High level history backup, commit when large changes
+      git add ~/.zsh_history_bk/.zsh_history 2> /dev/null 1> /dev/null
+      git commit -m "[auto][gene] .zsh_history backup: $(date +%Y-%m-%d-%H) " 2> /dev/null 1> /dev/null
+    fi
   fi
 
   popd 2> /dev/null 1> /dev/null
