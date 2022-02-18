@@ -170,6 +170,12 @@ PYTHON_PACKAGES=(
 # ---------------------------------------------------------------------------------
 # Head version of neovim
 # brew install --HEAD neovim
+brew install --HEAD tree-sitter luajit neovim
+brew install neovim-remote
+
+npm install -g diagnostic-languageserver
+
+
 
 # NPM Packages:
 
@@ -181,13 +187,14 @@ PYTHON_PACKAGES=(
 # # install kafkactl
 # brew install deviceinsight/packages/kafkactl
 # # upgrade kafkactl
-# brew upgrade deviceinsight/packages/kafkactl
+# brew upgrade deviceinsight/packages/kafkact
 
 WIP
 brew tap conduktor/brew
 brew install conduktor
 
 brew install borkdude/brew/jet
+brew install lua-language-server
 
 
 

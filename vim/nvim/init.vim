@@ -9,17 +9,16 @@
 "       https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
 
 let vimrootPath = $XDG_CONFIG_HOME.'/vim/custom/*.vim'
-
 for f in split(glob(vimrootPath), '\n')
   exe 'source' f
 endfor
 
+" let luarootPath = $XDG_CONFIG_HOME.'/vim/lua/*.lua'
+" for f in split(glob(luarootPath), '\n')
+"   exe 'luafile' f
+" endfor
 
-let luarootPath = $XDG_CONFIG_HOME.'/vim/lua/*.lua'
-
-for f in split(glob(luarootPath), '\n')
-  exe 'luafile' f
-endfor
+source $XDG_CONFIG_HOME/nvim/lua/core.lua
 
 " " When I open a terminal buffer, I want it to feel like I'm in the terminal. I
 " " don't want to still be in normal mode.
