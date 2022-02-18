@@ -21,14 +21,9 @@ for f in split(glob(luarootPath), '\n')
   exe 'luafile' f
 endfor
 
-" https://github.com/glepnir/nvim-lua-guide-zh
-" lua require('mapping')
-
-
-" When I open a terminal buffer, I want it to feel like I'm in the terminal. I
-" don't want to still be in normal mode.
-autocmd TermOpen * startinsert
-
+" " When I open a terminal buffer, I want it to feel like I'm in the terminal. I
+" " don't want to still be in normal mode.
+" autocmd TermOpen * startinsert
 
 " set verbosefile=~/temp/log/vim.log
 " set verbose=1

@@ -134,6 +134,20 @@ function! g:SafeFzfQuery(str) "{{{1
   return substitute(a:str, "[\"\n\/\.\\][()#*-]", " ", "g")
 endfunc
 
+
+function! OpenGithubPlugin() "{{{1
+  " MY Function to open vim Plugin page in Github
+  " let s:uri = matchstr(getline("."), "'[a-z]*'")
+  let s:uri = matchstr(getline("."), "[0-9a-z\-\_\.]*\/[0-9a-z\-\_\.]*")
+  let s:uri = "https://www.github.com/".s:uri
+  if s:uri != ""
+    silent exec "!open '".s:uri."'"
+    :redraw!
+  else
+    echo "no packages found"
+  endif
+endfunction
+
 " [Functions] GET Last selections {{{1
 " -------------------------------------------------------------------------------
 "
@@ -182,7 +196,7 @@ function! g:GetCurrentWord(mode) abort "{{{2
 endfunction
 
 
-function! g:TestFn(mode) abort " {{{2
+function! g:ModeTestFn(mode) abort " {{{2
   echom "Message from TESTFN"
   if a:mode is# 'n'
     echom "n mode"
@@ -203,6 +217,14 @@ xnoremap <silent> <Plug>(mytestFn) :<C-u>call TestFn('v')<CR>
 
 
 " }}}1
+
+
+" COMMAND
+" -------------------------------------------------------------------------------
+command! CDC cd %:p:h             " CDC = Change to Directory of Current file
+" I can also use - defx to and then C to change cwd
+
+
 
 " https://stackoverflow.com/questions/10572996/passing-command-range-to-a-function/10573044#10573044
 function! PrintGivenRange() range
@@ -233,3 +255,10 @@ function! PrintGivenRange2() range
 endfunction
 
 command! -range PassRange <line1>,<line2>call PrintGivenRange()
+
+function! TestFunc( k, val = 10 )
+    echomsg 'k: ' a:k
+    echomsg 'val: ' a:val
+endfunction
+
+command! -nargs=* Test call TestFunc(<f-args>)

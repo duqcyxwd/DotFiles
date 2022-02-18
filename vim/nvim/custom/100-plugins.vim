@@ -31,13 +31,15 @@ Plug 'cormacrelf/vim-colors-github'
 " Plug 'vim-scripts/paredit.vim'
 
 " Plug 'clojure-vim/acid.nvim'|                      "Asynchronous Clojure Interactive Development
-Plug 'Olical/conjure'
+Plug '~/duqcyxwd/conjure'
 
 " Plug 'guns/vim-clojure-static'
 Plug 'clojure-vim/clojure.vim'|                      " Replace guns/vim-clojure-static, code style
 Plug '~/duqcyxwd/vim-sexp'                           " My version of vim-sexp
 
 " Plug 'tpope/vim-sexp-mappings-for-regular-people'| " Tesing
+" m, Make next available mark
+
 
 " Interesting tag jumping!
 Plug 'tpope/vim-fireplace'
@@ -76,7 +78,7 @@ Plug 'junegunn/gv.vim'|                                "A git commit browser.
 " ------------------------------------------------------------------------------
 
 Plug 'AndrewRadev/undoquit.vim'
-Plug 'jeetsukumaran/vim-buffergator'
+Plug 'jeetsukumaran/vim-buffergator'|                " open a window listing all buffers
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug '~/duqcyxwd/fzf.vim'
@@ -87,27 +89,28 @@ Plug 'ibhagwan/fzf-lua'
 " optional for icon support
 Plug 'kyazdani42/nvim-web-devicons'
 
+Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }|  " File browser
 Plug 'junegunn/limelight.vim'
-Plug 'kassio/neoterm'
-Plug 'kshenoy/vim-signature'
+Plug 'kassio/neoterm'|                                      " Terminal
+Plug 'kshenoy/vim-signature'|                               " A plugin to place, toggle and display marks.
 Plug 'liuchengxu/vim-which-key'
-Plug 'machakann/vim-highlightedyank'                 " Show highlight for yank
+Plug 'machakann/vim-highlightedyank'|                       " Show highlight for yank
 Plug 'machakann/vim-sandwich'
 Plug 'mbbill/undotree'
-Plug 'mg979/vim-visual-multi'|                     "vim multi cursor
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'mg979/vim-visual-multi'|                              " vim multi cursor
 Plug 'ntpeters/vim-better-whitespace'
-Plug 'osyo-manga/vim-over'
-Plug 'preservim/tagbar'|                           "Create tag on fly, used by markdown
-Plug 'schickling/vim-bufonly'
-Plug 'tpope/vim-commentary'|                       "Gcc
-Plug 'tpope/vim-endwise'
+Plug 'osyo-manga/vim-over'|                                 " Preview replace chanage
+Plug 'preservim/tagbar'|                                    " Create tag on fly, used by markdown
+Plug 'schickling/vim-bufonly'|                              " Delete all the buffers except the current buffer.
+Plug 'tpope/vim-commentary'|                                " Gcc
 Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-sleuth'|                           "Automatically adjusts 'shiftwidth' and 'expandtab'
+Plug 'tpope/vim-sleuth'|                                    " Automatically adjusts 'shiftwidth' and 'expandtab'
 Plug 'tpope/vim-surround'
-Plug 'unblevable/quick-scope'|                     "Quick highlight for f/F
+Plug 'unblevable/quick-scope'|                              " Quick highlight for f/F
+Plug 'phaazon/hop.nvim'|                                    " Jump Everywhere
 
-
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'tpope/vim-endwise'|                                   " Add endif endfunction for some language
 " Somehow it cause problem on exists
 " Plug 'ludovicchabant/vim-gutentags'|               "Good way to generate tags
 
@@ -159,6 +162,21 @@ Plug 'tyru/open-browser.vim'
 " WIP {{{1
 " ------------------------------------------------------------------------------
 
+Plug 'wesQ3/vim-windowswap'
+Plug 'Olical/aniseed'
+
+let g:conjure#mapping#doc_word = v:false
+
+
+" https://medium.com/prodhacker/how-to-set-up-neovim-0-5-modern-plugins-lsp-treesitter-etc-542c3d9c9887
+Plug 'neovim/nvim-lspconfig'
+Plug 'glepnir/lspsaga.nvim'
+Plug 'nvim-lua/lsp-status.nvim'
+Plug 'nvim-lua/completion-nvim'
+" TODO change to nvim-cmp or coq_nvim.
+
+" WIP
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " Better syntax highlight
 
 
 " preview buffer tags, not working in clojure yet
@@ -168,13 +186,11 @@ Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/remote', 'do': ':UpdateRe
 " Not working yet
 " Plug 'folke/todo-comments.nvim'
 
-Plug 'daveyarwood/vim-alda'|                             "editing and playing Alda scores.
-Plug 'habamax/vim-asciidoctor'
-Plug 'junegunn/vader.vim'|                               "use Vader to test Vimscript.
+" Plug 'daveyarwood/vim-alda'|                             "editing and playing Alda scores.
+" Plug 'habamax/vim-asciidoctor'
+" Plug 'junegunn/vader.vim'|                               "use Vader to test Vimscript.
 Plug 'vlime/vlime', {'rtp': 'vim/'}|                     "Common Lisp dev environment
 
-" WIP
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " Better syntax highlight
 
 
 " }}}1
@@ -184,11 +200,11 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " Better syntax hig
 " editor enhancements {{{1
 " ------------------------------------------------------------------------------
 
-Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }
 Plug 'benmills/vimux'
 Plug 'dyng/ctrlsf.vim'
 Plug 'liuchengxu/vista.vim'
-Plug 'tpope/vim-unimpaired'
+" TODO Rview keybinding
+" Plug 'tpope/vim-unimpaired'
 
 
 " Not sure why this plugin: https://github.com/tpope/vim-unimpaired/blob/master/plugin/unimpaired.vim

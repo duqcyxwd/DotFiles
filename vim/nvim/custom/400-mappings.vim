@@ -11,36 +11,32 @@
 " ------------------------------------------------------------------------------
 
 " remap leader key to ,
-let mapleader = ","
-let g:mapleader = ","
+let g:mapleader = '\'
+let g:maplocalleader = ','
 
-let g:maplocalleader = ","
-let maplocalleader = ","
-
-
-" Random notes: <c-u> will clean command line
+"Random notes: <c-u> will clean command line
 " <C-R><C-W> inserts the word object.
-nnoremap <silent> <leader>      :<c-u>WhichKey ','<CR>
-nnoremap <silent> <localleader> :<c-u>WhichKey '\'<CR>
+nnoremap <silent> <leader>      :<c-u>WhichKey '\'<CR>
+nnoremap <silent> <localleader> :<c-u>WhichKey ','<CR>
 nnoremap <silent> <Space>       :<c-u>WhichKey '<Space>'<CR>
-vnoremap <silent> <leader>      :<c-u>WhichKeyVisual ','<CR>
-vnoremap <silent> <localleader> :<c-u>WhichKeyVisual '\'<CR>
-vnoremap <silent> <Space>       :<c-u>WhichKeyVisual '<Space>'<CR>
 
-" WIP
-" vnoremap <silent> g             :<c-u>WhichKeyVisual 'g'<CR>
+vnoremap <silent> <leader>      :<c-u>WhichKeyVisual '\'<CR>
+vnoremap <silent> <localleader> :<c-u>WhichKeyVisual ','<CR>
+vnoremap <silent> <Space>       :<c-u>WhichKeyVisual '<Space>'<CR>
 
 let g:which_key_vertical = 1
 
-call which_key#register(',', "g:which_key_map_leader")
-call which_key#register('\', "g:which_key_map_localleader")
+call which_key#register('\', "g:which_key_map_leader")
+call which_key#register(',', "g:which_key_map_localleader")
 call which_key#register('<Space>', "g:which_key_map_space")
-call which_key#register('g', "g:which_key_map_g")
 
 let g:which_key_map_leader = {}
 let g:which_key_map_localleader = {}
 let g:which_key_map_space = {}
-let g:which_key_map_g = {}
+
+" call which_key#register('g', "g:which_key_map_g")
+" let g:which_key_map_g = {}
+" vnoremap <silent> g             :<c-u>WhichKeyVisual 'g'<CR>
 
 
 let g:which_key_map_space.b = { 'name' : '+buffers' }
@@ -60,41 +56,46 @@ let g:which_key_map_space.w = { 'name' : '+Windows' }
 let g:which_key_map_space.z = { 'name' : '+Mix' }
 
 
-function! s:map_cmd_debug(mode, l1, l2, doc, cmd) abort
+function! s:map_cmd_debug(mode, l1, l2, doc, cmd) abort "{{{2
    " echom 'let g:which_key_map_space.' .a:l1. '.' .a:l2. ' = "' .a:doc. '"'
    echom ''.a:mode.' <Space>'.a:l1.''.a:l2.' '.a:cmd
    map_cmd_2(mode, l1, l2, doc, cmd)
 endfunction
 
-function! s:nmap_cmd_debug(l1, l2, doc, cmd) abort
+function! s:nmap_cmd_debug(l1, l2, doc, cmd) abort "{{{2
    call s:map_cmd_debug('nmap', a:l1, a:l2, a:doc, ':'.a:cmd.'<CR>')
 endfunction
 
-
-function! s:map_cmd_3_debug(mode, l1, l2, l3, doc, cmd) abort
-   echom 'let g:which_key_map_space.' .a:l1. '.' .a:l2. '.' .a:l3.' = "' .a:doc. '"'
-   echom ''.a:mode.' <Space>'.a:l1.''.a:l2.''.a:l3.' '.a:cmd
-   echom a:cmd
-
-   map_cmd_3(mode, l1, l2, l3, doc, cmd)
+function! s:map_cmd_2_debug(mode, l1, l2, doc, cmd) abort "{{{2
+   echom 'let g:which_key_map_space.' .a:l1. '.' .a:l2. ' = "' .a:doc. '"'
+   echom ''.a:mode.' <Space>'.a:l1.''.a:l2.' '.a:cmd
+   call s:map_cmd_2(a:mode, a:l1, a:l2, a:doc, a:cmd)
 endfunction
 
 
-function! s:map_cmd_2(mode, l1, l2, doc, cmd) abort
+function! s:map_cmd_3_debug(mode, l1, l2, l3, doc, cmd) abort "{{{2
+   echom 'let g:which_key_map_space.' .a:l1. '.' .a:l2. '.' .a:l3.' = "' .a:doc. '"'
+   echom ''.a:mode.' <Space>'.a:l1.''.a:l2.''.a:l3.' '.a:cmd
+   call s:map_cmd_3(a:mode, a:l1, a:l2, a:l3, a:doc, a:cmd)
+endfunction
+
+
+function! s:map_cmd_2(mode, l1, l2, doc, cmd) abort "{{{2
    exec 'let g:which_key_map_space.' .a:l1. '.' .a:l2. ' = "' .a:doc. '"'
    exec ''.a:mode.' <Space>'.a:l1.''.a:l2.' '.a:cmd
 endfunction
 
-function! s:map_cmd_3(mode, l1, l2, l3, doc, cmd) abort
+
+function! s:map_cmd_3(mode, l1, l2, l3, doc, cmd) abort "{{{2
    exec 'let g:which_key_map_space.' .a:l1. '.' .a:l2. '.' .a:l3.' = "' .a:doc. '"'
    exec ''.a:mode.' <Space>'.a:l1.''.a:l2.''.a:l3.' '.a:cmd
 endfunction
 
-function! s:nmap_cmd_2(l1, l2, doc, cmd) abort
+function! s:nmap_cmd_2(l1, l2, doc, cmd) abort "{{{2
    call s:map_cmd_2('nnoremap', a:l1, a:l2, a:doc, ''.a:cmd.'<CR>')
 endfunction
 
-function! s:vmap_cmd_2(l1, l2, doc, cmd) abort
+function! s:vmap_cmd_2(l1, l2, doc, cmd) abort "{{{2
    call s:map_cmd_2('vnoremap', a:l1, a:l2, a:doc, ''.a:cmd.'<CR>')
 endfunction
 
@@ -102,13 +103,14 @@ endfunction
 " [SpaceMapping] b+: Buffers {{{1
 " ------------------------------------------------------------------------------
 
-call s:nmap_cmd_2('b', 'D', 'Force delete this buffer',     ':bp<bar>sp<bar>bn<bar>bd!')
+call s:nmap_cmd_2('b', 'D', 'Force delete this buffer', ':bp<bar>sp<bar>bn<bar>bd!')
 " call s:nmap_cmd_2('b', 'b', 'List all buffers', ':BuffergatorOpen ')
-call s:nmap_cmd_2('b', 'b', 'List all buffers',             ':FFBuffers ')
-call s:nmap_cmd_2('b', 'c', ':BufOnly Close other buffers', ':BufOnly')
-call s:nmap_cmd_2('b', 'd', 'Delete this buffer',           ':call undoquit#SaveWindowQuitHistory()<CR>:Bclose')
-call s:nmap_cmd_2('b', 'h', 'home',                         ':Startify')
-
+call s:nmap_cmd_2('b', 'b', 'List all buffers',         ':FFBuffers ')
+call s:nmap_cmd_2('b', 'c', 'Close other buffers',      ':BufOnly')
+call s:nmap_cmd_2('b', 'd', 'Delete this buffer',       ':call undoquit#SaveWindowQuitHistory()<CR>:Bclose')
+call s:nmap_cmd_2('b', 'h', 'home',                     ':Startify')
+call s:nmap_cmd_2('b', 'n', 'Next buffer',              ':bnext')
+call s:nmap_cmd_2('b', 'p', 'Previous buffer',          ':bprev')
 
 " [SpaceMapping] c+: COC {{{1
 " ------------------------------------------------------------------------------
@@ -208,6 +210,10 @@ call s:map_cmd_3('nnoremap', 'h', 'k', 'v', '[visual] Key Maps', ':VMaps<CR>')
 call s:map_cmd_3('nnoremap', 'h', 'k', 'i', '[insert] Key Maps', ':IMaps<CR>')
 call s:map_cmd_3('nnoremap', 'h', 'k', 'm', '[normal] Key Maps', ':FFMaps<CR>')
 call s:map_cmd_3('nnoremap', 'h', 'k', 'd', 'Debug Key Maps',    ':verbose map ')
+nnoremap <Space>hkD :execute "enew\| pu=execute('verbos map')"
+
+
+call s:nmap_cmd_2('p', 'u', 'Plug Update',   ':execute "tabnew\| PlugUpdate"')
 
 " :enew|pu=execute('verbose map')
 
@@ -215,10 +221,14 @@ call s:map_cmd_3('nnoremap', 'h', 'k', 'd', 'Debug Key Maps',    ':verbose map '
 " [SpaceMapping] j+: Jump {{{1
 " ------------------------------------------------------------------------------
 
-call s:nmap_cmd_2('j', 'i', 'Fzf Jump def', 'FFLines (def')
-call s:nmap_cmd_2('j', 'I', 'Fzf Jump def in project', 'MyFzfAg \(def[n]? ')
-call s:nmap_cmd_2('j', 't', 'Fzf Jump Tags', 'FFTags')
-call s:nmap_cmd_2('b', 't', 'Fzf BTags', 'FFBTags')
+call s:nmap_cmd_2('j', 'i', 'Fzf Jump def',            ':FFLines (def')
+call s:nmap_cmd_2('j', 'I', 'Fzf Jump def in project', ':MyFzfAg \(def[n]? ')
+call s:nmap_cmd_2('j', 't', 'Fzf Jump Tags',           ':FFTags')
+call s:nmap_cmd_2('b', 't', 'Fzf BTags',               ':FFBTags')
+call s:nmap_cmd_2('j', 'w', 'Hop Jump Word',           ':HopWord')
+call s:nmap_cmd_2('j', 'w', 'Hop Jump Word',           ':HopWord')
+call s:nmap_cmd_2('j', 'c', 'Hop Jump Character',      ':HopChar2')
+call s:nmap_cmd_2('j', 'l', 'Hop Jump Line',           ':HopLineStart')
 
 
 call s:map_cmd_2('nnoremap', 'j', 'j', 'FZF Jump jumps', ":FzfLua jumps<CR>")
@@ -226,9 +236,11 @@ call s:map_cmd_2('nnoremap', 'j', 'm', 'FZF Jump marks', ":FzfLua marks<CR>")
 
 " [SpaceMapping] p+: Project/Install {{{1
 " ------------------------------------------------------------------------------
-call s:nmap_cmd_2('p', 'f', 'Project files', ':FFFiles')
-call s:nmap_cmd_2('p', 'i', 'Plug Install',  ':execute "tabnew\| PlugInstall"')
-call s:nmap_cmd_2('p', 'u', 'Plug Update',   ':execute "tabnew\| PlugUpdate"')
+
+call s:nmap_cmd_2('p', 'f', 'Project files',                   ':FFFiles')
+call s:nmap_cmd_2('p', 'i', 'Plug Install',                    ':execute "tabnew\| PlugInstall"')
+call s:nmap_cmd_2('p', 'u', 'Plug Update',                     ':execute "tabnew\| PlugUpdate"')
+call s:nmap_cmd_2('p', 'o', 'Plugin main page open in Github', ':call OpenGithubPlugin()')
 
 " [SpaceMapping] q+: Quit {{{1
 " ------------------------------------------------------------------------------
@@ -253,24 +265,55 @@ call s:map_cmd_2('vmap',     'r', 't', 'Run test fn',                 '<Plug>(my
 
 function! s:map_args_cmd(l1, l2, doc, cmd) abort
    call s:map_cmd_2('nnoremap', a:l1, a:l2,          a:doc, ':'.a:cmd.'<CR>')
-   call s:map_cmd_2('nnoremap', a:l1, toupper(a:l2), a:doc, ":<C-U>execute ':".a:cmd."' GetCurrentWord('n')<CR>")
-   call s:map_cmd_2('vnoremap', a:l1, a:l2,          a:doc, ":<C-U>execute ':".a:cmd."' GetCurrentWord('v')<CR>")
+   call s:map_cmd_2('nnoremap', a:l1, toupper(a:l2), a:doc, ":<C-U>execute ':" . a:cmd . "'.GetCurrentWord('n')<CR>")
+   call s:map_cmd_2('vnoremap', a:l1, a:l2,          a:doc, ":<C-U>execute ':" . a:cmd . "'.GetCurrentWord('v')<CR>")
 endfunctio
 
-call s:map_args_cmd('s', 's', 'FZF Search Lines in Current Files', "FFBLines")
-call s:map_args_cmd('s', 'r', 'FZF <Rg> Search Current Project',   "FFRg")
-call s:map_args_cmd('s', 'p', 'FZF <Ag> Search Current Project',   "MyFzfAg")
-call s:map_args_cmd('s', 'b', 'FZF Search All Opened Buffers',     "FFLines")
+let s:TYPE = {'dict': type({}), 'funcref': type(function('call')), 'string': type(''), 'list': type([])}
+function! s:LuaBlines(query, ...) abort  "{{{2
+  if empty(a:query)
+      lua require('fzf-lua').lines({ current_buffer_only = true })
+  else
+      execute "lua require('fzf-lua').lines({ search = '" . a:query . " ', current_buffer_only = true })"
+  endif
+endfunction
+
+function! s:LuaLines(query, ...) abort  "{{{2
+  if empty(a:query)
+      lua require('fzf-lua').lines()
+  else
+      execute "lua require('fzf-lua').lines({ search = '" . a:query . " '})"
+  endif
+endfunction
+
+function! s:LuaGrep(query, ...) abort  "{{{2
+  if empty(a:query)
+      lua require('fzf-lua').grep()
+  else
+      execute "lua require('fzf-lua').grep({ search = '" . a:query . " '})"
+  endif
+endfunction
+" }}}2
+
+" Writing above functions to handle optional parameter. There is a easy way if I don't want to worry about optional parameter
+" For example:  command! -nargs=1 MyFzfLuaGrep lua require('fzf-lua').grep({ search = <f-args> })
+
+command! -nargs=* MyFzfLuaLines  call s:LuaLines(<q-args>)
+command! -nargs=* MyFzfLuaBlines call s:LuaBlines(<q-args>)
+command! -nargs=* MyFzfLuaGrep   call s:LuaGrep(<q-args>)
+
+
+call s:map_args_cmd('s', 's', 'FZF Search Lines in Current Files', 'MyFzfLuaBlines ')
+call s:map_args_cmd('s', 'b', 'FZF Search All Opened Buffers',     'MyFzfLuaLines ')
+call s:map_args_cmd('s', 'g', 'FZF <Rg> Search Current Project',   'MyFzfLuaGrep ')
+call s:map_args_cmd('s', 'r', 'FZF <Rg> Search Current Project',   'FFRg ')
+call s:map_args_cmd('s', 'p', 'FZF <Ag> Search Current Project',   'MyFzfAg ')
 
 call s:nmap_cmd_2('s', 'c', 'Search highlight clean',            ':nohlsearch')
 call s:nmap_cmd_2('s', 'e', 'Source current file!',              ':so %')
 call s:nmap_cmd_2('s', 'v', 'Source vimrc',                      ':so $XDG_CONFIG_HOME/nvim/init.vim')
-call s:nmap_cmd_2('s', 'h', 'Search history',                    ":FzfLua search_history")
-call s:nmap_cmd_2('c', 's', 'FZF Schema',                        ":FzfLua colorschemes")
-
-" Overwrite some search
-call s:nmap_cmd_2('s', 's', 'FZF Search Lines in Current Files', ":FzfLua blines<CR>")
-
+call s:nmap_cmd_2('s', 'h', 'Search history',                    ':FzfLua search_history')
+call s:nmap_cmd_2('c', 's', 'FZF Schema',                        ':FzfLua colorschemes')
 
 " [SpaceMapping] t+: Toggle {{{1
 " ------------------------------------------------------------------------------
@@ -321,7 +364,7 @@ nnoremap <Space>tfi :set foldmethod=indent<CR>zv
 let which_key_map_space.t.f.c = 'Toggle Fold Column'
 nnoremap <Space>tfc :call ToggleFoldColumn()<CR>
 
-nmap \s :call LoopFoldMethod()<CR>:set foldmethod<CR>zv
+nnoremap \s :call LoopFoldMethod()<CR>:set foldmethod<CR>zv
 "}}}2
 
 
@@ -335,6 +378,8 @@ call s:nmap_cmd_2('w', 'd', 'Window Close and Delete', ':call undoquit#SaveWindo
 call s:nmap_cmd_2('w', 'u', 'Undoquit Window',         ':Undoquit')
 call s:nmap_cmd_2('w', 'q', 'Write and quit',          ':wq')
 call s:nmap_cmd_2('w', 'w', 'VimWiki Index Page',      ':e ~/vimwiki/index.md')
+call s:nmap_cmd_2('w', 's', 'Window Swap',             ':call WindowSwap#EasyWindowSwap()')
+
 
 
 
@@ -451,9 +496,6 @@ nmap gV <Plug>(VM-Reselect-Last)
 
 " Other random / WIP {{{1
 " --------------------------------------------------------------------------------
-"
-"  Comments
-" nnoremap gca i#_<esc>
 
 " Fix paste
 " p will not overwrite register
@@ -461,20 +503,11 @@ nmap gV <Plug>(VM-Reselect-Last)
 " xnoremap p "_dP
 xnoremap <silent> p p:let @+=@0<CR>:let @"=@0<CR>
 
-function! OpenGithubPlugin()
-  " let s:uri = matchstr(getline("."), "'[a-z]*'")
-  let s:uri = matchstr(getline("."), "[0-9a-z\-\_\.]*\/[0-9a-z\-\_\.]*")
-  let s:uri = "https://www.github.com/".s:uri
-  if s:uri != ""
-    silent exec "!open '".s:uri."'"
-    :redraw!
-  else
-    echo "no packages found"
-  endif
-endfunction
+" WIP
+" nnoremap <silent> gh <Cmd>Lspsaga lsp_finder<CR>
+" inoremap <silent> <C-k> <Cmd>Lspsaga signature_help<CR>
+" nnoremap <silent> <C-j> :Lspsaga diagnostic_jump_next<CR>
 
-" Plugin open
-nnoremap <Space>po :call OpenGithubPlugin()<CR>
 
 nnoremap j gj
 nnoremap k gk
@@ -488,4 +521,4 @@ vnoremap 9 c()<Esc>hp
 " vnoremap [ c[]<Esc>hp
 " vnoremap { c{}<Esc>hp
 
-
+" autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})

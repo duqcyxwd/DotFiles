@@ -838,7 +838,7 @@ endif
 " ale is conflict with clojure-lsp
 " https://clojure-lsp.github.io/clojure-lsp/settings/#clj-kondo
 
-" => commentary {{{1
+" => tpope/vim-commentary {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup commentary_config
   autocmd!
@@ -876,7 +876,7 @@ augroup END
 " let g:conjure#filetype#sicp = "conjure.client.racket.stdio"
 
 " function! ToggleConjureLog() abort
-"   if expand('%:t') =~ ".*conjure-log-.*"
+"   if expand('%:t') =~ ".*onjure-log-.*"
 "     execute 'Bclose'
 "   else
 "     " Ideally I could call some function provided by Conjure directly to do
@@ -924,78 +924,45 @@ augroup END
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " defx somewhat annoyingly doesn't provide any default mappings. I copy-pasted
 " this example config from :help defx and modified it.
-function! s:defx_my_settings() abort
+function! s:defx_my_settings() abort "{{{2
   " Define mappings
-  nnoremap <silent><buffer><expr> <CR>
-	\ defx#do_action('open')
-  nnoremap <silent><buffer><expr> c
-	\ defx#do_action('copy')
-  nnoremap <silent><buffer><expr> m
-	\ defx#do_action('move')
-  nnoremap <silent><buffer><expr> p
-	\ defx#do_action('paste')
-  nnoremap <silent><buffer><expr> l
-	\ defx#do_action('open')
-  nnoremap <silent><buffer><expr> E
-	\ defx#do_action('open', 'vsplit')
-  nnoremap <silent><buffer><expr> P
-	\ defx#do_action('open', 'pedit')
-  nnoremap <silent><buffer><expr> o
-	\ defx#do_action('open_or_close_tree')
-  nnoremap <silent><buffer><expr> K
-	\ defx#do_action('new_directory')
-  nnoremap <silent><buffer><expr> N
-	\ defx#do_action('new_file')
-  nnoremap <silent><buffer><expr> M
-	\ defx#do_action('new_multiple_files')
-  nnoremap <silent><buffer><expr> C
-	\ defx#do_action('toggle_columns',
-	\                'mark:indent:icon:filename:type:size:time')
-  nnoremap <silent><buffer><expr> S
-	\ defx#do_action('toggle_sort', 'time')
-  nnoremap <silent><buffer><expr> d
-	\ defx#do_action('remove')
-  nnoremap <silent><buffer><expr> r
-	\ defx#do_action('rename')
-  nnoremap <silent><buffer><expr> !
-	\ defx#do_action('execute_command')
-  nnoremap <silent><buffer><expr> x
-	\ defx#do_action('execute_system')
-  nnoremap <silent><buffer><expr> yy
-	\ defx#do_action('yank_path')
-  nnoremap <silent><buffer><expr> .
-	\ defx#do_action('toggle_ignored_files')
-  nnoremap <silent><buffer><expr> ;
-	\ defx#do_action('repeat')
-  nnoremap <silent><buffer><expr> h
-	\ defx#do_action('cd', ['..'])
-  nnoremap <silent><buffer><expr> ~
-	\ defx#do_action('cd')
-  nnoremap <silent><buffer><expr> q
-	\ defx#do_action('quit')
-  nnoremap <silent><buffer><expr> <Space>
-	\ defx#do_action('toggle_select') . 'j'
-  nnoremap <silent><buffer><expr> *
-	\ defx#do_action('toggle_select_all')
-  nnoremap <silent><buffer><expr> j
-	\ line('.') == line('$') ? 'gg' : 'j'
-  nnoremap <silent><buffer><expr> k
-	\ line('.') == 1 ? 'G' : 'k'
-  nnoremap <silent><buffer><expr> <C-l>
-	\ defx#do_action('redraw')
-  nnoremap <silent><buffer><expr> <C-g>
-	\ defx#do_action('print')
-  nnoremap <silent><buffer><expr> cd
-	\ defx#do_action('change_vim_cwd')
-  call defx#custom#option('_', {
-	\ 'columns': 'mark:indent:icon:filename:type:size:time',
-	\ })
-  call defx#custom#column('time', {
-	\ 'format': '%Y-%m-%d %I:%M %p',
-	\ })
+  nnoremap <silent><buffer><expr> <CR>    defx#do_action('open')
+  nnoremap <silent><buffer><expr> c       defx#do_action('copy')
+  nnoremap <silent><buffer><expr> m       defx#do_action('move')
+  nnoremap <silent><buffer><expr> p       defx#do_action('paste')
+  nnoremap <silent><buffer><expr> l       defx#do_action('open')
+  nnoremap <silent><buffer><expr> E       defx#do_action('open', 'vsplit')
+  nnoremap <silent><buffer><expr> P       defx#do_action('open', 'pedit')
+  nnoremap <silent><buffer><expr> o       defx#do_action('open_or_close_tree')
+  nnoremap <silent><buffer><expr> K       defx#do_action('new_directory')
+  nnoremap <silent><buffer><expr> N       defx#do_action('new_file')
+  nnoremap <silent><buffer><expr> M       defx#do_action('new_multiple_files')
+  nnoremap <silent><buffer><expr> C       defx#do_action('toggle_columns', 'mark:indent:icon:filename:type:size:time')
+  nnoremap <silent><buffer><expr> S       defx#do_action('toggle_sort', 'time')
+  nnoremap <silent><buffer><expr> d       defx#do_action('remove')
+  nnoremap <silent><buffer><expr> r       defx#do_action('rename')
+  nnoremap <silent><buffer><expr> !       defx#do_action('execute_command')
+  nnoremap <silent><buffer><expr> x       defx#do_action('execute_system')
+  nnoremap <silent><buffer><expr> yy      defx#do_action('yank_path')
+  nnoremap <silent><buffer><expr> .       defx#do_action('toggle_ignored_files')
+  nnoremap <silent><buffer><expr> ;       defx#do_action('repeat')
+  nnoremap <silent><buffer><expr> h       defx#do_action('cd', ['..'])
+  nnoremap <silent><buffer><expr> ~       defx#do_action('cd')
+  nnoremap <silent><buffer><expr> q       defx#do_action('quit')
+  nnoremap <silent><buffer><expr> <Space> defx#do_action('toggle_select') . 'j'
+  nnoremap <silent><buffer><expr> *       defx#do_action('toggle_select_all')
+  nnoremap <silent><buffer><expr> j       line('.') == line('$') ? 'gg' : 'j'
+  nnoremap <silent><buffer><expr> k       line('.') == 1 ? 'G' : 'k'
+  nnoremap <silent><buffer><expr> <C-l>   defx#do_action('redraw')
+  nnoremap <silent><buffer><expr> <C-g>   defx#do_action('print')
+  nnoremap <silent><buffer><expr> C       defx#do_action('change_vim_cwd')
+
+  call defx#custom#option('_',    { 'columns': 'mark:indent:icon:filename:type:size:time' })
+  call defx#custom#column('time', { 'format':  '%Y-%m-%d %I:%M %p'                        })
+
 endfunction
 
-function! s:open_defx_if_directory() abort
+function! s:open_defx_if_directory() abort "{{{2
   " This throws an error if the buffer name contains unusual characters like
   " [[buffergator]]. Desired behavior in those scenarios is to consider the
   " buffer not to be a directory.
@@ -1012,7 +979,8 @@ function! s:open_defx_if_directory() abort
   endif
 endfunction
 
-augroup defx_config
+augroup defx_config "{{{2
+
   autocmd!
   autocmd FileType defx call s:defx_my_settings()
 
@@ -1020,6 +988,7 @@ augroup defx_config
   " get it to fire. BufEnter seems to be more reliable.
   autocmd BufEnter * call s:open_defx_if_directory()
 augroup END
+" }}}2
 
 " netrw apparently has a similar callback, because sometimes netrw opens instead
 " of defx! According to https://stackoverflow.com/a/21687112/2338327, this
@@ -1033,7 +1002,7 @@ nnoremap <silent> -
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" => findroot {{{1
+" => mattn/vim-findroot {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " If you allow changing directory that goes up from sub-directory:
@@ -1043,7 +1012,6 @@ let g:findroot_patterns = [
       \  '.svn/',
       \  '.hg/',
       \  '.bzr/',
-      \  '.gitignore',
       \  'Rakefile',
       \  'pom.xml',
       \  'project.clj',
@@ -1333,10 +1301,16 @@ let g:neoterm_autoinsert = 1
 
 augroup neoterm
   autocmd!
-  au TermEnter * set scrolloff=0
+  autocmd TermEnter * set scrolloff=0
+  " When I open a terminal buffer, I want it to feel like I'm in the terminal. I
+  " don't want to still be in normal mode.
+  autocmd TermOpen  * startinsert
 augroup END
 
 tnoremap <Esc> <C-\><C-n>
+
+" Works greate with nvr
+" https://github.com/mhinz/neovim-remote
 
 " Can't use this. This is unfocus the fzf floating window
 " tnoremap <C-h> <C-\><C-N><C-w>h
@@ -1413,7 +1387,7 @@ let g:rainbow_conf = {
 		  \}
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => signature (Improve Marks) {{{1
+" => signature (Improve Vim Marks) {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 " mx           Toggle mark 'x' and display it in the leftmost column
@@ -1629,8 +1603,8 @@ function! g:VIM_lisp_mappings()  "{{{2
   " nmap <silent><buffer> <LocalLeader>h  <Plug>(sexp_insert_at_list_head)
   " nmap <silent><buffer> <LocalLeader>l  <Plug>(sexp_insert_at_list_tail)
   " Using keybinding is faster than switch to insert in code
-  nmap <silent><buffer> <LocalLeader>h  Ha
-  nmap <silent><buffer> <LocalLeader>l  Li
+  " nmap <silent><buffer> <LocalLeader>h  Ha
+  " nmap <silent><buffer> <LocalLeader>l  Li
   nmap <silent><buffer> I  Ha
   nmap <silent><buffer> A  Li
   nmap <silent><buffer> I  <Plug>(sexp_insert_at_list_head)
@@ -1649,7 +1623,7 @@ function! g:VIM_lisp_mappings()  "{{{2
   imap <silent><buffer> <C-right>       <esc><Plug>(sexp_capture_next_element)i
 
 
-  nnoremap gca i#_<esc>
+  nnoremap gca I#_<esc>
 
 
 endfunction
@@ -2079,6 +2053,12 @@ let g:which_key_floating_opts = { 'row': '0', 'col': '-10', 'height': '+0', 'wid
 " Plug 'pedrohdz/vim-yaml-folds'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+" => wesQ3/vim-windowswap {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:windowswap_map_keys = 0
+
 
 " => 000 Sample {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
