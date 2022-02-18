@@ -1,0 +1,5 @@
+require('funcs.global')
+LoadAllPlug( 'plugin_settings')
+R('autocmd')
+R('settings')
+-- print('lua core loaded')

@@ -1,52 +1,40 @@
 {
+  // diagnostic-languageserver
   "diagnostic.virtualText": true,
   "diagnostic.checkCurrentLine": true,
 
-  // diagnostic-languageserver
   "diagnostic-languageserver.filetypes": {
-    "sh": "shellcheck",
-    "vim": "vint",
+    // "sh": "shellcheck",
+    // "vim": "vint",
     "markdown": [ "write-good", "markdownlint" ]
   },
   "diagnostic-languageserver.formatFiletypes": {
     "python": ["black", "isort"],
-    "sh": "shfmt"
+    // "sh": "shfmt"
   },
+
   "languageserver": {
-    "bashServer": {
-      "command": "bash-language-server",
-      "args": [
-        "start"
-      ],
-      "trace.server": "verbose",
-      "filetypes": [
-        "sh", "zsh"
-      ],
-      "ignoredRootPaths": [
-        "~"
-      ]
-    },
-    "clojure-lsp": {
-      "command": "clojure-lsp",
-      "filetypes": ["clojure"],
-      "disableDiagnostics": false,
-      "rootPatterns": ["deps.edn", "project.clj"],
-      "additionalSchemes": ["jar", "zipfile"],
-      "trace.server": "verbose",
-      "initializationOptions": {
-        "ignore-classpath-directories": true
-      }
-    }
+    // "clojure-lsp": {
+    //   "command": "clojure-lsp",
+    //   "filetypes": ["clojure"],
+    //   "disableDiagnostics": false,
+    //   "rootPatterns": ["deps.edn", "project.clj"],
+    //   "additionalSchemes": ["jar", "zipfile"],
+    //   "trace.server": "verbose",
+    //   "initializationOptions": {
+    //     "ignore-classpath-directories": true
+    //   }
+    // }
   },
   "codeLens.enable": false,
   "suggest.removeDuplicateItems": true,
   "coc.preferences.formatOnSaveFiletypes": [
-    "css",
+    // "css",
     // "markdown",
-    "javascript",
-    "graphql",
-    "html",
-    "yaml"
+    // "javascript",
+    // "graphql",
+    // "html",
+    // "yaml"
   ],
 
   // explorer
@@ -63,14 +51,17 @@
   },
   "coc.preferences.extensionUpdateCheck": "daily",
   "coc.preferences.useQuickfixForLocations": true,
+
   "suggest.snippetIndicator": "🍦",
 
-  // python config
-  "python.linting.enabled": true,
-  "python.linting.pylintEnabled": true,
-
   // COC pyright
-  "pyright.enable": true,
+  // :CocInstall coc-pyright
+  // https://github.com/fannheyward/coc-pyright
+  "pyright.enable": false,
+  // linting is part of coc-pyright
+  "python.linting.enabled": false,
+  "python.linting.pylintEnabled": true,
+  "python.linting.pylamaEnabled": false,
 
   // COC jedi
   // wrapper for Python's jedi-language-server.

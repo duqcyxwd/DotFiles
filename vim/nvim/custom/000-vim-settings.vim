@@ -32,7 +32,7 @@ set laststatus=2                " Always show the status line
 set lazyredraw                  " Don't redraw while executing macros (good performance config)
 set matchtime=2                 " How many tenths of a second to blink when matching brackets
 set mouse=a
-set noautochdir                 " no auto dir
+set noautochdir                 " Dont' change dir so we can use project search
 set noerrorbells                " No annoying sound on errors
 set nojoinspaces                " No extra space when join line
 set nonumber                    " No line numbers to start
@@ -46,7 +46,7 @@ set showcmd
 set showmatch                   " Show matching brackets when text indicator is over them
 set smartcase                   " When searching try to be smart about cases
 set startofline                 " When "on" the commands listed below move the cursor to the first non-blank of the line.
-set timeoutlen=250              " The default timeoutlen is 1000 ms.
+set timeoutlen=500              " The default timeoutlen is 1000 ms.
 set updatetime=250
 " set viminfo^=%                  " Remember info about open buffers on close, will reopen buffer Replaced with shada
 set visualbell

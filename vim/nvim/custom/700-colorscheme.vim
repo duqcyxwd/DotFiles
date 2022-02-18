@@ -33,6 +33,11 @@ function! s:DarkMode() abort
   colorscheme dracula
   let g:airline_theme='dracula'
 
+  " " Hack: Call plug dracula twice to get color right....
+  " call plug#begin('$XDG_DATA_HOME/nvim-plug')
+  " Plug 'dracula/vim', { 'as': 'dracula' }
+  " call plug#end()
+
 endfunction
 command! DarkMode call s:DarkMode()
 

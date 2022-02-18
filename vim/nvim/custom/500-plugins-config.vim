@@ -249,16 +249,6 @@ let g:highlightedyank_highlight_duration = 250
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-"" => LanguageClient {{{1
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" https://github.com/autozimu/LanguageClient-neovim
-let g:LanguageClient_serverCommands = {
-    \ 'clojure': ['bash', '/usr/local/bin/clojure-lsp'],
-    \ 'sh': ['bash-language-server', 'start']
-    \ }
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => lightline {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:lightline = {
@@ -608,43 +598,59 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => coc  {{{1
+" => COC  {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 let g:coc_config_home = '$XDG_CONFIG_HOME/vim'
 let g:coc_data_home = '$XDG_DATA_HOME/coc'
 
 
-" TextEdit might fail if hidden is not set.
-set hidden
-
-" Some servers have issues with backup files, see #649.
-set nobackup
-set nowritebackup
-
-" Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
-" delays and poor user experience.
-set updatetime=300
-
-" Don't pass messages to |ins-completion-menu|.
-set shortmess+=c
-
-" Always show the signcolumn, otherwise it would shift the text each time
-" diagnostics appear/become resolved.
-if has("patch-8.1.1564")
-  " Recently vim can merge signcolumn and number column into one
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
-
+" COC Settings
 if exists('g:plugs["coc.nvim"]')
+  " TextEdit might fail if hidden is not set.
+  set hidden
+
+  " Some servers have issues with backup files, see #649.
+  set nobackup
+  set nowritebackup
+
+  " Having longer updatetime (default is 4000 ms = 4 s) leads to noticeable
+  " delays and poor user experience.
+  set updatetime=300
+
+  " Don't pass messages to |ins-completion-menu|.
+  set shortmess+=c
+
+  " Always show the signcolumn, otherwise it would shift the text each time
+  " diagnostics appear/become resolved.
+  if has("patch-8.1.1564")
+    " Recently vim can merge signcolumn and number column into one
+    set signcolumn=number
+  else
+    set signcolumn=yes
+  endif
 
   function! ToggleCoc() abort
     if len(coc#status()) == 0
       execute 'CocEnable'
     else
       execute 'CocDisable'
+    endif
+  endfunction
+
+endif
+
+" COC Mapping
+if exists('g:plugs["bad"]')
+" if exists('g:plugs["coc.nvim--bad"]')
+
+  function! s:show_documentation()
+    if (index(['vim','help'], &filetype) >= 0)
+      execute 'h '.expand('<cword>')
+    elseif (coc#rpc#ready())
+      call CocActionAsync('doHover')
+    else
+      execute '!' . &keywordprg . " " . expand('<cword>')
     endif
   endfunction
 
@@ -670,16 +676,6 @@ if exists('g:plugs["coc.nvim"]')
     inoremap <silent><expr> <c-@> coc#refresh()
   endif
 
-  function! s:show_documentation()
-    if (index(['vim','help'], &filetype) >= 0)
-      execute 'h '.expand('<cword>')
-    elseif (coc#rpc#ready())
-      call CocActionAsync('doHover')
-    else
-      execute '!' . &keywordprg . " " . expand('<cword>')
-    endif
-  endfunction
-
   " NOT WORKing
   " " Make <CR> auto-select the first completion item and notify coc.nvim to
   " " format on enter, <cr> could be remapped by other vim plugin
@@ -700,7 +696,6 @@ if exists('g:plugs["coc.nvim"]')
 
   " Use K to show documentation in preview window.
   nnoremap <silent> K :call <SID>show_documentation()<CR>
-  nnoremap <silent> <Space>cd :call <SID>show_documentation()<CR>
 
   " Highlight the symbol and its references when holding the cursor.
   " TODO Enable this
@@ -751,10 +746,10 @@ if exists('g:plugs["coc.nvim"]')
     vnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
   endif
 
-  " Use CTRL-S for selections ranges.
-  " Requires 'textDocument/selectionRange' support of language server.
-  nmap <silent> <C-s> <Plug>(coc-range-select)
-  xmap <silent> <C-s> <Plug>(coc-range-select)
+  " " Use CTRL-S for selections ranges.
+  " " Requires 'textDocument/selectionRange' support of language server.
+  " nmap <silent> <C-s> <Plug>(coc-range-select)
+  " xmap <silent> <C-s> <Plug>(coc-range-select)
 
   " " Add `:Format` command to format current buffer.
   " command! -nargs=0 Format :call CocAction('format')
@@ -1086,7 +1081,7 @@ let $FZF_DEFAULT_OPTS .= " --bind 'ctrl-p:up' --bind 'ctrl-n:down' "
 
 " Customize fzf colors to match your color scheme
 " - fzf#wrap translates this to a set of `--color` options
-let g:fzf_colors = 
+let g:fzf_colors =
       \ { 'fg':      ['fg', 'Normal'],
       \ 'bg':      ['bg', 'Normal'],
       \ 'hl':      ['fg', 'Comment'],
@@ -2016,7 +2011,7 @@ augroup markdown
   autocmd!
   autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
 	\ setlocal foldmethod=expr |
-	\ echom 'fileType markdown' | 
+	\ echom 'fileType markdown' |
   \ setlocal conceallevel=2
 
   " autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
@@ -2064,68 +2059,3 @@ let g:windowswap_map_keys = 0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => WIP Tree sitter Sample {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if exists('g:plugs["nvim-treesitter"]')
-  lua <<EOF
-  require'nvim-treesitter.configs'.setup {
-  ensure_installed = "maintained",                             -- one of "all", "maintained" (parsers with maintainers), or a list of languages
-  ignore_install = { "javascript", "zsh", "vim", "bash" },     -- List of parsers to ignore installing
-  highlight = {
-  enable = true,                                               -- false will disable the whole extension
-  disable = { "c", "rust", "vim", "clojure", "bash", "zsh" },  -- list of language that will be disabled
-  },
-}
-EOF
-
-endif
-
-
-
-" => LSP pyright {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" lua << EOF
-" require'lspconfig'.pyright.setup{}
-" EOF
-
-" lua << EOF
-" local nvim_lsp = require('lspconfig')
-" -- Use an on_attach function to only map the following keys
-" -- after the language server attaches to the current buffer
-" local on_attach = function(client, bufnr)
-"   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-"   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-"   --Enable completion triggered by <c-x><c-o>
-"   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-"   -- Mappings.
-"   local opts = { noremap=true, silent=true }
-"   -- See `:help vim.lsp.*` for documentation on any of the below functions
-"   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-"   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-"   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
-"   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-"   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
-"   buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-"   buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-"   buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-"   buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-"   buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-"   buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-"   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-"   buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
-"   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
-"   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
-"   buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-"   buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
-" end
-" -- Use a loop to conveniently call 'setup' on multiple servers and
-" -- map buffer local keybindings when the language server attaches
-" local servers = { "pyright", "rust_analyzer", "tsserver" }
-" for _, lsp in ipairs(servers) do
-"   nvim_lsp[lsp].setup { on_attach = on_attach }
-" end
-" EOF

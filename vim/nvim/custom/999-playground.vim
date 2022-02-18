@@ -38,6 +38,4 @@ function! g:Meow()
 endfunction
 
 
-command! CDC cd %:p:h             " CDC = Change to Directory of Current file
-
 " map <Leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>

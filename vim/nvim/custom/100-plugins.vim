@@ -30,8 +30,9 @@ Plug 'cormacrelf/vim-colors-github'
 " Plug 'bhurlow/vim-parinfer'
 " Plug 'vim-scripts/paredit.vim'
 
-" Plug 'clojure-vim/acid.nvim'|                      "Asynchronous Clojure Interactive Development
-Plug '~/duqcyxwd/conjure'
+" Plug 'clojure-vim/acid.nvim'|                        "Asynchronous Clojure Interactive Development
+Plug 'Olical/conjure',  { 'for': 'clojure' }           " Add for lazy loading
+" Plug '~/duqcyxwd/conjure',  { 'for': 'clojure' }     " Add for lazy loading
 
 " Plug 'guns/vim-clojure-static'
 Plug 'clojure-vim/clojure.vim'|                      " Replace guns/vim-clojure-static, code style
@@ -42,8 +43,8 @@ Plug '~/duqcyxwd/vim-sexp'                           " My version of vim-sexp
 
 
 " Interesting tag jumping!
-Plug 'tpope/vim-fireplace'
-Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }    " uses a vim-fireplace REPL connection to only format the current file
+Plug 'tpope/vim-fireplace',  { 'for': 'clojure' }
+Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }|   " uses a vim-fireplace REPL connection to only format the current file
 Plug 'luochen1990/rainbow'
 
 " VimWiki with Markdown {{{1
@@ -64,13 +65,13 @@ Plug 'plasticboy/vim-markdown'                      " A better markdown plugin
 
 " Git {{{1
 " ------------------------------------------------------------------------------
-Plug 'jreybert/vimagit'                                "viMagit to stage changes
+Plug 'jreybert/vimagit'                                " ViMagit to stage changes
 Plug 'lambdalisue/gina.vim'
-Plug 'tpope/vim-fugitive'|                             "Raw git command, Gblame
-Plug 'shumphrey/fugitive-gitlab.vim'|                  "Open gitlab link
-Plug 'tpope/vim-rhubarb'                               "Open github link
-Plug 'airblade/vim-gitgutter'|                         "shows a git diff in the sign column
-Plug 'junegunn/gv.vim'|                                "A git commit browser.
+Plug 'tpope/vim-fugitive'|                             " Raw git command, Gblame
+Plug 'shumphrey/fugitive-gitlab.vim'|                  " Open gitlab link
+Plug 'tpope/vim-rhubarb'                               " Open github link
+Plug 'airblade/vim-gitgutter'|                         " shows a git diff in the sign column
+Plug 'junegunn/gv.vim'|                                " A git commit browser.
 
 
 
@@ -78,16 +79,14 @@ Plug 'junegunn/gv.vim'|                                "A git commit browser.
 " ------------------------------------------------------------------------------
 
 Plug 'AndrewRadev/undoquit.vim'
-Plug 'jeetsukumaran/vim-buffergator'|                " open a window listing all buffers
+Plug 'jeetsukumaran/vim-buffergator'|                       " open a window listing all buffers
 Plug 'jiangmiao/auto-pairs'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --all' }
 Plug '~/duqcyxwd/fzf.vim'
 " Plug 'junegunn/fzf.vim'
-" Plug 'duqcyxwd/fzf.vim'|                           " My quick fix for fzf vim
-" WIP
+" Plug 'duqcyxwd/fzf.vim'|                                  " My quick fix for fzf vim
 Plug 'ibhagwan/fzf-lua'
-" optional for icon support
-Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-web-devicons'                         " optional for icon support
 
 Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }|  " File browser
 Plug 'junegunn/limelight.vim'
@@ -113,8 +112,7 @@ Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'tpope/vim-endwise'|                                   " Add endif endfunction for some language
 " Somehow it cause problem on exists
 " Plug 'ludovicchabant/vim-gutentags'|               "Good way to generate tags
-
-
+"
 " Telescope
 " Plug 'nvim-lua/popup.nvim'|                        "required by telescope
 " Plug 'nvim-lua/plenary.nvim'|                      "required by telescope
@@ -124,6 +122,17 @@ Plug 'tpope/vim-endwise'|                                   " Add endif endfunct
 " Align text
 Plug 'godlygeek/tabular'
 Plug 'junegunn/vim-easy-align'
+
+" Completion {{{1
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+
+" For vsnip users.
+Plug 'hrsh7th/cmp-vsnip'
+Plug 'hrsh7th/vim-vsnip'
 
 " Languages/Filetypes {{{1
 " ------------------------------------------------------------------------------
@@ -165,15 +174,12 @@ Plug 'tyru/open-browser.vim'
 Plug 'wesQ3/vim-windowswap'
 Plug 'Olical/aniseed'
 
-let g:conjure#mapping#doc_word = v:false
-
 
 " https://medium.com/prodhacker/how-to-set-up-neovim-0-5-modern-plugins-lsp-treesitter-etc-542c3d9c9887
 Plug 'neovim/nvim-lspconfig'
-Plug 'glepnir/lspsaga.nvim'
+" Plug 'glepnir/lspsaga.nvim'
+Plug 'tami5/lspsaga.nvim'
 Plug 'nvim-lua/lsp-status.nvim'
-Plug 'nvim-lua/completion-nvim'
-" TODO change to nvim-cmp or coq_nvim.
 
 " WIP
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " Better syntax highlight

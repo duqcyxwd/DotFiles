@@ -39,6 +39,8 @@ let g:which_key_map_space = {}
 " vnoremap <silent> g             :<c-u>WhichKeyVisual 'g'<CR>
 
 
+let g:which_key_map_space.L = { 'name' : '+LSP' }
+let g:which_key_map_space.S = { 'name' : '+Source' }
 let g:which_key_map_space.b = { 'name' : '+buffers' }
 let g:which_key_map_space.c = { 'name' : '+COC' }
 let g:which_key_map_space.e = { 'name' : '+Edit' }
@@ -46,11 +48,11 @@ let g:which_key_map_space.f = { 'name' : '+file/format' }
 let g:which_key_map_space.g = { 'name' : '+Git' }
 let g:which_key_map_space.h = { 'name' : '+Help' }
 let g:which_key_map_space.j = { 'name' : '+Jump' }
+let g:which_key_map_space.l = { 'name' : '+lsp' }
 let g:which_key_map_space.p = { 'name' : '+Projects/Packages' }
 let g:which_key_map_space.q = { 'name' : '+Quit' }
 let g:which_key_map_space.r = { 'name' : '+Run' }
 let g:which_key_map_space.s = { 'name' : '+Search' }
-let g:which_key_map_space.S = { 'name' : '+Source' }
 let g:which_key_map_space.t = { 'name' : '+Togglers' }
 let g:which_key_map_space.w = { 'name' : '+Windows' }
 let g:which_key_map_space.z = { 'name' : '+Mix' }
@@ -160,6 +162,11 @@ call s:nmap_cmd_2('f', 's', 'Save current file',                  ':mkview<CR>:w
 call s:map_cmd_2('nnoremap', 'w', 'o', 'FZF Open Files', ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('n'))<CR>")
 call s:map_cmd_2('vnoremap', 'w', 'o', 'FZF Open Files', ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('v'))<CR>")
 
+
+call s:map_cmd_2('nnoremap', 'f', 'o', 'FZF Open Files', ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('n'))<CR>")
+call s:map_cmd_2('vnoremap', 'f', 'o', 'FZF Open Files', ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('v'))<CR>")
+
+
 " Check whne to use SafeFzfQuery
 " let which_key_map_space.w.o = 'FZF search current file'
 " nnoremap <silent> <Space>wo :execute  ':MyFzfFiles ' . SafeFzfQuery(expand('<cfile>'))<CR>
@@ -213,8 +220,6 @@ call s:map_cmd_3('nnoremap', 'h', 'k', 'd', 'Debug Key Maps',    ':verbose map '
 nnoremap <Space>hkD :execute "enew\| pu=execute('verbos map')"
 
 
-call s:nmap_cmd_2('p', 'u', 'Plug Update',   ':execute "tabnew\| PlugUpdate"')
-
 " :enew|pu=execute('verbose map')
 
 
@@ -234,12 +239,25 @@ call s:nmap_cmd_2('j', 'l', 'Hop Jump Line',           ':HopLineStart')
 call s:map_cmd_2('nnoremap', 'j', 'j', 'FZF Jump jumps', ":FzfLua jumps<CR>")
 call s:map_cmd_2('nnoremap', 'j', 'm', 'FZF Jump marks', ":FzfLua marks<CR>")
 
+" [SpaceMapping] L+: LSP {{{1
+" ------------------------------------------------------------------------------
+
+call s:nmap_cmd_2('L', 'S', 'LSP Stop',           ':LspStop')
+call s:nmap_cmd_2('L', 'R', 'LSP Restart',        ':LspRestart')
+call s:nmap_cmd_2('L', 'G', 'LSP Start',          ':LspStart')
+call s:nmap_cmd_2('L', 'I', 'LSP Info',           ':LspInfo')
+call s:nmap_cmd_2('l', 'd', 'LSP Info',           ':LspInfo')
+call s:nmap_cmd_2('l', 'd', 'toggle diagnostics', '<Cmd>lua vim.diagnostic.toggle()')
+
 " [SpaceMapping] p+: Project/Install {{{1
 " ------------------------------------------------------------------------------
 
+" call s:nmap_cmd_2('p', 'i', 'Plug Install',                    ':execute "tabnew\| PlugInstall"')
+" call s:nmap_cmd_2('p', 'u', 'Plug Update',                     ':execute "tabnew\| PlugUpdate"')
+
 call s:nmap_cmd_2('p', 'f', 'Project files',                   ':FFFiles')
-call s:nmap_cmd_2('p', 'i', 'Plug Install',                    ':execute "tabnew\| PlugInstall"')
-call s:nmap_cmd_2('p', 'u', 'Plug Update',                     ':execute "tabnew\| PlugUpdate"')
+call s:nmap_cmd_2('p', 'i', 'Plug Install',                    ':PlugInstall')
+call s:nmap_cmd_2('p', 'u', 'Plug Update',                     ':PlugUpdate')
 call s:nmap_cmd_2('p', 'o', 'Plugin main page open in Github', ':call OpenGithubPlugin()')
 
 " [SpaceMapping] q+: Quit {{{1
@@ -343,7 +361,10 @@ call s:nmap_cmd_2('t', 'm', 'Color: Dark/Light Mode',                ':ToggleCol
 call s:nmap_cmd_2('t', 'M', 'Color: FZF Schema',                     ':FzfLua colorschemes')
 call s:nmap_cmd_2('t', 't', 'Toggle 80 text width',                  ':call ToggleTextWidth()')
 call s:nmap_cmd_2('t', 'T', 'TagbarToggle',                          ':TagbarToggle')
+call s:nmap_cmd_2('t', 'd', 'toggle diagnostics',                    '<Cmd>lua vim.diagnostic.toggle()')
+"
 " call s:nmap_cmd_2('t', 't', 'call ToggleHighlightCharacterOver80()',       ':Toggle 80 text width')
+
 
 " Fold method {{{2
 let g:which_key_map_space.t.f = { 'name' : 'Fold+' }
@@ -379,6 +400,7 @@ call s:nmap_cmd_2('w', 'u', 'Undoquit Window',         ':Undoquit')
 call s:nmap_cmd_2('w', 'q', 'Write and quit',          ':wq')
 call s:nmap_cmd_2('w', 'w', 'VimWiki Index Page',      ':e ~/vimwiki/index.md')
 call s:nmap_cmd_2('w', 's', 'Window Swap',             ':call WindowSwap#EasyWindowSwap()')
+call s:nmap_cmd_2('w', 'n', 'Open Window in new tab',  ':tabedit %')
 
 
 
@@ -435,8 +457,13 @@ nmap <Space>7 <Plug>AirlineSelectTab7
 nmap <Space>8 <Plug>AirlineSelectTab8
 nmap <Space>9 <Plug>AirlineSelectTab9
 
+vnoremap <silent> <C-Space> :lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>
+vnoremap <silent> -         :lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>
 
+vnoremap J :move '<+1<CR>gv-gv
+vnoremap K :move '<-2<CR>gv-gv
 
+    " {'K', ':move \'<-2<CR>gv-gv'},
 " [Other Keys] mappings {{{1
 "--------------------------------------------------------------------------
 
