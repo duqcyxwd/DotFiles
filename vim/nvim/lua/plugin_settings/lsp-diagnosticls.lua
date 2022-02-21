@@ -1,6 +1,5 @@
 local mapping = require("plugin_settings.mapping")
 
-
 -- Config {{{1
 require("lspconfig").diagnosticls.setup({
 	on_attach = mapping.lsp_on_attach,
@@ -107,7 +106,8 @@ require("lspconfig").diagnosticls.setup({
 				command = "stylua",
 				isStdout = true,
 				doesWriteToFile = false,
-				args = { "%file" },
+				-- args = {"--config-path $XDG_CONFIG_HOME/stylua/stylua.toml", "%file" },
+				args = { "--search-parent-directories", "%file" },
 			},
 		},
 		formatFiletypes = {

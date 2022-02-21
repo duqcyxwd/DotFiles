@@ -490,7 +490,7 @@ endif
 "
 " => airline {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:airline_theme = 'luna'                         " airline colorscheme
+" let g:airline_theme = 'luna'                         " airline colorscheme
 let g:airline_powerline_fonts = 1                    " Fancy symbols
 let g:airline#extensions#tabline#enabled = 1         " Enable the list of buffers
 " let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
@@ -642,7 +642,7 @@ endif
 
 " COC Mapping
 if exists('g:plugs["bad"]')
-" if exists('g:plugs["coc.nvim--bad"]')
+" if exists('g:plugs["coc.nvim"]')
 
   function! s:show_documentation()
     if (index(['vim','help'], &filetype) >= 0)
@@ -675,13 +675,6 @@ if exists('g:plugs["bad"]')
   else
     inoremap <silent><expr> <c-@> coc#refresh()
   endif
-
-  " NOT WORKing
-  " " Make <CR> auto-select the first completion item and notify coc.nvim to
-  " " format on enter, <cr> could be remapped by other vim plugin
-  " inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-  "                               \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-
 
   " Use `[g` and `]g` to navigate diagnostics
   " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
@@ -735,16 +728,16 @@ if exists('g:plugs["bad"]')
   " xmap ac <Plug>(coc-classobj-a)
   " omap ac <Plug>(coc-classobj-a)
 
-  " Remap <C-f> and <C-b> for scroll float windows/popups.
-  " WIP C-j and C-k
-  if has('nvim-0.4.0') || has('patch-8.2.0750')
-    nnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
-    nnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
-    inoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
-    inoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
-    vnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
-    vnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
-  endif
+  " " Remap <C-f> and <C-b> for scroll float windows/popups.
+  " " WIP C-j and C-k
+  " if has('nvim-0.4.0') || has('patch-8.2.0750')
+  "   nnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
+  "   nnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
+  "   inoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(1)\<cr>" : "\<Right>"
+  "   inoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? "\<c-r>=coc#float#scroll(0)\<cr>" : "\<Left>"
+  "   vnoremap <silent><nowait><expr> <C-j> coc#float#has_scroll() ? coc#float#scroll(1) : "\<C-j>"
+  "   vnoremap <silent><nowait><expr> <C-k> coc#float#has_scroll() ? coc#float#scroll(0) : "\<C-k>"
+  " endif
 
   " " Use CTRL-S for selections ranges.
   " " Requires 'textDocument/selectionRange' support of language server.
@@ -769,10 +762,10 @@ if exists('g:plugs["bad"]')
   nnoremap <silent><nowait> <space>;  :CocAction<cr>
   xnoremap <silent><nowait> <space>;  :CocAction<cr>
 
-  " nnoremap <silent><nowait> <space>:  <Plug>(coc-codeaction-cursor)
-  nmap <silent> <space>:            <Plug>(coc-codeaction-line)
-  vmap <silent> <space>:            <Plug>(coc-codeaction-selected)
-  " nnoremap <leader>ci :CocInfo<CR>
+  " " nnoremap <silent><nowait> <space>:  <Plug>(coc-codeaction-cursor)
+  " nmap <silent> <space>:            <Plug>(coc-codeaction-line)
+  " vmap <silent> <space>:            <Plug>(coc-codeaction-selected)
+  " " nnoremap <leader>ci :CocInfo<CR>
 
   " Remap for do codeAction of selected region, ex: `<leader>aap` for current paragraph
   " vmap <leader>a  <Plug>(coc-codeaction-selected)

@@ -78,6 +78,10 @@ Plug 'junegunn/gv.vim'|                                " A git commit browser.
 " Editor enhancements {{{1
 " ------------------------------------------------------------------------------
 
+
+" Plug 'liuchengxu/vim-which-key'
+Plug 'folke/which-key.nvim'
+
 Plug 'AndrewRadev/undoquit.vim'
 Plug 'jeetsukumaran/vim-buffergator'|                       " open a window listing all buffers
 Plug 'jiangmiao/auto-pairs'
@@ -92,7 +96,6 @@ Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }|  " File browser
 Plug 'junegunn/limelight.vim'
 Plug 'kassio/neoterm'|                                      " Terminal
 Plug 'kshenoy/vim-signature'|                               " A plugin to place, toggle and display marks.
-Plug 'liuchengxu/vim-which-key'
 Plug 'machakann/vim-highlightedyank'|                       " Show highlight for yank
 Plug 'machakann/vim-sandwich'
 Plug 'mbbill/undotree'
@@ -180,6 +183,8 @@ Plug 'neovim/nvim-lspconfig'
 " Plug 'glepnir/lspsaga.nvim'
 Plug 'tami5/lspsaga.nvim'
 Plug 'nvim-lua/lsp-status.nvim'
+
+Plug 'norcalli/nvim_utils'
 
 " WIP
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " Better syntax highlight

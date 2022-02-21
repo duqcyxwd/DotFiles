@@ -60,7 +60,6 @@ endfunction
 
 " autocmd! BufWritePost vim call ReloadVimrc()
 
-" WIP
 let s:autoVimSourceEnabled = 0
 function! ToggleAutoVimSource()
   if s:autoVimSourceEnabled
@@ -207,6 +206,7 @@ function! g:ModeTestFn(mode) abort " {{{2
   endif
 endfunction
 
+
 " Mapping {{{2
 nnoremap <silent> <Plug>(mytestFn) :<C-u>call TestFn('n')<CR>
 xnoremap <silent> <Plug>(mytestFn) :<C-u>call TestFn('v')<CR>
@@ -215,9 +215,53 @@ xnoremap <silent> <Plug>(mytestFn) :<C-u>call TestFn('v')<CR>
 
 "}}}2
 
+function! g:Show_documentation() "{{{1
+  " Show vim regular docs
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
 
 " }}}1
 
+
+" MyFzfLua {{{1
+let s:TYPE = {'dict': type({}), 'funcref': type(function('call')), 'string': type(''), 'list': type([])}
+function! s:LuaBlines(query, ...) abort  "{{{2
+  if empty(a:query)
+      lua require('fzf-lua').lines({ current_buffer_only = true })
+  else
+      execute "lua require('fzf-lua').lines({ search = '" . a:query . " ', current_buffer_only = true })"
+  endif
+endfunction
+
+function! s:LuaLines(query, ...) abort  "{{{2
+  if empty(a:query)
+      lua require('fzf-lua').lines()
+  else
+      execute "lua require('fzf-lua').lines({ search = '" . a:query . " '})"
+  endif
+endfunction
+
+function! s:LuaGrep(query, ...) abort  "{{{2
+  if empty(a:query)
+      lua require('fzf-lua').grep()
+  else
+      execute "lua require('fzf-lua').grep({ search = '" . a:query . " '})"
+  endif
+endfunction
+" }}}2
+
+" Writing above functions to handle optional parameter. There is a easy way if I don't want to worry about optional parameter
+" For example:  command! -nargs=1 MyFzfLuaGrep lua require('fzf-lua').grep({ search = <f-args> })
+
+command! -nargs=* MyFzfLuaLines  call s:LuaLines(<q-args>)
+command! -nargs=* MyFzfLuaBlines call s:LuaBlines(<q-args>)
+command! -nargs=* MyFzfLuaGrep   call s:LuaGrep(<q-args>)
+
+" }}}1
 
 " COMMAND
 " -------------------------------------------------------------------------------

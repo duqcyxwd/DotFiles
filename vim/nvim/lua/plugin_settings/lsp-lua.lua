@@ -6,7 +6,7 @@ local mapping = require("plugin_settings.mapping")
 -- end
 
 require("lspconfig").sumneko_lua.setup({
-	on_attach = mapping.lsp_on_attach,
+	on_attach = mapping.lsp_on_attach_power,
 	capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
 	settings = {
 		Lua = {

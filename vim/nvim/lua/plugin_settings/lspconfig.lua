@@ -34,7 +34,7 @@ for _, lsp in pairs(servers) do
 	local not_created = not nvim_lsp[lsp].commands_created
 	if not_created then
 		nvim_lsp[lsp].setup({
-			on_attach = mapping.lsp_on_attach,
+			on_attach = mapping.lsp_on_attach_power,
 			handlers = handlers,
 			capabilities = capabilities,
 		})
