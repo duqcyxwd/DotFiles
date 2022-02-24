@@ -31,6 +31,7 @@ function! s:DarkMode() abort
   " Hack: Call colorschem twice to get correct corlor
   colorscheme dracula
   colorscheme dracula
+  highlight Visual  guifg=White
   let g:airline_theme='dracula'
 
   " " Hack: Call plug dracula twice to get color right....

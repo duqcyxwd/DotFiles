@@ -1,7 +1,8 @@
+require('funcs.global')
 local M = {}
 
 M.config = function()
-	local lspsaga = require("lspsaga")
+	local lspsaga = SR("lspsaga")
 	lspsaga.setup({ -- defaults ...
 		debug = false,
 		use_saga_diagnostic_sign = true,

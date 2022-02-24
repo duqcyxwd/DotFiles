@@ -110,7 +110,6 @@ augroup END
 
 function! s:at_help() abort
   if &buftype == 'help'
-    " enable 'q' = quit
     nnoremap <buffer> q :q<CR>
   endif
 endfunction
@@ -181,7 +180,7 @@ augroup clojure_and_hoplon
   autocmd BufNewFile,BufRead  *.html.hl        set filetype=html
 
   " autocmd FileType clojure setlocal foldmethod=indent
-  autocmd FileType clojure setlocal foldmethod=syntax
+  " autocmd FileType clojure setlocal foldmethod=syntax
 
   " Lookup the tag under cursor, accounting for ns
   autocmd FileType clojure nnoremap <buffer> <C-]> :call ClojureTagLookup()<CR>
@@ -251,12 +250,4 @@ augroup alda
 augroup END
 
 
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Vim {{{1
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-augroup VimSource
-  autocmd FileType vim
-        \ autocmd! VimSource BufWritePost <buffer> set foldmethod=marker
-augroup END
 

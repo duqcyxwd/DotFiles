@@ -3,17 +3,6 @@
 
 require('nvim_utils')
 
--- local border = {
---  { "🭽", "FloatBorder" },
---  { "▔", "FloatBorder" },
---  { "🭾", "FloatBorder" },
---  { "▕", "FloatBorder" },
---  { "🭿", "FloatBorder" },
---  { "▁", "FloatBorder" },
---  { "🭼", "FloatBorder" },
---  { "▏", "FloatBorder" },
--- }
-
 local border = {
   { "▔", "FloatBorder" },
   { "▔", "FloatBorder" },
@@ -48,29 +37,15 @@ local diagnostics_enabled = true
 vim.diagnostic.toggle = function()
   if diagnostics_enabled then
     vim.diagnostic.disable()
+    print("Disable diagnostics")
     diagnostics_enabled = false
   else
     vim.diagnostic.enable()
+    print("Enable diagnostics")
     diagnostics_enabled = true
   end
 end
 
-
-local diagnostics_float_enabled = false
-vim.diagnostic.float_toggle = function()
-  local group = {
-    DIAGNOSTICS_FLOAT = {
-      {'CursorHold,CursorHoldI', '*', 'lua vim.diagnostic.open_float(nil, {focus=false})'}}
-  }
-  if diagnostics_float_enabled then
-    nvim_create_augroups({ DIAGNOSTICS_FLOAT = {} })
-    diagnostics_float_enabled = false
-  else
-    nvim_create_augroups(group)
-    diagnostics_float_enabled = true
-  end
-end
-vim.diagnostic.float_toggle()
 
 -- SIGN {{{1
 -- local signs = { Error = " ", Warn = " ", Hint = " ", Info = " " }
@@ -82,6 +57,3 @@ for type, icon in pairs(signs) do
 end
 
 vim.cmd("highlight! link LspDiagnosticsDefaultError WarningMsg")
-
-
--- WIP Test

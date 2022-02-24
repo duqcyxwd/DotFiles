@@ -27,7 +27,12 @@
     // }
   },
   "codeLens.enable": false,
-  "suggest.removeDuplicateItems": true,
+
+  // Disable coc suggestion
+  "suggest.selection": "none",
+  "suggest.removeDuplicateItems": false,
+  "suggest.snippetIndicator": "🍦",
+
   "coc.preferences.formatOnSaveFiletypes": [
     // "css",
     // "markdown",
@@ -47,12 +52,12 @@
       "expand",
       "open"
     ],
-    "v": "open:vsplit"
+    "v": "open:vsplit",
+    "<esc>": "quit"
   },
   "coc.preferences.extensionUpdateCheck": "daily",
   "coc.preferences.useQuickfixForLocations": true,
 
-  "suggest.snippetIndicator": "🍦",
 
   // COC pyright
   // :CocInstall coc-pyright

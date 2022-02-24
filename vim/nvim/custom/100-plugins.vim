@@ -15,7 +15,6 @@ call plug#begin('$XDG_DATA_HOME/nvim-plug')
 " Plug 'vim-airline/vim-airline'
 " Plug 'vim-airline/vim-airline-themes'
 Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
-Plug 'dracula/vim', { 'as': 'dracula' }
 " Plug 'vim-scripts/mayansmoke'
 
 " WIP
@@ -31,29 +30,32 @@ Plug 'mhartington/oceanic-next'
 Plug 'ayu-theme/ayu-vim'
 Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'cormacrelf/vim-colors-github'
+Plug 'EdenEast/nightfox.nvim'
+Plug 'dracula/vim', { 'as': 'dracula' }
 
 " Clojure things {{{1
 " ------------------------------------------------------------------------------
+" Deprecated
 " Plug 'eraserhd/parinfer-rust'
 " Plug 'bhurlow/vim-parinfer'
 " Plug 'vim-scripts/paredit.vim'
-
-" Plug 'clojure-vim/acid.nvim'|                        "Asynchronous Clojure Interactive Development
-" Plug 'Olical/conjure',  { 'for': 'clojure' }           " Add for lazy loading
-" Plug '~/duqcyxwd/conjure',  { 'for': 'clojure' }     " Add for lazy loading
-
 " Plug 'guns/vim-clojure-static'
-Plug 'clojure-vim/clojure.vim'|                      " Replace guns/vim-clojure-static, code style
-Plug '~/duqcyxwd/vim-sexp'                           " My version of vim-sexp
-
 " Plug 'tpope/vim-sexp-mappings-for-regular-people'| " Tesing
 " m, Make next available mark
+
+
+Plug 'Olical/conjure',  { 'for': 'clojure' }           " Add for lazy loading
+" Plug '~/duqcyxwd/conjure',  { 'for': 'clojure' }     " Add for lazy loading
+Plug '~/duqcyxwd/vim-sexp'                           " My version of vim-sexp
 
 
 " Interesting tag jumping!
 Plug 'tpope/vim-fireplace',  { 'for': 'clojure' }
 Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }|   " uses a vim-fireplace REPL connection to only format the current file
-Plug 'luochen1990/rainbow'
+
+" WATCH LIST SEE IF I STILL NEED IT
+Plug 'clojure-vim/acid.nvim'                        "Asynchronous Clojure Interactive Development
+Plug 'clojure-vim/clojure.vim'                       " Replace guns/vim-clojure-static, code style
 
 " Editor enhancements {{{1
 " ------------------------------------------------------------------------------
@@ -84,15 +86,42 @@ Plug 'osyo-manga/vim-over'                                   " Preview replace c
 Plug 'preservim/tagbar'                                      " Create tag on fly, used by markdown
 Plug 'schickling/vim-bufonly'                                " Delete all the buffers except the current buffer.
 Plug 'tpope/vim-commentary'                                  " Gcc
+Plug 'preservim/nerdcommenter'                               " WIP
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'                                      " Automatically adjusts 'shiftwidth' and 'expandtab'
 Plug 'tpope/vim-surround'
 Plug 'unblevable/quick-scope'                                " Quick highlight for f/F
 Plug 'phaazon/hop.nvim'                                      " Jump Everywhere
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " Better syntax highlight
 
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'tpope/vim-endwise'                                     " Add endif endfunction for some language
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " Better syntax highlight
+Plug 'nvim-treesitter/playground'
+Plug 'romgrk/nvim-treesitter-context'
+Plug 'p00f/nvim-ts-rainbow'                                  " nvim-treesitter module, add ranbow
+Plug 'theHamsta/nvim-treesitter-pairs'                       " Create your own pair objects using tree-sitter queries!
+Plug 'folke/twilight.nvim'                                   " Dims inactive portions build on tree sitter
+" Plug 'nvim-treesitter/nvim-treesitter-textobjects'
+Plug '~/duqcyxwd/nvim-treesitter-textobjects'                " Testing my textobjects for comments
+Plug 'nvim-treesitter/nvim-treesitter-refactor'              " Provide some highlight navigation based on treesitter
+
+
+" " WIP
+" Plug 'kyazdani42/nvim-tree.lua'                              " Explorer to replace coc explorer
+" Plug 'kyazdani42/nvim-web-devicons'
+
+" Plug 'preservim/nerdtree'
+" Plug 'ryanoasis/vim-devicons'
+" Plug 'Xuyuanp/nerdtree-git-plugin'
+" Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+" Plug 'PhilRunninger/nerdtree-buffer-ops'
+" Plug 'PhilRunninger/nerdtree-visual-selection'
+
+Plug '~/duqcyxwd/coc.nvim'                                    " Fix the compete problem with cmp
+" " Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+
+" NOT WORKING ANYMORE
+" Plug 'tpope/vim-endwise'                                     " Add endif endfunction for some language
+
 " Somehow it cause problem on exists
 " Plug 'ludovicchabant/vim-gutentags'               "Good way to generate tags
 "
@@ -112,15 +141,29 @@ Plug 'voldikss/vim-floaterm'
 
 
 " Completion {{{1
+
+Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
-Plug 'hrsh7th/nvim-cmp'
 
-" For vsnip users.
-Plug 'hrsh7th/cmp-vsnip'
-Plug 'hrsh7th/vim-vsnip'
+" " For vsnip users.
+" Plug 'hrsh7th/cmp-vsnip'
+" Plug 'hrsh7th/vim-vsnip'
+
+" For luasnip users.
+Plug 'L3MON4D3/LuaSnip'                     " Follows lsp protocol
+Plug 'saadparwaiz1/cmp_luasnip'
+Plug 'rafamadriz/friendly-snippets'        " Snippet collection
+
+" " For ultisnips users.
+" Plug 'SirVer/ultisnips'
+" Plug 'quangnguyen30192/cmp-nvim-ultisnips'
+
+" For snippy users.
+" Plug 'dcampos/nvim-snippy'
+" Plug 'dcampos/cmp-snippy'
 
 " LSP+ {{{1
 " ------------------------------------------------------------------------------
@@ -174,7 +217,9 @@ Plug 'lambdalisue/gina.vim'
 Plug 'tpope/vim-fugitive'                              " Raw git command, Gblame
 Plug 'shumphrey/fugitive-gitlab.vim'                   " Open gitlab link
 Plug 'tpope/vim-rhubarb'                               " Open github link
-Plug 'airblade/vim-gitgutter'                          " shows a git diff in the sign column
+" Plug 'airblade/vim-gitgutter'                          " shows a git diff in the sign column
+Plug 'lewis6991/gitsigns.nvim'                         " git decorations
+Plug 'nvim-lua/plenary.nvim'                           " Required by gitsigns
 Plug 'junegunn/gv.vim'                                 " A git commit browser.
 
 
@@ -184,6 +229,7 @@ Plug 'junegunn/gv.vim'                                 " A git commit browser.
 
 Plug 'chrisbra/unicode.vim'
 Plug 'junegunn/goyo.vim'
+Plug 'folke/zen-mode.nvim'
 Plug 'mattn/vim-findroot'
 Plug 'mhinz/vim-startify'
 Plug 'szw/vim-dict'                                     " A dict client
@@ -226,7 +272,6 @@ Plug 'vlime/vlime', {'rtp': 'vim/'}                       "Common Lisp dev envir
 Plug 'benmills/vimux'
 Plug 'dyng/ctrlsf.vim'
 Plug 'liuchengxu/vista.vim'
-" TODO Rview keybinding
 " Plug 'tpope/vim-unimpaired'
 
 

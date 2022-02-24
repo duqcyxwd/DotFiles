@@ -9,7 +9,7 @@
 " ------------------------------------------------------------------------------
 
 " Chuan's Settings =>  {{{1
-" remap leader key to ,
+" options {{{2
 
 filetype indent on          " Enable filetype plugins
 filetype plugin on          " Enable filetype plugins
@@ -20,8 +20,6 @@ set cmdheight=1                 " Give more space for displaying messages.
 set cursorline                  " highlights line numbers (vim-airline-colornum)
 set encoding=utf8               " Set utf8 as standard encoding
 set ffs=unix,dos,mac            " Use Unix as the standard file type
-set foldcolumn=0                " Disable fold column by default, <Space>tfc to enable it
-set foldmethod=marker           " Use braces by default
 set hidden                      " A buffer becomes hidden when it is abandoned
 set history=700                 " Sets how many lines of history VIM has to remember
 " set hlsearch                    " Highlight search results
@@ -66,8 +64,10 @@ set textwidth=0                " I hope this can disable auto break line
 
 set nowrap                     " Wrap lines
 
-set foldlevel=2                " Set to 0 fold all by default
-set foldlevelstart=1           " Set the start fold level
+set foldcolumn=0                " Disable fold column by default, <Space>tfc to enable it
+set foldmethod=marker           " Use braces by default
+set foldlevel=2                 " Set to 0 fold all by default
+set foldlevelstart=99           " Set the start fold level, 99 fo rno folds closed
 
 
 " Edit
@@ -87,7 +87,10 @@ set sessionoptions=curdir,folds,tabpages,winpos
 set viewoptions=cursor,folds
 
 
-" * Special *
+" Required by nvim-cmp, WIP
+set completeopt=menu,menuone,noselect
+
+" * Special Setings * {{{2
 
 " Fixes occasional issues where Vim disables syntax highlighting because
 " some plugin takes more than the default of 2 seconds to redraw the screen.
@@ -103,7 +106,16 @@ if has("gui_running")
     set guitablabel=%M\ %t
 endif
 
+" Turn persistent undo on (means that you can undo even when you close a
+" buffer/VIM)
+if has('persistent_undo')
+  set undodir=$XDG_DATA_HOME/nvim-undodir
+  set undofile
+endif
 
+
+
+" autocmd group {{{2
 augroup i_like_folding_lol
   autocmd!
   " autocmd BufWinEnter * silent! :%foldopen!
@@ -149,8 +161,8 @@ augroup END
 " Default =>  {{{1
 " ------------------------------------------------------------------------------
 
-source $VIMRUNTIME/delmenu.vim
-source $VIMRUNTIME/menu.vim
+" source $VIMRUNTIME/delmenu.vim
+" source $VIMRUNTIME/menu.vim
 
 " Turn on the WiLd menu
 set wildmenu
@@ -163,35 +175,4 @@ else
     set wildignore+=.git\*,.hg\*,.svn\*
 endif
 
-
-" Returns true if paste mode is enabled
-function! HasPaste() abort
-  if &paste
-    return 'PASTE MODE  '
-  en
-  return ''
-endfunction
-
-" Format the status line
-" set statusline=\ %{HasPaste()}%F%m%r%h\ %w\ \ CWD:\ %r%{getcwd()}%h\ \ \ Line:\ %l
-
-" Go to last file(s) if Vim is started without arguments.
-" augroup reopen_last_file
-"   autocmd!
-"   autocmd VimLeave * nested
-"         \ if (!isdirectory($HOME . "/.vim")) |
-"         \ call mkdir($HOME . "/.vim") |
-"         \ endif |
-"         \ execute "mksession! " . $HOME . "/.vim/Session.vim"
-"   autocmd VimEnter * nested
-"         \ if argc() == 0 && filereadable($HOME . "/.vim/Session.vim") |
-"         \ execute "source " . $HOME . "/.vim/Session.vim"
-" augroup END
-
-" Turn persistent undo on (means that you can undo even when you close a
-" buffer/VIM)
-if has('persistent_undo')
-  set undodir=~/.vim_runtime/temp_dirs/undodir
-  set undofile
-endif
 

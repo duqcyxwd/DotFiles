@@ -1,12 +1,10 @@
 {
   "dependencies": {
-    "coc-diagnostic": ">=0.23.1",
     "coc-explorer": ">=0.22.6",
     "coc-jedi": ">=0.30.1",
     "coc-json": ">=1.4.1",
     "coc-lists": ">=1.4.2",
     "coc-prettier": ">=1.1.25",
-    "coc-pyright": ">=1.1.220",
-    "coc-snippets": ">=2.4.7"
+    "coc-pyright": ">=1.1.220"
   }
 }

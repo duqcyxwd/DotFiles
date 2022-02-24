@@ -15,9 +15,6 @@ M.lsp_on_attach = function(_, bufnr)
 	end
 
 	bmap("n", "<localleader>f", "<CMD>lua vim.lsp.buf.formatting()<CR>", opts)
-
-	bmap("n", "[e", "<CMD>Lspsaga diagnostic_jump_next<CR>", opts)
-	bmap("n", "]e", "<CMD>Lspsaga diagnostic_jump_prev<CR>", opts)
 	bmap("n", "<localleader>q", "<CMD>lua vim.diagnostic.setloclist()<CR>", opts)
 end
 
@@ -38,8 +35,8 @@ M.lsp_on_attach_power = function(_, bufnr)
 	bmap("n", "gD", "<CMD>lua vim.lsp.buf.declaration()<CR>", opts)
 	bmap("n", "gd", "<CMD>lua vim.lsp.buf.definition()<CR>", opts)
 
-	bmap("n", "gi", "<CMD>lua vim.lsp.buf.implementation()<CR>", opts)
-	bmap("n", "gr", "<CMD>lua vim.lsp.buf.references()<CR>", opts)
+	-- bmap("n", "gi", "<CMD>lua vim.lsp.buf.implementation()<CR>", opts)
+	-- bmap("n", "gr", "<CMD>lua vim.lsp.buf.references()<CR>", opts)
 
 	-- bmap("n", "<localleader>rn", "<CMD>lua vim.lsp.buf.rename()<CR>", opts)
 	bmap("n", "<localleader>rn", "<CMD>:Lspsaga rename<CR>", opts)

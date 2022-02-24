@@ -59,27 +59,9 @@ augroup END
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => calendar {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:calendar_google_calendar = 1
-let g:calendar_clock_12hour = 1
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => clj-refactor {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:clj_refactor_prefix_rewriting = 0
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => clojure-static {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:clojure_fuzzy_indent = 1
-let g:clojure_fuzzy_indent_patterns = ['^with', '^def', '^let', '-tpl$']
-let g:clojure_fuzzy_indent_blacklist = ['-fn$', '\v^with-%(meta|out-str|loading-context)$']
-let g:clojure_special_indent_words = 'deftype,defrecord,reify,proxy,extend-type,extend-protocol,letfn'
-let g:clojure_align_multiline_strings = 1
-let g:clojure_maxlines = 0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -490,36 +472,40 @@ endif
 "
 " => airline {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" let g:airline_theme = 'luna'                         " airline colorscheme
-let g:airline_powerline_fonts = 1                    " Fancy symbols
-let g:airline#extensions#tabline#enabled = 1         " Enable the list of buffers
-" let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
-let g:airline#extensions#tabline#tab_nr_type = 1     " Show buffer #, not # of splits
-let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
-let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
-let g:airline#extensions#tabline#buffer_idx_mode = 1 " Show buffer index
 
-" let spc = g:airline_symbols.space
-call airline#parts#define('cust_line_col', {
-      \ 'raw': '%l/%L',
-      \ 'accent': 'bold'})
+if exists('g:plugs["vim-airline"]')
 
-call airline#parts#define('cust_line_col_nr', {
-      \ 'raw': '%l:%v/%L',
-      \ 'accent': 'bold'})
+  " let g:airline_theme = 'luna'                         " airline colorscheme
+  let g:airline_powerline_fonts = 1                    " Fancy symbols
+  let g:airline#extensions#tabline#enabled = 1         " Enable the list of buffers
+  " let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
+  let g:airline#extensions#tabline#tab_nr_type = 1     " Show buffer #, not # of splits
+  let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
+  let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
+  let g:airline#extensions#tabline#buffer_idx_mode = 1 " Show buffer index
 
-let g:airline_section_b = airline#section#create(['hunks', 'file'])
-let g:airline_section_c = airline#section#create(['%<', 'readonly', 'coc_status', 'lsp_progress', 'scrollbar'])
-let g:airline_section_x = airline#section#create_right(['coc_current_function', 'bookmark', 'tagbar', 'vista', 'gutentags', 'gen_tags', 'omnisharp', 'grepper', 'filetype'])
-" let g:airline_section_z = airline#section#create(['windowswap', 'obsession', '%p%%', 'linenr', 'maxlinenr', 'colnr'])
-let g:airline_section_z = airline#section#create(['%p%% ', 'cust_line_col'])
+  " let spc = g:airline_symbols.space
+  call airline#parts#define('cust_line_col', {
+	\ 'raw': '%l/%L',
+	\ 'accent': 'bold'})
+
+  call airline#parts#define('cust_line_col_nr', {
+	\ 'raw': '%l:%v/%L',
+	\ 'accent': 'bold'})
+
+  let g:airline_section_b = airline#section#create(['hunks', 'file'])
+  let g:airline_section_c = airline#section#create(['%<', 'readonly', 'coc_status', 'lsp_progress', 'scrollbar'])
+  let g:airline_section_x = airline#section#create_right(['coc_current_function', 'bookmark', 'tagbar', 'vista', 'gutentags', 'gen_tags', 'omnisharp', 'grepper', 'filetype'])
+  " let g:airline_section_z = airline#section#create(['windowswap', 'obsession', '%p%%', 'linenr', 'maxlinenr', 'colnr'])
+  let g:airline_section_z = airline#section#create(['%p%% ', 'cust_line_col'])
 
 
 
-let g:airline_symbols.linenr = ''
-let g:airline_symbols.maxlinenr = ''
-let g:airline_symbols.colnr = ''
+  let g:airline_symbols.linenr = ''
+  let g:airline_symbols.maxlinenr = ''
+  let g:airline_symbols.colnr = ''
 
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => anyfold {{{1
@@ -654,15 +640,15 @@ if exists('g:plugs["bad"]')
     endif
   endfunction
 
-  " WIP
-  " Use tab for trigger completion with characters ahead and navigate.
-  " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
-  " other plugin before putting this into your config.
-  inoremap <silent><expr> <TAB>
-	\ pumvisible() ? "\<C-n>" :
-	\ <SID>check_back_space() ? "\<TAB>" :
-	\ coc#refresh()
-  inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+  " " WIP
+  " " Use tab for trigger completion with characters ahead and navigate.
+  " " NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+  " " other plugin before putting this into your config.
+  " inoremap <silent><expr> <TAB>
+	" \ pumvisible() ? "\<C-n>" :
+	" \ <SID>check_back_space() ? "\<TAB>" :
+	" \ coc#refresh()
+  " inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
   function! s:check_back_space() abort
     let col = col('.') - 1
@@ -676,28 +662,28 @@ if exists('g:plugs["bad"]')
     inoremap <silent><expr> <c-@> coc#refresh()
   endif
 
-  " Use `[g` and `]g` to navigate diagnostics
-  " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
-  nmap <silent> [g <Plug>(coc-diagnostic-prev)
-  nmap <silent> ]g <Plug>(coc-diagnostic-next)
+  " " Use `[g` and `]g` to navigate diagnostics
+  " " Use `:CocDiagnostics` to get all diagnostics of current buffer in location list.
+  " nmap <silent> [g <Plug>(coc-diagnostic-prev)
+  " nmap <silent> ]g <Plug>(coc-diagnostic-next)
 
-  " GoTo code navigation.
-  nmap <silent> gd <Plug>(coc-definition)
-  nmap <silent> gy <Plug>(coc-type-definition)
-  nmap <silent> gi <Plug>(coc-implementation)
-  nmap <silent> gr <Plug>(coc-references)
+  " " GoTo code navigation.
+  " nmap <silent> gd <Plug>(coc-definition)
+  " nmap <silent> gy <Plug>(coc-type-definition)
+  " nmap <silent> gi <Plug>(coc-implementation)
+  " nmap <silent> gr <Plug>(coc-references)
 
   " Use K to show documentation in preview window.
-  nnoremap <silent> K :call <SID>show_documentation()<CR>
+  " nnoremap <silent> K :call <SID>show_documentation()<CR>
 
   " Highlight the symbol and its references when holding the cursor.
   " TODO Enable this
   " autocmd CursorHold * silent call CocActionAsync('highlight')
 
 
-  " Formatting selected code.
-  xmap <Space>cf  <Plug>(coc-format-selected)
-  nmap <Space>cf  <Plug>(coc-format-selected)
+  " " Formatting selected code.
+  " xmap <Space>cf  <Plug>(coc-format-selected)
+  " nmap <Space>cf  <Plug>(coc-format-selected)
 
   " augroup mygroup
   "   autocmd!
@@ -707,15 +693,15 @@ if exists('g:plugs["bad"]')
   "   autocmd User CocJumpPlaceholder call CocActionAsync('showSignatureHelp')
   " augroup end
 
-  " Applying codeAction to the selected region.
-  " Example: `<leader>aap` for current paragraph
-  xmap <Space>ca  <Plug>(coc-codeaction-selected)
-  nmap <Space>ca  <Plug>(coc-codeaction-selected)
+  " " Applying codeAction to the selected region.
+  " " Example: `<leader>aap` for current paragraph
+  " xmap <Space>ca  <Plug>(coc-codeaction-selected)
+  " nmap <Space>ca  <Plug>(coc-codeaction-selected)
 
-  " Remap keys for applying codeAction to the current buffer.
-  nmap <Space>cac  <Plug>(coc-codeaction)
-  " Apply AutoFix to problem on the current line.
-  nmap <Space>cqf  <Plug>(coc-fix-current)
+  " " Remap keys for applying codeAction to the current buffer.
+  " nmap <Space>cac  <Plug>(coc-codeaction)
+  " " Apply AutoFix to problem on the current line.
+  " nmap <Space>cqf  <Plug>(coc-fix-current)
 
   " Map function and class text objects
   " NOTE: Requires 'textDocument.documentSymbol' support from the language server.
@@ -756,11 +742,11 @@ if exists('g:plugs["bad"]')
   " Mappings for CoCList
 
 
-  " COC Actions
-  " nnoremap <silent><nowait> <space>c:  :CocAction<cr>
-  " xnoremap <silent><nowait> <space>c:  :CocAction<cr>
-  nnoremap <silent><nowait> <space>;  :CocAction<cr>
-  xnoremap <silent><nowait> <space>;  :CocAction<cr>
+  " " COC Actions
+  " " nnoremap <silent><nowait> <space>c:  :CocAction<cr>
+  " " xnoremap <silent><nowait> <space>c:  :CocAction<cr>
+  " nnoremap <silent><nowait> <space>;  :CocAction<cr>
+  " xnoremap <silent><nowait> <space>;  :CocAction<cr>
 
   " " nnoremap <silent><nowait> <space>:  <Plug>(coc-codeaction-cursor)
   " nmap <silent> <space>:            <Plug>(coc-codeaction-line)
@@ -789,7 +775,7 @@ if exists('g:plugs["bad"]')
     return l:result ==# '' ? '' : "file://" . l:result
   endfunction
 
-  autocmd CursorHold * silent call CocActionAsync('highlight')
+  " autocmd CursorHold * silent call CocActionAsync('highlight')
 
   " TODO add mapping for cojure only
   nnoremap <silent> <leader>rcc :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'cycle-coll', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1]})<CR>
@@ -809,38 +795,49 @@ if exists('g:plugs["bad"]')
   " End coc config
 endif
 
-" augroup coc_load_clojure_content
-"   autocmd BufReadCmd,FileReadCmd,SourceCmd jar:file://*
-"         \ call s:LoadClojureContent(expand("<amatch>"))
-" augroup END
-
-" function! s:LoadClojureContent(uri) abort
-"   setfiletype clojure
-"   let content = CocRequest('clojure-lsp', 'clojure/dependencyContents', {'uri': a:uri})
-"   call setline(1, split(content, "\n"))
-"   setl nomodified
-"   setl readonly
-" endfunction
-" Clojure Notes:
-" https://github.com/dense-analysis/ale
-" ale is conflict with clojure-lsp
-" https://clojure-lsp.github.io/clojure-lsp/settings/#clj-kondo
-
 " => tpope/vim-commentary {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup commentary_config
   autocmd!
   autocmd FileType cs,kotlin,adoc setlocal commentstring=//\ %s
-  " autocmd FileType lisp,clojure,racket setlocal commentstring=;;\ %s
   autocmd FileType lisp,racket setlocal commentstring=;;\ %s
   autocmd FileType clojure setlocal commentstring=;;\ %s
-  " TODO Add syntax aware comment #_
   autocmd FileType sml,ocaml setlocal commentstring=(*\ %s\ *)
   autocmd FileType resolv,crontab setlocal commentstring=#\ %s
   autocmd FileType sql setlocal commentstring=--\ %s
   autocmd FileType robot setlocal commentstring=#\ %s
 augroup END
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+" => preservim/nerdcommenter {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Create default mappings
+let g:NERDCreateDefaultMappings = 0
+
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 0
+
+" Use compact syntax for prettified multi-line comments
+let g:NERDCompactSexyComs = 0
+
+" Align line-wise comment delimiters flush left instead of following code indentation
+let g:NERDDefaultAlign = 'left'
+
+" Set a language to use its alternate delimiters by default
+let g:NERDAltDelims_java = 0
+
+" Add your own custom formats or override the defaults
+let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' }, 'clojure': { 'left': '#_','right': '' } }
+
+" Allow commenting and inverting empty lines (useful when commenting a region)
+let g:NERDCommentEmptyLines = 0
+
+" Enable trimming of trailing whitespace when uncommenting
+let g:NERDTrimTrailingWhitespace = 1
+
+" Enable NERDCommenterToggle to check all selected lines is commented or not
+let g:NERDToggleCheckAllLines = 0
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => conjure {{{1
@@ -855,6 +852,10 @@ augroup END
 
 " Disable the default ANSI escape code stripping so that I can use a separate
 " plugin to interpret them and display the colors.
+"
+let g:conjure#client#clojure#nrepl#connection#auto_repl#enabled = v:false
+let g:conjure#client#clojure#nrepl#connection#auto_repl#hidden  = v:true
+
 " let g:conjure#log#strip_ansi_escape_sequences_line_limit = 0
 
 " let g:conjure#log#hud#passive_close_delay = 1000
@@ -1280,32 +1281,84 @@ augroup GoYo
 augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => neoterm {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:neoterm_shell = 'zsh'
-let g:neoterm_autoscroll = 1
-let g:neoterm_keep_term_open = 1
-let g:neoterm_autoinsert = 1
+" => nvim-tree {{{1
+" kyazdani42/nvim-tree.lua
+" vimrc
+let g:nvim_tree_indent_markers = 1 "0 by default, this option shows indent markers when folders are open
+let g:nvim_tree_git_hl = 0 "0 by default, will enable file highlight for git attributes (can be used without the icons).
+let g:nvim_tree_highlight_opened_files = 1 "0 by default, will enable folder and file icon highlight for opened files/directories.
+let g:nvim_tree_root_folder_modifier = ':~' "This is the default. See :help filename-modifiers for more options
+let g:nvim_tree_add_trailing = 1 "0 by default, append a trailing slash to folder names
+let g:nvim_tree_group_empty = 1 " 0 by default, compact folders that only contain a single folder into one node in the file tree
+let g:nvim_tree_icon_padding = ' ' "one space by default, used for rendering the space between the icon and the filename. Use with caution, it could break rendering if you set an empty string depending on your font.
+let g:nvim_tree_symlink_arrow = ' >> ' " defaults to ' ➛ '. used as a separator between symlinks' source and target.
+let g:nvim_tree_respect_buf_cwd = 0 "0 by default, will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
+let g:nvim_tree_create_in_closed_folder = 0 "0 by default, When creating files, sets the path of a file when cursor is on a closed folder to the parent folder when 0, and inside the folder when 1.
+let g:nvim_tree_special_files = { 'README.md': 1, 'Makefile': 1, 'MAKEFILE': 1 } " List of filenames that gets highlighted with NvimTreeSpecialFile
+let g:nvim_tree_show_icons = {
+    \ 'git': 1,
+    \ 'folders': 1,
+    \ 'files': 1,
+    \ 'folder_arrows': 1,
+    \ }
+"If 0, do not show the icons for one of 'git' 'folder' and 'files'
+"1 by default, notice that if 'files' is 1, it will only display
+"if nvim-web-devicons is installed and on your runtimepath.
+"if folder is 1, you can also tell folder_arrows 1 to show small arrows next to the folder icons.
+"but this will not work when you set indent_markers (because of UI conflict)
 
-augroup neoterm
+" default will show icon by default if no icon is provided
+" default shows no icon by default
+let g:nvim_tree_icons = {
+    \ 'default': '',
+    \ 'symlink': '',
+    \ 'git': {
+    \   'unstaged': "✗",
+    \   'staged': "✓",
+    \   'unmerged': "",
+    \   'renamed': "➜",
+    \   'untracked': "★",
+    \   'deleted': "",
+    \   'ignored': "◌"
+    \   },
+    \ 'folder': {
+    \   'arrow_open': "",
+    \   'arrow_closed': "",
+    \   'default': "",
+    \   'open': "",
+    \   'empty': "",
+    \   'empty_open': "",
+    \   'symlink': "",
+    \   'symlink_open': "",
+    \   }
+    \ }
+" => markdown augroup {{{2
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+augroup markdown
   autocmd!
-  autocmd TermEnter * set scrolloff=0
-  " When I open a terminal buffer, I want it to feel like I'm in the terminal. I
-  " don't want to still be in normal mode.
-  autocmd TermOpen  * startinsert
+  autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
+	\ setlocal foldmethod=expr |
+	\ echom 'fileType markdown' |
+  \ setlocal conceallevel=2
+
+  " autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
+	" \ setlocal foldmethod=expr | set foldexpr=NestedMarkdownFolds() |
+	" \ echom 'fileType markdown'
+
+  " Use expr for vim-getting-things-down folding. It is nice problem but I am
+  " just using the folding syntax for now
+  " foldexpr=getting_things_down#fold_expr(v:lnum)
+  " autocmd BufEnter TODO.md setlocal foldmethod=expr
+
+  " Plugin: masukomi/vim-markdown-folding
+  " set foldexpr=NestedMarkdownFolds()
+
+  " autocmd BufEnter TODO.md setlocal foldmethod=expr | set foldexpr=getting_things_down#fold_expr(v:lnum)
+
 augroup END
 
-tnoremap <Esc> <C-\><C-n>
-
-" Works greate with nvr
-" https://github.com/mhinz/neovim-remote
-
-" Can't use this. This is unfocus the fzf floating window
-" tnoremap <C-h> <C-\><C-N><C-w>h
-" tnoremap <C-j> <C-\><C-N><C-w>j
-" tnoremap <C-k> <C-\><C-N><C-w>k
-" tnoremap <C-l> <C-\><C-N><C-w>l
-
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => open-browser {{{1
@@ -1437,11 +1490,11 @@ let g:startify_bookmarks = [{'zn': '~/.config/vim/nvimrc'},
 let g:startify_session_before_save = [ 'silent! tabdo NERDTreeClose' ]
 
 let g:startify_lists = [
-      \ { 'type': 'dir',       'header': ['   PWD '. getcwd()] },
       \ { 'type': 'sessions',  'header': ['   Sessions'], 'indices': ['a' ,'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']},
       \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
       \ { 'type': 'commands',  'header': ['   Commands']       },
       \ { 'type': 'files',     'header': ['   MRU']            },
+      \ { 'type': 'dir',       'header': ['   PWD '. getcwd()] },
       \ ]
 
 
@@ -1513,14 +1566,14 @@ function! g:VIM_lisp_mappings()  "{{{2
   xmap <silent><buffer> <LocalLeader>w  <Plug>(sexp_round_head_wrap_element)
   nmap <silent><buffer> <LocalLeader>W  <Plug>(sexp_round_tail_wrap_element)
   xmap <silent><buffer> <LocalLeader>W  <Plug>(sexp_round_tail_wrap_element)
-  nmap <silent><buffer> <LocalLeader>e[ <Plug>(sexp_square_head_wrap_element)
-  xmap <silent><buffer> <LocalLeader>e[ <Plug>(sexp_square_head_wrap_element)
-  nmap <silent><buffer> <LocalLeader>e] <Plug>(sexp_square_tail_wrap_element)
-  xmap <silent><buffer> <LocalLeader>e] <Plug>(sexp_square_tail_wrap_element)
-  nmap <silent><buffer> <LocalLeader>e{ <Plug>(sexp_curly_head_wrap_element)
-  xmap <silent><buffer> <LocalLeader>e{ <Plug>(sexp_curly_head_wrap_element)
-  nmap <silent><buffer> <LocalLeader>e} <Plug>(sexp_curly_tail_wrap_element)
-  xmap <silent><buffer> <LocalLeader>e} <Plug>(sexp_curly_tail_wrap_element)
+  " nmap <silent><buffer> <LocalLeader>e[ <Plug>(sexp_square_head_wrap_element)
+  " xmap <silent><buffer> <LocalLeader>e[ <Plug>(sexp_square_head_wrap_element)
+  " nmap <silent><buffer> <LocalLeader>e] <Plug>(sexp_square_tail_wrap_element)
+  " xmap <silent><buffer> <LocalLeader>e] <Plug>(sexp_square_tail_wrap_element)
+  " nmap <silent><buffer> <LocalLeader>e{ <Plug>(sexp_curly_head_wrap_element)
+  " xmap <silent><buffer> <LocalLeader>e{ <Plug>(sexp_curly_head_wrap_element)
+  " nmap <silent><buffer> <LocalLeader>e} <Plug>(sexp_curly_tail_wrap_element)
+  " xmap <silent><buffer> <LocalLeader>e} <Plug>(sexp_curly_tail_wrap_element)
 
   nmap <silent><buffer> <LocalLeader>@  <Plug>(sexp_splice_list)
   " nmap <silent><buffer> <LocalLeader>o  <Plug>(sexp_raise_list)
@@ -1610,10 +1663,6 @@ function! g:VIM_lisp_mappings()  "{{{2
   " WIP Need improve source code
   imap <silent><buffer> <C-right>       <esc><Plug>(sexp_capture_next_element)i
 
-
-  nnoremap gca I#_<esc>
-
-
 endfunction
 "}}}2
 
@@ -1635,6 +1684,63 @@ let g:tagbar_position='left'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => term: neoterm {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:neoterm_shell = 'zsh'
+let g:neoterm_autoscroll = 1
+let g:neoterm_keep_term_open = 1
+let g:neoterm_autoinsert = 0
+let g:neoterm_autojump = 1          "Jump to window
+
+augroup neoterm
+  autocmd!
+  autocmd TermEnter * set scrolloff=0
+  " When I open a terminal buffer, I want it to feel like I'm in the terminal. I
+  " don't want to still be in normal mode.
+  autocmd TermOpen  * startinsert
+  autocmd FileType neoterm nnoremap <buffer> <Esc> :Ttoggle<CR>
+augroup END
+
+tnoremap <Esc> <C-\><C-n>
+
+" Works greate with nvr
+" https://github.com/mhinz/neovim-remote
+
+" Can't use this. This is unfocus the fzf floating window
+" tnoremap <C-h> <C-\><C-N><C-w>h
+" tnoremap <C-j> <C-\><C-N><C-w>j
+" tnoremap <C-k> <C-\><C-N><C-w>k
+" tnoremap <C-l> <C-\><C-N><C-w>l
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => term: voldikss/vim-floaterm {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:floaterm_width      = 0.8
+let g:floaterm_height     = 0.8
+let g:floaterm_autoinsert = v:false
+let g:floaterm_opener     = 'tabe'
+let g:floaterm_autohide   = 1                " Hide when open new file
+let g:floaterm_autoclose  = 1
+
+" command! NNN FloatermNew nnn
+augroup FLOATTERM
+  autocmd!
+  " Hide my floating term when I execute some commands which make me lost focus of
+  " vim. Such as opening a readme file in Chrome
+  autocmd FocusLost * FloatermHide!
+
+  autocmd FileType  floaterm nnoremap <buffer> <Esc>   :FloatermToggle<CR>
+  autocmd FileType  floaterm nnoremap <buffer> x       :FloatermKill<CR>
+  autocmd FileType  floaterm nnoremap <buffer> <Left>  :FloatermPre<CR>
+  autocmd FileType  floaterm nnoremap <buffer> <Right> :FloatermNext<CR>
+augroup END
+
+" tnoremap <Esc> <C-\><C-n>
+
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim-tagquery {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plug 'matt-snider/vim-tagquery'
@@ -1644,81 +1750,87 @@ let g:tagquery_ctags_file = '~/vimwiki/.vimwiki_tags'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" => vimux {{{1
+" => vimux: benmills/vimux {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Prompt for a command to be run in a 20% lower tmux split, without losing
-" focus on vim :)
-" nnoremap <leader>vp :VimuxPromptCommand<CR>
-" nnoremap <leader>v<space> :VimuxPromptCommand<CR>
 
-" Opens a shell in the split.
-nnoremap <leader>vo :call VimuxOpenRunner()<CR>
+if exists('g:plugs["vimux"]')
 
-" Re-run the last command.
-nnoremap <leader>vv :VimuxRunLastCommand<CR>
+  " Prompt for a command to be run in a 20% lower tmux split, without losing
+  " focus on vim :)
+  " Example: :call VimuxRunCommand("ls")
+  " nnoremap <leader>vp :VimuxPromptCommand<CR>
+  " nnoremap <leader>v<space> :VimuxPromptCommand<CR>
 
-" Interrupt whatever process is running in the runner pane.
-nnoremap <leader>vi :VimuxInterruptRunner<CR>
+  " Opens a shell in the split.
+  nnoremap <leader>vo :call VimuxOpenRunner()<CR>
 
-" Zoom the runner pane.
-nnoremap <leader>vz :VimuxZoomRunner<CR>
+  " Re-run the last command.
+  nnoremap <leader>vv :VimuxRunLastCommand<CR>
 
-" Clear the runner pane. (i.e. Ctrl-L)
-" nnoremap <leader>vc :call VimuxSendKeys("C-l")<CR>
+  " Interrupt whatever process is running in the runner pane.
+  nnoremap <leader>vi :VimuxInterruptRunner<CR>
 
-" Close vimux runner pane.
-" nnoremap <leader>vC :VimuxCloseRunner<CR>
+  " Zoom the runner pane.
+  nnoremap <leader>vz :VimuxZoomRunner<CR>
 
-" An operator for sending text to Vimux.
-function! VimuxOperator(type, ...) abort
-  let previous = @n
+  " Clear the runner pane. (i.e. Ctrl-L)
+  " nnoremap <leader>vc :call VimuxSendKeys("C-l")<CR>
 
-  " yank target/selected text into "n
-  if a:type ==# 'char' || a:type ==# 'line'
-    silent! normal `[v`]"ny
-  else "visual
-    silent! normal gv"ny
-  endif
+  " Close vimux runner pane.
+  " nnoremap <leader>vC :VimuxCloseRunner<CR>
 
-  let input = @n
+  " An operator for sending text to Vimux.
+  function! VimuxOperator(type, ...) abort
+    let previous = @n
 
-  " restore whatever was in "n before
-  let @n = previous
+    " yank target/selected text into "n
+    if a:type ==# 'char' || a:type ==# 'line'
+      silent! normal `[v`]"ny
+    else "visual
+      silent! normal gv"ny
+    endif
 
-  if exists('a:1')
-    let input = substitute(input, '\n', ' ', 'g')
-  endif
+    let input = @n
 
-  " if input already ends with a newline, don't send an extra newline
-  if input =~# '\n$'
-    call VimuxRunCommand(input, 0)
-  else
-    call VimuxRunCommand(input)
-  endif
+    " restore whatever was in "n before
+    let @n = previous
 
-endfunction
+    if exists('a:1')
+      let input = substitute(input, '\n', ' ', 'g')
+    endif
 
-nnoremap <leader>vs :set operatorfunc=VimuxOperator<cr>g@
-" nmap <leader>vss V<leader>vs
-vnoremap <leader>vs :<c-u>call VimuxOperator(visualmode())<cr>
-vnoremap <leader>vS :<c-u>call VimuxOperator(visualmode(), 0)<cr>
+    " if input already ends with a newline, don't send an extra newline
+    if input =~# '\n$'
+      call VimuxRunCommand(input, 0)
+    else
+      call VimuxRunCommand(input)
+    endif
 
-function! VimuxSendBuffer(...) abort
-  let pos = winsaveview()
-  let arg = exists('a:1') ? ", 0" : ""
-  execute "normal! gg0vG$:\<c-u>call VimuxOperator(visualmode()".arg.")\<cr>"
-  call winrestview(pos)
-endfunction
+  endfunction
 
-command! VimuxSendBuffer
-      \ call VimuxSendBuffer()
+  " ls -la
+  " nnoremap <leader>vs :set operatorfunc=VimuxOperator<cr>g@
+  " nmap <leader>vss V<leader>vs
+  vnoremap <leader>vs :<c-u>call VimuxOperator(visualmode())<cr>
+  vnoremap <leader>vS :<c-u>call VimuxOperator(visualmode(), 0)<cr>
 
-" nnoremap <buffer> <leader>vf
-"   \ :call VimuxSendBuffer()<CR>
-"
-" nnoremap <buffer> <leader>vF
-"   \ :call VimuxSendBuffer(0)<CR>
+  function! VimuxSendBuffer(...) abort
+    let pos = winsaveview()
+    let arg = exists('a:1') ? ", 0" : ""
+    execute "normal! gg0vG$:\<c-u>call VimuxOperator(visualmode()".arg.")\<cr>"
+    call winrestview(pos)
+  endfunction
 
+  command! VimuxSendBuffer
+	\ call VimuxSendBuffer()
+
+  " nnoremap <buffer> <leader>vf
+  "   \ :call VimuxSendBuffer()<CR>
+  "
+  " nnoremap <buffer> <leader>vF
+  "   \ :call VimuxSendBuffer(0)<CR>
+
+endif
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vim-tmux {{{1
@@ -1727,17 +1839,7 @@ function! TmuxMappings()
   " echom "TmuxMapping"
   " setlocal comments=:#
   " setlocal commentstring=#\ %s
-
   nnoremap <silent><buffer> K :call tmux#man()<CR>
-
-  " nnoremap <silent> <Plug>TmuxExec :<C-U>set opfunc=tmux#filterop<CR>g@
-  " xnoremap <silent> <Plug>TmuxExec :<C-U>call tmux#filterop(visualmode())<CR>
-  " nmap <buffer> g! <Plug>TmuxExec
-  " nmap <buffer> g!! <Plug>TmuxExec_
-  " xmap <buffer> g! <Plug>TmuxExec
-
-  " let &cpo = s:cpo_save
-  " unlet s:cpo_save
 endfunction
 
 augroup tmuxMapping
@@ -1758,15 +1860,19 @@ augroup END
 " provided functions to define your own custom maps. You will need to define
 " custom mappings in your ~/.vimrc as well as update the bindings in tmux to match.
 
-let g:tmux_navigator_no_mappings = 1
-nnoremap <silent> <C-h> :TmuxNavigateLeft<cr>
-nnoremap <silent> <C-j> :TmuxNavigateDown<cr>
-nnoremap <silent> <C-k> :TmuxNavigateUp<cr>
-nnoremap <silent> <C-l> :TmuxNavigateRight<cr>
-" nnoremap <silent> <C-h> :TmuxNavigatePrevious<cr>
+if exists('g:plugs["vim-tmux-navigator"]')
 
-let g:tmux_navigator_save_on_switch = 1
-let g:tmux_navigator_disable_when_zoomed = 1
+  let g:tmux_navigator_no_mappings = 1
+  let g:tmux_navigator_save_on_switch = 0
+  let g:tmux_navigator_disable_when_zoomed = 1
+
+  nnoremap <silent> <C-h> :FloatermHide!<CR>:TmuxNavigateLeft<CR>
+  nnoremap <silent> <C-j> :FloatermHide!<CR>:TmuxNavigateDown<CR>
+  nnoremap <silent> <C-k> :FloatermHide!<CR>:TmuxNavigateUp<CR>
+  nnoremap <silent> <C-l> :FloatermHide!<CR>:TmuxNavigateRight<CR>
+
+endif
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => vimwiki {{{1

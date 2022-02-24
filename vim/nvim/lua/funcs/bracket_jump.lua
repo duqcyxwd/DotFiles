@@ -1,6 +1,6 @@
 local M = {}
 
-local last_bracket_jump = 'q'  -- quickfix by default
+local last_bracket_jump = 'b'  -- quickfix by default
 
 local function bracket_jump(bracket)
 		print(bracket .. last_bracket_jump)

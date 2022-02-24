@@ -3,7 +3,7 @@ local mapping = require("plugin_settings.mapping")
 -- Config {{{1
 require("lspconfig").diagnosticls.setup({
 	on_attach = mapping.lsp_on_attach,
-	capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+	capabilities = SR("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
 	cmd = { "diagnostic-languageserver", "--stdio" },
 	filetypes = {
 		"css",

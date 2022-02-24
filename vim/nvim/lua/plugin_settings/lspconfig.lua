@@ -1,5 +1,5 @@
-local nvim_lsp = require("lspconfig")
-local mapping  = require('plugin_settings.mapping')
+local nvim_lsp = SR("lspconfig")
+local mapping  = SR('plugin_settings.mapping')
 
 
 -- LSP Config setup  {{{1
@@ -12,6 +12,16 @@ local servers = { "pyright", "tsserver", "clojure_lsp" }
 -- UI Customization
 -- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization
 
+local border = {
+ { "🭽", "FloatBorder" },
+ { "▔", "FloatBorder" },
+ { "🭾", "FloatBorder" },
+ { "▕", "FloatBorder" },
+ { "🭿", "FloatBorder" },
+ { "▁", "FloatBorder" },
+ { "🭼", "FloatBorder" },
+ { "▏", "FloatBorder" },
+}
 
 -- LSP settings (for overriding per client)
 local handlers = {
@@ -28,7 +38,7 @@ local handlers = {
 
 
 -- Setup lspconfig.
-local capabilities = require("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = SR("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 for _, lsp in pairs(servers) do
 	local not_created = not nvim_lsp[lsp].commands_created

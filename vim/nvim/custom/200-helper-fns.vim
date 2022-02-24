@@ -226,30 +226,59 @@ endfunction
 
 " }}}1
 
+function! Tab_buf_switch(num) abort
+  " https://www.jianshu.com/p/5d23dbf1b7b2
+  " Switch buffer or tab
+  if exists('g:feat_enable_airline') && g:feat_enable_airline == 1
+    execute 'normal '."\<Plug>AirlineSelectTab".a:num
+  else
+    if exists( '*tabpagenr' ) && tabpagenr('$') != 1
+      " Tab support && tabs open
+      execute 'normal '.a:num.'gt'
+    else
+      let l:temp=a:num
+      let l:buf_index=a:num
+      let l:buf_count=len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+      if l:temp > l:buf_count
+        return
+      endif
+      while l:buf_index != 0
+        while !buflisted(l:temp)
+          let l:temp += 1
+        endw
+        let l:buf_index -= 1
+        if l:buf_index != 0
+          let l:temp += 1
+        endif
+      endw
+      execute ':'.l:temp.'b'
+    endif
+  endif
+endfunction
 
 " MyFzfLua {{{1
 let s:TYPE = {'dict': type({}), 'funcref': type(function('call')), 'string': type(''), 'list': type([])}
 function! s:LuaBlines(query, ...) abort  "{{{2
   if empty(a:query)
-      lua require('fzf-lua').lines({ current_buffer_only = true })
+    lua require('fzf-lua').lines({ current_buffer_only = true })
   else
-      execute "lua require('fzf-lua').lines({ search = '" . a:query . " ', current_buffer_only = true })"
+    execute "lua require('fzf-lua').lines({ search = '" . a:query . " ', current_buffer_only = true })"
   endif
 endfunction
 
 function! s:LuaLines(query, ...) abort  "{{{2
   if empty(a:query)
-      lua require('fzf-lua').lines()
+    lua require('fzf-lua').lines()
   else
-      execute "lua require('fzf-lua').lines({ search = '" . a:query . " '})"
+    execute "lua require('fzf-lua').lines({ search = '" . a:query . " '})"
   endif
 endfunction
 
 function! s:LuaGrep(query, ...) abort  "{{{2
   if empty(a:query)
-      lua require('fzf-lua').grep()
+    lua require('fzf-lua').grep()
   else
-      execute "lua require('fzf-lua').grep({ search = '" . a:query . " '})"
+    execute "lua require('fzf-lua').grep({ search = '" . a:query . " '})"
   endif
 endfunction
 " }}}2
@@ -272,37 +301,37 @@ command! CDC cd %:p:h             " CDC = Change to Directory of Current file
 
 " https://stackoverflow.com/questions/10572996/passing-command-range-to-a-function/10573044#10573044
 function! PrintGivenRange() range
-    echo "firstline ".a:firstline." lastline ".a:lastline
-    " Do some more things
+  echo "firstline ".a:firstline." lastline ".a:lastline
+  " Do some more things
 endfunction
 
 function! PrintGivenRange2() range
-    " Print range
-    " https://vi.stackexchange.com/questions/11025/passing-visual-range-to-a-command-as-its-argument
-    " Get the line and column of the visual selection marks
-    let [lnum1, col1] = getpos("'<")[1:2]
-    let [lnum2, col2] = getpos("'>")[1:2]
+  " Print range
+  " https://vi.stackexchange.com/questions/11025/passing-visual-range-to-a-command-as-its-argument
+  " Get the line and column of the visual selection marks
+  let [lnum1, col1] = getpos("'<")[1:2]
+  let [lnum2, col2] = getpos("'>")[1:2]
 
-    " Get all the lines represented by this range
-    let lines = getline(lnum1, lnum2)
+  " Get all the lines represented by this range
+  let lines = getline(lnum1, lnum2)
 
-    " The last line might need to be cut if the visual selection didn't end on the last column
-    let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
-    " The first line might need to be trimmed if the visual selection didn't start on the first column
-    let lines[0] = lines[0][col1 - 1:]
+  " The last line might need to be cut if the visual selection didn't end on the last column
+  let lines[-1] = lines[-1][: col2 - (&selection == 'inclusive' ? 1 : 2)]
+  " The first line might need to be trimmed if the visual selection didn't start on the first column
+  let lines[0] = lines[0][col1 - 1:]
 
-    " Get the desired text
-    let selectedText = join(lines, "\n")
+  " Get the desired text
+  let selectedText = join(lines, "\n")
 
-    " Do the call to tmux
-    echo selectedText
+  " Do the call to tmux
+  echo selectedText
 endfunction
 
 command! -range PassRange <line1>,<line2>call PrintGivenRange()
 
 function! TestFunc( k, val = 10 )
-    echomsg 'k: ' a:k
-    echomsg 'val: ' a:val
+  echomsg 'k: ' a:k
+  echomsg 'val: ' a:val
 endfunction
 
 command! -nargs=* Test call TestFunc(<f-args>)

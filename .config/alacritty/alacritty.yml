@@ -547,7 +547,7 @@ shell:
   #hide_when_typing: false
 
 mouse_bindings:
-  - { mouse: Middle, action: PasteSelection }
+  - { mouse: Middle, action: Paste }
 
 # Key bindings
 #
