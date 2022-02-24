@@ -26,14 +26,16 @@ FZF_FAG_BIND_OPTS=" \
 #   # | cut -d ':' -f1 | xargs fzf-exec   # This is not working with ctrl-v, anything command launches other script
 
 
+# AG_FLAG='--vim ' fag x
+# ag --vim x | fzf
 
 # Fag 2.0
+# AG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
 
-AG_PREFIX="ag --hidden --nobreak --noheading --color "
-#   AG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
-INITIAL_QUERY="${*:-}"
+# By pass all flag to ag, keep last argument as query argument
+INITIAL_QUERY="${@: -1}"
 IFS=: read -ra selected < <(
-  FZF_DEFAULT_COMMAND="$AG_PREFIX $(printf %q "$INITIAL_QUERY")" \
+  ag --hidden --nobreak --noheading --color "$@" | \
   FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FAG_BIND_OPTS" \
   fzf_tp --disabled --query "$INITIAL_QUERY" \
       --bind "change:reload:sleep 0.1; $AG_PREFIX {q} || true" \
@@ -45,4 +47,9 @@ IFS=: read -ra selected < <(
       --preview 'bat --style=numbers --color=always --highlight-line {2} {1}'
       # --preview-window 'up,60%,border-bottom,+{2}+3/3,~3'
 )
-[ -n "${selected[0]}" ] && nvim "${selected[0]}" "+${selected[1]}"
+
+
+# I can run this inside floaterm with following options
+# [ -n "${selected[0]}" ] && echo "${selected[0]}" "+${selected[1]}"
+[ -n "${selected[0]}" ] && [ -n "$NVIM_LISTEN_ADDRESS" ] && nvr --nostart -p "${selected[0]}" "+${selected[1]}" && exit
+[ -n "${selected[0]}" ] && nvim "${selected[0]}" "+${selected[1]}" && exit
