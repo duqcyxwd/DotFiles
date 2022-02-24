@@ -147,6 +147,36 @@ function! OpenGithubPlugin() "{{{1
   endif
 endfunction
 
+function! Tab_buf_switch(num) abort "{{{1
+  " A single function to switch buffers or tabs
+  " https://www.jianshu.com/p/5d23dbf1b7b2
+  if exists('g:feat_enable_airline') && g:feat_enable_airline == 1
+    execute 'normal '."\<Plug>AirlineSelectTab".a:num
+  else
+    if exists( '*tabpagenr' ) && tabpagenr('$') != 1
+      " Tab support && tabs open
+      execute 'normal '.a:num.'gt'
+    else
+      let l:temp=a:num
+      let l:buf_index=a:num
+      let l:buf_count=len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+      if l:temp > l:buf_count
+        return
+      endif
+      while l:buf_index != 0
+        while !buflisted(l:temp)
+          let l:temp += 1
+        endw
+        let l:buf_index -= 1
+        if l:buf_index != 0
+          let l:temp += 1
+        endif
+      endw
+      execute ':'.l:temp.'b'
+    endif
+  endif
+endfunction
+
 " [Functions] GET Last selections {{{1
 " -------------------------------------------------------------------------------
 "
@@ -226,36 +256,6 @@ endfunction
 
 " }}}1
 
-function! Tab_buf_switch(num) abort
-  " https://www.jianshu.com/p/5d23dbf1b7b2
-  " Switch buffer or tab
-  if exists('g:feat_enable_airline') && g:feat_enable_airline == 1
-    execute 'normal '."\<Plug>AirlineSelectTab".a:num
-  else
-    if exists( '*tabpagenr' ) && tabpagenr('$') != 1
-      " Tab support && tabs open
-      execute 'normal '.a:num.'gt'
-    else
-      let l:temp=a:num
-      let l:buf_index=a:num
-      let l:buf_count=len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
-      if l:temp > l:buf_count
-        return
-      endif
-      while l:buf_index != 0
-        while !buflisted(l:temp)
-          let l:temp += 1
-        endw
-        let l:buf_index -= 1
-        if l:buf_index != 0
-          let l:temp += 1
-        endif
-      endw
-      execute ':'.l:temp.'b'
-    endif
-  endif
-endfunction
-
 " MyFzfLua {{{1
 let s:TYPE = {'dict': type({}), 'funcref': type(function('call')), 'string': type(''), 'list': type([])}
 function! s:LuaBlines(query, ...) abort  "{{{2
@@ -297,6 +297,15 @@ command! -nargs=* MyFzfLuaGrep   call s:LuaGrep(<q-args>)
 command! CDC cd %:p:h             " CDC = Change to Directory of Current file
 " I can also use - defx to and then C to change cwd
 
+function! g:GotoFirstFloat() abort
+  for w in range(1, winnr('$'))
+    let c = nvim_win_get_config(win_getid(w))
+    if c.focusable && !empty(c.relative)
+      execute w . 'wincmd w'
+      return
+    endif
+  endfor
+endfunction
 
 
 " https://stackoverflow.com/questions/10572996/passing-command-range-to-a-function/10573044#10573044
@@ -329,7 +338,7 @@ endfunction
 
 command! -range PassRange <line1>,<line2>call PrintGivenRange()
 
-function! TestFunc( k, val = 10 )
+function! g:TestFunc( k, val = 10 )
   echomsg 'k: ' a:k
   echomsg 'val: ' a:val
 endfunction

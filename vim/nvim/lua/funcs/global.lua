@@ -42,6 +42,7 @@ end
 local empty_module = {
   load = function(_) end,
   setup = function(_) end,
+  init = function(_) end,
   config = function(_) end,
   update_capabilities = function(_) end,
 }

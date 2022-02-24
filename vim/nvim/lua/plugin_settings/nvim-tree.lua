@@ -1,3 +1,4 @@
+require("funcs.global")
 
 -- https://github.com/kyazdani42/nvim-tree.lua
 -- following options are the default

@@ -126,15 +126,10 @@ font:
 
   italic:
     family: "JetBrainsMono Nerd Font"
-    family: "JetBrains Mono"
-    # Light/Thin Italic didn't work for JetBrainsMono Nerd Font
-    # I belive this is a problem with my patched font
-    # style: Light Italic
-    # style: Italic
+    # I am using custom build font JetBrainsMono Nerd Font
+    # The <Italic> is conflict with <Light Italic>. 
+    # I need to manully config it in Font Book app
     style: Light Italic
-    # style: Thin Italic
-    # style: Regular
-    # style: Bold Italic
 
   bold_italic:
     family: "JetBrainsMono Nerd Font"

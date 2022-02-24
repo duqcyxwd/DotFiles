@@ -1208,6 +1208,15 @@ let g:gitgutter_terminal_reports_focus=0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Indentline {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Plug 'Yggdroot/indentLine'
+
+let g:indentLine_char_list = ['|', '¦', '┆', '┊']
+let g:indentLine_leadingSpaceEnabled = 0
+let g:indentLine_enabled = 0
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 " => junegunn/limelight {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plug 'junegunn/limelight.vim'

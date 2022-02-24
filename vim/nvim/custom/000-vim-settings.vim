@@ -69,6 +69,7 @@ set foldmethod=marker           " Use braces by default
 set foldlevel=2                 " Set to 0 fold all by default
 set foldlevelstart=99           " Set the start fold level, 99 fo rno folds closed
 
+set formatoptions=jcrql         " Format options. Not adding comments with o/O
 
 " Edit
 set backspace=eol,start,indent " Configure backspace so it acts as it should act
@@ -77,6 +78,7 @@ set whichwrap+=<,>,h,l         " Allow specified keys that move the cursor left/
 set diffopt=internal,filler,vertical
 
 " https://stackoverflow.com/a/29787362
+" Invisible char
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
 set nolist
 
@@ -85,7 +87,6 @@ set nolist
 " Hope this can fix conjure session problem
 set sessionoptions=curdir,folds,tabpages,winpos
 set viewoptions=cursor,folds
-
 
 " Required by nvim-cmp, WIP
 set completeopt=menu,menuone,noselect

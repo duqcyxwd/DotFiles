@@ -18,8 +18,10 @@ alias svi=/usr/local/bin/vi                   # Use vi to open spacevim
 # Remote control Neovim processes.
 # TODO auto complete for nvr
 # https://github.com/mhinz/neovim-remote
-alias vimr='nvr'
-alias vimr='nsvc'
+alias vim_remote_notes='echo "nsvc is to start static vim server, nvr is the client"'
+# alias vr='nvr'
+alias nvr="/usr/local/bin/nvr --nostart -p"
+alias nvrr="/usr/local/bin/nvr"
 
 alias history='fc -l 1'
 
@@ -100,27 +102,15 @@ alias gcat="grcat ~/.config/grc/log"
 
 # --------------------------------------------------------------------------
 
-function take() {
-  mkdir -p $@ && cd ${@:$#}
-}
+function take()    { mkdir -p $@ && cd ${@:$#} }
+function whichl()  { exa -lbFa -la $(which $@) }
+function whichv()  { vim $(which $@) }
+function whichcd() { cd $(dirname $(greadlink -f $(which $@))) }
+function whichc()  { cat $(which $@) }
+function whichb()  { bat $(which $@) }
+function whichp()  { quick-preview $(which $@) }
+function gitopen() { /usr/local/bin/gitopen $@ :develop }
 
-function whichl() {
-  exa -lbFa -la $(which $@)
-}
+function cdf() { cd $(dirname $(greadlink -f $@)) }
 
-function whichv() {
-  vim $(which $@)
-}
-
-function whichcd() {
-   cd $(dirname $(greadlink -f $(which nvim)))
-}
-
-function whichc() {
-  cat $(which $@)
-}
-
-
-function whichb() {
-  bat $(which $@)
-}
+alias gitopen_raw=/usr/local/bin/gitopen

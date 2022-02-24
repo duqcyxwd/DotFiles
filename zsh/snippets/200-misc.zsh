@@ -64,7 +64,7 @@ alias p10ksigns="open https://github.com/romkatv/powerlevel10k#what-do-different
 # Install (one or multiple) selected application(s)
 # using "brew search" as source input
 # mnemonic [B]rew [I]nstall [P]lugin
-bip() {
+brew_install_plugin_inter() {
   local inst=$(brew search | fzf -m)
 
   if [[ $inst ]]; then
@@ -74,7 +74,7 @@ bip() {
 }
 # Update (one or multiple) selected application(s)
 # mnemonic [B]rew [U]pdate [P]lugin
-bup() {
+brew_update_plugin_inter() {
   local upd=$(brew leaves | fzf -m)
 
   if [[ $upd ]]; then
@@ -84,7 +84,7 @@ bup() {
 }
 # Delete (one or multiple) selected application(s)
 # mnemonic [B]rew [C]lean [P]lugin (e.g. uninstall)
-bcp() {
+brew_clean_plugin_inter() {
   local uninst=$(brew leaves | fzf -m)
 
   if [[ $uninst ]]; then

@@ -118,6 +118,8 @@ Plug 'nvim-treesitter/nvim-treesitter-refactor'              " Provide some high
 Plug '~/duqcyxwd/coc.nvim'                                    " Fix the compete problem with cmp
 " " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
+" WIP
+Plug 'Yggdroot/indentLine'                                 " Show indent line
 
 " NOT WORKING ANYMORE
 " Plug 'tpope/vim-endwise'                                     " Add endif endfunction for some language
@@ -147,6 +149,10 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
+
+Plug 'onsails/lspkind-nvim'                 " Add icon for cmp
+" WIP
+Plug 'danymat/neogen'                       " Your Annotation Toolkit
 
 " " For vsnip users.
 " Plug 'hrsh7th/cmp-vsnip'

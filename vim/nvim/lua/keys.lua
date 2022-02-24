@@ -33,12 +33,30 @@ local reformate_key_map = function(keymap)
   end
 end
 
+local function close_float()
+  -- https://github.com/neovim/neovim/issues/11440#issuecomment-877693865
+  local this_win = vim.fn.win_getid()
+  -- close all floating windows that are relative to the current one
+  for _, win in ipairs(vim.api.nvim_list_wins()) do
+    local win_config = vim.api.nvim_win_get_config(win)
+    -- If the mapping doesn't close enough windows, use the following line instead:
+    -- if win_config.relative ~= "" then
+    if win_config.relative == "win" and win_config.win == this_win then
+      vim.api.nvim_win_close(win, false)
+    end
+  end
+end
+
+
+
 local function clear()
   vim.cmd("nohlsearch")
   vim.lsp.buf.clear_references()
   IfHas("notify", function(notify)
     notify.dismiss()
   end)
+  close_float()
+
 end
 
 -- normal mapping {{{1
@@ -104,6 +122,14 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "[d", "<PageUp>" },
   { "]d", "<PageDown>" },
 
+  -- Git chagne Hunk
+  { "[h", ":Gitsigns prev_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
+  { "]h", ":Gitsigns next_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
+
+  -- Git chagne Hunk
+  { "[c", ":Gitsigns prev_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
+  { "]c", ":Gitsigns next_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
+
   -- Smart way to move between tabs
   { "<A-h>", "gT" },
   { "<A-l>", "gt" },
@@ -149,7 +175,6 @@ set_keymap("n", { noremap = true, silent = true }, {
   -- Edit
 
   {"K",              ":call Show_documentation()<CR>"},
-  {"<localleader>k", ":call Show_documentation()<CR>"},
   {"<CR>",           "za"},
   {"gca",        ":call NERDComment('n', 'Toggle')<CR>"},
 
@@ -164,10 +189,9 @@ set_keymap("v", { noremap = true, silent = true }, {
 })
 
 set_keymap("n", { noremap = true, silent = true }, {
-  { "<localleader>cc", ":call NERDComment('n', 'Toggle')<CR>" },
-  { "<localleader>x", ":call NERDComment('n', 'Toggle')<CR>" },
+  { "<localleader>k",  ":call Show_documentation()<CR>" },
+  { "<localleader>j",  ":call GotoFirstFloat()<CR>" },
 })
--- vim.cmd("nnoremap <buffer> <localleader>cx :Asciidoctor2DOCX<CR>")
 
 -- leader mapping {{{1
 
@@ -202,6 +226,8 @@ for _, char in
     "b", -- buffer
     "e", -- Diagnostic error
     "g", -- Diagnostic error
+    "h", -- Git change hunk
+    "c", -- Git change hunk
     "j", -- Jump
     "q",
     "s", -- Spell
@@ -300,27 +326,46 @@ space_key_vmap.f = { --{{{1
 space_key_nmap.g = { --{{{1
   name = "+Git/Go",
 
-  a = {'Git action',        ':FzfPreviewGitActions<CR>'},
-  b = {'Git blame',         ':Git blame<CR>'},
-  c = {'Git commit',        ':Git commit -v<CR>'},
-  d = {'Git diff',          ':Gdiffsplit<CR>'},
-  m = {'Git Magit',         ':MagitOnly<CR>'},
-  s = {'Git status',        ':FzfPreviewGitStatus<CR>'},
-  p = {'Git push',          ':Gina push<CR>'},
-  l = {'Git link open',     ':GBrowse<CR>'},
-  h = {'Git history view',  ':GV<CR>'},
+  a = {'Git action',            ':FzfPreviewGitActions<CR>'},
+  b = {'Git blame',             ':Git blame<CR>'},
+  c = {'Git commit',            ':Git commit -v<CR>'},
+  d = {'Git diff',              ':Gdiffsplit<CR>'},
+  e = {'Gitsign Edit mode',     ':Gitsigns toggle_word_diff<CR>:Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>'},
+  m = {'Git Magit',             ':MagitOnly<CR>'},
+  s = {'Git status',            ':FzfPreviewGitStatus<CR>'},
+  p = {'Git preview hunk',      ':Gitsigns preview_hunk<CR>'},
+  i = {'Git line info',         ":lua require('gitsigns').blame_line({ full = true})<CR>"},
+  l = {'Git link open',         ':GBrowse<CR>'},
+
+  h = {
+    name ='Git hunk',
+    a = { 'GitSign stage_hunk',             ':Gitsigns stage_hunk<CR>' },
+    u = { 'GitSign stage_hunk undo',        ':Gitsigns undo_stage_hunk<CR>' },
+    R = { 'GitSign hunk restore',           ':Gitsigns reset_hunk<CR>' },
+    r = { 'GitSign buffer reset',           ':Gitsigns reset_buffer_index<CR>' },
+
+  },
   v = {'Git history view ', ':GV<CR>'},
 
 
   o = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
   x = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
   S = {'Search and open in Github ',  ':OpenBrowserSmartSearch -github <C-R><C-W>'},
+  f = {'Goto floating window',        ':call GotoFirstFloat()<CR>'},
 
 }
 
 -- stylua: ignore
 space_key_vmap.g = { --{{{1
   name = "+Git/Go",
+
+  h = {
+    name ='Git hunk',
+    a = { 'GitSign stage_hunk',      ':Gitsigns stage_hunk<CR>' },
+    u = { 'GitSign stage_hunk undo', ':Gitsigns undo_stage_hunk<CR>' },
+    R = { 'GitSign hunk restore',    ':Gitsigns reset_hunk<CR>' },
+
+  },
 
   o = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
   x = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
@@ -431,7 +476,7 @@ space_key_nmap.q = { --{{{1
 space_key_nmap.r = { --{{{1
   name = "+Run",
 
-  r = {'Run Current file',            ':call RunUsingCurrentFiletype(CR)<>'},
+  r = {'Run Current file',            ':call RunUsingCurrentFiletype()<CR>'},
   f = {'Run FzfLua',                  ':FzfLua<CR>'},
   l = {'Run Current line in neoterm', '<Plug>(neoterm-repl-send-line)<CR>'},
   n = {'Run in neoterm',              '<Plug>(neoterm-repl-send)<CR>'},
@@ -491,11 +536,13 @@ space_key_nmap.t = { --{{{1
   name = "+Toggle",
 
   M  = {'Color: FZF Schema',                     ':FzfLua colorschemes<CR>'},
-  s  = {'Toggle Strip Whitespace On Save',       ':ToggleStripWhitespaceOnSave<CR>:echo "ToggleStripWhitespaceOnSave"<CR>'},
+  s  = {'Toggle Strip Whitespace On Save',       ':EnableStripWhitespaceOnSave<CR>:echo "ToggleStripWhitespaceOnSave"<CR>'},
   T  = {'TagbarToggle',                          ':TagbarToggle<CR>'},
   m  = {'Color: Dark/Light Mode',                ':ToggleColorschemeMode<CR>'},
   S  = {'Toggle Trailling whitespace indicator', ':ToggleWhitespace<CR>'},
-  t  = {'Toggle 80 text width',                  ':call ToggleTextWidth(CR)<>'},
+  t  = {'Toggle 80 text width',                  ':call ToggleTextWidth()<CR>'},
+
+  v  = {'Toggle vertical indent line',           ':IndentLinesToggle<CR>'},
 
   f = {
     name = 'Fold+',
@@ -597,7 +644,6 @@ space_key_nmap_Plan = {
   d = {
     name = "+Diagnostic/directory",
     d = { "XXX" },
-    z = { "XXX", "2" },
   },
   e = { name = "+EDIT" },
   i = { name = "+Insert ? snipper, Inspect" },
@@ -614,3 +660,6 @@ space_key_nmap_Plan = {
 reformate_key_map(space_key_nmap_Plan)
 -- nvim_print(space_key_nmap_Plan)
 -- wk.register(space_key_nmap_test, { prefix = "<Space>" })
+
+-- }}}1
+

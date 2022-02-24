@@ -48,6 +48,7 @@ mlog "$(date) : zshrc start loading"
   export PATH="$HOME/script:$PATH"
   export PATH="$HOME/my_script:$PATH"
   export PATH="$HOME/my_script/zsh:$PATH"
+  export PATH="$HOME/.cargo/bin:$PATH"
   export PATH="/usr/local/heroku/bin:$PATH"
   export PATH="/usr/local/opt/ruby/bin:$PATH"
   export PATH="./node_modules/.bin:$PATH"
@@ -90,7 +91,7 @@ mlog "$(date) : zshrc start loading"
 
   # Never set TERM in your config
   # export TERM="xterm-256color"
-  # export NVIM_LISTEN_ADDRESS=
+  # export NVIM_LISTEN_ADDRESS=$XDG_CACHE_HOME/nvimsocket
 
   [[ $ZPROF_TRACK -eq "1" ]] && zmodload zsh/zprof
 # }}}
@@ -104,15 +105,15 @@ zinit_load() {
   autoload -Uz _zinit
   (( ${+_comps} )) && _comps[zinit]=_zinit
 
+  # This solves problem in Catalina
   # sudo chmod 777 /private/tmp
   # sudo chmod +t /private/tmp
-  # This solves problem in Catalina
 
   # autoload -Uz compinit; compinit # zinit 用户这里可能是 zpcompinit; zpcdreplay
   # Test if we still need this
   # zpcompinit; zpcdreplay
 
-  # Stage 0 Try Random Plugins
+  # Stage 0 Place to Try New Or Random Plugins
   # zinit load larkery/zsh-histdb
 
   # Stage 1 Must have plugins before prompt {{{2
@@ -120,7 +121,6 @@ zinit_load() {
     zinit ice wait atload'ac_my_colors' silent;
     zinit light shayneholmes/zsh-iterm2colors
 
-    zinit light ~/duqcyxwd/kube-int
 
     # Load p10k
     zinit ice depth=1 ; zinit light romkatv/powerlevel10k
@@ -156,9 +156,11 @@ zinit_load() {
       as'completion' is-snippet 'https://github.com/alacritty/alacritty/blob/master/extra/completions/_alacritty' \
       blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions \
 
+    zinit wait silent light-mode for \
+      ~/duqcyxwd/kube-int
     }
 
-  # Stage 3 Lazy load Personal scripts {{{2
+  # Stage 3 Lazy load Personal scripts or config {{{2
   {
     : '
     for snippet in $ZDOTDIR/snippets/*.zsh; do
@@ -195,22 +197,17 @@ zinit_load() {
       OMZ::plugins/iterm2/iterm2.plugin.zsh \
       OMZ::plugins/systemd/systemd.plugin.zsh
 
-    # zinit ice wait="0" atload'bindkey.zsh && source /Users/EYONDUU/.zinit/plugins/bonnefoa---kubectl-fzf/kubectl_fzf.plugin.zsh' silent;
     zinit ice wait="0" atload'bindkey.zsh' silent;
     zinit light zpm-zsh/empty
-
-    # zinit ice wait="2" silent;
-    # zinit ice wait="0" atload'bindkey.zsh && source /Users/EYONDUU/.zinit/plugins/bonnefoa---kubectl-fzf/kubectl_fzf.plugin.zsh' silent;
-    # zinit light bonnefoa/kubectl-fzf
-    # Need to run cache_builder
-    # source /Users/EYONDUU/.zinit/plugins/bonnefoa---kubectl-fzf/kubectl_fzf.plugin.zsh
-
   }
 
   #}}}
-  # zinit snippet 'https://github.com/Dabz/kafka-zsh-completions/blob/master/kafka.plugin.zsh'
 
-  # zinit update # Update plugin or snippet
+  # zinit light qoomon/zjump
+  # When use zsh-z with fzf, the sort is not working. I am trying other jumps
+  zinit light wting/autojump
+  [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+
   # zinit self-update updates zinit
 }
 
@@ -237,30 +234,6 @@ zsh_plugins_config() {
     # ac_my_colors
   }
 
-  # zsh-histdb
-  _zsh_autosuggest_strategy_histdb_top_here() {
-    local query="select commands.argv from history left join commands on history.command_id = commands.rowid \
-      left join places on history.place_id = places.rowid where places.dir LIKE '$(sql_escape $PWD)%' \
-      and commands.argv LIKE '$(sql_escape $1)%' group by commands.argv order by count(*) desc limit 1"
-    suggestion=$(_histdb_query "$query")
-  }
-
-  _zsh_autosuggest_strategy_histdb_top() {
-      local query="select commands.argv from
-  history left join commands on history.command_id = commands.rowid
-  left join places on history.place_id = places.rowid
-  where commands.argv LIKE '$(sql_escape $1)%'
-  group by commands.argv
-  order by places.dir != '$(sql_escape $PWD)', count(*) desc limit 1"
-      suggestion=$(_histdb_query "$query")
-  }
-
-
-  # zsh-users/zsh-autosuggestions
-
-  # ZSH_AUTOSUGGEST_STRATEGY=(match_prev_cmd completion)
-  # ZSH_AUTOSUGGEST_STRATEGY=(histdb_top_here completion)
-  # ZSH_AUTOSUGGEST_STRATEGY=(histdb_top)
 }
 
 # }}}1
@@ -268,6 +241,7 @@ zsh_plugins_config() {
 # Add some quick dirty useful alias so I can use them before they are loaded
 alias vim='nvim'
 alias vi='nvim'
+alias gst='git status'
 [[ $commands[exa] ]] && alias la="exa -lbFa"
 
 zinit_load
@@ -278,14 +252,12 @@ zsh_plugins_config
   # https://superuser.com/questions/1092033/how-can-i-make-zsh-tab-completion-fix-capitalization-errors-for-directorys-and
   # ZSH case insensitive completion
   zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
+  zstyle ':completion:*:descriptions' format '[%d]'
 
   zstyle ':fzf-tab:*' prefix '- '
   zstyle ':fzf-tab:*' switch-group '[' ','
   zstyle ':fzf-tab:*' show-group full
-  zstyle ':completion:*' list-colors ${(s.:.)LS_COLORS}
-  zstyle ':completion:*:descriptions' format '[%d]'
-  # zstyle ":completion:*:descriptions" format "---- %d ----"
-
   zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
 
   zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
@@ -293,6 +265,14 @@ zsh_plugins_config
 
   zstyle ':fzf-tab:complete:__enhancd::cd:*' fzf-preview 'exa -1 --color=always $realpath'
   zstyle ':fzf-tab:complete:__enhancd::cd:*' fzf-command
+
+
+  # I am trying to disable sort in fzf-tab but not working.
+  # When I use zsh-z, the result is already sort by rank
+  # disable sort when completing `git checkout`
+  zstyle ':completion:*:z:*' sort false
+  zstyle ':completion:*:git-checkout:*' sort false
+  zstyle ':completion:complete:*:options' sort false
 
 }
 
