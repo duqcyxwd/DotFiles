@@ -8,7 +8,7 @@ __fzf_config() {
    # require fzf junegunn/fzf
    # brew install fzf
 
-  # FZF KEYBINDING {{{3
+  # FZF KEYBINDING {{{1
     export FZF_MY_KEYBINDING="
     --bind '?:toggle-preview'
 
@@ -79,7 +79,7 @@ __fzf_config() {
     # alt-up/down/left/right
     #
     # }}}3
-  # FZF Theme {{{3
+  # FZF Theme {{{1
 
     export FZF_COLOR_SCHEMA_BORDER="--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344'"
 
@@ -105,7 +105,7 @@ __fzf_config() {
     '
 
     # FZF Theme }}}
-  # FZF Default Config {{{3
+  # FZF Default Config {{{1
     export FZF_MY_OPTS="--reverse --ansi --multi --exit-0 --cycle --height 80% --preview-window border-left"
 
     # FZF Default options
@@ -132,7 +132,7 @@ __fzf_config() {
     # Options to fzf command
     # export FZF_COMPLETION_OPTS='+c -x'
 
-  # FZF fd support {{{3
+  # FZF fd support {{{1
     # Setting fd as the default source for fzf
     if [ $commands[fd] ]; then
       # Use fd (https://github.com/sharkdp/fd) instead of the default find

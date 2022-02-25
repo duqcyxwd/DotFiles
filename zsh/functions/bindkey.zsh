@@ -12,9 +12,9 @@ __zsh_cust_bindkey() {
 
 
   # Fzf related
-  bindkey '^G'      fzf-cd-widget             # Search and goto fzf
-  bindkey '^B'      fzf_ls_widget             # My ls widget
-  bindkey '^F'      fzf_ls_widget
+  bindkey '^G'      fzf-cd-widget           # Search and goto fzf
+  bindkey '^B'      ls_fuzzy_preview_widget # My ls widget
+  bindkey '^F'      ls_fuzzy_preview_widget
 
   bindkey '^T'      toggle-fzf-tab
   bindkey "^O"      zca-widget                # Zsh Command Architect zsh-cmd-architect

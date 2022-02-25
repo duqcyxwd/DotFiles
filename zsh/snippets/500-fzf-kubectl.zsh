@@ -7,27 +7,22 @@ unalias kgp
 # unalias kgcmi
 
 #     K8S: NAMESPACE/CONTEXT {{{1
-  # Notes: runcached in fzf --ttl vs remove $RUNCACHED_CACHE_DIR
-  # --ttl can't invalid the cache for preview window
+# Notes: runcached in fzf --ttl vs remove $RUNCACHED_CACHE_DIR
+# --ttl can't invalid the cache for preview window
 
 
-
-  kdelnsi() { #{{{2
-    # Prefilter with my name to avoid accident delete important namespace
-    local namespace=$(nsi --query "chuan ")
-
-    if [ "$namespace" = "" ]; then
-      echo "No namespace from chuan found"
-
-      return 0
-    fi
-
-    echo "Will delete namespace: $namespace"
-    kubectl delete namespace $namespace
-
-    # Update cached namespace list
-    TTL=0 kgns_cached > /dev/null &|
-  }
+kdelnsi() { #{{{2
+  # Prefilter with my name to avoid accident delete important namespace
+  local namespace=$(nsi --query "chuan ")
+  if [ "$namespace" = "" ]; then
+    echo "No namespace from chuan found"
+    return 0
+  fi
+  echo "Will delete namespace: $namespace"
+  kubectl delete namespace $namespace
+  # Update cached namespace list
+  TTL=0 kgns_cached > /dev/null &|
+}
 
 
 # }}}2
@@ -205,8 +200,5 @@ kgsi() { #{{{2
 
   alias kexecit='kubectl exec -it'
   # alias kgp='kgp_cached'
-
-
-
 
 }

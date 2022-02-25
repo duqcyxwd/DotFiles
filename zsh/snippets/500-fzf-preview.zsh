@@ -96,7 +96,7 @@ ls_fuzzy_preview() {
 alias lf=ls_fuzzy_preview
 
 
-fzf_ls_widget() {
+ls_fuzzy_preview_widget() {
 
   local selected num
   setopt localoptions noglobsubst noposixbuiltins pipefail no_aliases 2> /dev/null
@@ -109,4 +109,4 @@ fzf_ls_widget() {
   zle reset-prompt
   return $ret
 }
-zle -N fzf_ls_widget
+zle -N ls_fuzzy_preview_widget

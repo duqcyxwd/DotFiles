@@ -56,62 +56,6 @@ alias p10ksigns="open https://github.com/romkatv/powerlevel10k#what-do-different
     fi
 }
 
-
-
-
-# TOOL: FZF RELATED FUNCTIONS {{{1
-# FZF with Brew {{{3
-# Install (one or multiple) selected application(s)
-# using "brew search" as source input
-# mnemonic [B]rew [I]nstall [P]lugin
-brew_install_plugin_inter() {
-  local inst=$(brew search | fzf -m)
-
-  if [[ $inst ]]; then
-    for prog in $(echo $inst);
-    do; brew install $prog; done;
-  fi
-}
-# Update (one or multiple) selected application(s)
-# mnemonic [B]rew [U]pdate [P]lugin
-brew_update_plugin_inter() {
-  local upd=$(brew leaves | fzf -m)
-
-  if [[ $upd ]]; then
-    for prog in $(echo $upd);
-    do; brew upgrade $prog; done;
-  fi
-}
-# Delete (one or multiple) selected application(s)
-# mnemonic [B]rew [C]lean [P]lugin (e.g. uninstall)
-brew_clean_plugin_inter() {
-  local uninst=$(brew leaves | fzf -m)
-
-  if [[ $uninst ]]; then
-    for prog in $(echo $uninst);
-    do; brew uninstall $prog; done;
-  fi
-}
-
-# FZF with kill {{{3
-# fkill - kill processes - list only the ones you can kill. Modified the earlier script.
-# This is better than default completion
-fkilll() {
-    local pid
-    if [ "$UID" != "0" ]; then
-        pid=$(ps -f -u $UID  | fzf -m --header-lines=1 | awk '{print $2}')
-    else
-        pid=$(ps -ef | fzf -m --header-lines=1 | awk '{print $2}')
-    fi
-
-    if [ "x$pid" != "x" ]
-    then
-        echo $pid | xargs kill -${1:-9}
-    fi
-}
-
-
-#}}}
 #
 # METHOD: : Lazy Plugin Load {{{2
 # --------------------------------------------------------------------------

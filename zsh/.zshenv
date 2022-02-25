@@ -12,11 +12,6 @@ export SAVEHIST=10000002          #The maximum number of history events to save 
 
 HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
 
-# . "$HOME/.cargo/env"
-# env
-# echo $NVIM_LISTEN_ADDRESS
-
-
 export PATH=$ZDOTDIR/commands:$PATH
 export PATH=$ZDOTDIR/commands/kubectl:$PATH
 
