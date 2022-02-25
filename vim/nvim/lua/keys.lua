@@ -62,8 +62,8 @@ end
 -- normal mapping {{{1
 
 vim.keymap.set("n", "<Esc>", clear, { desc = "clear" })
-vim.keymap.set("n", "<Left>", brj.prev, { desc = "prev ([)" })
 vim.keymap.set("n", "<Right>", brj.next, { desc = "next (])" })
+vim.keymap.set("n", "<Left>", brj.prev, { desc = "prev ([)" })
 
 -- Others {{{2
 
@@ -213,7 +213,7 @@ local space_key_nmap = {
 }
 local space_key_vmap = {}
 
-for i = 1, 10, 1 do
+for i = 1, 8, 1 do
   -- space_key_nmap[tostring(i)] = { "which_key_ignore", "<Plug>AirlineSelectTab" .. tostring(i) .. "<CR>" }
   space_key_nmap[tostring(i)] = { "which_key_ignore", "<Cmd>BufferLineGoToBuffer " .. tostring(i) .. "<CR>" }
 end
@@ -578,11 +578,11 @@ settingToggle(toggle_keymap)
 vim.cmd("nnoremap \\s :call LoopFoldMethod()<CR>:set foldmethod<CR>zv")
 
 -- stylua: ignore
--- space_key_vmap.v = { --{{{1
---   v = {  "Visual", ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>" },
--- }
+space_key_vmap.v = { --{{{1
+  v = {  "Visual", ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>" },
+}
 
-vim.keymap.set("v", "v", ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>")
+vim.cmd("vnoremap v :lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>")
 
 space_key_nmap.w = { --{{{1
   name = "+Window",

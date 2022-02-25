@@ -57,3 +57,4 @@ for type, icon in pairs(signs) do
 end
 
 vim.cmd("highlight! link LspDiagnosticsDefaultError WarningMsg")
+

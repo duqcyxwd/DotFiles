@@ -7,7 +7,7 @@ vim.api.nvim_command([[ autocmd! ColorScheme * highlight FloatBorder guifg=white
 
 local autocmds = {
   luafold = {
-    { "FileType", "lua",       "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
+    { "FileType", "lua",       "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr tabstop=2 softtabstop=2 shiftwidth=2" },
     { "BufEnter", "keys.lua",  "set foldmethod=marker" },
   },
   vim = {
@@ -15,6 +15,9 @@ local autocmds = {
   },
   saga = {
     { "FileType", "sagahover", "nnoremap <buffer> <Esc> :q<CR>" },
+  },
+  clojure = {
+    { "FileType", "sagahover", "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
   }
 }
 

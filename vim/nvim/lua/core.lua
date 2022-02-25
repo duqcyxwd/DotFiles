@@ -1,9 +1,9 @@
 require('funcs.global')
+
 R_FOLD( 'plugin_settings')
 R('autocmd')
 R('settings')
 R('keys')
-
 
 
 -- TODO 1. A good way to reload config

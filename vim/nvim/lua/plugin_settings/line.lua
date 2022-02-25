@@ -29,14 +29,18 @@ SR("lualine").setup({
 })
 
 SR("bufferline").setup({
+  -- akinsho/bufferline.nvim
   options = {
     numbers = "ordinal",
     diagnostics = "none",
     offsets = { { filetype = "coc-explorer" } },
     show_tab_indicators = true,
     enforce_regular_tabs = true,
-    always_show_bufferline = true,
-    separator_style = "slant",
+    always_show_bufferline = false,
+    separator_style = "thin",
+    max_prefix_length = 15,
+    tab_size = 15,
+    middle_mouse_command = "bdelete! %d",
     custom_filter = function(buf_number, buf_numbers)
       -- -- filter out filetypes you don't want to see
       -- if vim.bo[buf_number].filetype ~= "<i-dont-want-to-see-this>" then
