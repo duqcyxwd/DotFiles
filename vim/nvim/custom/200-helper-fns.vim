@@ -13,7 +13,7 @@
 " /*                                                    */
 " /******************************************************/
 
-" [Function] HighlightCharactersOver80 {{{1
+" [Functions] HighlightCharactersOver80 {{{1
 " ------------------------------------------------------------------------------
 " Highlight characters in column 81+ with a red background.
 " (source: https://stackoverflow.com/a/235970/2338327)
@@ -46,12 +46,12 @@ augroup ColorSchemeMods
 augroup END
 
 
-" [Function] Toggle Reload VIM file when save {{{1
+" [Functions] Toggle Reload VIM file when save {{{1
 " ------------------------------------------------------------------------------
 " The only reason we modify vim file is source it.
 " Why not make this happend in a magic way?!
 
-function! SourceCurrentFile()
+function! g:SourceCurrentFile()
   echom "Auto Source Current file" expand("%")
   let save_cursor = getcurpos()
   source %
@@ -79,7 +79,23 @@ function! ToggleAutoVimSource()
 endfunction
 " call ToggleAutoVimSource()
 
-" [Function] Fold Related Fns {{{1
+" [Functions] Toggle-find-root-scope {{{1
+" ------------------------------------------------------------------------------
+function! ToggleFindRootScope()
+  if g:findroot_search_parent == 0
+    let g:findroot_search_parent = 1
+    let g:findroot_patterns = g:default_patterns
+    execute 'FindRoot!'
+    echo printf("[Parent] find root path %s", getcwd())
+  else
+    let g:findroot_search_parent = 0
+    let g:findroot_patterns = g:default_patterns + [ '.vimroot' ]
+    execute 'FindRoot!'
+    echo printf("[VimRoot] find root path %s", getcwd())
+  endif
+endfunction
+
+" [Functions] Fold Related Fns {{{1
 " ------------------------------------------------------------------------------
 function! ToggleFoldColumn()
   if &foldcolumn == 0
@@ -89,7 +105,6 @@ function! ToggleFoldColumn()
   endif
 endfunction
 
-" let s:foldMethodList = ['manual', 'indent', 'expr', 'marker', 'syntax', 'diff']
 let s:foldMethodList = ['indent', 'expr', 'marker', 'syntax']
 let s:foldLength=len(s:foldMethodList)
 
@@ -99,81 +114,6 @@ function! LoopFoldMethod()
   let s:foldMethod +=1
   if s:foldMethod >= s:foldLength
     let s:foldMethod =0
-  endif
-endfunction
-
-function! s:DiffWithSaved() "{{{1
-  " https://stackoverflow.com/questions/749297/can-i-see-changes-before-i-save-my-file-in-vim
-  " Quick check before Save
-  let filetype=&ft
-  diffthis
-  vnew | r # | normal! 1Gdd
-  diffthis
-  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
-endfunction
-command! DiffSaved call s:DiffWithSaved()
-
-function! PlugLoaded(name) "{{{1
-  "https://vi.stackexchange.com/questions/10939/how-to-see-if-a-plugin-is-active
-  return (
-        \ has_key(g:plugs, a:name) &&
-        \ isdirectory(g:plugs[a:name].dir) &&
-        \ stridx(&rtp, g:plugs[a:name].dir) >= 0)
-endfunction
-
-function! RunUsingCurrentFiletype() "{{{1
-  " Run current file
-  execute 'write'
-  execute '! clear; '.&filetype.' <% '
-endfunction
-
-function! g:SafeFzfQuery(str) "{{{1
-  " echom substitute("test/test[x[x[x[x]]]] ok (TEST) * - # ok\"", "[\"\n\/\.\\][()#*-]", " ", "g")
-  " echom substitute(a:str, "[\"\n\/\.\\][()#*-]", " ", "g")
-  return substitute(a:str, "[\"\n\/\.\\][()#*-]", " ", "g")
-endfunc
-
-
-function! OpenGithubPlugin() "{{{1
-  " MY Function to open vim Plugin page in Github
-  " let s:uri = matchstr(getline("."), "'[a-z]*'")
-  let s:uri = matchstr(getline("."), "[0-9a-z\-\_\.]*\/[0-9a-z\-\_\.]*")
-  let s:uri = "https://www.github.com/".s:uri
-  if s:uri != ""
-    silent exec "!open '".s:uri."'"
-    :redraw!
-  else
-    echo "no packages found"
-  endif
-endfunction
-
-function! Tab_buf_switch(num) abort "{{{1
-  " A single function to switch buffers or tabs
-  " https://www.jianshu.com/p/5d23dbf1b7b2
-  if exists('g:feat_enable_airline') && g:feat_enable_airline == 1
-    execute 'normal '."\<Plug>AirlineSelectTab".a:num
-  else
-    if exists( '*tabpagenr' ) && tabpagenr('$') != 1
-      " Tab support && tabs open
-      execute 'normal '.a:num.'gt'
-    else
-      let l:temp=a:num
-      let l:buf_index=a:num
-      let l:buf_count=len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
-      if l:temp > l:buf_count
-        return
-      endif
-      while l:buf_index != 0
-        while !buflisted(l:temp)
-          let l:temp += 1
-        endw
-        let l:buf_index -= 1
-        if l:buf_index != 0
-          let l:temp += 1
-        endif
-      endw
-      execute ':'.l:temp.'b'
-    endif
   endif
 endfunction
 
@@ -237,13 +177,98 @@ function! g:ModeTestFn(mode) abort " {{{2
 endfunction
 
 
-" Mapping {{{2
+" Testing Mapping {{{2
 nnoremap <silent> <Plug>(mytestFn) :<C-u>call TestFn('n')<CR>
 xnoremap <silent> <Plug>(mytestFn) :<C-u>call TestFn('v')<CR>
 " I can avoid using
 " vnoremap <Space>ss y:FFBLines <C-R>=escape(@",'/\()')<CR><CR>
 
 "}}}2
+
+function! s:DiffWithSaved() "{{{1
+  " https://stackoverflow.com/questions/749297/can-i-see-changes-before-i-save-my-file-in-vim
+  " Quick check before Save
+  let filetype=&ft
+  diffthis
+  vnew | r # | normal! 1Gdd
+  diffthis
+  exe "setlocal bt=nofile bh=wipe nobl noswf ro ft=" . filetype
+endfunction
+command! DiffSaved call s:DiffWithSaved()
+
+function! g:PlugLoaded(name) "{{{1
+  "https://vi.stackexchange.com/questions/10939/how-to-see-if-a-plugin-is-active
+  return (
+        \ has_key(g:plugs, a:name) &&
+        \ isdirectory(g:plugs[a:name].dir) &&
+        \ stridx(&rtp, g:plugs[a:name].dir) >= 0)
+endfunction
+
+function! g:RunUsingCurrentFiletype() "{{{1
+  " Run current file
+  execute 'write'
+  execute '! clear; '.&filetype.' <% '
+endfunction
+
+function! g:SafeFzfQuery(str) "{{{1
+  " echom substitute("test/test[x[x[x[x]]]] ok (TEST) * - # ok\"", "[\"\n\/\.\\][()#*-]", " ", "g")
+  " echom substitute(a:str, "[\"\n\/\.\\][()#*-]", " ", "g")
+  return substitute(a:str, "[\"\n\/\.\\][()#*-]", " ", "g")
+endfunc
+
+
+function! g:OpenGithubPlugin() "{{{1
+  " MY Function to open vim Plugin page in Github
+  " let s:uri = matchstr(getline("."), "'[a-z]*'")
+  let s:uri = matchstr(getline("."), "[0-9a-z\-\_\.]*\/[0-9a-z\-\_\.]*")
+  let s:uri = "https://www.github.com/".s:uri
+  if s:uri != ""
+    silent exec "!open '".s:uri."'"
+    :redraw!
+  else
+    echo "no packages found"
+  endif
+endfunction
+
+function! g:Tab_buf_switch(num) abort "{{{1
+  " A single function to switch buffers or tabs
+  " https://www.jianshu.com/p/5d23dbf1b7b2
+  if exists('g:feat_enable_airline') && g:feat_enable_airline == 1
+    execute 'normal '."\<Plug>AirlineSelectTab".a:num
+  else
+    if exists( '*tabpagenr' ) && tabpagenr('$') != 1
+      " Tab support && tabs open
+      execute 'normal '.a:num.'gt'
+    else
+      let l:temp=a:num
+      let l:buf_index=a:num
+      let l:buf_count=len(filter(range(1, bufnr('$')), 'buflisted(v:val)'))
+      if l:temp > l:buf_count
+        return
+      endif
+      while l:buf_index != 0
+        while !buflisted(l:temp)
+          let l:temp += 1
+        endw
+        let l:buf_index -= 1
+        if l:buf_index != 0
+          let l:temp += 1
+        endif
+      endw
+      execute ':'.l:temp.'b'
+    endif
+  endif
+endfunction
+
+function! g:GotoFirstFloat() abort  " {{{1
+  for w in range(1, winnr('$'))
+    let c = nvim_win_get_config(win_getid(w))
+    if c.focusable && !empty(c.relative)
+      execute w . 'wincmd w'
+      return
+    endif
+  endfor
+endfunction
 
 function! g:Show_documentation() "{{{1
   " Show vim regular docs
@@ -256,7 +281,7 @@ endfunction
 
 " }}}1
 
-" MyFzfLua {{{1
+" [Functions] MyFzfLua {{{1
 let s:TYPE = {'dict': type({}), 'funcref': type(function('call')), 'string': type(''), 'list': type([])}
 function! s:LuaBlines(query, ...) abort  "{{{2
   if empty(a:query)
@@ -295,17 +320,11 @@ command! -nargs=* MyFzfLuaGrep   call s:LuaGrep(<q-args>)
 " COMMAND
 " -------------------------------------------------------------------------------
 command! CDC cd %:p:h             " CDC = Change to Directory of Current file
-" I can also use - defx to and then C to change cwd
 
-function! g:GotoFirstFloat() abort
-  for w in range(1, winnr('$'))
-    let c = nvim_win_get_config(win_getid(w))
-    if c.focusable && !empty(c.relative)
-      execute w . 'wincmd w'
-      return
-    endif
-  endfor
+function! g:FIND_GIT_ROOT()
+  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
 endfunction
+command! ProjectFiles execute 'FFFiles' g:FIND_GIT_ROOT()
 
 
 " https://stackoverflow.com/questions/10572996/passing-command-range-to-a-function/10573044#10573044

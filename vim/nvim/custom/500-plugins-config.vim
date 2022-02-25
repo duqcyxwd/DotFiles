@@ -996,7 +996,7 @@ nnoremap <silent> -
 
 " If you allow changing directory that goes up from sub-directory:
 let g:findroot_not_for_subdir = 0
-let g:findroot_patterns = [
+let g:default_patterns = [
       \  '.git/',
       \  '.svn/',
       \  '.hg/',
@@ -1006,8 +1006,10 @@ let g:findroot_patterns = [
       \  'project.clj',
       \  '*.csproj',
       \  '*.sln',
-      \  '.vimroot',
       \]
+let g:findroot_patterns = g:default_patterns + [ '.vimroot' ]
+let g:findroot_search_parent = 0
+
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => fzf {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1469,8 +1471,7 @@ let g:rainbow_conf = {
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => startify {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:startify_custom_header = [
-      \ '',
+let g:startify_custom_header_h = [
       \' /**********************************************************************/',
       \' /*       ___          ___          ___          ___          ___      */',
       \' /*      /\  \        /\  \        /\  \        /\__\        /|  |     */',
@@ -1487,6 +1488,9 @@ let g:startify_custom_header = [
       \' /**********************************************************************/',
       \ ]
 
+let g:startify_custom_header = 'startify#center(g:startify_custom_header_h)'
+
+let g:startify_padding_left = 5
 let g:startify_files_number = 6
 let g:startify_enable_special = 0
 let g:startify_session_persistence = 1
