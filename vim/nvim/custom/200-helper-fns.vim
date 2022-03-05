@@ -281,7 +281,7 @@ endfunction
 
 " }}}1
 
-" [Functions] MyFzfLua {{{1
+" [Functions] MyFzfLua search {{{1
 let s:TYPE = {'dict': type({}), 'funcref': type(function('call')), 'string': type(''), 'list': type([])}
 function! s:LuaBlines(query, ...) abort  "{{{2
   if empty(a:query)
@@ -311,9 +311,10 @@ endfunction
 " Writing above functions to handle optional parameter. There is a easy way if I don't want to worry about optional parameter
 " For example:  command! -nargs=1 MyFzfLuaGrep lua require('fzf-lua').grep({ search = <f-args> })
 
-command! -nargs=* MyFzfLuaLines  call s:LuaLines(<q-args>)
-command! -nargs=* MyFzfLuaBlines call s:LuaBlines(<q-args>)
-command! -nargs=* MyFzfLuaGrep   call s:LuaGrep(<q-args>)
+command! -nargs=* MyFzfLuaLines  call    s:LuaLines(<q-args>)
+command! -nargs=* MyFzfLuaBlines call    s:LuaBlines(<q-args>)
+command! -nargs=* MyFzfLuaGrep   call    s:LuaGrep(<q-args>)
+command! -nargs=0 ProjectFiles   execute 'FFFiles' expand('%:p:h')
 
 " }}}1
 
@@ -321,10 +322,6 @@ command! -nargs=* MyFzfLuaGrep   call s:LuaGrep(<q-args>)
 " -------------------------------------------------------------------------------
 command! CDC cd %:p:h             " CDC = Change to Directory of Current file
 
-function! g:FIND_GIT_ROOT()
-  return system('git rev-parse --show-toplevel 2> /dev/null')[:-2]
-endfunction
-command! ProjectFiles execute 'FFFiles' g:FIND_GIT_ROOT()
 
 
 " https://stackoverflow.com/questions/10572996/passing-command-range-to-a-function/10573044#10573044

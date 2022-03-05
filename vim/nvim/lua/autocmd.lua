@@ -17,8 +17,12 @@ local autocmds = {
     { "FileType", "sagahover", "nnoremap <buffer> <Esc> :q<CR>" },
   },
   clojure = {
-    { "FileType", "sagahover", "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
-  }
+    { "FileType", "clojure", "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
+  },
+  startify = {
+    { "FileType", "startify", "DisableWhitespace" },
+  },
+
 }
 
 nvim_create_augroups(autocmds)

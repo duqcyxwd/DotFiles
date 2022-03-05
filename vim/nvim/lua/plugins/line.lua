@@ -7,11 +7,14 @@ SR("lualine").setup({
     section_separators = { left = "", right = "" },
     disabled_filetypes = {},
     always_divide_middle = true,
+
+    show_bufnr = true, -- this appends [bufnr] to buffer section,
+    modified_icon = "+ ", -- change the default modified icon
   },
   sections = {
     lualine_a = { "mode" },
     lualine_b = { "branch", "diff", "diagnostics" },
-    lualine_c = { "filename" },
+    lualine_c = { "filename", 'lsp_progress' },
     lualine_x = { "encoding", "fileformat", "filetype" },
     lualine_y = { "progress" },
     lualine_z = { "location" },
@@ -54,3 +57,4 @@ SR("bufferline").setup({
     end,
   },
 })
+

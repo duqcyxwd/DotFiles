@@ -12,17 +12,12 @@ call plug#begin('$XDG_DATA_HOME/nvim-plug')
 
 " Aesthetic {{{1
 " ------------------------------------------------------------------------------
-" Plug 'vim-airline/vim-airline'
-" Plug 'vim-airline/vim-airline-themes'
-Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }
-" Plug 'vim-scripts/mayansmoke'
+Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }           "displaying the colours in the file
 
-" WIP
 Plug 'nvim-lualine/lualine.nvim'
-Plug 'kyazdani42/nvim-web-devicons'
+Plug 'arkav/lualine-lsp-progress'
+Plug 'kyazdani42/nvim-web-devicons'                                 " Recommended (for coloured icons)
 
-Plug 'kyazdani42/nvim-web-devicons' " Recommended (for coloured icons)
-" Plug 'ryanoasis/vim-devicons' Icons without colours
 Plug 'akinsho/bufferline.nvim'
 
 " Theme
@@ -32,6 +27,12 @@ Plug 'sonph/onehalf', {'rtp': 'vim/'}
 Plug 'cormacrelf/vim-colors-github'
 Plug 'EdenEast/nightfox.nvim'
 Plug 'dracula/vim', { 'as': 'dracula' }
+
+
+Plug 'junegunn/limelight.vim'
+Plug 'junegunn/goyo.vim'
+Plug 'folke/twilight.nvim'                                   " Dims inactive portions build on tree sitter
+Plug 'folke/zen-mode.nvim'
 
 " Clojure things {{{1
 " ------------------------------------------------------------------------------
@@ -46,16 +47,16 @@ Plug 'dracula/vim', { 'as': 'dracula' }
 
 Plug 'Olical/conjure',  { 'for': 'clojure' }           " Add for lazy loading
 " Plug '~/duqcyxwd/conjure',  { 'for': 'clojure' }     " Add for lazy loading
-Plug '~/duqcyxwd/vim-sexp'                           " My version of vim-sexp
+Plug '~/duqcyxwd/vim-sexp'                             " My version of vim-sexp
 
 
 " Interesting tag jumping!
 Plug 'tpope/vim-fireplace',  { 'for': 'clojure' }
-Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }|   " uses a vim-fireplace REPL connection to only format the current file
+Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }      " uses a vim-fireplace REPL connection to only format the current file
 
 " WATCH LIST SEE IF I STILL NEED IT
-Plug 'clojure-vim/acid.nvim'                        "Asynchronous Clojure Interactive Development
-Plug 'clojure-vim/clojure.vim'                       " Replace guns/vim-clojure-static, code style
+Plug 'clojure-vim/acid.nvim'                           "Asynchronous Clojure Interactive Development
+" Plug 'clojure-vim/clojure.vim'                      " Replace guns/vim-clojure-static, code style
 
 " Editor enhancements {{{1
 " ------------------------------------------------------------------------------
@@ -75,7 +76,6 @@ Plug 'ibhagwan/fzf-lua'
 Plug 'kyazdani42/nvim-web-devicons'                          " optional for icon support
 
 Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins' }    " File browser
-Plug 'junegunn/limelight.vim'
 Plug 'kshenoy/vim-signature'                                 " A plugin to place, toggle and display marks.
 Plug 'machakann/vim-highlightedyank'                         " Show highlight for yank
 Plug 'machakann/vim-sandwich'
@@ -84,7 +84,6 @@ Plug 'mg979/vim-visual-multi'                                " vim multi cursor
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'osyo-manga/vim-over'                                   " Preview replace chanage
 Plug 'preservim/tagbar'                                      " Create tag on fly, used by markdown
-Plug 'schickling/vim-bufonly'                                " Delete all the buffers except the current buffer.
 Plug 'tpope/vim-commentary'                                  " Gcc
 Plug 'preservim/nerdcommenter'                               " WIP
 Plug 'tpope/vim-repeat'
@@ -93,36 +92,22 @@ Plug 'tpope/vim-surround'
 Plug 'unblevable/quick-scope'                                " Quick highlight for f/F
 Plug 'phaazon/hop.nvim'                                      " Jump Everywhere
 
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}  " Better syntax highlight
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate'}  " Better syntax highlight
+Plug 'p00f/nvim-ts-rainbow', { 'commit': 'c6c26c4'}                                  " nvim-treesitter module, add ranbow
 Plug 'nvim-treesitter/playground'
 Plug 'romgrk/nvim-treesitter-context'
-Plug 'p00f/nvim-ts-rainbow'                                  " nvim-treesitter module, add ranbow
 Plug 'theHamsta/nvim-treesitter-pairs'                       " Create your own pair objects using tree-sitter queries!
-Plug 'folke/twilight.nvim'                                   " Dims inactive portions build on tree sitter
 " Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 Plug '~/duqcyxwd/nvim-treesitter-textobjects'                " Testing my textobjects for comments
 Plug 'nvim-treesitter/nvim-treesitter-refactor'              " Provide some highlight navigation based on treesitter
 
 
-" " WIP
-" Plug 'kyazdani42/nvim-tree.lua'                              " Explorer to replace coc explorer
-" Plug 'kyazdani42/nvim-web-devicons'
-
-" Plug 'preservim/nerdtree'
-" Plug 'ryanoasis/vim-devicons'
-" Plug 'Xuyuanp/nerdtree-git-plugin'
-" Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-" Plug 'PhilRunninger/nerdtree-buffer-ops'
-" Plug 'PhilRunninger/nerdtree-visual-selection'
 
 Plug '~/duqcyxwd/coc.nvim'                                    " Fix the compete problem with cmp
 " " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-" WIP
 Plug 'Yggdroot/indentLine'                                 " Show indent line
-
-" NOT WORKING ANYMORE
-" Plug 'tpope/vim-endwise'                                     " Add endif endfunction for some language
+Plug 'tpope/vim-endwise'                                     " Add endif endfunction for some language
 
 " Somehow it cause problem on exists
 " Plug 'ludovicchabant/vim-gutentags'               "Good way to generate tags
@@ -187,18 +172,19 @@ Plug 'cespare/vim-toml'
 Plug 'evedovelli/rst-robotframework-syntax-vim'
 Plug 'seeamkhan/robotframework-vim'
 Plug 'kchmck/vim-coffee-script'
-Plug 'leafgarland/typescript-vim'
 Plug 'mattn/emmet-vim'
 Plug 'pangloss/vim-javascript'
 Plug 'pedrohdz/vim-yaml-folds'
-Plug 'rust-lang/rust.vim'
 Plug 'tfnico/vim-gradle'
 Plug 'tmux-plugins/vim-tmux'                           " Vim plugin for .tmux.conf.
 Plug 'tweekmonster/gofmt.vim'
-Plug 'udalov/kotlin-vim'
-Plug 'zah/nim.vim'
-" Plug 'zinit-zsh/zinit-vim-syntax'
 Plug 'zdharma-continuum/zinit-vim-syntax'
+
+" I don't need them yet and they overwrite my formatoptions
+" Plug 'rust-lang/rust.vim'
+" Plug 'zah/nim.vim'
+" Plug 'leafgarland/typescript-vim'
+" Plug 'udalov/kotlin-vim'
 
 " VimWiki with Markdown {{{1
 " ------------------------------------------------------------------------------
@@ -212,9 +198,6 @@ Plug 'plasticboy/vim-markdown'                      " A better markdown plugin
 " Plug 'rlue/vim-getting-things-down'
 " Plug 'masukomi/vim-markdown-folding'
 
-
-" Not working
-"Plug 'matt-snider/vim-tagquery', { 'do': 'bash install.sh' }
 
 " Git {{{1
 " ------------------------------------------------------------------------------
@@ -234,9 +217,8 @@ Plug 'junegunn/gv.vim'                                 " A git commit browser.
 " ------------------------------------------------------------------------------
 
 Plug 'chrisbra/unicode.vim'
-Plug 'junegunn/goyo.vim'
-Plug 'folke/zen-mode.nvim'
 Plug 'mattn/vim-findroot'
+
 Plug 'mhinz/vim-startify'
 Plug 'szw/vim-dict'                                     " A dict client
 Plug 'tpope/vim-eunuch'                                 " Vim sugar from tpope
@@ -244,13 +226,15 @@ Plug 'tyru/open-browser.vim'
 Plug 'norcalli/nvim_utils'                              " Nvim utils functions
 Plug 'christoomey/vim-tmux-navigator'                   " Quickly switch vim split with tmux panel.
 
+" Buffers and windows
+Plug 'wesQ3/vim-windowswap'
+Plug 'Asheq/close-buffers.vim'
 
 
 " WIP {{{1
 " ------------------------------------------------------------------------------
 
 
-Plug 'wesQ3/vim-windowswap'
 Plug 'Olical/aniseed'
 
 
@@ -268,6 +252,7 @@ Plug 'vlime/vlime', {'rtp': 'vim/'}                       "Common Lisp dev envir
 
 
 
+
 " }}}1
 
 "Default
@@ -278,11 +263,9 @@ Plug 'vlime/vlime', {'rtp': 'vim/'}                       "Common Lisp dev envir
 Plug 'benmills/vimux'
 Plug 'dyng/ctrlsf.vim'
 Plug 'liuchengxu/vista.vim'
-" Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-unimpaired'
 
 
-" Not sure why this plugin: https://github.com/tpope/vim-unimpaired/blob/master/plugin/unimpaired.vim
-" Plug 'vim-scripts/gitignore'
 
 "}}}1
 call plug#end()

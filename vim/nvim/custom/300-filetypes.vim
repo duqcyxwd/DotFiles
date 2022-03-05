@@ -79,19 +79,6 @@ augroup END
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => io {{{1
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-augroup iolang
-  autocmd!
-  " I have the 'extras/SyntaxHighlighters/Vim' directory of the IoLanguage/io
-  " installed as a plugin, but it's just the syntax definition and that's it.
-  " This line is necessary in order to actually recognize *.io files as Io
-  " source files.
-  autocmd BufNewFile,BufRead *.io setlocal filetype=io
-augroup END
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => lisp {{{1
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 augroup lisp
@@ -183,7 +170,7 @@ augroup clojure_and_hoplon
   " autocmd FileType clojure setlocal foldmethod=syntax
 
   " Lookup the tag under cursor, accounting for ns
-  autocmd FileType clojure nnoremap <buffer> <C-]> :call ClojureTagLookup()<CR>
+  " autocmd FileType clojure nnoremap <buffer> <C-]> :call ClojureTagLookup()<CR>
 augroup END
 
 

@@ -1,3 +1,4 @@
+require("funcs.utility")
 require("nvim_utils")
 local brj = require("funcs.bracket_jump")
 
@@ -7,7 +8,7 @@ vim.g.maplocalleader = ","
 -- Utility functions {{{1
 local function set_keymap(mode, opts, keymaps)
   for _, keymap in ipairs(keymaps) do
-    vim.api.nvim_set_keymap(mode, keymap[1], keymap[2], opts)
+    vim.api.nvim_set_keymap(mode, keymap[1], keymap[2], merge(opts, keymap[3]))
   end
 end
 
@@ -47,8 +48,6 @@ local function close_float()
   end
 end
 
-
-
 local function clear()
   vim.cmd("nohlsearch")
   vim.lsp.buf.clear_references()
@@ -56,7 +55,6 @@ local function clear()
     notify.dismiss()
   end)
   close_float()
-
 end
 
 -- normal mapping {{{1
@@ -82,23 +80,17 @@ vim.cmd("xmap ga <Plug>(EasyAlign)")
 -- Start interactive EasyAlign for a motion/text object (e.g. gaip)
 vim.cmd("nmap ga <Plug>(EasyAlign)")
 
-vim.cmd("nmap gV <Plug>(VM-Reselect-Last)")
-
 -- " Fix paste
 -- " p will not overwrite register
 -- " https://vim.fandom.com/wiki/Replace_a_word_with_yanked_text
 -- " xnoremap p "_dP
 vim.cmd('xnoremap <silent> p p:let @+=@0<CR>:let @"=@0<CR>')
 
-vim.cmd("nnoremap j gj")
-vim.cmd("nnoremap k gk")
-
-vim.cmd("vnoremap 9 c()<Esc>hp")
 
 -- }}}
 
 -- stylua: ignore
-set_keymap("n", { noremap = true, silent = true }, {
+set_keymap("n", { noremap = true, silent = true }, { --{{{2
   -- execute q macro
   { "Q", "@q" },
 
@@ -111,24 +103,15 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "gP", '"+P' },
   { "gY", '"+y$' },
 
+  { "j", 'gj' },
+  { "k", 'gk' },
+
+  { 'gs',      ':Gitsigns stage_hunk<CR>' },
+  { 'gV',      '<Plug>(VM-Reselect-Last)', { noremap = false}},
+
+
   -- source config
   { "<C-s>", ':lua R("funcs.config").source()<CR>' },
-
-  -- Jump list
-  { "[j", "<C-o>" },
-  { "]j", "<C-i>" },
-
-  -- Page down/up
-  { "[d", "<PageUp>" },
-  { "]d", "<PageDown>" },
-
-  -- Git chagne Hunk
-  { "[h", ":Gitsigns prev_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
-  { "]h", ":Gitsigns next_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
-
-  -- Git chagne Hunk
-  { "[c", ":Gitsigns prev_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
-  { "]c", ":Gitsigns next_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
 
   -- Smart way to move between tabs
   { "<A-h>", "gT" },
@@ -141,27 +124,10 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "<S-Right>", ":vertical resize -2<CR>" },
 
   -- Quickfix
-  { "<Up>", ":copen<CR>" },
+  { "<Up>",   ":copen<CR>" },
   { "<Down>", ":cclose<CR>" },
   -- {'<Left>', ':cprevious<CR>'},
   -- {'<Right>', ':cnext<CR>'},
-  { "[q", ":cprevious<CR>" },
-  { "]g", ":cnext<CR>" },
-
-  -- Navigate buffers
-  { "]b", "<Cmd>bnext<CR>" },
-  { "[b", "<Cmd>bprev<CR>" },
-  { "]t", "<Cmd>tabn<CR>" },
-  { "[t", "<Cmd>tabp<CR>" },
-
-  -- jump diagnostic
-  { "[g", "<Cmd>lua vim.diagnostic.goto_prev({float = true})<CR>" },
-  { "]g", "<Cmd>lua vim.diagnostic.goto_next({float = true})<CR>" },
-  { "[e", "<CMD>Lspsaga diagnostic_jump_next<CR>" },
-  { "]e", "<CMD>Lspsaga diagnostic_jump_prev<CR>" },
-
-  -- fix spelling with first suggestion
-  { "gz", "z=1<CR><CR>" },
 
   { "cg*", "*Ncgn" },
   { "g.", [[/\V<C-r>"<CR>cgn<C-a><Esc>]] },
@@ -173,24 +139,24 @@ set_keymap("n", { noremap = true, silent = true }, {
   {"gl", "<C-W>l"},
 
   -- Edit
-
   {"K",              ":call Show_documentation()<CR>"},
   {"<CR>",           "za"},
-  {"gca",        ":call NERDComment('n', 'Toggle')<CR>"},
+  {"gca",            ":call NERDComment('n', 'Toggle')<CR>"},
 
 })
 
+set_keymap("n", { noremap = true, silent = true }, { --{{{2
+  { "<localleader>k", ":call Show_documentation()<CR>" },
+  { "<localleader>j", ":call GotoFirstFloat()<CR>" },
+})
+
 -- stylua: ignore
-set_keymap("v", { noremap = true, silent = true }, {
+set_keymap("v", { noremap = true, silent = true }, { --{{{2
+  {"9",         "c()<Esc>hp"},
   {"J",         ":move '<+1<CR>gv-gv"},
   {"K",         ":move '<-2<CR>gv-gv"},
   {"<C-Space>", ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>"},
   {"-",         ":lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>"},
-})
-
-set_keymap("n", { noremap = true, silent = true }, {
-  { "<localleader>k",  ":call Show_documentation()<CR>" },
-  { "<localleader>j",  ":call GotoFirstFloat()<CR>" },
 })
 
 -- leader mapping {{{1
@@ -218,23 +184,71 @@ for i = 1, 8, 1 do
   space_key_nmap[tostring(i)] = { "which_key_ignore", "<Cmd>BufferLineGoToBuffer " .. tostring(i) .. "<CR>" }
 end
 
--- Bracket jump {{{1
+-- Impair keys and Bracket jump {{{1
 -- This is similaer to emacs transit mode
-local brackets = {}
-for _, char in
-  ipairs({
-    "b", -- buffer
-    "e", -- Diagnostic error
-    "g", -- Diagnostic error
-    "h", -- Git change hunk
-    "c", -- Git change hunk
-    "j", -- Jump
-    "q",
-    "s", -- Spell
-    "t", -- Tab
-    "'", -- Mark
-  })
-do
+
+local impair_map = { --{{{2
+  -- in pair
+
+  -- Jump list
+  { "[j", "<C-o>" },
+  { "]j", "<C-i>" },
+
+  -- Page down/up
+  { "[d", "<PageUp>" },
+  { "]d", "<PageDown>" },
+
+  -- Git chagne Hunk
+  { "[h", ":Gitsigns prev_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
+  { "]h", ":Gitsigns next_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
+
+  -- Git chagne Hunk
+  { "[c", ":Gitsigns prev_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
+  { "]c", ":Gitsigns next_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
+
+  -- jump diagnostic
+  { "[g", "<Cmd>lua vim.diagnostic.goto_prev({float = true})<CR>" },
+  { "]g", "<Cmd>lua vim.diagnostic.goto_next({float = true})<CR>" },
+
+  { "[e", "<CMD>Lspsaga diagnostic_jump_next<CR>" },
+  { "]e", "<CMD>Lspsaga diagnostic_jump_prev<CR>" },
+}
+
+
+local map_family_table = {
+  { "b", "b" },
+  { "c", "c" },
+  { "q", "q" },
+  { "t", "tab" },
+}
+local other_unimpar = {
+  "`", -- Mark
+  "f", -- file preceding the current one alphabetically in the current file's directory
+}
+
+local mapNextFamily = function(map)  --{{{2
+  for _, entry in pairs(map) do
+    table.insert(impair_map, { "]" .. entry[1], "<cmd>" .. entry[2] .. "next<CR>" })
+    table.insert(impair_map, { "[" .. entry[1], "<cmd>" .. entry[2] .. "prev<CR>" })
+    table.insert(impair_map, { "]" .. entry[1]:upper(), "<cmd>" .. entry[2] .. "last<CR>" })
+    table.insert(impair_map, { "[" .. entry[1]:upper(), "<cmd>" .. entry[2] .. "first<CR>" })
+  end
+end
+
+-- Update impair_map
+mapNextFamily(map_family_table)
+
+local brackets = { name = "+bracket jumps" } --{{{2
+local getKeys = function(maps)
+  local res = {}
+  for _, entry in pairs(maps) do
+    local c = string.gsub(entry[1], "[%[%]]", "")
+    table.insert(res, c)
+  end
+  return res
+end
+
+for _, char in ipairs(remove_dups(join(other_unimpar, getKeys(impair_map)))) do
   brackets[char] = {
     string.format("Set bracket jump (%s)", char),
     function()
@@ -242,7 +256,9 @@ do
     end,
   }
 end
-brackets.name = "+bracket jumps"
+-- }}}2
+
+set_keymap("n", { noremap = true, silent = true }, impair_map)
 space_key_nmap.o = brackets
 
 
@@ -250,14 +266,16 @@ space_key_nmap.o = brackets
 space_key_nmap.b = { --{{{1
   name = '+buffer',
 
-  D = {'Force delete this buffer', ':bp<bar>sp<bar>bn<bar>bd!<CR>'},
-  b = {'List all buffers',         ':FFBuffers<CR>'},
-  d = {'Delete this buffer',       ':call undoquit#SaveWindowQuitHistory()<CR>:Bclose<CR>'},
-  h = {'Startify Home',            ':Startify<CR>'},
-  n = {'Next buffer',              ':bnext<CR>'},
-  o = {'Close other buffers',      ':BufOnly<CR>'},
-  p = {'Previous buffer',          ':bprev<CR>' },
-  j = {'Buffer line jump',         ':BufferLinePick<CR>' },
+  D = {'Force delete this buffer',           ':bp<bar>sp<bar>bn<bar>bd!<CR>'},
+  b = {'List all buffers',                   ':FFBuffers<CR>'},
+  c = {'buffers not visible in a window',    ':Bdelete hiddent<CR>'},
+  d = {'Delete this buffer',                 ':call undoquit#SaveWindowQuitHistory()<CR>:Bclose<CR>'},
+  h = {'Startify Home',                      ':Startify<CR>'},
+  j = {'Buffer line jump',                   ':BufferLinePick<CR>' },
+  n = {'Next buffer',                        ':bnext<CR>'},
+  o = {'Close other buffers',                ':Bdelete other<CR>'},
+  p = {'Previous buffer',                    ':bprev<CR>' },
+  t = {'Buffer tabs',                        ':FzfLua tabs<CR>'},
 
 }
 
@@ -277,8 +295,6 @@ space_key_nmap.c = { --{{{1
   s = { "Change Schema",   ":FzfLua colorschemes<CR>" },
   f = { "Change FileType", ":FFFiletypes<CR>" },
 
--- TODO
--- " "call s:nmap_cmd_2('c', 's', 'FZF Schema',                        ':FzfLua colorschemes')
 }
 
 -- stylua: ignore
@@ -291,23 +307,25 @@ space_key_nmap.e = { --{{{1
 space_key_nmap.f = { --{{{1
   name = "+File/Format",
 
-  S = { "Save all files",                ":wa<CR>!" },
-  h = { "Open History files",            ":FFHistory<CR>" },
-  r = { "Open Recent files",             ":FFHistory<CR>" },
-  d = { "Directory (nnn)",               ":FloatermNew ranger<CR>" },
-  t = { "[format] Clean trailing space", ":StripWhitespace<CR>" },
-  s = { "Save current file",             ":mkview<CR>:w<CR>" },
-  o = { "Search File under cursor",      ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('n'))<CR>" },
+  S = { "Save all files",                     ":wa<CR>!" },
+  h = { "Open History files",                 ":FFHistory<CR>" },
+  r = { "Open Recent files",                  ":FFHistory<CR>" },
+  f = { "Open File under current directory",  ":ProjectFiles<CR>" },
+  d = { "Directory (nnn)",                    ":FloatermNew ranger<CR>" },
+  t = { "[format] Clean trailing space",      ":StripWhitespace<CR>" },
+  s = { "Save current file",                  ":mkview<CR>:w<CR>" },
+  o = { "Search File under cursor",           ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('n'))<CR>" },
   e = {
     name = "+Edit",
 
-    e = { ":mkview<CR>:e!<CR>:loadview<CR>"},
+    P = { ":e! ~/.config/vim/custom/500-plugins-config.vim<CR>"},
+    a = { ":e! ~/.config/vim/lua/autocmd.lua<CR>"},
     c = { ":e! ~/.config/vim/lua/core.lua<CR>"},
-    p = { ":e! ~/.config/vim/custom/100-plugins.vim<CR>"},
+    e = { ":mkview<CR>:e!<CR>:loadview<CR>"},
     f = { ":e! ~/.config/vim/custom/300-filetypes.vim<CR>"},
     k = { ":e! ~/.config/vim/lua/keys.lua<CR>"},
-    P = { ":e! ~/.config/vim/custom/500-plugins-config.vim<CR>"},
-    r = { ":e! ~/.config/vim/custom/999-playground.vim<CR>"},
+    p = { ":e! ~/.config/vim/custom/100-plugins.vim<CR>"},
+    s = { ":e! ~/.config/vim/lua/settings.lua<CR>"},
     v = { ":e! ~/.config/vim/vimrc<CR>"},
 
   },
@@ -401,7 +419,7 @@ space_key_nmap.h = { --{{{1
 space_key_nmap.i = { --{{{1
   name = "+Inspect",
 
-  f = {'Inspect file type', ':verbose set syntax filetype foldmethod foldexpr<CR>'},
+  f = {'Inspect file type', ':verbose set syntax filetype foldmethod foldexpr<CR>:echo "Project Path: " . getcwd()<CR>:echo "Current file: " . expand("%:p")<CR>'},
 
 }
 
@@ -453,6 +471,7 @@ space_key_nmap.p = { --{{{1
   name = "+Project/Packages",
 
   f = {'Project files',                   ':FFFiles<CR>'},
+  e = {'Project files',                   ':FzfLua files<CR>'},
   i = {'Plug Install',                    ':PlugInstall<CR>'},
   u = {'Plug Update',                     ':PlugUpdate<CR>'},
   o = {'Plugin main page open in Github', ':call OpenGithubPlugin()<CR>'},
@@ -517,7 +536,7 @@ space_key_nmap.s = { --{{{1
 
   e = {'Source current file!',              ':so %<CR>'},
   v = {'Source vimrc',                      ':so $XDG_CONFIG_HOME/nvim/init.vim<CR>'},
-  l = {'Source lua file',                   ':lua R_FOLD("plugin_settings")<CR>'},
+  l = {'Source lua file',                   ':lua R_FOLD("plugins")<CR>'},
 
 }
 
@@ -543,6 +562,7 @@ space_key_nmap.t = { --{{{1
   t  = {'Toggle 80 text width',                  ':call ToggleTextWidth()<CR>'},
 
   v  = {'Toggle vertical indent line',           ':IndentLinesToggle<CR>'},
+  p  = {'Toggle findroot',                       ':call ToggleFindRootScope()<CR>'},
 
   f = {
     name = 'Fold+',
@@ -662,4 +682,3 @@ reformate_key_map(space_key_nmap_Plan)
 -- wk.register(space_key_nmap_test, { prefix = "<Space>" })
 
 -- }}}1
-

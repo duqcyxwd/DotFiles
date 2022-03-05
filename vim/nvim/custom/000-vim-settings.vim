@@ -59,10 +59,11 @@ set nolinebreak                 " Automatically break lines at 80 characters.
 set shiftwidth=2                " 1 tab == 2 spaces
 set smarttab                    " Be smart when using tabs ;)
 set tabstop=2
-" set textwidth=80                " 80 chars <Space>tt to toggle it
-set textwidth=0                " I hope this can disable auto break line
+set softtabstop=2
+" set textwidth=80              " 80 chars <Space>tt to toggle it
+set textwidth=0                 " Disable auto break line
 
-set nowrap                     " Wrap lines
+set nowrap                      " Wrap lines
 
 set foldcolumn=0                " Disable fold column by default, <Space>tfc to enable it
 set foldmethod=marker           " Use braces by default

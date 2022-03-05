@@ -1,5 +1,5 @@
 local nvim_lsp = SR("lspconfig")
-local mapping  = SR('plugin_settings.mapping')
+local mapping  = SR('plugins.mapping')
 
 
 -- LSP Config setup  {{{1

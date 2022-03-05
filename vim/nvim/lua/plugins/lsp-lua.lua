@@ -1,4 +1,4 @@
-local mapping = require("plugin_settings.mapping")
+local mapping = require("plugins.mapping")
 
 -- -- Lua LSP {{{1
 -- local sumneko_lua_loaded = not vim.inspect(package.loaded["lspconfig.configs"].sumneko_lua)

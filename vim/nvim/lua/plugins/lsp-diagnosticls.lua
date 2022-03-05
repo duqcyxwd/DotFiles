@@ -1,4 +1,5 @@
-local mapping = require("plugin_settings.mapping")
+local mapping = require("plugins.mapping")
+
 
 -- Config {{{1
 require("lspconfig").diagnosticls.setup({

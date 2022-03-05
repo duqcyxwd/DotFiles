@@ -993,9 +993,7 @@ nnoremap <silent> -
 
 " => mattn/vim-findroot {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" If you allow changing directory that goes up from sub-directory:
-let g:findroot_not_for_subdir = 0
+let g:findroot_not_for_subdir = 1
 let g:default_patterns = [
       \  '.git/',
       \  '.svn/',
@@ -1499,6 +1497,7 @@ let g:startify_bookmarks = [{'zn': '~/.config/vim/nvimrc'},
       \ {'za': '~/.config/alacritty/alacritty.yml'},
       \ {'zt': '~/.tmux.conf'}
       \]
+    " g:startify_session_dir|
 
 let g:startify_session_before_save = [ 'silent! tabdo NERDTreeClose' ]
 
@@ -1719,19 +1718,13 @@ tnoremap <Esc> <C-\><C-n>
 " Works greate with nvr
 " https://github.com/mhinz/neovim-remote
 
-" Can't use this. This is unfocus the fzf floating window
-" tnoremap <C-h> <C-\><C-N><C-w>h
-" tnoremap <C-j> <C-\><C-N><C-w>j
-" tnoremap <C-k> <C-\><C-N><C-w>k
-" tnoremap <C-l> <C-\><C-N><C-w>l
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => term: voldikss/vim-floaterm {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:floaterm_width      = 0.8
 let g:floaterm_height     = 0.8
-let g:floaterm_autoinsert = v:false
+let g:floaterm_autoinsert = v:true
 let g:floaterm_opener     = 'tabe'
 let g:floaterm_autohide   = 1                " Hide when open new file
 let g:floaterm_autoclose  = 1
