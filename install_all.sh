@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env bash(brew --prefix)
 
 echo ""
 echo "Starting bootstrapping"
@@ -25,19 +25,18 @@ fi
 # # Install GNU core utilities (those that come with OS X are outdated)
 # brew tap homebrew/dupes
 brew install coreutils
+brew install gnu-sed
 
 # # Install Bash 5.1
 # brew install bash
 
 PACKAGES=( # Brew Package {{{2
     ack
-    alacritty
     bat
     boxes
     cmake               # Cross-platform make
     clojure-lsp-native  # clojure-lsp
     exa
-    ffmpeg
     fzf
     git
     git-extras
@@ -114,8 +113,8 @@ for program in $UNINSTALL_PROGRAMS ; do brew uninstall --force $program ; done
 # Brew Cask #{{{2
 echo "Installing cask..."
 CASKS=(
-    # rectangle
     amethyst
+    alacritty
     emacs
     graphiql
     cool-retro-term
@@ -125,7 +124,7 @@ CASKS=(
 
 echo "Installing cask apps..."
 # brew install --cask ${CASKS[@]}
-brew upgrade --cask ${CASKS[@]}
+brew upgrade --cask "${CASKS[@]}"
 
 #   brew cask install rectangle
 
@@ -144,7 +143,7 @@ NPM_PACKAGES=(
 
 
 echo "npm installing ${NPM_PACKAGES[@]}"
-npm install -g ${NPM_PACKAGES[@]}
+npm install -g "${NPM_PACKAGES[@]}"
 
 # npm install -g gitopen
 # npm install -g git-recent
@@ -176,18 +175,13 @@ brew install neovim-remote
 npm install -g diagnostic-languageserver
 
 
+# brew list | fzf_tp --query="$1" +m --preview 'runcached brew info {}'
 
 # NPM Packages:
 
 # For fzf-preview in neovim
 # npm install -g neovim
 
-# # install tap repostory once
-# brew tap deviceinsight/packages
-# # install kafkactl
-# brew install deviceinsight/packages/kafkactl
-# # upgrade kafkactl
-# brew upgrade deviceinsight/packages/kafkact
 
 WIP
 brew tap conduktor/brew

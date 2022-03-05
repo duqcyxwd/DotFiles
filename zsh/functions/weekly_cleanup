@@ -7,5 +7,5 @@ zinit cclear
 zinit compinit
 
 brew update            # update brew
-brew upgrade           # update formula
+# brew upgrade           # update formula
 

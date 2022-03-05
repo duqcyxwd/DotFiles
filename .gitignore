@@ -12,3 +12,4 @@ tags
 yarn.lock
 __pycache__
 .luarc.json
+testfile/
