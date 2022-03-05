@@ -1,7 +1,4 @@
 #!/usr/bin/env bash
-
-# TMUX= fag x
-# Can't be pure command, it is using $FZF_DEFAULT_OPTS
 if [ ! "$#" -gt 0 ]; then echo "[info] input is empty"; exit 1; fi
 
 FZF_FAG_BIND_OPTS=" \
@@ -12,33 +9,17 @@ FZF_FAG_BIND_OPTS=" \
   --bind=\"ctrl-y:execute-silent(echo {1} | tr-newline | pbcopy )\"
   --header \"ctrl-o:fzfexec, ctrl-y:pbcopy, ctrl-r:nvim_remote, ctrl-v:nvim\"
 "
-# -0 exit when no match
-# -1 Automatically select the only match
-
-# Fag 1.0
-
-# ag --hidden --nobreak --noheading --color "$@" | FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_COLOR_SCHEMA_BORDER $FZF_FAG_BIND_OPTS"  \
-#   fzf_tp -0 --delimiter : \
-#   --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
-#   --preview-window +{2} \
-#   --preview-window border-none
-#   # Not working with :: in zinit --delimiter
-#   # | cut -d ':' -f1 | xargs fzf-exec   # This is not working with ctrl-v, anything command launches other script
-
-
-# AG_FLAG='--vim ' fag x
-# ag --vim x | fzf
 
 # Fag 2.0
-# AG_PREFIX="rg --column --line-number --no-heading --color=always --smart-case "
+AG_PREFIX="ag --hidden --nobreak --noheading --color"
 
 # By pass all flag to ag, keep last argument as query argument
 INITIAL_QUERY="${@: -1}"
 IFS=: read -ra selected < <(
-  ag --hidden --nobreak --noheading --color "$@" | \
   FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FAG_BIND_OPTS" \
+  FZF_DEFAULT_COMMAND="$AG_PREFIX $*" \
   fzf_tp --disabled --query "$INITIAL_QUERY" \
-      --bind "change:reload:sleep 0.1; $AG_PREFIX {q} || true" \
+      --bind "change:reload:sleep 0.3; $AG_PREFIX {q} || true" \
       --bind "alt-enter:unbind(change,alt-enter)+change-prompt(2. fzf> )+enable-search+clear-query" \
       --prompt '1. ripgrep> ' \
       --delimiter : \
@@ -50,6 +31,6 @@ IFS=: read -ra selected < <(
 
 
 # I can run this inside floaterm with following options
-# [ -n "${selected[0]}" ] && echo "${selected[0]}" "+${selected[1]}"
 [ -n "${selected[0]}" ] && [ -n "$NVIM_LISTEN_ADDRESS" ] && nvr --nostart -p "${selected[0]}" "+${selected[1]}" && exit
 [ -n "${selected[0]}" ] && nvim "${selected[0]}" "+${selected[1]}" && exit
+# [ -n "${selected[0]}" ] && echo "${selected[0]}" "+${selected[1]}"

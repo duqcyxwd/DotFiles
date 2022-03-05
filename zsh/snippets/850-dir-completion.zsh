@@ -15,13 +15,14 @@ d() { cd $_comp_dir_duqcyxwd_dir$1 }
 
 
 # https://github.com/zsh-users/zsh-completions/blob/master/zsh-completions-howto.org
-_code_directory_completion() {
+_code_directory_completion() { #{{{
   # _alternative "dirs:user directory:($(/bin/ls $_comp_dir_repodir/))"
   # _alternative "dirs:user directory:($(/usr/local/bin/fd -d 3 -t d '' $_comp_dir_repodir))"
   # local files=($(/usr/local/bin/fd -d 1 -t d '' $_comp_dir_repodir | cut -c${#_comp_dir_repodir}- | cut -c2- ))
   local files=($(/usr/local/bin/fd -d 1 -t d --base-directory=$_comp_dir_repodir ))
   compadd -a -f files
 }
+# }}}
 
 _gh_directory_completion() {
   _alternative \
@@ -29,12 +30,14 @@ _gh_directory_completion() {
 }
 
 _duqcyxwd_directory_completion() {
-  # _alternative "dirs:user directory:($(/bin/ls $_comp_dir_duqcyxwd_dir/))"
-  _alternative  "dirs:user directory:($(/usr/local/bin/fd -d 3 -t d '' $_comp_dir_duqcyxwd_dir | cut -c${#_comp_dir_duqcyxwd_dir}- | cut -c2- ))"
+  # Method 1
+  # _alternative  "dirs:user directory:($(/usr/local/bin/fd -d 3 -t d '' $_comp_dir_duqcyxwd_dir | cut -c${#_comp_dir_duqcyxwd_dir}- | cut -c2- ))"
+
+  # Method2
+  local files=($(/usr/local/bin/fd -d 3 -t d --base-directory=$_comp_dir_duqcyxwd_dir ))
+  compadd -a -f files
 }
 
-compdef _cenx_directory_completion ce
 compdef _code_directory_completion co
 compdef _gh_directory_completion gh
 compdef _duqcyxwd_directory_completion d
-

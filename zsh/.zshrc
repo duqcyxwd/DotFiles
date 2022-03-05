@@ -31,6 +31,7 @@ mlog "$(date) : zshrc start loading"
 
 # export VS_TERM = 0         # ENV to determine running env
 # SECTION: : P10K INSTANT PROMPT {{{1
+
 [[ $P10K_INSTANT_PROMOT -eq "1" ]] && (){ # instant prompt
   if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
     [[ $VS_TERM -ne "1" ]] && source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -52,9 +53,8 @@ mlog "$(date) : zshrc start loading"
   export PATH="/usr/local/heroku/bin:$PATH"
   export PATH="/usr/local/opt/ruby/bin:$PATH"
   export PATH="./node_modules/.bin:$PATH"
-  export PATH=/usr/local/opt/python/libexec/bin:$PATH         #Use brew install python/pip as default
-  export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
-
+  export PATH=/usr/local/opt/python/libexec/bin:$PATH         # Use brew install python/pip as default
+  export PATH=/usr/local/opt/coreutils/bin/:$PATH             # Add gnu fns.
 
   # export KAFKA_HOME=/usr/local/kafka-2.1.0
   export KAFKA_HOME=/usr/local/kafka_2.12-2.5.1
@@ -102,37 +102,34 @@ mlog "$(date) : zshrc start loading"
 # SECTION: : Zinit {{{1
 zinit_load() {
   # https://zdharma.github.io/zinit/wiki/INTRODUCTION/
-  source ~/.zinit/bin/zinit.zsh
-
-  autoload -Uz _zinit
-  (( ${+_comps} )) && _comps[zinit]=_zinit
+  ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+  source "${ZINIT_HOME}/zinit.zsh"
 
   # This solves problem in Catalina
   # sudo chmod 777 /private/tmp
   # sudo chmod +t /private/tmp
-
-  # autoload -Uz compinit; compinit # zinit 用户这里可能是 zpcompinit; zpcdreplay
-  # Test if we still need this
-  # zpcompinit; zpcdreplay
 
   # Stage 0 Place to Try New Or Random Plugins
   # zinit load larkery/zsh-histdb
 
   # Stage 1 Must have plugins before prompt {{{2
   {
-    zinit ice wait atload'ac_my_colors' silent;
-    zinit light shayneholmes/zsh-iterm2colors
+    # zinit ice wait atload'ac_my_colors' silent;
+    # zinit light shayneholmes/zsh-iterm2colors
 
-
-    # Load p10k
-    zinit ice depth=1 ; zinit light romkatv/powerlevel10k
     # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
     [[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh
+    # Load p10k
+    zinit ice depth=1 ; zinit light romkatv/powerlevel10k
 
-    # zsh-vi-mode: Fast not need
-    [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+    # zinit ice wait="0" atload'[[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh' silent;
+    # zinit light romkatv/powerlevel10k
+
+    ZVM_LAZY_KEYBINDINGS=false
+
     zinit light-mode for \
       jeffreytse/zsh-vi-mode
+
   }
 
   # Stage 2 Lazy load Plugins {{{2
@@ -144,18 +141,19 @@ zinit_load() {
     # The order to load plug is important below
     zinit wait lucid light-mode for \
       Aloxaf/fzf-tab \
-      zdharma/history-search-multi-word \
-      atinit"zicompinit; zicdreplay"  zdharma/fast-syntax-highlighting \
+      unixorn/fzf-zsh-plugin \
+      duqcyxwd/history-search-multi-word \
+      atinit"zicompinit; zicdreplay"  duqcyxwd/fast-syntax-highlighting \
       atload"_zsh_autosuggest_start"  zsh-users/zsh-autosuggestions \
 
 
     zinit wait silent light-mode for \
       OMZ::plugins/kubectl/kubectl.plugin.zsh \
-      OMZ::plugins/git/git.plugin.zsh
+      OMZ::plugins/git/git.plugin.zsh \
+      OMZ::plugins/autojump/autojump.plugin.zsh
 
     zinit wait lucid silent light-mode for \
       as'completion' is-snippet 'https://github.com/Valodim/zsh-curl-completion/blob/master/_curl' \
-      as'completion' is-snippet 'https://github.com/alacritty/alacritty/blob/master/extra/completions/_alacritty' \
       blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions \
 
     zinit wait silent light-mode for \
@@ -164,21 +162,26 @@ zinit_load() {
 
   # Stage 3 Lazy load Personal scripts or config {{{2
   {
+
+    # I prefer source-all-snippets over zinit snippets because it is faster
+    # and I don't need to update them manually
+    
     : '
     for snippet in $ZDOTDIR/snippets/*.zsh; do
-      mlog "snippet loading $snippet"
+      # mlog "snippet loading $snippet"
       # zinit update $snippet
-      zinit ice wait silent;
+      zinit ice wait=0 silent;
       zinit snippet $snippet
     done
     unset snippet
     # '
+
     # The last plugin to load need overwrite alias and keybinding
     # check loading order by zinit time (-m)
-    # bindkey.zsh and dir-completion are lazy loading
-    # zinit ice wait atload'bindkey.zsh && dir-completion' silent;
-    zinit ice wait="0" atload'source-all-snippets && bindkey.zsh && dir-completion' silent;
+
+    zinit ice wait="0" atload'source-all-snippets && bindkey.zsh' silent;
     zinit light zpm-zsh/empty
+
   }
 
   # Stage 4 Lazy load Other scripts  {{{2
@@ -188,10 +191,9 @@ zinit_load() {
     # 3. Plugins
     # Don't use kubectl-fzf, it will disable auto complte
     # bonnefoa/kubectl-fzf \
-    zinit wait lucid silent light-mode for \
+    zinit wait="0" lucid silent light-mode for \
       agkozak/zsh-z \
       djui/alias-tips \
-      psprint/zsh-cmd-architect \
       wfxr/forgit \
       zpm-zsh/template \
       OMZ::plugins/brew/brew.plugin.zsh \
@@ -199,16 +201,15 @@ zinit_load() {
       OMZ::plugins/iterm2/iterm2.plugin.zsh \
       OMZ::plugins/systemd/systemd.plugin.zsh
 
-    zinit ice wait="0" atload'bindkey.zsh' silent;
-    zinit light zpm-zsh/empty
+    # zinit ice wait="0" atload'bindkey.zsh' silent;
+    # zinit light zpm-zsh/empty
+
   }
 
   #}}}
 
-  # zinit light qoomon/zjump
-  # When use zsh-z with fzf, the sort is not working. I am trying other jumps
-  zinit light wting/autojump
-  [ -f /usr/local/etc/profile.d/autojump.sh ] && . /usr/local/etc/profile.d/autojump.sh
+  zinit ice wait="0" atload'source ~/.zshrc-local.sh; zicompinit; zicdreplay;' silent;
+  zinit light zpm-zsh/empty
 
   # zinit self-update updates zinit
 }
@@ -229,9 +230,13 @@ zsh_plugins_config() {
   # zsh-vi-mode
   # The plugin will auto execute this zvm_after_init function
   # ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
-  ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+  # ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+  ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BEAM
+
 
   function zvm_after_init() {
+    # [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+    # bindkey.zsh
     # zsh_cust_bindkey
     # ac_my_colors
   }
@@ -290,8 +295,6 @@ unsetopt LIST_BEEP
 
 # }}}
 
-
-[ -f ~/.zshrc-local.sh ] && source ~/.zshrc-local.sh
-
 mlog "zshrc loaded"
 
+### End of Zinit's installer chunk
