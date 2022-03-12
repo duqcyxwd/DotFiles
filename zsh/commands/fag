@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-if [ ! "$#" -gt 0 ]; then echo "[info] input is empty"; exit 1; fi
+# if [ ! "$#" -gt 0 ]; then echo "[info] input is empty"; exit 1; fi
 
 FZF_FAG_BIND_OPTS=" \
   --bind=\"ctrl-space:execute(bat --style=numbers --color=always --paging always --highlight-line {2} {1} | LESS='-R +{2}' less)\"
@@ -10,27 +10,47 @@ FZF_FAG_BIND_OPTS=" \
   --header \"ctrl-o:fzfexec, ctrl-y:pbcopy, ctrl-r:nvim_remote, ctrl-v:nvim\"
 "
 
+# Parsing ag flags
+FLAGS=""
+while :; do
+  case "${1-}" in
+  -G | --file-search-regex)
+    FLAGS="$FLAGS $1"
+    shift
+    FLAGS="$FLAGS $1"
+    ;;
+  -?*) FLAGS="$FLAGS $1" ;;
+  *) break ;;
+  esac
+  shift
+done
+
+INITIAL_QUERY="$*"
+
+
 # Fag 2.0
-AG_PREFIX="ag --hidden --nobreak --noheading --color"
+AG_PREFIX="ag --hidden --nobreak --noheading --color $FLAGS"
 
 # By pass all flag to ag, keep last argument as query argument
 INITIAL_QUERY="${@: -1}"
 IFS=: read -ra selected < <(
   FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FAG_BIND_OPTS" \
-  FZF_DEFAULT_COMMAND="$AG_PREFIX $*" \
-  fzf_tp --disabled --query "$INITIAL_QUERY" \
+  FZF_DEFAULT_COMMAND="$AG_PREFIX \"$*\"" \
+  fzf_tp --disabled --query "$*" \
       --bind "change:reload:sleep 0.3; $AG_PREFIX {q} || true" \
       --bind "alt-enter:unbind(change,alt-enter)+change-prompt(2. fzf> )+enable-search+clear-query" \
       --prompt '1. ripgrep> ' \
       --delimiter : \
-      --preview-window +{2} \
-      --preview-window border-none \
-      --preview 'bat --style=numbers --color=always --highlight-line {2} {1}'
-      # --preview-window 'up,60%,border-bottom,+{2}+3/3,~3'
+      --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
+      --preview-window 'bottom,80%,border-top,+{2}+3/3'
+
+      # --preview-window +{2} \
+      # --preview-window border-none \
 )
 
 
 # I can run this inside floaterm with following options
-[ -n "${selected[0]}" ] && [ -n "$NVIM_LISTEN_ADDRESS" ] && nvr --nostart -p "${selected[0]}" "+${selected[1]}" && exit
-[ -n "${selected[0]}" ] && nvim "${selected[0]}" "+${selected[1]}" && exit
+[ -n "${selected[0]}" ] && [ -n "$NVIM_LISTEN_ADDRESS" ] && nvr --nostart -p "${selected[0]}" "+${selected[1]}" && exit 0
+[ -n "${selected[0]}" ] && nvim "${selected[0]}" "+${selected[1]}" && exit 0
 # [ -n "${selected[0]}" ] && echo "${selected[0]}" "+${selected[1]}"
+exit 0
