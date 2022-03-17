@@ -84,7 +84,6 @@ alias tf='echo "Task finished"'
 #============= Powerful and Common alias =============
 alias cpwd='echo "copy currenty directory" && pwd |pbcopy'
 #Copy file path to clipboard greadlink: GNU readlink
-cpath() {greadlink -f $1 | tr -d '\n' | pbcopy }
 alias cf='pbpaste | pbcopy' # clean format of clipboard
 alias dir='dirs -v'
 

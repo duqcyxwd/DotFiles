@@ -19,7 +19,6 @@ fi
 
 
 # # Update homebrew recipes
-# # Not working, I think my OS is out of date
 # brew update
 
 # # Install GNU core utilities (those that come with OS X are outdated)
@@ -58,6 +57,7 @@ PACKAGES=( # Brew Package {{{2
     vim
     watch
     wget
+    php
 
     # python
     # python3

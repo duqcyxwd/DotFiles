@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 mlog "source all snippets"
 for snippet in $ZDOTDIR/snippets/*.zsh; do

@@ -11,6 +11,7 @@ __zsh_cust_bindkey() {
   mlog "bindkey.zsh: Update bindkey"
 
   bindkey '^k'      autosuggest-accept
+  bindkey "^n"      autosuggest-execute
   bindkey '^u'      vi-forward-blank-word-end  # only use one from $zsh_autosuggest_partial_accept_widgets
   bindkey '^\n'     autosuggest-execute
   bindkey "^r"      history-search-multi-word  # use multi word. fzf is too aggressive

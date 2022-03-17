@@ -14,7 +14,7 @@ alias p10ksigns="open https://github.com/romkatv/powerlevel10k#what-do-different
 {
     if [ $commands[exa] ]; then
       alias exa='/usr/local/bin/exa --time-style=long-iso --group-directories-first -F --icons --color=always'
-      alias e=exa
+      alias e=/usr/local/bin/exa
       alias ea='exa -a'
       alias eaa='exa .?* -d'
 
@@ -22,17 +22,17 @@ alias p10ksigns="open https://github.com/romkatv/powerlevel10k#what-do-different
       alias lsa='exa -a'
       alias lsr='/bin/ls'                                                # Raw ls
 
-      # g git, a, all
-      alias l='exa -lhF'                                                 # list, size, type
-      alias ld='exa -lhFD'                                               # list, size, type
+      alias l='exa -lh --header'                                         # list, size, type
+      alias ld='exa -l --header --only-dirs'                             # list, size, type
       alias lg='l --git --no-user --no-permissions'                      # list, size, type, git
       alias lss='l -s ext'                                               # list, size, type
 
       alias la='exa -lbFa'
+      alias lar='exa -lbFa --sort=modified '
       alias laa='la .?* -d'                                              # Show hidden files only
       alias lag='la --git'
 
-      alias ll='l -G'                                                    # long list
+      alias ll='l -G --no-user'                                                    # long list
       alias lls='ll -s ext'                                              # long list sort
       alias llg='ll --git'                                               # long list
 
@@ -44,14 +44,14 @@ alias p10ksigns="open https://github.com/romkatv/powerlevel10k#what-do-different
       alias lxaa='lx .?* -d'
 
 
-      alias lta='exa --group-directories-first -lTa'
-      alias lt1='exa --group-directories-first -lT -L 1'
-      alias lt2='exa --group-directories-first -lT -L 2'
-      alias lt3='exa --group-directories-first -lT -L 3'
-      alias lt4='exa --group-directories-first -lT -L 4'
-      alias lt5='exa --group-directories-first -lT -L 5'
-      alias lt6='exa --group-directories-first -lT -L 6'
-      alias lt7='exa --group-directories-first -lT -L 7'
+      alias lta='exa --group-directories-first --no-permissions -lTa'
+      alias lt1='exa --group-directories-first --no-permissions -lT -L 1'
+      alias lt2='exa --group-directories-first --no-permissions -lT -L 2'
+      alias lt3='exa --group-directories-first --no-permissions -lT -L 3'
+      alias lt4='exa --group-directories-first --no-permissions -lT -L 4'
+      alias lt5='exa --group-directories-first --no-permissions -lT -L 5'
+      alias lt6='exa --group-directories-first --no-permissions -lT -L 6'
+      alias lt7='exa --group-directories-first --no-permissions -lT -L 7'
       alias lt=lt2
     fi
 }

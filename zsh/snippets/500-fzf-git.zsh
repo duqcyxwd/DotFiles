@@ -240,7 +240,7 @@
     # https://unix.stackexchange.com/questions/7558/execute-a-command-once-per-line-of-piped-input
     # printf "foo bar\nbaz bat" | xargs -n1 printf "message %s\n"
     # Now gbrdi works for delete multiple branch at same time
-    git_branch_remote_delete_interactive(){ gbri $@ | sed 's/origin\///' | xargs -n1 git push -d origin }
+    git_branch_remote_delete_interactive(){ echo "git push -d origin" && gbri $@ | sed 's/origin\///' | xargs -n1 git push -d origin }
     alias gbrDi=git_branch_remote_delete_interactive
 
     # duplicate with gbrdi, choose one
@@ -298,3 +298,10 @@
   alias grhi=forgit::reset::head
 }
 
+# 1}}}
+
+
+git_folders() { for i in */.git; do ( echo $i); done }
+git-pull-all(){
+  git_folders | fzf | xargs -I% git_pull_at_directory %
+}

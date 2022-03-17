@@ -1,8 +1,8 @@
 #!/bin/zsh
 
-unalias kgpn
-unalias kgns
-unalias kgp
+unalias kgpn 2>/dev/null || true
+unalias kgns 2>/dev/null || true
+unalias kgp 2>/dev/null || true
 
 # unalias kgcmi
 
@@ -26,32 +26,7 @@ kdelnsi() { #{{{2
 
 
 # }}}2
-# KUBECTL get pod id and container ID ###{{{1
 
-alias kgci=kgpci
-
-# KUBECTL Logs #{{{1
-
-
-alias klffi=klpi
-alias klp=klpi
-alias klfi="kli -f"
-alias klci="kli -f"
-alias klafi="klai -f"
-
-kexeciti() { #{{{1
-
-  read -r POD_ID CONTAINER_ID < <(kgpci)
-
-  if [[ "$POD_ID" == "" || "$CONTAINER_ID" == "" ]] ; then
-    return 1
-  fi
-
-  echo "kubectl exec -it -c $CONTAINER_ID $POD_ID $@"
-
-  kubectl exec -it -c $CONTAINER_ID $POD_ID $@
-}
-#}}}1
 # KUBECTL Secret {{{1
 kgseci() { #{{{2
   # Get and preview secre
@@ -194,6 +169,9 @@ kgsi() { #{{{2
 
   alias kgsec=kube_secret_preview
   alias kgsecl="runcached_ns kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG"
+
+  # Produce a period-delimited tree of all keys returned for pods, etc
+  alias kpaths="kubectl get pods -o json | jq -c 'paths|join(\".\")'"
 
   # alias ksd='kubectl scale deployment'
 

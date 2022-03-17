@@ -102,22 +102,22 @@ git-branch-delete-remote-current-branch() {
 # Unalias git log {{{2
 # --------------------------------------------------------------------------
 # Unalias from OMZ::plugins/git/git.plugin.zsh
-unalias -m glg
-unalias -m glgp
-unalias -m glgg
-unalias -m glgga
-unalias -m glgm
-unalias -m glo
-unalias -m glol
-unalias -m glols
-unalias -m glod
-unalias -m glods
-unalias -m glola
-unalias -m glog
-unalias -m gloga
-unalias -m glp
-unalias -m gb
-unalias -m gbr
+unalias -m glg 2>/dev/null || true
+unalias -m glgp 2>/dev/null || true
+unalias -m glgg 2>/dev/null || true
+unalias -m glgga 2>/dev/null || true
+unalias -m glgm 2>/dev/null || true
+unalias -m glo 2>/dev/null || true
+unalias -m glol 2>/dev/null || true
+unalias -m glols 2>/dev/null || true
+unalias -m glod 2>/dev/null || true
+unalias -m glods 2>/dev/null || true
+unalias -m glola 2>/dev/null || true
+unalias -m glog 2>/dev/null || true
+unalias -m gloga 2>/dev/null || true
+unalias -m glp 2>/dev/null || true
+unalias -m gb 2>/dev/null || true
+unalias -m gbr 2>/dev/null || true
 
 # Git Alias {{{2
 # --------------------------------------------------------------------------

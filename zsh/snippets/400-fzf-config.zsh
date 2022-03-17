@@ -2,8 +2,6 @@
 #   DEVTOOL: __fzf_config
 # -------------------------------------------------------
 
-mlog fzf-config loaded
-
 __fzf_config() {
    # require fzf junegunn/fzf
    # brew install fzf
@@ -106,7 +104,8 @@ __fzf_config() {
 
     # FZF Theme }}}
   # FZF Default Config {{{1
-    export FZF_MY_OPTS="--reverse --ansi --multi --exit-0 --cycle --height 80% --preview-window border-left"
+    # export FZF_MY_OPTS="--reverse --ansi --multi --exit-0 --cycle --height 80% --preview-window border-left"
+    export FZF_MY_OPTS="--reverse --ansi --multi --cycle --height 80% --preview-window border-left"
 
     # FZF Default options
     export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_DRACULA "

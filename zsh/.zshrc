@@ -32,6 +32,7 @@ mlog "$(date) : zshrc start loading"
 # export VS_TERM = 0         # ENV to determine running env
 # SECTION: : P10K INSTANT PROMPT {{{1
 
+
 [[ $P10K_INSTANT_PROMOT -eq "1" ]] && (){ # instant prompt
   if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
     [[ $VS_TERM -ne "1" ]] && source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
@@ -117,18 +118,15 @@ zinit_load() {
     # zinit ice wait atload'ac_my_colors' silent;
     # zinit light shayneholmes/zsh-iterm2colors
 
-    # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
-    [[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh
-    # Load p10k
-    zinit ice depth=1 ; zinit light romkatv/powerlevel10k
-
-    # zinit ice wait="0" atload'[[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh' silent;
-    # zinit light romkatv/powerlevel10k
-
     ZVM_LAZY_KEYBINDINGS=false
-
     zinit light-mode for \
       jeffreytse/zsh-vi-mode
+
+
+    # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
+    # Load p10k
+    zinit ice depth=1 ; zinit light romkatv/powerlevel10k
+    [[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh
 
   }
 
@@ -165,7 +163,7 @@ zinit_load() {
 
     # I prefer source-all-snippets over zinit snippets because it is faster
     # and I don't need to update them manually
-    
+
     : '
     for snippet in $ZDOTDIR/snippets/*.zsh; do
       # mlog "snippet loading $snippet"
@@ -230,8 +228,8 @@ zsh_plugins_config() {
   # zsh-vi-mode
   # The plugin will auto execute this zvm_after_init function
   # ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLINKING_BLOCK
-  # ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
-  ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BEAM
+  ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+  # ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BEAM
 
 
   function zvm_after_init() {
