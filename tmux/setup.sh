@@ -2,4 +2,4 @@
 DOTFILE=$(git rev-parse --show-toplevel)
 echo "$DOTFILE"
 
-ln -s "$DOTFILE/DotFiles/.tmux.conf" "$HOME/.tmux.conf"
+ln -s "$DOTFILE/tmux/.tmux.conf" "$HOME/.tmux.conf"
