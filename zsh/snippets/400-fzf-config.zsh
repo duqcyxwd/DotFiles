@@ -33,6 +33,10 @@ __fzf_config() {
     --bind='ctrl-w:toggle-preview-wrap'
 
     --bind='change:top'
+    --bind 'ctrl-p:up'
+    --bind 'ctrl-n:down'
+    --bind 'up:previous-history'
+    --bind 'down:next-history'
     "
     # Notes: In tmux with vim, ctrl-kjhl is used....
     # Need to find other better keyding
@@ -105,7 +109,7 @@ __fzf_config() {
     # FZF Theme }}}
   # FZF Default Config {{{1
     # export FZF_MY_OPTS="--reverse --ansi --multi --exit-0 --cycle --height 80% --preview-window border-left"
-    export FZF_MY_OPTS="--reverse --ansi --multi --cycle --height 80% --preview-window border-left"
+    export FZF_MY_OPTS="--reverse --ansi --multi --cycle --height 80% --preview-window border-left --history=$XDG_CACHE_HOME/fzf/fzf_history"
 
     # FZF Default options
     export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_DRACULA "

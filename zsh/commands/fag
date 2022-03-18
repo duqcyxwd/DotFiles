@@ -36,7 +36,7 @@ INITIAL_QUERY="${@: -1}"
 IFS=: read -ra selected < <(
   FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FAG_BIND_OPTS" \
   FZF_DEFAULT_COMMAND="$AG_PREFIX \"$*\"" \
-  fzf_tp --disabled --query "$*" \
+  fzf_tp --history="$XDG_CACHE_HOME/fag/fag_history" --disabled --query "$*" \
       --bind "change:reload:sleep 0.3; $AG_PREFIX {q} || true" \
       --bind "alt-enter:unbind(change,alt-enter)+change-prompt(2. fzf> )+enable-search+clear-query" \
       --prompt '1. ripgrep> ' \

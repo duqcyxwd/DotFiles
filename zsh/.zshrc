@@ -16,16 +16,6 @@
 export P10K_INSTANT_PROMOT=1
 export ZPROF_TRACK=0
 
-# PATH=$ZDOTDIR/commands:$PATH
-# for d in $ZDOTDIR/commands/*; do PATH="$PATH:$d"; done
-
-# WIP Not sure if I still need to leave this in regular path
-# I have some fucntion and I want they to be loaded as soon as possible
-PATH=$ZDOTDIR/functions:$PATH
-
-FPATH=$FPATH:$ZDOTDIR/functions:$ZDOTDIR/completions
-autoload -Uz $ZDOTDIR/functions/*(:t)
-
 mlog "$(date) : zshrc start loading"
 
 

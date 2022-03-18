@@ -139,5 +139,8 @@ f() { #{{{1
 pathi() { #{{{1
   echo $PATH | tr ':' '\n' | sort | fzf
 }
+fpathi() { #{{{1
+  echo $FPATH | tr ':' '\n' | sort | fzf
+}
 
 #}}}

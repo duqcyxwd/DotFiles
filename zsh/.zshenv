@@ -23,3 +23,12 @@ export RUNCACHED_MAX_AGE=1800
 export RUNCACHED_IGNORE_ENV=1
 export RUNCACHED_IGNORE_PWD=1
 
+# Put function in FAPTH so it is faster to run as a script
+# Add autoload so I don't need to put them into PATH
+FPATH=$FPATH:$ZDOTDIR/functions/
+autoload -Uz $ZDOTDIR/functions/*(:t)
+
+FPATH=$FPATH:$ZDOTDIR/functions/kube/
+autoload -Uz $ZDOTDIR/functions/kube/*(:t)
+
+FPATH=$FPATH:$ZDOTDIR/completions

@@ -7,5 +7,6 @@ fi
 
 touch $1
 chmod +x $1
-echo "#!/bin/sh\n" >>$1
+echo "#!/bin/sh" >>$1
+echo "" >>$1
 

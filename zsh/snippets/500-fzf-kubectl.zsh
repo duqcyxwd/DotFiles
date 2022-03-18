@@ -4,6 +4,8 @@ unalias kgpn 2>/dev/null || true
 unalias kgns 2>/dev/null || true
 unalias kgp 2>/dev/null || true
 
+FZF_KUBECTL_DEFAULT_OPTS=" --exit-0 --info=inline --layout=reverse"
+
 # unalias kgcmi
 
 #     K8S: NAMESPACE/CONTEXT {{{1
@@ -34,7 +36,8 @@ kgseci() { #{{{2
   local CACHE_DIR=$RUNCACHED_CACHE_DIR/$(kube_cache_key $(kcgcn))
 
   local SEC=$( runcached_ns kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG|
-      fzf_tp --info=inline --layout=reverse --header-lines=2 \
+    FZF_DEFAULT_OPTS=" $FZF_DEFAULT_OPTS $FZF_KUBECTL_DEFAULT_OPTS" \
+      fzf_tp --header-lines=2 \
       --bind "ctrl-r:reload(runcached_ns kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
       --prompt "$(kubectl config current-context | sed 's/-context$//')> " \
       --preview-window right \
@@ -76,6 +79,36 @@ kgdi() { #{{{2
     --preview-window right \
     --preview 'runcached_ns kubectl describe deployment {1}' \
     | awk '{print $1}'
+}
+
+
+kgdpi() { #{{{2
+  # Return pod id by given deployment.
+  if [ "$1" == "" ]; then
+    deployment=$(kgdi)
+  else
+    deployment=$1
+  fi
+
+  if [ "$deployment" == "" ]; then
+    return 0
+  fi
+
+  pods="$(kgp_filter $deployment)"
+  count="$(echo $pods | wc -l)"
+
+  if [ $count -eq 3 ]; then
+    echo "$pods" | tail -1
+    return
+  fi
+
+
+  kgp_filter $deployment | fzf_tp --select-1 --info=inline --layout=reverse --header-lines=2 \
+        --bind "ctrl-r:reload(KGP_TTL=0 kgp_filter $deployment)" \
+        --bind="ctrl-y:execute-silent(echo {1} | tr-newline | pbcopy )" \
+        --prompt "$(kcgccn) pods> " \
+        --preview-window "right:75%" \
+        --preview 'kdp_cached {1} 50' \
 }
 
 
