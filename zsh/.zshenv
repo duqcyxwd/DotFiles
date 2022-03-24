@@ -13,7 +13,6 @@ export SAVEHIST=10000002          #The maximum number of history events to save 
 HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
 
 export PATH=$ZDOTDIR/commands:$PATH
-export PATH=$ZDOTDIR/commands/kubectl:$PATH
 
 # Some env which could be used in fzf_tp
 export ZSH_LOADING_LOG=$XDG_CACHE_HOME/.startup.log

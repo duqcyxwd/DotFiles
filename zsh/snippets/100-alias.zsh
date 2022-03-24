@@ -6,6 +6,7 @@ alias mvimr='mvim --remote'
 alias vi='nvim'
 alias vim='nvim'
 alias mypath='echo ${PATH//:/\\n}'
+alias mvnt='/usr/local/bin/mvn -T 1C'
 
 
 

@@ -1,7 +1,0 @@
-#!/bin/zsh
-# Predefine cache folder per kubectl namespace
-
-RUNCAHED_TTL=${T_NS:-$(kcgccn)}
-local CACHE_DIR="$(kube_cache_dir $RUNCAHED_TTL)"
-
-runcached --bg-update --ignore-pwd --ignore-env --cache-dir "$CACHE_DIR" "$@"

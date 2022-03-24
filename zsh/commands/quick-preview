@@ -2,7 +2,6 @@
 
 input_path="$@"
 
-echo "$@" >> /Users/EYONDUU/work_credential/temp/log/log
 if [[ -d "${input_path}" ]] ; then
     # echo "$PASSED is a directory";
     exa --group-directories-first -F --icons --group-directories-first -T -lh -L 2 --color=always "$@"

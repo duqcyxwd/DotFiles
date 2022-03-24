@@ -84,13 +84,13 @@ kgdi() { #{{{2
 
 kgdpi() { #{{{2
   # Return pod id by given deployment.
-  if [ "$1" == "" ]; then
+  if [ "$1" -eq "" ]; then
     deployment=$(kgdi)
   else
     deployment=$1
   fi
 
-  if [ "$deployment" == "" ]; then
+  if [[ "$deployment" == "" ]]; then
     return 0
   fi
 

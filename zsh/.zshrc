@@ -47,6 +47,7 @@ mlog "$(date) : zshrc start loading"
   export PATH=/usr/local/opt/python/libexec/bin:$PATH         # Use brew install python/pip as default
   export PATH=/usr/local/opt/coreutils/bin/:$PATH             # Add gnu fns.
 
+
   # export KAFKA_HOME=/usr/local/kafka-2.1.0
   export KAFKA_HOME=/usr/local/kafka_2.12-2.5.1
   # export KAFKA_HOME=/usr/local/Cellar/kafka/2.8.0/libexec   #Homebrew installed
@@ -54,9 +55,8 @@ mlog "$(date) : zshrc start loading"
   export KAFKA_CONFIG=$KAFKA_HOME/config
   export PATH="$KAFKA_HOME/bin:$PATH"
 
-  # /Library/Java/JavaVirtualMachines/jdk1.8.0_45.jdk/Contents/Home
   export JAVA_HOME=$(/usr/libexec/java_home)
-  export PATH=$PATH:$JAVA_HOME/bin:$DSE_BIN
+  export PATH=$JAVA_HOME/bin:$PATH
 
   export GOPATH=$HOME/go
   export PATH=$PATH:$GOROOT/bin:$GOPATH/bin

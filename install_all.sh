@@ -62,6 +62,8 @@ PACKAGES=( # Brew Package {{{2
     # python
     # python3
 
+    pyenv
+
     # WIP
     # nnn #I build nnn
     ranger
