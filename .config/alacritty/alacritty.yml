@@ -127,7 +127,7 @@ font:
   italic:
     family: "JetBrainsMono Nerd Font"
     # I am using custom build font JetBrainsMono Nerd Font
-    # The <Italic> is conflict with <Light Italic>. 
+    # The <Italic> is conflict with <Light Italic>.
     # I need to manully config it in Font Book app
     style: Light Italic
 

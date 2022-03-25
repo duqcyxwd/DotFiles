@@ -14,7 +14,7 @@ SR("lualine").setup({
   sections = {
     lualine_a = { "mode" },
     lualine_b = { "branch", "diff", "diagnostics" },
-    lualine_c = { "filename", 'lsp_progress' },
+    lualine_c = { "filename", "lsp_progress" },
     lualine_x = { "encoding", "fileformat", "filetype" },
     lualine_y = { "progress" },
     lualine_z = { "location" },
@@ -34,15 +34,22 @@ SR("lualine").setup({
 SR("bufferline").setup({
   -- akinsho/bufferline.nvim
   options = {
-    numbers = "ordinal",
+    numbers = function(opts)
+      return string.format('%s.', opts.ordinal)
+    end,
     diagnostics = "none",
     offsets = { { filetype = "coc-explorer" } },
     show_tab_indicators = true,
     enforce_regular_tabs = true,
     always_show_bufferline = false,
-    separator_style = "thin",
-    max_prefix_length = 15,
-    tab_size = 15,
+    -- separator_style = "slant" | "thick" | "thin" | { 'any', 'any' },
+    separator_style = "slant",
+    max_prefix_length = 10,
+    max_name_length = 30,
+    tab_size = 25,
+    show_buffer_close_icons = false,
+    show_buffer_icons = false,
+
     middle_mouse_command = "bdelete! %d",
     custom_filter = function(buf_number, buf_numbers)
       -- -- filter out filetypes you don't want to see
@@ -57,4 +64,3 @@ SR("bufferline").setup({
     end,
   },
 })
-

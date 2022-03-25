@@ -993,7 +993,9 @@ nnoremap <silent> -
 
 " => mattn/vim-findroot {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:findroot_not_for_subdir = 1
+let g:findroot_not_for_subdir = 0
+" # 0 works for my root toggle
+" # 1 break session??? need confirm
 let g:default_patterns = [
       \  '.git/',
       \  '.svn/',
@@ -1093,42 +1095,40 @@ let g:fzf_colors =
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => FzfLua {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-if exists('g:plugs["fzf-lua"]')
-" set border to none to avoid conflict between fzf-lua and fzf.vim
-lua << EOF
-  require('fzf-lua').setup{
-    fzf_opts = {
-      ['--border']        = 'none',
-    },
-    manpages = { previewer = { _ctor = require'fzf-lua.previewer'.fzf.man_pages } },
-    border           = 'none',
-    winopts = {
-      -- (i.e. when 'split' is not defined, default)
-      height           = 0.85,            -- window height
-      width            = 0.90,            -- window width
-      row              = 0.50,            -- window row position (0=top, 1=bottom)
-      col              = 0.50,            -- window col position (0=left, 1=right)
-      hl = {
-        normal         = 'Normal',        -- window normal color (fg+bg)
-        border         = 'FloatBorder',        -- border color (try 'FloatBorder')
-      },
-    },
-    keymap = {
-       -- These override the default tables completely
-       -- no need to set to `false` to disable a bind
-       -- delete or modify is sufficient
-       builtin = {
-         ["?"]          = "toggle-preview",
-         ["<C-j>"]      = "preview-page-down",
-         ["<C-k>"]      = "preview-page-up",
-         ["<C-w>"]      = "toggle-preview-wrap",
-         }
-    }
-  }
-EOF
-endif
+" if exists('g:plugs["fzf-lua"]')
+" lua << EOF
+"   require('fzf-lua').setup{
+"     fzf_opts = {
+"       ['--border']        = 'none',
+"     },
+"     manpages = { previewer = { _ctor = require'fzf-lua.previewer'.fzf.man_pages } },
+"     border           = 'none',
+"     winopts = {
+"       -- (i.e. when 'split' is not defined, default)
+"       height           = 0.85,            -- window height
+"       width            = 0.90,            -- window width
+"       row              = 0.50,            -- window row position (0=top, 1=bottom)
+"       col              = 0.50,            -- window col position (0=left, 1=right)
+"       hl = {
+"         normal         = 'Normal',        -- window normal color (fg+bg)
+"         border         = 'FloatBorder',        -- border color (try 'FloatBorder')
+"       },
+"     },
+"     keymap = {
+"        -- These override the default tables completely
+"        -- no need to set to `false` to disable a bind
+"        -- delete or modify is sufficient
+"        builtin = {
+"          ["?"]          = "toggle-preview",
+"          ["<C-j>"]      = "preview-page-down",
+"          ["<C-k>"]      = "preview-page-up",
+"          ["<C-w>"]      = "toggle-preview-wrap",
+"          }
+"     }
+"   }
+" EOF
+" endif
 
-" :enew|pu=execute('echo g:plugs')
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => GV {{{1
@@ -1492,7 +1492,7 @@ let g:startify_padding_left = 5
 let g:startify_files_number = 6
 let g:startify_enable_special = 0
 let g:startify_session_persistence = 1
-let g:startify_bookmarks = [{'zn': '~/.config/vim/nvimrc'},
+let g:startify_bookmarks = [{'zn': '~/.config/vim/nvim/init.vim'},
       \ {'zz': '~/.config/zsh/.zshrc'},
       \ {'za': '~/.config/alacritty/alacritty.yml'},
       \ {'zt': '~/.tmux.conf'}
@@ -1723,11 +1723,24 @@ tnoremap <Esc> <C-\><C-n>
 " => term: voldikss/vim-floaterm {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:floaterm_width      = 0.8
-let g:floaterm_height     = 0.8
+let g:floaterm_height     = 0.9
 let g:floaterm_autoinsert = v:true
 let g:floaterm_opener     = 'tabe'
 let g:floaterm_autohide   = 1                " Hide when open new file
 let g:floaterm_autoclose  = 1
+
+let g:floaterm_rootmarkers = [
+      \  '.git/',
+      \  '.svn/',
+      \  '.hg/',
+      \  '.bzr/',
+      \  'Rakefile',
+      \  'pom.xml',
+      \  'project.clj',
+      \  '*.csproj',
+      \  '*.sln',
+      \  '.vimroot',
+      \]
 
 " command! NNN FloatermNew nnn
 augroup FLOATTERM
@@ -1872,10 +1885,17 @@ if exists('g:plugs["vim-tmux-navigator"]')
   let g:tmux_navigator_save_on_switch = 0
   let g:tmux_navigator_disable_when_zoomed = 1
 
-  nnoremap <silent> <C-h> :FloatermHide!<CR>:TmuxNavigateLeft<CR>
-  nnoremap <silent> <C-j> :FloatermHide!<CR>:TmuxNavigateDown<CR>
-  nnoremap <silent> <C-k> :FloatermHide!<CR>:TmuxNavigateUp<CR>
-  nnoremap <silent> <C-l> :FloatermHide!<CR>:TmuxNavigateRight<CR>
+  if exists('g:plugs["vim-floaterm"]')
+    nnoremap <silent> <C-h> :FloatermHide!<CR>:TmuxNavigateLeft<CR>
+    nnoremap <silent> <C-j> :FloatermHide!<CR>:TmuxNavigateDown<CR>
+    nnoremap <silent> <C-k> :FloatermHide!<CR>:TmuxNavigateUp<CR>
+    nnoremap <silent> <C-l> :FloatermHide!<CR>:TmuxNavigateRight<CR>
+  else
+    nnoremap <silent> <C-h> :TmuxNavigateLeft<CR>
+    nnoremap <silent> <C-j> :TmuxNavigateDown<CR>
+    nnoremap <silent> <C-k> :TmuxNavigateUp<CR>
+    nnoremap <silent> <C-l> :TmuxNavigateRight<CR>
+  endif
 
 endif
 

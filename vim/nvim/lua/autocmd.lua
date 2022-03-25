@@ -11,16 +11,29 @@ local autocmds = {
     { "BufEnter", "keys.lua",  "set foldmethod=marker" },
   },
   vim = {
-    { "FileType", "vim", "set foldmethod=marker" },
+    { "FileType", "vim",       "set foldmethod=marker" },
   },
   saga = {
     { "FileType", "sagahover", "nnoremap <buffer> <Esc> :q<CR>" },
   },
   clojure = {
-    { "FileType", "clojure", "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
+    { "FileType", "clojure",   "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
   },
   startify = {
-    { "FileType", "startify", "DisableWhitespace" },
+    { "FileType", "startify",  "DisableWhitespace" },
+  },
+  robot = {
+    { "FileType", "robot",     "set foldmethod=indent" },
+  },
+  allFileType = {
+    { "FileType", "fzf",       "nnoremap <buffer> <ESC> :q<CR>" },
+  },
+
+  run = {
+    { "FileType", "sh",    'let @g=":w\\<CR>:sp |terminal %\\<CR>"' },
+    { "BufEnter", "*.py",  'let @g=":w\\<CR>:sp |terminal python %\\<CR>"' },
+    { "BufEnter", "*.js",  'let @g=":w\\<CR>:sp |terminal node %\\<CR>"' },
+    { "BufEnter", "*.zsh", 'let @g=":w\\<CR>:sp |terminal %\\<CR>"' },
   },
 
 }
@@ -33,7 +46,8 @@ vim.diagnostic.float_toggle = function()
   local group = {
     DIAGNOSTICS_FLOAT = {
       -- Only show diagnostic when edit complete. This will help me to get clean complete list
-       {'CursorHold', '*', "lua require'lspsaga.diagnostic'.show_line_diagnostics()"}}
+       {'CursorHold', '*', "lua require'lspsaga.diagnostic'.show_line_diagnostics()"}
+     }
   }
   if diagnostics_float_enabled then
     nvim_create_augroups({ DIAGNOSTICS_FLOAT = {} })

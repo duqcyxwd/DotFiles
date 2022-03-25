@@ -1,5 +1,6 @@
 require("funcs.utility")
 require("nvim_utils")
+local vim_u = require("funcs.vim_utility")
 local brj = require("funcs.bracket_jump")
 
 vim.g.mapleader = "\\"
@@ -34,36 +35,9 @@ local reformate_key_map = function(keymap)
   end
 end
 
-local function close_float()
-  -- https://github.com/neovim/neovim/issues/11440#issuecomment-877693865
-  local this_win = vim.fn.win_getid()
-  -- close all floating windows that are relative to the current one
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
-    local win_config = vim.api.nvim_win_get_config(win)
-    -- If the mapping doesn't close enough windows, use the following line instead:
-    -- if win_config.relative ~= "" then
-    if win_config.relative == "win" and win_config.win == this_win then
-      vim.api.nvim_win_close(win, false)
-    end
-  end
-end
-
-local function clear()
-  vim.cmd("nohlsearch")
-  vim.lsp.buf.clear_references()
-  IfHas("notify", function(notify)
-    notify.dismiss()
-  end)
-  close_float()
-end
-
 -- normal mapping {{{1
 
-vim.keymap.set("n", "<Esc>", clear, { desc = "clear" })
-vim.keymap.set("n", "<Right>", brj.next, { desc = "next (])" })
-vim.keymap.set("n", "<Left>", brj.prev, { desc = "prev ([)" })
-
--- Others {{{2
+-- Special mapping Others {{{2
 
 -- vim.cmd("vnoremap <silent> <C-Space> :lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>")
 -- vim.cmd("vnoremap <silent> -         :lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>")
@@ -86,6 +60,10 @@ vim.cmd("nmap ga <Plug>(EasyAlign)")
 -- " xnoremap p "_dP
 vim.cmd('xnoremap <silent> p p:let @+=@0<CR>:let @"=@0<CR>')
 
+-- WIP Add jump by j k
+-- " j, k          Store relative line number jumps in the jumplist.
+vim.cmd("nnoremap <expr> k (v:count > 1 ? \"m'\" . v:count : '') . 'k'")
+vim.cmd("nnoremap <expr> j (v:count > 1 ? \"m'\" . v:count : '') . 'j'")
 
 -- }}}
 
@@ -93,6 +71,14 @@ vim.cmd('xnoremap <silent> p p:let @+=@0<CR>:let @"=@0<CR>')
 set_keymap("n", { noremap = true, silent = true }, { --{{{2
   -- execute q macro
   { "Q", "@q" },
+
+  -- vim.keymap is supported in latest neovim
+  -- vim.keymap.set("n", "<Esc>", clear, { desc = "clear" })
+  -- vim.keymap.set("n", "<Right>", brj.next, { desc = "next (])" })
+  -- vim.keymap.set("n", "<Left>", brj.prev, { desc = "prev ([)" })
+  { "<Left>",  ':lua R("funcs.bracket_jump").prev()<CR>'},
+  { "<Right>", ':lua R("funcs.bracket_jump").next()<CR>'},
+  { "<Esc>",   ':lua R("funcs.vim_utility").clear()<CR>'},
 
   -- yank to end of line
   -- { "Y", "y$" },
@@ -174,14 +160,17 @@ local space_key_nmap = {
   ['<tab>']   = { 'last buffer',                ':e#<CR>'},
   ["\\"]      = { 'FZF Command History Search', ':FFHistory:<CR>'},
   ["'"]       = { 'Toggles the neoterm',        ':above Ttoggle<CR>'},
-  -- ["`"]       = { 'Toggles the Float Terminal', ':Lspsaga toggle_floaterm<CR>'},
   ["`"]       = { 'Toggles the Float Terminal', ':FloatermToggle<CR>'},
 }
 local space_key_vmap = {}
 
+-- Buffer/Tab Switch {{{1
+-- Map <Space>1..8 to buffers
+-- Map [1..8 to tabs
 for i = 1, 8, 1 do
   -- space_key_nmap[tostring(i)] = { "which_key_ignore", "<Plug>AirlineSelectTab" .. tostring(i) .. "<CR>" }
   space_key_nmap[tostring(i)] = { "which_key_ignore", "<Cmd>BufferLineGoToBuffer " .. tostring(i) .. "<CR>" }
+  set_keymap("n", { noremap = true, silent = true }, {{ "[" ..tostring(i), tostring(i).."gt" } })
 end
 
 -- Impair keys and Bracket jump {{{1
@@ -260,22 +249,25 @@ end
 
 set_keymap("n", { noremap = true, silent = true }, impair_map)
 space_key_nmap.o = brackets
+space_key_nmap.k = brackets
+space_key_nmap.n = brackets
 
 
 -- stylua: ignore
 space_key_nmap.b = { --{{{1
   name = '+buffer',
 
-  D = {'Force delete this buffer',           ':bp<bar>sp<bar>bn<bar>bd!<CR>'},
   b = {'List all buffers',                   ':FFBuffers<CR>'},
-  c = {'buffers not visible in a window',    ':Bdelete hiddent<CR>'},
   d = {'Delete this buffer',                 ':call undoquit#SaveWindowQuitHistory()<CR>:Bclose<CR>'},
+  D = {'Delete this buffer!',                ':bp<bar>sp<bar>bn<bar>bd!<CR>'},
   h = {'Startify Home',                      ':Startify<CR>'},
   j = {'Buffer line jump',                   ':BufferLinePick<CR>' },
   n = {'Next buffer',                        ':bnext<CR>'},
-  o = {'Close other buffers',                ':Bdelete other<CR>'},
+  o = {'Keep only current buffer',           ':Bdelete other<CR>'},
   p = {'Previous buffer',                    ':bprev<CR>' },
+
   t = {'Buffer tabs',                        ':FzfLua tabs<CR>'},
+  l = {'Buffer tabs list',                   ':FzfLua tabs<CR>'},
 
 }
 
@@ -298,9 +290,24 @@ space_key_nmap.c = { --{{{1
 }
 
 -- stylua: ignore
+space_key_nmap.d = { --{{{1
+  name = "+Delete window/tab/buffer",
+
+  -- Bclose: close buffer without close window
+  h = { "Delete hidden unattached buffer", ":Bdelete hidden<CR>"},
+  b = { "Delete this buffer",              ":call undoquit#SaveWindowQuitHistory()<CR>:Bclose<CR>"},
+  B = { "Delete this buffer!",             ":call undoquit#SaveWindowQuitHistory()<CR>:bp<bar>sp<bar>bn<bar>bd!<CR>"},
+  w = { "Delete this window",              ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
+  W = { "Delete this window and buffer",   ":call undoquit#SaveWindowQuitHistory()<CR>:bdelete!<CR>" },
+  t = { "Delete this tab",                 ":tabclose<CR>"},
+
+}
+
+-- stylua: ignore
 space_key_nmap.e = { --{{{1
   name = "+EDIT/Explorer",
-  e = { "Coc Explorer",          ":CocCommand explorer<CR>" },
+  e = { "Coc Explorer",               ":CocCommand explorer<CR>" },
+  t = { "open current buffer in tab", ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:close<CR>:tabnext<CR>" },
 }
 
 -- stylua: ignore
@@ -311,22 +318,27 @@ space_key_nmap.f = { --{{{1
   h = { "Open History files",                 ":FFHistory<CR>" },
   r = { "Open Recent files",                  ":FFHistory<CR>" },
   f = { "Open File under current directory",  ":ProjectFiles<CR>" },
-  d = { "Directory (nnn)",                    ":FloatermNew ranger<CR>" },
+  d = { "Directory (ranger)",                 ":FloatermNew ranger<CR>" },
   t = { "[format] Clean trailing space",      ":StripWhitespace<CR>" },
   s = { "Save current file",                  ":mkview<CR>:w<CR>" },
   o = { "Search File under cursor",           ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('n'))<CR>" },
   e = {
     name = "+Edit",
 
-    P = { ":e! ~/.config/vim/custom/500-plugins-config.vim<CR>"},
+    P = { ":e! ~/.config/vim/custom/after/500-plugins-config.vim<CR>"},
     a = { ":e! ~/.config/vim/lua/autocmd.lua<CR>"},
     c = { ":e! ~/.config/vim/lua/core.lua<CR>"},
     e = { ":mkview<CR>:e!<CR>:loadview<CR>"},
-    f = { ":e! ~/.config/vim/custom/300-filetypes.vim<CR>"},
+    f = { ":e! ~/.config/vim/custom/after/300-filetypes.vim<CR>"},
     k = { ":e! ~/.config/vim/lua/keys.lua<CR>"},
-    p = { ":e! ~/.config/vim/custom/100-plugins.vim<CR>"},
+    p = { ":e! ~/.config/vim/custom/before/100-plugins.vim<CR>"},
     s = { ":e! ~/.config/vim/lua/settings.lua<CR>"},
     v = { ":e! ~/.config/vim/vimrc<CR>"},
+
+  },
+  w = {
+    name = "+Write",
+    q = { ":wq<CR>"},
 
   },
 }
@@ -351,9 +363,9 @@ space_key_nmap.g = { --{{{1
   e = {'Gitsign Edit mode',     ':Gitsigns toggle_word_diff<CR>:Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>'},
   m = {'Git Magit',             ':MagitOnly<CR>'},
   s = {'Git status',            ':FzfPreviewGitStatus<CR>'},
-  p = {'Git preview hunk',      ':Gitsigns preview_hunk<CR>'},
   i = {'Git line info',         ":lua require('gitsigns').blame_line({ full = true})<CR>"},
   l = {'Git link open',         ':GBrowse<CR>'},
+  p = {'Git Gina Push',         ':Gina push<CR>'},
 
   h = {
     name ='Git hunk',
@@ -361,6 +373,7 @@ space_key_nmap.g = { --{{{1
     u = { 'GitSign stage_hunk undo',        ':Gitsigns undo_stage_hunk<CR>' },
     R = { 'GitSign hunk restore',           ':Gitsigns reset_hunk<CR>' },
     r = { 'GitSign buffer reset',           ':Gitsigns reset_buffer_index<CR>' },
+    p = { 'Git preview hunk',               ':Gitsigns preview_hunk<CR>'},
 
   },
   v = {'Git history view ', ':GV<CR>'},
@@ -419,7 +432,9 @@ space_key_nmap.h = { --{{{1
 space_key_nmap.i = { --{{{1
   name = "+Inspect",
 
-  f = {'Inspect file type', ':verbose set syntax filetype foldmethod foldexpr<CR>:echo "Project Path: " . getcwd()<CR>:echo "Current file: " . expand("%:p")<CR>'},
+  f = {'Inspect file type',         ':verbose set syntax filetype foldmethod foldexpr<CR>:echo "\\nProject Path: " . getcwd()<CR>:echo "Current file: " . expand("%:p")<CR>'},
+  p = {'Inspect installed plugins', ":enew|pu=execute('echo g:plugs')<CR>"},
+
 
 }
 
@@ -467,6 +482,14 @@ space_key_nmap.l = { --{{{1
 }
 
 -- stylua: ignore
+space_key_nmap.o = { --{{{1
+  name = "+Open",
+
+  b = { "Open Buffer in new tab",  ":tabedit %<CR>" },
+
+}
+
+-- stylua: ignore
 space_key_nmap.p = { --{{{1
   name = "+Project/Packages",
 
@@ -482,11 +505,12 @@ space_key_nmap.p = { --{{{1
 space_key_nmap.q = { --{{{1
   name = "+Quit",
 
-  q = {'Quit',             ':q<CR>'},
-  f = {'Force Quit all',             ':qa!<CR>'},
-  Q = {'Force Quit',       ':q!<CR>'},
-  a = {'Quit all',         ':qa<CR>'},
   A = {'Quit all (Force)', ':qa!CR<>'},
+  a = {'Quit all',         ':qa<CR>'},
+  f = {'Force Quit all',   ':qa!<CR>'},
+  Q = {'Force Quit',       ':q!<CR>'},
+  q = {'Quit',             ':q<CR>'},
+  w = {'Quit',             ':wq<CR>'},
 
 }
 
@@ -530,6 +554,8 @@ space_key_nmap.s = { --{{{1
   p = {'FZF <Ag> Search Current Project',   ":MyFzfAg<CR>"},
   r = {'FZF <Rg> Search Current Project',   ":FFRg<CR>"},
   s = {'FZF Search Lines in Current Files', ":MyFzfLuaBlines<CR>"},
+  f = {'run fag',                           ":FloatermSend FZF_TP_OPTS=\"-p 95\\%\" fag<CR>"},
+  F = {'run fag',                           ":<C-U>execute ':FloatermSend FZF_TP_OPTS=\"-p 95\\%\" fag '.GetCurrentWord('n')<CR>"},
 
   c = {'Search highlight clean',            ':nohlsearch<CR>'},
   h = {'Search history',                    ':FzfLua search_history<CR>'},
@@ -548,18 +574,19 @@ space_key_vmap.s = { --{{{1
   g = {'FZF <Rg> Search Current Project',   ":<C-U>execute ':MyFzfLuaGrep '.GetCurrentWord('v')<CR>"},
   r = {'FZF <Rg> Search Current Project',   ":<C-U>execute ':FFRg '.GetCurrentWord('v')<CR>"},
   p = {'FZF <Ag> Search Current Project',   ":<C-U>execute ':MyFzfAg '.GetCurrentWord('v')<CR>"},
+  f = {'run fag',                           ":<C-U>execute ':FloatermSend FZF_TP_OPTS=\"-p 95\\%\" fag '.GetCurrentWord('v')<CR>"},
 }
 
 -- stylua: ignore
 space_key_nmap.t = { --{{{1
   name = "+Toggle",
 
+  m  = {'Color: Dark/Light Mode',                ':ToggleColorschemeMode<CR>'},
   M  = {'Color: FZF Schema',                     ':FzfLua colorschemes<CR>'},
   s  = {'Toggle Strip Whitespace On Save',       ':EnableStripWhitespaceOnSave<CR>:echo "ToggleStripWhitespaceOnSave"<CR>'},
-  T  = {'TagbarToggle',                          ':TagbarToggle<CR>'},
-  m  = {'Color: Dark/Light Mode',                ':ToggleColorschemeMode<CR>'},
   S  = {'Toggle Trailling whitespace indicator', ':ToggleWhitespace<CR>'},
-  t  = {'Toggle 80 text width',                  ':call ToggleTextWidth()<CR>'},
+  T  = {'TagbarToggle',                          ':TagbarToggle<CR>'},
+  t  = {'Toggle 80 text width',                  ':call ToggleTextWidthWithColor()<CR>'},
 
   v  = {'Toggle vertical indent line',           ':IndentLinesToggle<CR>'},
   p  = {'Toggle findroot',                       ':call ToggleFindRootScope()<CR>'},
@@ -598,6 +625,14 @@ settingToggle(toggle_keymap)
 vim.cmd("nnoremap \\s :call LoopFoldMethod()<CR>:set foldmethod<CR>zv")
 
 -- stylua: ignore
+
+space_key_nmap.T = { --{{{1
+  name = "+Tabs",
+
+  c  = {'Tab close',                   ':tabclose<CR>'},
+  o  = {'Tab Only',                    ':tabonly<CR>'},
+
+}
 space_key_vmap.v = { --{{{1
   v = {  "Visual", ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>" },
 }
@@ -607,27 +642,26 @@ vim.cmd("vnoremap v :lua require'nvim-treesitter.incremental_selection'.node_inc
 space_key_nmap.w = { --{{{1
   name = "+Window",
 
-  c = { "Window Close", ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
-  h = { "Window Hide", ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
-  d = { "Window Close and Delete", ":call undoquit#SaveWindowQuitHistory()<CR>:bd!<CR>" },
-  u = { "Undoquit Window", ":Undoquit<CR>" },
-  q = { "Write and quit", ":wq<CR>" },
-  w = { "VimWiki Index Page", ":e ~/vimwiki/index.md<CR>" },
-  s = { "Window Swap", ":call WindowSwap#EasyWindowSwap()<CR>" },
-  n = { "Open Window in new tab", ":tabedit %<CR>" },
+  c = { "Delete this window",            ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
+  C = { "Delete this window and buffer", ":call undoquit#SaveWindowQuitHistory()<CR>:bdelete!<CR>" },
+  q = { "Write and quit",                ":wq<CR>" },
+  s = { "Window Swap",                   ":call WindowSwap#EasyWindowSwap()<CR>" },
+  u = { "Undoquit Window",               ":Undoquit<CR>" },
+  w = { "VimWiki Index Page",            ":e ~/vimwiki/index.md<CR>" },
+  m = { "Maximum Current window",        ":ZoomToggle<CR>"},
+
 }
 
 -- stylua: ignore
 space_key_nmap.z = { --{{{1
   name = "+Mist",
 
-  z = {'Goyo',              ':Goyo<CR>'},
-  n = {'New Zen mode',      ':ZenMode<CR>'},
-  m = {'Zoom',              ':ZoomToggle<CR>'},
-  o = {'Zoom',              ':ZoomToggle<CR>'},
-  l = {'Limelight',         ':Limelight!!<CR>'},
-  t = {'Twilight',          ':Twilight<CR>'},
-  u = {'Undo tree',         ':UndotreeToggle<CR>'},
+  l = {'Limelight',                  ':Limelight!!<CR>'},
+  t = {'Twilight',                   ':Twilight<CR>'},
+
+  u = {'Undo tree',                  ':UndotreeToggle<CR>'},
+  z = {'Goyo',                       ':Goyo<CR>'},
+  n = {'Zen mode (Similar to Goyo)', ':ZenMode<CR>'},
 
 }
 

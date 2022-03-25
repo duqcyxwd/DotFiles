@@ -15,7 +15,7 @@ function! <SID>BufcloseCloseIt() abort
    endif
 
    if buflisted(l:currentBufNum)
-     execute("bdelete! ".l:currentBufNum)
+     execute("bdelete ".l:currentBufNum)
    endif
 endfunction
 

@@ -1,8 +1,16 @@
+if exists('g:colorschema_loaded')
+    finish
+endif
+let g:colorschema_loaded = 1
+
 " terminal color / italics finagling
 let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"
 
-let g:colorscheme_mode = v:null
+" One time setup {{{1
+" let g:colorscheme_mode = v:null
+let g:colorscheme_mode = 'dark'
+colorscheme dracula
 
 
 " 1. Italicize comments.
@@ -31,13 +39,13 @@ function! s:DarkMode() abort
   " Hack: Call colorschem twice to get correct corlor
   colorscheme dracula
   colorscheme dracula
-  highlight Visual  guifg=White
+
+  " Visual Selection highlight
+  " highlight Visual  guifg=White
+  " highlight Visual  guibg=Grey50
   let g:airline_theme='dracula'
 
   " " Hack: Call plug dracula twice to get color right....
-  " call plug#begin('$XDG_DATA_HOME/nvim-plug')
-  " Plug 'dracula/vim', { 'as': 'dracula' }
-  " call plug#end()
 
 endfunction
 command! DarkMode call s:DarkMode()
@@ -63,20 +71,41 @@ function! s:LightMode() abort
 endfunction
 command! LightMode call s:LightMode()
 
+
+" VIM Multi colr
+fun! s:MultiThemesDark()  "{{{1
+  " Modified from
+  " https://github.com/mg979/vim-visual-multi/blob/master/autoload/vm/themes.vim
+  hi! VM_Extend ctermbg=24                   guibg=#005f87
+  hi! VM_Cursor ctermbg=31    ctermfg=237    guibg=#0087af    guifg=#87dfff
+  hi! VM_Insert ctermbg=239                  guibg=#4c4e50
+  hi! VM_Mono   ctermbg=167   ctermfg=253    guibg=#df5f5f    guifg=#dadada cterm=bold term=bold gui=bold
+endfun
+
+fun! s:MultiThemesLight() "{{{1
+  hi! VM_Extend ctermbg=143   ctermfg=0      guibg=darkkhaki  guifg=black
+  hi! VM_Cursor ctermbg=64    ctermfg=186    guibg=olivedrab  guifg=khaki
+  hi! VM_Insert ctermbg=239                  guibg=#4c4e50
+  hi! VM_Mono   ctermbg=131   ctermfg=235    guibg=#AF5F5F    guifg=#262626
+endfun
 " Toggle {{{1
 function! s:ToggleColorschemeMode() abort
   if g:colorscheme_mode ==# 'dark'
     call s:LightMode()
+    call s:MultiThemesLight()
   else
     call s:DarkMode()
+    call s:MultiThemesDark()
   endif
  syntax enable               " Enable syntax highlighting
 endfunction
 command! ToggleColorschemeMode call s:ToggleColorschemeMode()
 
-" Start in dark mode
-call s:DarkMode()
 
+" One time setup {{{1
+" Start in dark mode
+" call s:DarkMode()
+call s:MultiThemesDark()
 
 set termguicolors
 

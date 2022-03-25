@@ -321,7 +321,7 @@ call s:nmap_cmd_2('t', 's', 'Toggle Trailling whitespace indicator', ':ToggleWhi
 call s:nmap_cmd_2('t', 'S', 'Toggle Strip Whitespace On Save',       ':ToggleStripWhitespaceOnSave')
 call s:nmap_cmd_2('t', 'm', 'Color: Dark/Light Mode',                ':ToggleColorschemeMode')
 call s:nmap_cmd_2('t', 'M', 'Color: FZF Schema',                     ':FzfLua colorschemes')
-call s:nmap_cmd_2('t', 't', 'Toggle 80 text width',                  ':call ToggleTextWidth()')
+call s:nmap_cmd_2('t', 't', 'Toggle 80 text width',                  ':call ToggleTextWidthWithColor()')
 call s:nmap_cmd_2('t', 'T', 'TagbarToggle',                          ':TagbarToggle')
 call s:nmap_cmd_2('t', 'd', 'toggle diagnostics',                    '<Cmd>lua vim.diagnostic.toggle()')
 "

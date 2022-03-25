@@ -17,34 +17,32 @@
 " ------------------------------------------------------------------------------
 " Highlight characters in column 81+ with a red background.
 " (source: https://stackoverflow.com/a/235970/2338327)
-let s:highlightCharacterOver80 = 1
-function! s:HighlightCharactersOver80() abort
-  if s:highlightCharacterOver80
-    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-          \ | match OverLength /\%81v.\+/
-  else
-    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
-          \ | match OverLength /\%999v.\+/
-  endif
-endfunction
+" let s:highlightCharacterOver80 = 1
+" function! s:HighlightCharactersOver80() abort
+"   if s:highlightCharacterOver80
+"     highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"           \ | match OverLength /\%81v.\+/
+"   else
+"     highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"           \ | match OverLength /\%999v.\+/
+"   endif
+" endfunction
 
-function! ToggleTextWidth()
+function! ToggleTextWidthWithColor()
   if &textwidth == 0
     set textwidth=80
     let s:highlightCharacterOver80 = 1
+    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+          \ | match OverLength /\%81v.\+/
     syntax on
   else
     set textwidth=0
     let s:highlightCharacterOver80 = 0
+    highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+          \ | match OverLength /\%999v.\+/
     syntax on
   endif
 endfunction
-
-augroup ColorSchemeMods
-  autocmd!
-  autocmd ColorScheme * call s:HighlightCharactersOver80()
-augroup END
-
 
 " [Functions] Toggle Reload VIM file when save {{{1
 " ------------------------------------------------------------------------------

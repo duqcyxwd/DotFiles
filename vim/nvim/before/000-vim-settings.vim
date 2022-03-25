@@ -11,8 +11,8 @@
 " Chuan's Settings =>  {{{1
 " options {{{2
 
-filetype indent on          " Enable filetype plugins
-filetype plugin on          " Enable filetype plugins
+filetype indent on              " Enable filetype plugins
+filetype plugin on              " Enable filetype plugins
 
 set autoread                    " Set to auto read when a file is changed from the outside
 set clipboard+=unnamed          " use system clipboard
@@ -47,6 +47,7 @@ set startofline                 " When "on" the commands listed below move the c
 set timeoutlen=500              " The default timeoutlen is 1000 ms.
 set updatetime=250
 " set viminfo^=%                  " Remember info about open buffers on close, will reopen buffer Replaced with shada
+set shada=!,'300,<50,s10,h      " WIP, increase maximum recent opened files
 set visualbell
 
 " Don't use this with tabline
@@ -92,6 +93,9 @@ set viewoptions=cursor,folds
 " Required by nvim-cmp, WIP
 set completeopt=menu,menuone,noselect
 
+" Change jump like browser style stack
+set jumpoptions+=stack
+
 " * Special Setings * {{{2
 
 " Fixes occasional issues where Vim disables syntax highlighting because
@@ -118,17 +122,17 @@ endif
 
 
 " autocmd group {{{2
-augroup i_like_folding_lol
-  autocmd!
-  " autocmd BufWinEnter * silent! :%foldopen!
-augroup END
+" augroup i_like_folding_lol
+"   autocmd!
+"   " autocmd BufWinEnter * silent! :%foldopen!
+" augroup END
 
 " auto-Load fold views
-augroup AutoSaveFolds
-  autocmd!
-  " autocmd BufWinLeave ?* mkview
-  " autocmd BufWinEnter ?* silent! loadview
-augroup END
+" augroup AutoSaveFolds
+"   autocmd!
+"   " autocmd BufWinLeave ?* mkview
+"   " autocmd BufWinEnter ?* silent! loadview
+" augroup END
 
 
 " Save last session using startify

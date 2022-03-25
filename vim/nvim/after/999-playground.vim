@@ -39,3 +39,11 @@ endfunction
 
 
 " map <Leader>ew :e <C-R>=expand("%:p:h") . "/" <CR>
+
+
+" DO NOT COMMIT THIS LINE
+" => github fugitive {{{1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:fugitive_gitlab_domains = ['https://gitlab.internal.ericsson.com']
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
