@@ -13,7 +13,7 @@
 
 # SECTION: : SCRIPT LOADING VARIABLE {{{1
 # --------------------------------------------------------------------------
-export P10K_INSTANT_PROMOT=1
+export P10K_INSTANT_PROMOT=0
 export ZPROF_TRACK=0
 
 mlog "$(date) : zshrc start loading"
@@ -60,10 +60,6 @@ mlog "$(date) : zshrc start loading"
 
   export GOPATH=$HOME/go
   export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-
-  # export KUBECONFIG=$KUBECONFIG:$HOME/.kube/config
-  export KUBECONFIG=$HOME/.kube/config
-  # [[ ! -v KUBECONFIG ]] && export KUBECONFIG=$HOME/.kube/config
 
   export NODE_PATH=/usr/lib/node_modules
 
@@ -233,11 +229,15 @@ zsh_plugins_config() {
 
 # }}}1
 
+# Quick Dirty config before lazy loading 1{{{
 # Add some quick dirty useful alias so I can use them before they are loaded
 alias vim='nvim'
 alias vi='nvim'
 alias gst='git status'
 [[ $commands[exa] ]] && alias la="exa -lbFa"
+ce() { cd $_comp_dir_cenxdir$1 }
+alias c=ce
+# }}}
 
 zinit_load
 zsh_plugins_config

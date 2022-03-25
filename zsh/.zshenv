@@ -31,3 +31,5 @@ FPATH=$FPATH:$ZDOTDIR/functions/kube/
 autoload -Uz $ZDOTDIR/functions/kube/*(:t)
 
 FPATH=$FPATH:$ZDOTDIR/completions
+
+export KUBECONFIG=$HOME/.kube/config
