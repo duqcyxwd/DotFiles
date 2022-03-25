@@ -325,13 +325,13 @@ space_key_nmap.f = { --{{{1
   e = {
     name = "+Edit",
 
-    P = { ":e! ~/.config/vim/custom/after/500-plugins-config.vim<CR>"},
+    P = { ":e! ~/.config/vim/after/500-plugins-config.vim<CR>"},
     a = { ":e! ~/.config/vim/lua/autocmd.lua<CR>"},
     c = { ":e! ~/.config/vim/lua/core.lua<CR>"},
     e = { ":mkview<CR>:e!<CR>:loadview<CR>"},
-    f = { ":e! ~/.config/vim/custom/after/300-filetypes.vim<CR>"},
+    f = { ":e! ~/.config/vim/after/300-filetypes.vim<CR>"},
     k = { ":e! ~/.config/vim/lua/keys.lua<CR>"},
-    p = { ":e! ~/.config/vim/custom/before/100-plugins.vim<CR>"},
+    p = { ":e! ~/.config/vim/before/100-plugins.vim<CR>"},
     s = { ":e! ~/.config/vim/lua/settings.lua<CR>"},
     v = { ":e! ~/.config/vim/vimrc<CR>"},
 

@@ -1013,10 +1013,6 @@ let g:findroot_search_parent = 0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => fzf {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" nnoremap <C-f> :FZF<CR>
-" nnoremap <C-g> :GFiles<CR>
-" nnoremap <C-g> :GFiles<CR>
-
 let g:fzf_command_prefix="FF"
 
 " Update so it will search hiddent file
@@ -1091,44 +1087,6 @@ let g:fzf_colors =
       \ 'marker':  ['fg', 'Keyword'],
       \ 'spinner': ['fg', 'Label'],
       \ 'header':  ['fg', 'Comment'] }
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => FzfLua {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" if exists('g:plugs["fzf-lua"]')
-" lua << EOF
-"   require('fzf-lua').setup{
-"     fzf_opts = {
-"       ['--border']        = 'none',
-"     },
-"     manpages = { previewer = { _ctor = require'fzf-lua.previewer'.fzf.man_pages } },
-"     border           = 'none',
-"     winopts = {
-"       -- (i.e. when 'split' is not defined, default)
-"       height           = 0.85,            -- window height
-"       width            = 0.90,            -- window width
-"       row              = 0.50,            -- window row position (0=top, 1=bottom)
-"       col              = 0.50,            -- window col position (0=left, 1=right)
-"       hl = {
-"         normal         = 'Normal',        -- window normal color (fg+bg)
-"         border         = 'FloatBorder',        -- border color (try 'FloatBorder')
-"       },
-"     },
-"     keymap = {
-"        -- These override the default tables completely
-"        -- no need to set to `false` to disable a bind
-"        -- delete or modify is sufficient
-"        builtin = {
-"          ["?"]          = "toggle-preview",
-"          ["<C-j>"]      = "preview-page-down",
-"          ["<C-k>"]      = "preview-page-up",
-"          ["<C-w>"]      = "toggle-preview-wrap",
-"          }
-"     }
-"   }
-" EOF
-" endif
-
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => GV {{{1
@@ -1465,50 +1423,6 @@ let g:rainbow_conf = {
 " [=           Jump to prev line having a marker of any type
 " m?           Open location list and display markers from current buffer
 " m<BS>        Remove all markers
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => startify {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:startify_custom_header_h = [
-      \' /**********************************************************************/',
-      \' /*       ___          ___          ___          ___          ___      */',
-      \' /*      /\  \        /\  \        /\  \        /\__\        /|  |     */',
-      \' /*      \:\  \       \:\  \      /::\  \      /:/  /       |:|  |     */',
-      \' /*       \:\  \       \:\  \    /:/\:\  \    /:/  /        |:|  |     */',
-      \' /*   ___ /::\  \  ___ /::\  \  /:/ /::\  \  /:/  /  ___  __|:|  |     */',
-      \' /*  /\  /:/\:\__\/\  /:/\:\__\/:/_/:/\:\__\/:/__/  /\__\/\ |:|__|____ */',
-      \' /*  \:\/:/  \/__/\:\/:/  \/__/\:\/:/  \/__/\:\  \ /:/  /\:\/:::::/__/ */',
-      \' /*   \::/__/      \::/__/      \::/__/      \:\  /:/  /  \::/~~/~     */',
-      \' /*    \:\  \       \:\  \       \:\  \       \:\/:/  /    \:\~~\      */',
-      \' /*     \:\__\       \:\__\       \:\__\       \::/  /      \:\__\     */',
-      \' /*      \/__/        \/__/        \/__/        \/__/        \/__/     */',
-      \" /* Happy Hacking. Chuan's new vim                                     */",
-      \' /**********************************************************************/',
-      \ ]
-
-let g:startify_custom_header = 'startify#center(g:startify_custom_header_h)'
-
-let g:startify_padding_left = 5
-let g:startify_files_number = 6
-let g:startify_enable_special = 0
-let g:startify_session_persistence = 1
-let g:startify_bookmarks = [{'zn': '~/.config/vim/nvim/init.vim'},
-      \ {'zz': '~/.config/zsh/.zshrc'},
-      \ {'za': '~/.config/alacritty/alacritty.yml'},
-      \ {'zt': '~/.tmux.conf'}
-      \]
-    " g:startify_session_dir|
-
-let g:startify_session_before_save = [ 'silent! tabdo NERDTreeClose' ]
-
-let g:startify_lists = [
-      \ { 'type': 'sessions',  'header': ['   Sessions'], 'indices': ['a' ,'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']},
-      \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
-      \ { 'type': 'commands',  'header': ['   Commands']       },
-      \ { 'type': 'files',     'header': ['   MRU']            },
-      \ { 'type': 'dir',       'header': ['   PWD '. getcwd()] },
-      \ ]
-
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => sexp {{{1
