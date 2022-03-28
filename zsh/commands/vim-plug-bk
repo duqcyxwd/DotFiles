@@ -1,0 +1,11 @@
+#!/bin/zsh
+
+{
+date "+timestamp: %F %T %Z"
+for plug in $XDG_DATA_HOME/nvim-plug/*; do
+  echo "$(basename $plug): $(git --git-dir "$plug/.git" rev-list --max-count=1 HEAD)"
+
+done
+unset plug
+} > "$XDG_CONFIG_HOME/vim/VIM_PLUG_LIST.log"
+
