@@ -77,9 +77,9 @@ git_create_branch() {
     fi
 }
 
-gitopen_current_branch() {
-    ee "gitopen -b $(get_current_branch)"
-}
+function gitopenc() { ee "/usr/local/bin/gitopen -b $(get_current_branch) $@" }
+function gitopend() { /usr/local/bin/gitopen $@ :develop }
+alias gitopen_raw=/usr/local/bin/gitopen
 
 git_blame() {
     ruby ~/repo/DotFiles/otherTool/git-blame-colored $1 | less -R

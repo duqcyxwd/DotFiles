@@ -9,20 +9,20 @@ brew_with_echo() {
   brew "$@"
 }
 
-brew_with_echo doctor
+# brew_with_echo doctor
 brew_with_echo update
 brew_with_echo upgrade
 brew_with_echo upgrade --cask
 brew_with_echo cleanup -s
 
-echo 'log list...'
+echo "log brew list > ${XDG_CONFIG_HOME}/zsh/brew-list.log"
 {
   date "+timestamp: %F %T %Z"
   brew_with_echo tap              | sed 's/^/tap: /'
   brew_with_echo leaves           | sed 's/^/brew: /'
   brew_with_echo list --cask      | sed 's/^/cask: /'
 } > "${XDG_CONFIG_HOME}/zsh/brew-list.log"
-echo 'log list with verison...'
+echo "log brew list with version > ${XDG_CONFIG_HOME}/zsh/brew-list-version.log"
 {
   date "+timestamp: %F %T %Z"
   brew_with_echo list --version   | sed 's/^/brew: /'

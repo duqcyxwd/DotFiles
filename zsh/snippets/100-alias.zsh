@@ -31,6 +31,10 @@ alias -g timeElapsed="pv -F 'Elapsed time: %t'"
 alias vimdiff="nvim -d"
 alias mvimdiff="mvim -d"
 
+# https://github.com/ranger/ranger/issues/68
+# Fix ranger color issue in tmux
+alias ranger='TERM=xterm-256color ranger'
+
 
 #============= zshrc config =============
 # alias mz='nvim $ZDOTDIR/.zshrc && shfmt -i 4 -s -w -ci $ZDOTDIR/.zshrc'
@@ -47,6 +51,7 @@ alias notes="mvim ~/repo/Notes/CLojure.md"
 
 alias kafkacat=kcat
 alias topics="kcat -b localhost:9092 -L -J | jq -S -r '.topics |=sort_by(.topic) | .topics[].topic'"
+alias topicsi="runcached kcat -b localhost:9092 -L -J | awk 'NR>1'| jq -S -r '.topics |=sort_by(.topic) | .topics[].topic' | fzf"
 alias topics0='kafka-topics.sh --list --zookeeper localhost'
 alias topics1='kafka-topics.sh --bootstrap-server localhost:9092 --command-config $KAFKA_CONFIG/cust.properties --list'
 
@@ -109,8 +114,6 @@ function whichcd() { cd $(dirname $(greadlink -f $(which $@))) }
 function whichc()  { cat $(which $@) }
 function whichb()  { bat $(which $@) }
 function whichp()  { quick-preview $(which $@) }
-function gitopen() { /usr/local/bin/gitopen $@ :develop }
 
 function cdf() { cd $(dirname $(greadlink -f $@)) }
 
-alias gitopen_raw=/usr/local/bin/gitopen
