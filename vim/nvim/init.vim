@@ -23,21 +23,11 @@ for f in split(glob(luarootPath), '\n')
 endfor
 
 function! s:LazyLoadPlugs(timer) abort
-
   " Load lua plugins and require plugin before config
   call plug#load(
-        \   'LuaSnip',
-        \   'cmp_luasnip',
-        \   'friendly-snippets',
-        \   'nvim-treesitter',
         \   'nvim-lspconfig',
         \   'lspsaga.nvim',
         \   'lsp-status.nvim',
-        \   'nvim-cmp',
-        \   'cmp-nvim-lsp',
-        \   'cmp-buffer',
-        \   'cmp-path',
-        \   'cmp-cmdline',
         \   'nvim-treesitter-textobjects',
         \   'nvim-treesitter-refactor',
         \   'nvim-ts-rainbow',
@@ -68,7 +58,6 @@ endfunction
 
 " {time} is the waiting time in milliseconds.
 call timer_start(20, function("s:LazyLoadPlugs"))
-
 
 " set verbosefile=~/temp/log/vim.log
 " set verbose=1

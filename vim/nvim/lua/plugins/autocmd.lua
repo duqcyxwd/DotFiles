@@ -7,26 +7,28 @@ vim.api.nvim_command([[ autocmd! ColorScheme * highlight FloatBorder guifg=white
 
 local autocmds = {
   luafold = {
-    { "FileType", "lua",       "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr tabstop=2 softtabstop=2 shiftwidth=2" },
-    { "BufEnter", "keys.lua",  "set foldmethod=marker" },
-  },
-  vim = {
-    { "FileType", "vim",       "set foldmethod=marker" },
-  },
-  saga = {
-    { "FileType", "sagahover", "nnoremap <buffer> <Esc> :q<CR>" },
+
+    { "FileType", "lua",      "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr tabstop=2 softtabstop=2 shiftwidth=2" },
+    { "BufEnter", "keys.lua", "set foldmethod=marker" },
+
+    -- Keep folding when switch buffer
+    { "BufEnter", "*",        "silent! loadview" },
+    { "BufLeave", "*",        "silent! mkview" },
+
   },
   clojure = {
     { "FileType", "clojure",   "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
   },
-  startify = {
+  allFileTypes = {
+    { "FileType", "sagahover", "nnoremap <buffer> <Esc> :q<CR>" },
     { "FileType", "startify",  "DisableWhitespace" },
-  },
-  robot = {
-    { "FileType", "robot",     "set foldmethod=indent" },
-  },
-  allFileType = {
     { "FileType", "fzf",       "nnoremap <buffer> <ESC> :q<CR>" },
+    { "FileType", "robot",     "setlocal foldmethod=indent" },
+    { "FileType", "vim",       "setlocal foldmethod=marker" },
+  },
+  Session = {
+    -- { "VimLeave", "*", "SSave! cached | echom 'Save last session'" },
+    -- testing
   },
 
   run = {

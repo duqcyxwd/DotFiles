@@ -99,10 +99,6 @@ set_keymap("n", { noremap = true, silent = true }, { --{{{2
   -- source config
   { "<C-s>", ':lua R("funcs.config").source()<CR>' },
 
-  -- Smart way to move between tabs
-  { "<A-h>", "gT" },
-  { "<A-l>", "gt" },
-
   -- Resize split
   { "<S-Up>", ":resize +2<CR>" },
   { "<S-Down>", ":resize -2<CR>" },
@@ -110,8 +106,8 @@ set_keymap("n", { noremap = true, silent = true }, { --{{{2
   { "<S-Right>", ":vertical resize -2<CR>" },
 
   -- Quickfix
-  { "<Up>",   ":copen<CR>" },
-  { "<Down>", ":cclose<CR>" },
+  -- { "<Up>",   ":copen<CR>" },
+  -- { "<Down>", ":cclose<CR>" },
   -- {'<Left>', ':cprevious<CR>'},
   -- {'<Right>', ':cnext<CR>'},
 
@@ -145,8 +141,7 @@ set_keymap("v", { noremap = true, silent = true }, { --{{{2
   {"-",         ":lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>"},
 })
 
--- leader mapping {{{1
-
+-- init which-key {{{1
 local status, wk = pcall(require, "which-key")
 if not status then
   vim.notify("couldn't load which-key, skipping mappings")
@@ -154,7 +149,7 @@ if not status then
 end
 
 -- stylua: ignore
--- space_key_nmap/space_key_vmap {{{1
+-- init space_key_nmap/space_key_vmap {{{1
 local space_key_nmap = {
   ['<space>'] = { 'FZF Command Search',         ':FFCommands<CR>'},
   ['<tab>']   = { 'last buffer',                ':e#<CR>'},
@@ -201,6 +196,10 @@ local impair_map = { --{{{2
 
   { "[e", "<CMD>Lspsaga diagnostic_jump_next<CR>" },
   { "]e", "<CMD>Lspsaga diagnostic_jump_prev<CR>" },
+
+
+  { "[f", ":FloatermPrev<CR><C-Bslash><C-n>" },
+  { "]f", ":FloatermNext<CR><C-Bslash><C-n>" },
 }
 
 
@@ -248,7 +247,6 @@ end
 -- }}}2
 
 set_keymap("n", { noremap = true, silent = true }, impair_map)
-space_key_nmap.o = brackets
 space_key_nmap.k = brackets
 space_key_nmap.n = brackets
 
@@ -260,7 +258,8 @@ space_key_nmap.b = { --{{{1
   b = {'List all buffers',                   ':FFBuffers<CR>'},
   d = {'Delete this buffer',                 ':call undoquit#SaveWindowQuitHistory()<CR>:Bclose<CR>'},
   D = {'Delete this buffer!',                ':bp<bar>sp<bar>bn<bar>bd!<CR>'},
-  h = {'Startify Home',                      ':Startify<CR>'},
+  H = {'Startify Home',                      ':Startify<CR>'},
+  h = {'Startify Home',                      ':call SaveCurrentSessions()<CR>:SClose<CR>'},
   j = {'Buffer line jump',                   ':BufferLinePick<CR>' },
   n = {'Next buffer',                        ':bnext<CR>'},
   o = {'Keep only current buffer',           ':Bdelete other<CR>'},
@@ -318,7 +317,7 @@ space_key_nmap.f = { --{{{1
   h = { "Open History files",                 ":FFHistory<CR>" },
   r = { "Open Recent files",                  ":FFHistory<CR>" },
   f = { "Open File under current directory",  ":ProjectFiles<CR>" },
-  d = { "Directory (ranger)",                 ":FloatermNew ranger<CR>" },
+  d = { "Directory (ranger)",                 ":FloatermNew --name=ranger --disposable ranger<CR>" },
   t = { "[format] Clean trailing space",      ":StripWhitespace<CR>" },
   s = { "Save current file",                  ":mkview<CR>:w<CR>" },
   o = { "Search File under cursor",           ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('n'))<CR>" },
@@ -379,9 +378,8 @@ space_key_nmap.g = { --{{{1
   v = {'Git history view ', ':GV<CR>'},
 
 
-  o = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
   x = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
-  S = {'Search and open in Github ',  ':OpenBrowserSmartSearch -github <C-R><C-W>'},
+  S = {'Search and open in Github ',  ':OpenBrowserSmartSearch -github <C-R><C-W><CR>'},
   f = {'Goto floating window',        ':call GotoFirstFloat()<CR>'},
 
 }
@@ -400,7 +398,7 @@ space_key_vmap.g = { --{{{1
 
   o = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
   x = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
-  S = {'Search and open in Github ',  'y:OpenBrowserSmartSearch -github <C-R>0'},
+  S = {'Search and open in Github ',  'y:OpenBrowserSmartSearch -github <C-R>0<CR>'},
 
 }
 
@@ -432,7 +430,7 @@ space_key_nmap.h = { --{{{1
 space_key_nmap.i = { --{{{1
   name = "+Inspect",
 
-  f = {'Inspect file type',         ':verbose set syntax filetype foldmethod foldexpr<CR>:echo "\\nProject Path: " . getcwd()<CR>:echo "Current file: " . expand("%:p")<CR>'},
+  f = {'Inspect file type',         ':verbose set syntax filetype foldmethod foldexpr<CR>:echo "\\nProject Path: " . getcwd()<CR>:echo "Current session: " . GetCurrentSession()<CR>:echo "Current file: " . expand("%:p")<CR>'},
   p = {'Inspect installed plugins', ":enew|pu=execute('echo g:plugs')<CR>"},
 
 
@@ -485,7 +483,11 @@ space_key_nmap.l = { --{{{1
 space_key_nmap.o = { --{{{1
   name = "+Open",
 
-  b = { "Open Buffer in new tab",  ":tabedit %<CR>" },
+  t = { "Open buffer in new Tab",                  ":tabedit %<CR>" },
+  T = { "Open buffer in new Tab and close window", ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:close<CR>:tabnext<CR>" },
+  l = { "Open Link",                               "<Plug>(openbrowser-smart-search)"},
+  g = { "Open git link",                           ":GBrowse<CR>"},
+  p = { "Open Plugin in Github",                   ":call OpenGithubPlugin()<CR>"},
 
 }
 
@@ -578,6 +580,22 @@ space_key_vmap.s = { --{{{1
 }
 
 -- stylua: ignore
+space_key_nmap.S = { --{{{1
+  name = "+SESSION",
+
+  S = { "Session Save",   ":SSave!<CR>" },
+  C = { "Session Close",  ":SClose<CR>" },
+  L = { "Session Load",   ":SLoad" },
+  D = { "Session delete", ":SDelete" },
+  N = { "Session new",    ":silent execute 'SSave! ' . GetUniqueSessionName()" },
+
+-- " autocmd VimLeavePre *             silent execute 'SSave! ' . GetUniqueSessionName()
+
+  R = { "Session Remove", ":FloatermSend FZF_TP_OPTS=\"-p 95\\%\" cd $XDG_DATA_HOME/nvim/session && ls | fzf_tp | xargs rm -r && popd<CR>" },
+
+}
+
+-- stylua: ignore
 space_key_nmap.t = { --{{{1
   name = "+Toggle",
 
@@ -644,11 +662,13 @@ space_key_nmap.w = { --{{{1
 
   c = { "Delete this window",            ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
   C = { "Delete this window and buffer", ":call undoquit#SaveWindowQuitHistory()<CR>:bdelete!<CR>" },
-  q = { "Write and quit",                ":wq<CR>" },
   s = { "Window Swap",                   ":call WindowSwap#EasyWindowSwap()<CR>" },
   u = { "Undoquit Window",               ":Undoquit<CR>" },
   w = { "VimWiki Index Page",            ":e ~/vimwiki/index.md<CR>" },
   m = { "Maximum Current window",        ":ZoomToggle<CR>"},
+
+  o  = {'Window Only WIP',               "<C-w><C-o>"},
+  q = { "Write and quit",                ":wq<CR>" },
 
 }
 

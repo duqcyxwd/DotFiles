@@ -587,7 +587,7 @@ augroup END
 " => COC  {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-let g:coc_config_home = '$XDG_CONFIG_HOME/vim'
+" NOT WORKING
 let g:coc_data_home = '$XDG_DATA_HOME/coc'
 
 
@@ -1299,37 +1299,9 @@ let g:nvim_tree_icons = {
     \   'symlink_open': "",
     \   }
     \ }
-" => markdown augroup {{{2
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-augroup markdown
-  autocmd!
-  autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
-	\ setlocal foldmethod=expr |
-	\ echom 'fileType markdown' |
-  \ setlocal conceallevel=2
-
-  " autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
-	" \ setlocal foldmethod=expr | set foldexpr=NestedMarkdownFolds() |
-	" \ echom 'fileType markdown'
-
-  " Use expr for vim-getting-things-down folding. It is nice problem but I am
-  " just using the folding syntax for now
-  " foldexpr=getting_things_down#fold_expr(v:lnum)
-  " autocmd BufEnter TODO.md setlocal foldmethod=expr
-
-  " Plugin: masukomi/vim-markdown-folding
-  " set foldexpr=NestedMarkdownFolds()
-
-  " autocmd BufEnter TODO.md setlocal foldmethod=expr | set foldexpr=getting_things_down#fold_expr(v:lnum)
-
-augroup END
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => open-browser {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" https://github.com/tyru/open-browser.vim
 " the gx mapping provided by netrw used to open the URL under the cursor in my
 " browser, then it mysteriously stopped working. The new behavior is that it
 " curls the URL into a tempfile and then open the file in my browser, and I
@@ -1340,8 +1312,8 @@ let g:netrw_nogx = 1 " disable netrw's gx mapping.
 " vmap gx <Plug>(openbrowser-smart-search)
 
 let g:openbrowser_search_engines = {
-      \   'favorite': 'http://example.com/search?q={query}',
-      \       'google': 'https://google.com/search?q={query}',
+      \    'favorite': 'http://example.com/search?q={query}',
+      \    'google': 'https://google.com/search?q={query}',
       \    'github': 'https://github.com/search?q={query}',
       \}
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1625,9 +1597,10 @@ augroup neoterm
   " don't want to still be in normal mode.
   autocmd TermOpen  * startinsert
   autocmd FileType neoterm nnoremap <buffer> <Esc> :Ttoggle<CR>
+
+
 augroup END
 
-tnoremap <Esc> <C-\><C-n>
 
 " Works greate with nvr
 " https://github.com/mhinz/neovim-remote
@@ -1638,8 +1611,10 @@ tnoremap <Esc> <C-\><C-n>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:floaterm_width      = 0.8
 let g:floaterm_height     = 0.9
+" WIP This change might cause vim start with insert mode
 let g:floaterm_autoinsert = v:true
-let g:floaterm_opener     = 'tabe'
+" let g:floaterm_opener     = 'tabe'
+let g:floaterm_opener     = 'vsplit'
 let g:floaterm_autohide   = 1                " Hide when open new file
 let g:floaterm_autoclose  = 1
 
@@ -1663,14 +1638,19 @@ augroup FLOATTERM
   " vim. Such as opening a readme file in Chrome
   autocmd FocusLost * FloatermHide!
 
-  autocmd FileType  floaterm nnoremap <buffer> <Esc>   :FloatermToggle<CR>
-  autocmd FileType  floaterm nnoremap <buffer> x       :FloatermKill<CR>
-  autocmd FileType  floaterm nnoremap <buffer> <Left>  :FloatermPre<CR>
-  autocmd FileType  floaterm nnoremap <buffer> <Right> :FloatermNext<CR>
+  autocmd FileType floaterm nnoremap <buffer> <Esc>   :FloatermToggle<CR>
+  autocmd FileType floaterm nnoremap <buffer> x       :FloatermKill<CR>
+  autocmd FileType floaterm nnoremap <buffer> <Left>  :FloatermPre<CR>
+  autocmd FileType floaterm nnoremap <buffer> <Right> :FloatermNext<CR>
+
+
+  tnoremap <Esc> <C-\><C-n>
+  autocmd FileType  floaterm tnoremap <buffer> <Esc>    <C-\><C-n>:FloatermToggle<CR>
+
+  " Map Esc in neoterm to enter normal mode
+  " tnoremap <Esc> <C-\><C-n>:FloatermToggle<CR>
+
 augroup END
-
-" tnoremap <Esc> <C-\><C-n>
-
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -2037,6 +2017,7 @@ augroup END
 
 """"""""""""""""""""""""""""""""""""""""""""
 " => vim-markdown {{{1
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Config for vim-markdown
 " Plug 'plasticboy/vim-markdown'
 " Use vimWiki folding instead
@@ -2050,7 +2031,6 @@ augroup markdown
   autocmd!
   autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
 	\ setlocal foldmethod=expr |
-	\ echom 'fileType markdown' |
   \ setlocal conceallevel=2
 
   " autocmd FileType markdown call g:CusVimWikiKeyMap() | call g:MarkdownKeyMap() |
@@ -2068,8 +2048,6 @@ augroup markdown
   " autocmd BufEnter TODO.md setlocal foldmethod=expr | set foldexpr=getting_things_down#fold_expr(v:lnum)
 
 augroup END
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => which-key {{{1

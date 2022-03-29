@@ -125,11 +125,11 @@ Plug 'voldikss/vim-floaterm', #{ on: [ 'FloatermNew', 'FloatermHide', 'FloatermT
 
 " Completion {{{1
 
-Plug 'hrsh7th/nvim-cmp',     {'on': []}
-Plug 'hrsh7th/cmp-nvim-lsp', {'on': []}
-Plug 'hrsh7th/cmp-buffer',   {'on': []}
-Plug 'hrsh7th/cmp-path',     {'on': []}
-Plug 'hrsh7th/cmp-cmdline',  {'on': []}
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
 
 Plug 'onsails/lspkind-nvim'                          " Add icon for cmp
 " WIP
@@ -140,9 +140,9 @@ Plug 'danymat/neogen'                                " Your Annotation Toolkit
 " Plug 'hrsh7th/vim-vsnip'
 
 " For luasnip users.
-Plug 'L3MON4D3/LuaSnip',             {'on': []}      " Follows lsp protocol
-Plug 'saadparwaiz1/cmp_luasnip',     {'on': []}
-Plug 'rafamadriz/friendly-snippets', {'on': []}      " Snippet collection
+Plug 'L3MON4D3/LuaSnip'             " Follows lsp protocol
+Plug 'saadparwaiz1/cmp_luasnip'
+Plug 'rafamadriz/friendly-snippets' " Snippet collection
 
 " " For ultisnips users.
 " Plug 'SirVer/ultisnips'
@@ -215,10 +215,13 @@ Plug 'junegunn/gv.vim'                                 " A git commit browser.
 Plug 'chrisbra/unicode.vim'
 Plug 'mattn/vim-findroot'
 
+" Plug 'tpope/vim-obsession'                              " WIP vim session,
+Plug 'itchyny/vim-gitbranch'                            " WIP Add branch for auto save session name
+
 Plug 'mhinz/vim-startify'
 Plug 'szw/vim-dict'                                     " A dict client
 Plug 'tpope/vim-eunuch'                                 " Vim sugar from tpope
-Plug 'tyru/open-browser.vim', { 'on': ['OpenBrowser', '<Plug>(openbrowser-'] }
+Plug 'tyru/open-browser.vim', { 'on': ['OpenBrowser', '<Plug>(openbrowser-', 'OpenBrowserSmartSearch'] }
 Plug 'norcalli/nvim_utils'                              " Nvim utils functions
 Plug 'christoomey/vim-tmux-navigator'                   " Quickly switch vim split with tmux panel.
 Plug 'nathom/filetype.nvim'                             " Increase filetype loading speed

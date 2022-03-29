@@ -136,10 +136,11 @@ endif
 
 
 " Save last session using startify
-augroup save_last_session
-  autocmd!
-  autocmd VimLeave * SSave! last-open-session | echom 'Save last session'
-augroup END
+" Moved to autocmd.lua
+" augroup save_last_session
+"   autocmd!
+"   autocmd VimLeave * SSave! last-open-session | echom 'Save last session'
+" augroup END
 
 " Return to last edit position when opening files (You want this!)
 " VIM info can do samething
