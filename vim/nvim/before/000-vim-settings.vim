@@ -21,8 +21,7 @@ set cursorline                  " highlights line numbers (vim-airline-colornum)
 set encoding=utf8               " Set utf8 as standard encoding
 set ffs=unix,dos,mac            " Use Unix as the standard file type
 set hidden                      " A buffer becomes hidden when it is abandoned
-set history=700                 " Sets how many lines of history VIM has to remember
-" set hlsearch                    " Highlight search results
+set history=1000                 " Sets how many lines of history VIM has to remember
 set ignorecase                  " Ignore case when searching
 set incsearch                   " Makes search act like search in modern browsers
 set langmenu=en
@@ -33,9 +32,6 @@ set mouse=a
 set noautochdir                 " Dont' change dir so we can use project search
 set noerrorbells                " No annoying sound on errors
 set nojoinspaces                " No extra space when join line
-set nonumber                    " No line numbers to start
-set number
-set relativenumber
 set ruler                       " Always show current position
 set scroll=4                    " Number of lines to scroll with ^U/^D
 set scrolloff=15                " Keep cursor away from this many chars top/bot
@@ -46,19 +42,24 @@ set smartcase                   " When searching try to be smart about cases
 set startofline                 " When "on" the commands listed below move the cursor to the first non-blank of the line.
 set timeoutlen=500              " The default timeoutlen is 1000 ms.
 set updatetime=250
-" set viminfo^=%                  " Remember info about open buffers on close, will reopen buffer Replaced with shada
 set shada=!,'300,<50,s10,h      " WIP, increase maximum recent opened files
 set visualbell
+set wildmenu                    " Turn on the WiLd menu
+
+" Number column
+set signcolumn=auto
+set number
+set relativenumber
 
 " Don't use this with tabline
 " set showtabline=1               " turn on tabline
 
-" Text Related
+" Text Editor Related
 set autoindent
-set expandtab                   " Use spaces instead of tabs
 set nolinebreak                 " Automatically break lines at 80 characters.
 set shiftwidth=2                " 1 tab == 2 spaces
 set smarttab                    " Be smart when using tabs ;)
+set expandtab                   " Use spaces instead of tabs
 set tabstop=2
 set softtabstop=2
 " set textwidth=80              " 80 chars <Space>tt to toggle it
@@ -79,22 +80,19 @@ set whichwrap+=<,>,h,l         " Allow specified keys that move the cursor left/
 
 set diffopt=internal,filler,vertical
 
-" https://stackoverflow.com/a/29787362
-" Invisible char
+" Invisible char https://stackoverflow.com/a/29787362
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
 set nolist
 
 " Update my session setting
 " Don't reuse options, empty buffers
-" Hope this can fix conjure session problem
 set sessionoptions=curdir,folds,tabpages,winpos
 set viewoptions=cursor,folds
 
 " Required by nvim-cmp, WIP
 set completeopt=menu,menuone,noselect
 
-" Change jump like browser style stack
-set jumpoptions+=stack
+set jumpoptions+=stack " Change jump like browser style stack
 
 " * Special Setings * {{{2
 
@@ -115,8 +113,10 @@ endif
 " Turn persistent undo on (means that you can undo even when you close a
 " buffer/VIM)
 if has('persistent_undo')
-  set undodir=$XDG_DATA_HOME/nvim-undodir
-  set undofile
+  set undofile                            " Save undos after file closes
+  set undodir=$XDG_DATA_HOME/nvim-undodir " undo directory
+  set undolevels=2000                     " How many undos
+  set undoreload=20000                    " number of lines to save for undo
 endif
 
 
@@ -144,7 +144,7 @@ endif
 
 " Return to last edit position when opening files (You want this!)
 " VIM info can do samething
-augroup return_to_last_edit_position
+augroup RETURN_LAST_EDIT_POSITION
   autocmd!
   autocmd BufReadPost *
         \ if line("'\"") > 0 && line("'\"") <= line("$") |
@@ -152,7 +152,7 @@ augroup return_to_last_edit_position
         \ endif
 augroup END
 
-augroup autoReloadFile
+augroup AUTO_RELOADFILE
   " Triger `autoread` when files changes on disk
   " https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044
   " https://vi.stackexchange.com/questions/13692/prevent-focusgained-autocmd-running-in-command-line-editing-mode
@@ -168,11 +168,6 @@ augroup END
 " Default =>  {{{1
 " ------------------------------------------------------------------------------
 
-" source $VIMRUNTIME/delmenu.vim
-" source $VIMRUNTIME/menu.vim
-
-" Turn on the WiLd menu
-set wildmenu
 
 " Ignore compiled files
 set wildignore=*.o,*~,*.pyc
