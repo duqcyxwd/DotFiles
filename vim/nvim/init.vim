@@ -54,6 +54,8 @@ function! s:LazyLoadPlugs(timer) abort
         \   'indentLine',
         \ )
   echom "Async config loaded"
+
+  silent! VMTheme neon
 endfunction
 
 " {time} is the waiting time in milliseconds.

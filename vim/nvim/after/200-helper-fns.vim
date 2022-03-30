@@ -13,6 +13,7 @@
 " /*                                                    */
 " /******************************************************/
 
+" Setting toggle/Config Functions
 " [Functions] HighlightCharactersOver80 {{{1
 " ------------------------------------------------------------------------------
 " Highlight characters in column 81+ with a red background.
@@ -183,6 +184,10 @@ xnoremap <silent> <Plug>(mytestFn) :<C-u>call TestFn('v')<CR>
 
 "}}}2
 
+" }}}1
+
+
+" Standalone Functions
 function! s:DiffWithSaved() "{{{1
   " https://stackoverflow.com/questions/749297/can-i-see-changes-before-i-save-my-file-in-vim
   " Quick check before Save
@@ -263,13 +268,15 @@ function! g:GotoFirstFloat() abort  " {{{1
     let c = nvim_win_get_config(win_getid(w))
     if c.focusable && !empty(c.relative)
       execute w . 'wincmd w'
+      nmap <buffer> q :q<CR>
       return
     endif
   endfor
 endfunction
 
-function! g:Show_documentation() "{{{1
+function! g:Show_documentation() abort "{{{1
   " Show vim regular docs
+  echom "Show_documentation"
   if (index(['vim','help'], &filetype) >= 0)
     execute 'h '.expand('<cword>')
   else
@@ -277,8 +284,19 @@ function! g:Show_documentation() "{{{1
   endif
 endfunction
 
+function! g:Show_buffer_info() abort "{{{1
+  verbose set syntax filetype foldmethod foldexpr
+  echo "\n"
+  echo "Current session: " . GetCurrentSession()
+  echo "Project Path:    " . getcwd()
+  echo "Current file:    " . expand("%:p")
+  " ':verbose set syntax filetype foldmethod foldexpr<CR>:echo "\\nProject Path: " . getcwd()<CR>:echo "Current session: " . GetCurrentSession()<CR>:echo "Current file: " . expand("%:p")<CR>'
+endfunction
+
 " }}}1
 
+
+" Plugin Enhancement
 " [Functions] MyFzfLua search {{{1
 let s:TYPE = {'dict': type({}), 'funcref': type(function('call')), 'string': type(''), 'list': type([])}
 function! s:LuaBlines(query, ...) abort  "{{{2
@@ -322,6 +340,7 @@ command! CDC cd %:p:h             " CDC = Change to Directory of Current file
 
 
 
+" Test Scripts {{{1
 " https://stackoverflow.com/questions/10572996/passing-command-range-to-a-function/10573044#10573044
 function! PrintGivenRange() range
   echo "firstline ".a:firstline." lastline ".a:lastline

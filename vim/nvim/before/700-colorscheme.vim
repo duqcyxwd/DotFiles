@@ -103,7 +103,6 @@ command! MultiTheme call g:MultiThemesDark()
 " One time setup {{{1
 " Start in dark mode
 " call s:DarkMode()
-call g:MultiThemesDark()
 " The multiThemeDark is not working
 let g:colorscheme_mode = 'dark'
 colorscheme dracula

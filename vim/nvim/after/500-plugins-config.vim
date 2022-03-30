@@ -592,7 +592,7 @@ let g:coc_data_home = '$XDG_DATA_HOME/coc'
 
 
 " COC Settings
-if exists('g:plugs["coc.nvim"]')
+if exists('g:plugs["coc.nvim"]') "{{{2
   " TextEdit might fail if hidden is not set.
   set hidden
 
@@ -607,15 +607,6 @@ if exists('g:plugs["coc.nvim"]')
   " Don't pass messages to |ins-completion-menu|.
   set shortmess+=c
 
-  " Always show the signcolumn, otherwise it would shift the text each time
-  " diagnostics appear/become resolved.
-  if has("patch-8.1.1564")
-    " Recently vim can merge signcolumn and number column into one
-    set signcolumn=number
-  else
-    set signcolumn=yes
-  endif
-
   function! ToggleCoc() abort
     if len(coc#status()) == 0
       execute 'CocEnable'
@@ -624,10 +615,10 @@ if exists('g:plugs["coc.nvim"]')
     endif
   endfunction
 
-endif
+endif "}}}2
 
 " COC Mapping
-if exists('g:plugs["bad"]')
+if exists('g:plugs["bad"]')  " {{{2
 " if exists('g:plugs["coc.nvim"]')
 
   function! s:show_documentation()
@@ -793,7 +784,8 @@ if exists('g:plugs["bad"]')
   nnoremap <silent> <leader>ref :call CocRequest('clojure-lsp', 'workspace/executeCommand', {'command': 'extract-function', 'arguments': [Expand('%:p'), line('.') - 1, col('.') - 1, input('Function name: ')]})<CR>
 
   " End coc config
-endif
+endif "}}}2
+
 
 " => tpope/vim-commentary {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1225,7 +1217,7 @@ function! s:goyo_enter()
   endif
   set noshowmode
   set noshowcmd
-  set scrolloff=999
+  setlocal scrolloff=999
   " Limelight
 endfunction
 
@@ -1592,13 +1584,11 @@ let g:neoterm_autojump = 1          "Jump to window
 
 augroup neoterm
   autocmd!
-  autocmd TermEnter * set scrolloff=0
+  autocmd TermEnter * setlocal scrolloff=0
   " When I open a terminal buffer, I want it to feel like I'm in the terminal. I
   " don't want to still be in normal mode.
   autocmd TermOpen  * startinsert
   autocmd FileType neoterm nnoremap <buffer> <Esc> :Ttoggle<CR>
-
-
 augroup END
 
 

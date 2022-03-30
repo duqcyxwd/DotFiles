@@ -5,6 +5,6 @@
     "coc-json": ">=1.4.1",
     "coc-lists": ">=1.4.2",
     "coc-prettier": ">=9.2.3",
-    "coc-pyright": ">=1.1.231"
+    "coc-pyright": ">=1.1.232"
   }
 }

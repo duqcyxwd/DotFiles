@@ -9,10 +9,10 @@ SR("gitsigns").setup({
     topdelete    = { hl = "GitSignsDelete", text = "‾", numhl = "GitSignsDeleteNr", linehl = "GitSignsDeleteLn" },
     changedelete = { hl = "GitSignsChange", text = "~", numhl = "GitSignsChangeNr", linehl = "GitSignsChangeLn" },
   },
-  signcolumn = true,             -- Toggle with `:Gitsigns toggle_signs`
-  numhl = false,                 -- Toggle with `:Gitsigns toggle_numhl`
-  linehl = false,                -- Toggle with `:Gitsigns toggle_linehl`
-  word_diff = false,             -- Toggle with `:Gitsigns toggle_word_diff`
+  signcolumn = true,               -- Toggle with `:Gitsigns toggle_signs`
+  numhl = false,                   -- Toggle with `:Gitsigns toggle_numhl`
+  linehl = false,                  -- Toggle with `:Gitsigns toggle_linehl`
+  word_diff = false,               -- Toggle with `:Gitsigns toggle_word_diff`
   watch_gitdir = {
     interval = 1000,
     follow_files = true,
@@ -25,7 +25,7 @@ SR("gitsigns").setup({
     delay = 1000,
     ignore_whitespace = true,
   },
-  current_line_blame_formatter = "<author>, <author_time:%Y-%m-%d> - <summary>",
+  current_line_blame_formatter = "    <author>, <author_time:%Y-%m-%d> - <summary>",
   sign_priority = 6,
   update_debounce = 100,
   status_formatter = nil, -- Use default

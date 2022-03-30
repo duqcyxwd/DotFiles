@@ -200,12 +200,12 @@ Plug 'plasticboy/vim-markdown'                      " A better markdown plugin
 Plug 'jreybert/vimagit'                                " ViMagit to stage changes
 Plug 'lambdalisue/gina.vim', { 'on': 'Gina' }
 Plug 'tpope/vim-fugitive'                              " Raw git command, Gblame
-Plug 'shumphrey/fugitive-gitlab.vim'                   " Open gitlab link
+Plug 'shumphrey/fugitive-gitlab.vim'                   " Open private git repo link
 Plug 'tpope/vim-rhubarb'                               " Open github link
 " Plug 'airblade/vim-gitgutter'                        " shows a git diff in the sign column
 Plug 'lewis6991/gitsigns.nvim'                         " git decorations
 Plug 'nvim-lua/plenary.nvim'                           " Required by gitsigns
-Plug 'junegunn/gv.vim'                                 " A git commit browser.
+Plug 'junegunn/gv.vim'                                 " A git better commit browser.
 
 
 
@@ -236,9 +236,6 @@ Plug 'Asheq/close-buffers.vim'
 " impaient lazy load lua plugins
 Plug 'lewis6991/impatient.nvim'
 Plug 'simeji/winresizer', { 'on': 'WinResizerStartResize' }
-
-" preview buffer tags, not working in clojure yet
-" Plug 'yuki-yano/fzf-preview.vim', { 'branch': 'release/remote', 'do': ':UpdateRemotePlugins' }
 
 " Disable default highlight before use this
 " Not working yet

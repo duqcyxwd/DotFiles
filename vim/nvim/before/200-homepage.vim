@@ -47,13 +47,13 @@ function! s:gitUntracked()
 endfunction
 
 let g:startify_lists = [
-      \ { 'type': 'sessions',  'header': ['   Sessions'], 'indices': ['a', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']},
-      \ { 'type': 'bookmarks', 'header': ['   Bookmarks']      },
-      \ { 'type': 'commands',  'header': ['   Commands']       },
-      \ { 'type': 'files',     'header': ['   MRU']            },
-      \ { 'type': function('s:gitModified'),  'header': ['   git modified']},
-      \ { 'type': function('s:gitUntracked'), 'header': ['   git untracked']},
-      \ { 'type': 'dir',       'header': ['   PWD '. getcwd()] },
+      \ { 'header': ['   Sessions'],       'type': 'sessions',   'indices': ['a', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']},
+      \ { 'header': ['   Bookmarks'],      'type': 'bookmarks',                                                          },
+      \ { 'header': ['   Commands'],       'type': 'commands',                                                           },
+      \ { 'header': ['   MRU'],            'type': 'files',                                                              },
+      \ { 'header': ['   git modified'],   'type': function('s:gitModified'),                                            },
+      \ { 'header': ['   git untracked'],  'type': function('s:gitUntracked'),                                           },
+      \ { 'header': ['   PWD '. getcwd()], 'type': 'dir',                                                                },
       \ ]
 
 

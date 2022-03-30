@@ -20,11 +20,15 @@ local autocmds = {
     { "FileType", "clojure",   "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
   },
   allFileTypes = {
-    { "FileType", "sagahover", "nnoremap <buffer> <Esc> :q<CR>" },
-    { "FileType", "startify",  "DisableWhitespace" },
-    { "FileType", "fzf",       "nnoremap <buffer> <ESC> :q<CR>" },
-    { "FileType", "robot",     "setlocal foldmethod=indent" },
-    { "FileType", "vim",       "setlocal foldmethod=marker" },
+    { "FileType", "sagahover",     "nnoremap <buffer> <Esc> :q<CR>" },
+    { "FileType", "startify",      "DisableWhitespace" },
+    { "FileType", "fzf",           "nnoremap <buffer> <ESC> :q<CR>" },
+    { "FileType", "robot",         "setlocal foldmethod=indent" },
+    { "FileType", "vim",           "setlocal foldmethod=marker" },
+    { "FileType", "fugitiveblame", "nmap <buffer> q gq" },
+    { "FileType", "fugitive",      "nmap <buffer> q gq" },
+    { "FileType", "git",           "nmap <buffer> q :bd<CR>" },
+
   },
   Session = {
     -- { "VimLeave", "*", "SSave! cached | echom 'Save last session'" },
