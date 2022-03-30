@@ -1,12 +1,11 @@
 require("funcs.utility")
 require("nvim_utils")
-local vim_u = require("funcs.vim_utility")
 local brj = require("funcs.bracket_jump")
 
 vim.g.mapleader = "\\"
 vim.g.maplocalleader = ","
 
--- Utility functions {{{1
+-- Local Utility functions {{{1
 local function set_keymap(mode, opts, keymaps)
   for _, keymap in ipairs(keymaps) do
     vim.api.nvim_set_keymap(mode, keymap[1], keymap[2], merge(opts, keymap[3]))
@@ -88,6 +87,7 @@ set_keymap("n", { noremap = true, silent = true }, { --{{{2
   { "gp", '"+p' },
   { "gP", '"+P' },
   { "gY", '"+y$' },
+   {"gf", ':call GotoFirstFloat()<CR>'},
 
   { "j", 'gj' },
   { "k", 'gk' },
@@ -182,13 +182,13 @@ local impair_map = { --{{{2
   { "[d", "<PageUp>" },
   { "]d", "<PageDown>" },
 
+  -- vim diff next hunk
+  { "[c", "[c" },
+  { "]c", "]c" },
+
   -- Git chagne Hunk
   { "[h", ":Gitsigns prev_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
   { "]h", ":Gitsigns next_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
-
-  -- Git chagne Hunk
-  { "[c", ":Gitsigns prev_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
-  { "]c", ":Gitsigns next_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
 
   -- jump diagnostic
   { "[g", "<Cmd>lua vim.diagnostic.goto_prev({float = true})<CR>" },
@@ -204,17 +204,17 @@ local impair_map = { --{{{2
 
 
 local map_family_table = {
-  { "b", "b" },
-  { "c", "c" },
-  { "q", "q" },
-  { "t", "tab" },
+  { "b", "b" },    -- Buffer
+  -- { "c", "c" },    -- next error
+  { "q", "q" },    -- quick fixt
+  { "t", "tab" },  -- Tab
 }
 local other_unimpar = {
   "`", -- Mark
   "f", -- file preceding the current one alphabetically in the current file's directory
 }
 
-local mapNextFamily = function(map)  --{{{2
+local addNextFamily = function(map)  --{{{2
   for _, entry in pairs(map) do
     table.insert(impair_map, { "]" .. entry[1], "<cmd>" .. entry[2] .. "next<CR>" })
     table.insert(impair_map, { "[" .. entry[1], "<cmd>" .. entry[2] .. "prev<CR>" })
@@ -224,7 +224,7 @@ local mapNextFamily = function(map)  --{{{2
 end
 
 -- Update impair_map
-mapNextFamily(map_family_table)
+addNextFamily(map_family_table)
 
 local brackets = { name = "+bracket jumps" } --{{{2
 local getKeys = function(maps)
@@ -324,14 +324,15 @@ space_key_nmap.f = { --{{{1
   e = {
     name = "+Edit",
 
-    P = { ":e! ~/.config/vim/after/500-plugins-config.vim<CR>"},
     a = { ":e! ~/.config/vim/lua/autocmd.lua<CR>"},
     c = { ":e! ~/.config/vim/lua/core.lua<CR>"},
     e = { ":mkview<CR>:e!<CR>:loadview<CR>"},
     f = { ":e! ~/.config/vim/after/300-filetypes.vim<CR>"},
     k = { ":e! ~/.config/vim/lua/keys.lua<CR>"},
+    P = { ":e! ~/.config/vim/after/500-plugins-config.vim<CR>"},
     p = { ":e! ~/.config/vim/before/100-plugins.vim<CR>"},
     s = { ":e! ~/.config/vim/lua/settings.lua<CR>"},
+    i = { ":e! ~/.config/vim/init.vim<CR>"},
     v = { ":e! ~/.config/vim/vimrc<CR>"},
 
   },
@@ -355,13 +356,13 @@ space_key_vmap.f = { --{{{1
 space_key_nmap.g = { --{{{1
   name = "+Git/Go",
 
-  a = {'Git action',            ':FzfPreviewGitActions<CR>'},
-  b = {'Git blame',             ':Git blame<CR>'},
+  a = {'GitSign stage_hunk',    ':Gitsigns stage_hunk<CR>'},
+  A = {'Git add current file',  ':Git add %<CR>'},
+  b = {'Git blame',             ':Git blame --date=relative<CR>'},
   c = {'Git commit',            ':Git commit -v<CR>'},
   d = {'Git diff',              ':Gdiffsplit<CR>'},
-  e = {'Gitsign Edit mode',     ':Gitsigns toggle_word_diff<CR>:Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>'},
-  m = {'Git Magit',             ':MagitOnly<CR>'},
-  s = {'Git status',            ':FzfPreviewGitStatus<CR>'},
+  e = {'Gitsign Edit mode',     ':Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>'},
+  s = {'Git status',            ':Git<CR>'},
   i = {'Git line info',         ":lua require('gitsigns').blame_line({ full = true})<CR>"},
   l = {'Git link open',         ':GBrowse<CR>'},
   p = {'Git Gina Push',         ':Gina push<CR>'},
@@ -377,9 +378,7 @@ space_key_nmap.g = { --{{{1
   },
   v = {'Git history view ', ':GV<CR>'},
 
-
   x = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
-  S = {'Search and open in Github ',  ':OpenBrowserSmartSearch -github <C-R><C-W><CR>'},
   f = {'Goto floating window',        ':call GotoFirstFloat()<CR>'},
 
 }
@@ -388,6 +387,7 @@ space_key_nmap.g = { --{{{1
 space_key_vmap.g = { --{{{1
   name = "+Git/Go",
 
+  a = {'GitSign stage_hunk',    ':Gitsigns stage_hunk<CR>'},
   h = {
     name ='Git hunk',
     a = { 'GitSign stage_hunk',      ':Gitsigns stage_hunk<CR>' },
@@ -396,10 +396,7 @@ space_key_vmap.g = { --{{{1
 
   },
 
-  o = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
   x = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
-  S = {'Search and open in Github ',  'y:OpenBrowserSmartSearch -github <C-R>0<CR>'},
-
 }
 
 vim.cmd('command! -bar -bang IMaps  call fzf#vim#maps("i", <bang>0)')
@@ -430,7 +427,7 @@ space_key_nmap.h = { --{{{1
 space_key_nmap.i = { --{{{1
   name = "+Inspect",
 
-  f = {'Inspect file type',         ':verbose set syntax filetype foldmethod foldexpr<CR>:echo "\\nProject Path: " . getcwd()<CR>:echo "Current session: " . GetCurrentSession()<CR>:echo "Current file: " . expand("%:p")<CR>'},
+  f = {'Inspect file type',         ':call Show_buffer_info()<CR>'},
   p = {'Inspect installed plugins', ":enew|pu=execute('echo g:plugs')<CR>"},
 
 
@@ -486,8 +483,26 @@ space_key_nmap.o = { --{{{1
   t = { "Open buffer in new Tab",                  ":tabedit %<CR>" },
   T = { "Open buffer in new Tab and close window", ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:close<CR>:tabnext<CR>" },
   l = { "Open Link",                               "<Plug>(openbrowser-smart-search)"},
-  g = { "Open git link",                           ":GBrowse<CR>"},
+  s = { "Open smart",                             "<Plug>(openbrowser-smart-search)"},
+  g = {
+    name = "Open Git",
+    l = { "Open git link",                         ":GBrowse<CR>"},
+    s = { "Search and open in Github ",            ":OpenBrowserSmartSearch -github <C-R><C-W><CR>"},
+  },
   p = { "Open Plugin in Github",                   ":call OpenGithubPlugin()<CR>"},
+
+}
+
+-- stylua: ignore
+space_key_vmap.o = { --{{{1
+  name = "+Open",
+
+  s = { 'Open search',                  '<Plug>(openbrowser-smart-search)'},
+  g = {
+    name = "Open Git",
+    l = { "Open git link",              ":GBrowse<CR>"},
+    s = { 'Search and open in Github ', 'y:OpenBrowserSmartSearch -github <C-R>0<CR>'},
+  },
 
 }
 
