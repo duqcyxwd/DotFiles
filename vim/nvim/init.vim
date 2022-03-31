@@ -59,7 +59,8 @@ function! s:LazyLoadPlugs(timer) abort
 endfunction
 
 " {time} is the waiting time in milliseconds.
-call timer_start(20, function("s:LazyLoadPlugs"))
+" call timer_start(20, function("s:LazyLoadPlugs"))
+call timer_start(2000, function("s:LazyLoadPlugs"))
 
 " set verbosefile=~/temp/log/vim.log
-" set verbose=1
+0" set verbose=1

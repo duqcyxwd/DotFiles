@@ -81,7 +81,6 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'osyo-manga/vim-over'                                              " Preview replace chanage
 Plug 'preservim/tagbar'                                                 " Create tag on fly, used by markdown
 Plug 'tpope/vim-commentary'                                             " Gcc
-Plug 'preservim/nerdcommenter'                                          " WIP
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-sleuth'                                                 " Automatically adjusts 'shiftwidth' and 'expandtab'
 Plug 'tpope/vim-surround'
@@ -227,15 +226,14 @@ Plug 'christoomey/vim-tmux-navigator'                   " Quickly switch vim spl
 Plug 'nathom/filetype.nvim'                             " Increase filetype loading speed
 
 " Buffers and windows
-Plug 'wesQ3/vim-windowswap'
+Plug 'simeji/winresizer', { 'on': 'WinResizerStartResize' }
 Plug 'Asheq/close-buffers.vim'
 
 " WIP {{{1
 " ------------------------------------------------------------------------------
 
 " impaient lazy load lua plugins
-Plug 'lewis6991/impatient.nvim'
-Plug 'simeji/winresizer', { 'on': 'WinResizerStartResize' }
+" Plug 'lewis6991/impatient.nvim'
 
 " Disable default highlight before use this
 " Not working yet

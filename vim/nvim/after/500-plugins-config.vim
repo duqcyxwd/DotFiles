@@ -787,51 +787,6 @@ if exists('g:plugs["bad"]')  " {{{2
 endif "}}}2
 
 
-" => tpope/vim-commentary {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-augroup commentary_config
-  autocmd!
-  autocmd FileType cs,kotlin,adoc setlocal commentstring=//\ %s
-  autocmd FileType lisp,racket setlocal commentstring=;;\ %s
-  autocmd FileType clojure setlocal commentstring=;;\ %s
-  autocmd FileType sml,ocaml setlocal commentstring=(*\ %s\ *)
-  autocmd FileType resolv,crontab setlocal commentstring=#\ %s
-  autocmd FileType sql setlocal commentstring=--\ %s
-  autocmd FileType robot setlocal commentstring=#\ %s
-augroup END
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" => preservim/nerdcommenter {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Create default mappings
-let g:NERDCreateDefaultMappings = 0
-
-" Add spaces after comment delimiters by default
-let g:NERDSpaceDelims = 0
-
-" Use compact syntax for prettified multi-line comments
-let g:NERDCompactSexyComs = 0
-
-" Align line-wise comment delimiters flush left instead of following code indentation
-let g:NERDDefaultAlign = 'left'
-
-" Set a language to use its alternate delimiters by default
-let g:NERDAltDelims_java = 0
-
-" Add your own custom formats or override the defaults
-let g:NERDCustomDelimiters = { 'c': { 'left': '/**','right': '*/' }, 'clojure': { 'left': '#_','right': '' } }
-
-" Allow commenting and inverting empty lines (useful when commenting a region)
-let g:NERDCommentEmptyLines = 0
-
-" Enable trimming of trailing whitespace when uncommenting
-let g:NERDTrimTrailingWhitespace = 1
-
-" Enable NERDCommenterToggle to check all selected lines is commented or not
-let g:NERDToggleCheckAllLines = 0
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => conjure {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NOTE: I'd like to have a good setup where ANSI escape codes are interpreted in
@@ -2062,6 +2017,14 @@ let g:which_key_floating_opts = { 'row': '0', 'col': '-10', 'height': '+0', 'wid
 let g:windowswap_map_keys = 0
 
 
+" => winresizer {{{1
+" simeji/winresizer
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:winresizer_start_key = ""
+let g:winresizer_gui_start_key = ""
+let g:winresizer_vert_resize = 2
+let g:winresizer_horiz_resize = 1
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => 000 Sample {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
