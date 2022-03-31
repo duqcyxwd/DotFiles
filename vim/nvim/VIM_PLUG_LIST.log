@@ -1,4 +1,4 @@
-timestamp: 2022-03-28 22:28:39 EDT
+timestamp: 2022-03-30 23:35:59 EDT
 LuaSnip: 065d52d45fbb30c117d260813ee2f72094cd1568
 auto-pairs: 39f06b873a8449af8ff6a3eee716d3da14d63a76
 ayu-vim: 0745635421688ce777f663d13531996cb4da6514
@@ -23,7 +23,6 @@ gofmt.vim: 7ebf69493e04fcb5d5374dbc2a056cc82e801bfd
 goyo.vim: a9c7283dce60ffcdec952384f6451ff42f8914f2
 gv.vim: 386d770e916dd680d1d622e715b9eb3a77f21bd1
 hop.nvim: e2f978b50c2bd9ae2c6a4ebdf2222c0f299c85c3
-impatient.nvim: 989eefca3539b9958df100e8e3130f55eafe1709
 indentLine: 7753505f3c500ec88d11e9373d05250f49c1d900
 limelight.vim: eebac6c4fce06d3b849cccd213b7233d37ab037f
 lsp-status.nvim: 4073f766f1303fb602802075e558fe43e382cc92
@@ -93,7 +92,6 @@ vim-tmux: cfe76281efc29890548cf9eedd42ad51c7a1faf0
 vim-tmux-navigator: 9ca5bfe5bd274051b5dd796cc150348afc993b80
 vim-toml: 3c5face8e8944a217af45bc5bb708ff7dfcf1a54
 vim-visual-multi: 4fcd3797e380f2e4c8ea8be31ec6469e6f86f971
-vim-windowswap: 15db3f697aa1fa696d99fcdc920c90cd2cec855e
 vim-yaml-folds: 890ccd8e5370808d569e96dbb06cbeca2cf5993a
 vimagit: fb71060049f829e48fc392e0be43d1040c271204
 vimux: 89604a4464c3069dbe31f7bc8dd16a5fbc88a303
