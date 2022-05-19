@@ -47,7 +47,7 @@ set visualbell
 set wildmenu                    " Turn on the WiLd menu
 
 " Number column
-set signcolumn=auto
+set signcolumn=yes
 set number
 set relativenumber
 
@@ -66,6 +66,7 @@ set softtabstop=2
 set textwidth=0                 " Disable auto break line
 
 set nowrap                      " Wrap lines
+set wrapscan                  " Do not wrap around when search reach end of file
 
 set foldcolumn=0                " Disable fold column by default, <Space>tfc to enable it
 set foldmethod=marker           " Use braces by default

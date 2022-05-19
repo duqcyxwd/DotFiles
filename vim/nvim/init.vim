@@ -17,12 +17,19 @@ for f in split(glob(vimrootPath), '\n')
   exe 'source' f
 endfor
 
+lua require('impatient')
+
+" " WIP Required
+" lua require("nvim_utils")
+
 let luarootPath = $XDG_CONFIG_HOME.'/vim/lua/plugins-before/*.lua'
 for f in split(glob(luarootPath), '\n')
   exe 'luafile' f
 endfor
 
-function! s:LazyLoadPlugs(timer) abort
+function! s:LazyLoadPlugs(timer) abort  " {{{1
+
+  " 1. Lazy Load vim plugs before config
   " Load lua plugins and require plugin before config
   call plug#load(
         \   'nvim-lspconfig',
@@ -36,13 +43,16 @@ function! s:LazyLoadPlugs(timer) abort
         \   'nvim-treesitter-pairs',
         \ )
 
+  " 2. Lazy Load vim plugs before config
   let vimrootPath = $XDG_CONFIG_HOME.'/vim/after/*.vim'
   for f in split(glob(vimrootPath), '\n')
     exe 'source' f
   endfor
 
+  " 3. Lazy Load vim lua plugs
   source $XDG_CONFIG_HOME/nvim/lua/core.lua
 
+  " 4. Lazy Load vim lua plugs after
   " Some config need lazy load and some config need load after config
   " save current position by marking Z because plug#load reloads current buffer
   call plug#load(
@@ -50,17 +60,16 @@ function! s:LazyLoadPlugs(timer) abort
         \   'quick-scope',
         \   'fzf',
         \   'fzf.vim',
-        \   'vim-endwise',
         \   'indentLine',
         \ )
   echom "Async config loaded"
 
   silent! VMTheme neon
 endfunction
+" }}}1
 
 " {time} is the waiting time in milliseconds.
-" call timer_start(20, function("s:LazyLoadPlugs"))
-call timer_start(2000, function("s:LazyLoadPlugs"))
+call timer_start(200, function("s:LazyLoadPlugs"))
 
 " set verbosefile=~/temp/log/vim.log
-0" set verbose=1
+" set verbose=1

@@ -8,9 +8,11 @@ end
 -- require'luasnip'.filetype_extend("ruby", {"rails"})
 -- https://github.com/L3MON4D3/LuaSnip/blob/b5a72f1fbde545be101fcd10b70bcd51ea4367de/Examples/snippets.lua#L501
 
+
+-- L3MON4D3/LuaSnip
 require("luasnip.loaders.from_vscode").load()                                                -- Load friendly-snippets
 require("luasnip.loaders.from_vscode").load({ paths = { "~/duqcyxwd/DotFiles/snippets/" } }) -- Load snippets from my-snippets folder
-require("luasnip.loaders.from_snipmate").load({ paths = { "~/github/vim-snippets/snippets/" }, include = { "c", "vim" }, })
+require("luasnip.loaders.from_snipmate").load({ paths = { "~/github/vim-snippets/snippets/" }, include = { "c", "vim", "lua" }, })
 
 
 

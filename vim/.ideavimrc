@@ -11,6 +11,9 @@
 " =================================================================
 """ This file contains default spacemacs settings and key bindings
 " Settings
+set which-key
+set timeoutlen=800
+
 source ~/github/intelli-space/spacemacs/settings.vim
 
 " Key bindings
@@ -39,8 +42,6 @@ vnoremap <leader><tab>    <Esc>:action VimFilePrevious<CR>
 " Open the terminal window (use :! for a single shell cmd)
 nnoremap <leader>'    :action Terminal.OpenInTerminal<CR>
 vnoremap <leader>'    <Esc>:action Terminal.OpenInTerminal<CR>
-nnoremap <leader>!    :action Terminal.OpenInTerminal<CR>
-vnoremap <leader>!    <Esc>:action Terminal.OpenInTerminal<CR>
 
 " Show usages for symbol.
 " Ideally this should be FindInPath the current word, but I think that it is
@@ -138,6 +139,7 @@ set undolevels=100
 set mps+=<:>
 set autoread            " Automatically reload changes if detected
 set timeoutlen=1000     " Time to wait for a command (after leader for example).
+set notimeout
 
 " ---------------
 " UI

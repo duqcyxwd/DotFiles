@@ -1547,7 +1547,7 @@ augroup neoterm
 augroup END
 
 
-" Works greate with nvr
+" Works great with nvr
 " https://github.com/mhinz/neovim-remote
 
 

@@ -5,6 +5,17 @@ local brj = require("funcs.bracket_jump")
 vim.g.mapleader = "\\"
 vim.g.maplocalleader = ","
 
+-- init which-key {{{1
+-- stylua: ignore start
+local status, wk = pcall(require, "which-key")
+if not status then
+  vim.notify("couldn't load which-key, skipping mappings")
+  return
+end
+
+local space_key_nmap = {}
+local space_key_vmap = {}
+
 -- Local Utility functions {{{1
 local function set_keymap(mode, opts, keymaps)
   for _, keymap in ipairs(keymaps) do
@@ -13,6 +24,7 @@ local function set_keymap(mode, opts, keymaps)
 end
 
 local function quick_swap(data)
+  -- quick swap first two column in a table
   if type(data) == "table" and type(data[1]) == "string" then
     local temp = data[1]
     if data[2] == nil or data[2] == "" then
@@ -34,9 +46,11 @@ local reformate_key_map = function(keymap)
   end
 end
 
+-- }}}1
+
+-- Mapping
 -- normal mapping {{{1
 
--- Special mapping Others {{{2
 
 -- vim.cmd("vnoremap <silent> <C-Space> :lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>")
 -- vim.cmd("vnoremap <silent> -         :lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>")
@@ -64,10 +78,9 @@ vim.cmd('xnoremap <silent> p p:let @+=@0<CR>:let @"=@0<CR>')
 vim.cmd("nnoremap <expr> k (v:count > 1 ? \"m'\" . v:count : '') . 'k'")
 vim.cmd("nnoremap <expr> j (v:count > 1 ? \"m'\" . v:count : '') . 'j'")
 
--- }}}
 
--- stylua: ignore
-set_keymap("n", { noremap = true, silent = true }, { --{{{2
+-- Normal mapping --{{{1
+set_keymap("n", { noremap = true, silent = true }, {
   -- execute q macro
   { "Q", "@q" },
 
@@ -127,37 +140,22 @@ set_keymap("n", { noremap = true, silent = true }, { --{{{2
 
 })
 
-set_keymap("n", { noremap = true, silent = true }, { --{{{2
+
+-- Leaderkey mapping --{{{1
+set_keymap("n", { noremap = true, silent = true }, {
   { "<localleader>k", ":call Show_documentation()<CR>" },
   { "<localleader>j", ":call GotoFirstFloat()<CR>" },
 })
 
--- stylua: ignore
-set_keymap("v", { noremap = true, silent = true }, { --{{{2
+-- Visual mode mapping --{{{1
+set_keymap("v", { noremap = true, silent = true }, {
   {"9",         "c()<Esc>hp"},
   {"J",         ":move '<+1<CR>gv-gv"},
   {"K",         ":move '<-2<CR>gv-gv"},
   {"<C-Space>", ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>"},
   {"-",         ":lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>"},
 })
-
--- init which-key {{{1
-local status, wk = pcall(require, "which-key")
-if not status then
-  vim.notify("couldn't load which-key, skipping mappings")
-  return
-end
-
--- stylua: ignore
--- init space_key_nmap/space_key_vmap {{{1
-local space_key_nmap = {
-  ['<space>'] = { 'FZF Command Search',         ':FFCommands<CR>'},
-  ['<tab>']   = { 'last buffer',                ':e#<CR>'},
-  ["\\"]      = { 'FZF Command History Search', ':FFHistory:<CR>'},
-  ["'"]       = { 'Toggles the neoterm',        ':above Ttoggle<CR>'},
-  ["`"]       = { 'Toggles the Float Terminal', ':FloatermToggle<CR>'},
-}
-local space_key_vmap = {}
+-- }}}1
 
 -- Buffer/Tab Switch {{{1
 -- Map <Space>1..8 to buffers
@@ -169,7 +167,15 @@ for i = 1, 8, 1 do
 end
 
 -- Impair keys and Bracket jump {{{1
+-------------------------------------------------------------------------------
 -- This is similaer to emacs transit mode
+
+local default_impair_keys = { --{{{2
+  -- Default unimar already supported
+  "`", -- Mark
+  "f", -- file preceding the current one alphabetically in the current file's directory
+  "c", -- vim diff next hunk
+}
 
 local impair_map = { --{{{2
   -- in pair
@@ -182,9 +188,9 @@ local impair_map = { --{{{2
   { "[d", "<PageUp>" },
   { "]d", "<PageDown>" },
 
-  -- vim diff next hunk
-  { "[c", "[c" },
-  { "]c", "]c" },
+  -- -- vim diff next hunk
+  -- { "[c", "[c" },
+  -- { "]c", "]c" },
 
   -- Git chagne Hunk
   { "[h", ":Gitsigns prev_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
@@ -203,31 +209,26 @@ local impair_map = { --{{{2
 }
 
 
-local map_family_table = {
+local map_family_table = { --{{{2
   { "b", "b" },    -- Buffer
   -- { "c", "c" },    -- next error
   { "q", "q" },    -- quick fixt
   { "t", "tab" },  -- Tab
 }
-local other_unimpar = {
-  "`", -- Mark
-  "f", -- file preceding the current one alphabetically in the current file's directory
-}
-
-local addNextFamily = function(map)  --{{{2
+local addNextFamily = function(map, impair_map_table)  --{{{2
   for _, entry in pairs(map) do
-    table.insert(impair_map, { "]" .. entry[1], "<cmd>" .. entry[2] .. "next<CR>" })
-    table.insert(impair_map, { "[" .. entry[1], "<cmd>" .. entry[2] .. "prev<CR>" })
-    table.insert(impair_map, { "]" .. entry[1]:upper(), "<cmd>" .. entry[2] .. "last<CR>" })
-    table.insert(impair_map, { "[" .. entry[1]:upper(), "<cmd>" .. entry[2] .. "first<CR>" })
+    table.insert(impair_map_table, { "]" .. entry[1], "<cmd>" .. entry[2] .. "next<CR>" })
+    table.insert(impair_map_table, { "[" .. entry[1], "<cmd>" .. entry[2] .. "prev<CR>" })
+    table.insert(impair_map_table, { "]" .. entry[1]:upper(), "<cmd>" .. entry[2] .. "last<CR>" })
+    table.insert(impair_map_table, { "[" .. entry[1]:upper(), "<cmd>" .. entry[2] .. "first<CR>" })
   end
 end
 
 -- Update impair_map
-addNextFamily(map_family_table)
+addNextFamily(map_family_table, impair_map)
 
-local brackets = { name = "+bracket jumps" } --{{{2
-local getKeys = function(maps)
+local getKeys = function(maps) --{{{2
+  -- get keys from a impar map
   local res = {}
   for _, entry in pairs(maps) do
     local c = string.gsub(entry[1], "[%[%]]", "")
@@ -236,7 +237,10 @@ local getKeys = function(maps)
   return res
 end
 
-for _, char in ipairs(remove_dups(join(other_unimpar, getKeys(impair_map)))) do
+local brackets = { name = "+bracket jumps" } --{{{2
+local impar_keys  = remove_dups(join(default_impair_keys, getKeys(impair_map)))
+
+for _, char in ipairs(impar_keys) do
   brackets[char] = {
     string.format("Set bracket jump (%s)", char),
     function()
@@ -250,8 +254,16 @@ set_keymap("n", { noremap = true, silent = true }, impair_map)
 space_key_nmap.k = brackets
 space_key_nmap.n = brackets
 
+-- }}}1
 
--- stylua: ignore
+-- Space Key mapping
+-- Top {{{1
+space_key_nmap['<space>'] = { 'FZF Command Search',         ':FFCommands<CR>'}
+space_key_nmap['<tab>']   = { 'last buffer',                ':e#<CR>'}
+space_key_nmap["\\"]      = { 'FZF Command History Search', ':FFHistory:<CR>'}
+space_key_nmap["'"]       = { 'Toggles the neoterm',        ':above Ttoggle<CR>'}
+space_key_nmap["`"]       = { 'Toggles the Float Terminal', ':FloatermToggle<CR>'}
+
 space_key_nmap.b = { --{{{1
   name = '+buffer',
 
@@ -262,7 +274,8 @@ space_key_nmap.b = { --{{{1
   h = {'Startify Home',                      ':call SaveCurrentSessions()<CR>:SClose<CR>'},
   j = {'Buffer line jump',                   ':BufferLinePick<CR>' },
   n = {'Next buffer',                        ':bnext<CR>'},
-  o = {'Keep only current buffer',           ':Bdelete other<CR>'},
+  o = {'Buffer only',                        ':Bdelete other<CR>'},
+  c = {'Buffer clean unattached',            ':Bdelete hidden<CR>'},
   p = {'Previous buffer',                    ':bprev<CR>' },
 
   t = {'Buffer tabs',                        ':FzfLua tabs<CR>'},
@@ -299,6 +312,7 @@ space_key_nmap.d = { --{{{1
   w = { "Delete this window",              ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
   W = { "Delete this window and buffer",   ":call undoquit#SaveWindowQuitHistory()<CR>:bdelete!<CR>" },
   t = { "Delete this tab",                 ":tabclose<CR>"},
+  T = { "Delete this tab and buffer",      ":Bclose<CR>:tabclose<CR>"},
 
 }
 
@@ -356,20 +370,21 @@ space_key_vmap.f = { --{{{1
 space_key_nmap.g = { --{{{1
   name = "+Git/Go",
 
-  a = {'GitSign stage_hunk',    ':Gitsigns stage_hunk<CR>'},
-  A = {'Git add current file',  ':Git add %<CR>'},
-  b = {'Git blame',             ':Git blame --date=relative<CR>'},
-  c = {'Git commit',            ':Git commit -v<CR>'},
-  d = {'Git diff',              ':Gdiffsplit<CR>'},
-  e = {'Gitsign Edit mode',     ':Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>'},
-  s = {'Git status',            ':Git<CR>'},
-  i = {'Git line info',         ":lua require('gitsigns').blame_line({ full = true})<CR>"},
-  l = {'Git link open',         ':GBrowse<CR>'},
-  p = {'Git Gina Push',         ':Gina push<CR>'},
+  a = { 'GitSign stage_hunk',   ':Gitsigns stage_hunk<CR>' },
+  A = { 'Git add current file', ':Git add %<CR>' },
+  b = { 'Git blame',            ':Git blame --date=relative<CR>' },
+  c = { 'Git commit',           ':Git commit -v<CR>' },
+  d = { 'Git diff',             ':Gdiffsplit<CR>' },
+  e = { 'Gitsign Edit mode',    ':Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>' },
+  s = { 'Git status',           ':Git<CR>' },
+  i = { 'Git line info',        ":lua require('gitsigns').blame_line({ full = true})<CR>" },
+  l = { 'Git link open',        ':GBrowse<CR>' },
+  p = { 'Git Gina Push',        ':Gina push<CR>' },
 
   h = {
     name ='Git hunk',
     a = { 'GitSign stage_hunk',             ':Gitsigns stage_hunk<CR>' },
+    A = { 'Git add current file',           ':Git add %<CR>' },
     u = { 'GitSign stage_hunk undo',        ':Gitsigns undo_stage_hunk<CR>' },
     R = { 'GitSign hunk restore',           ':Gitsigns reset_hunk<CR>' },
     r = { 'GitSign buffer reset',           ':Gitsigns reset_buffer_index<CR>' },
@@ -387,7 +402,8 @@ space_key_nmap.g = { --{{{1
 space_key_vmap.g = { --{{{1
   name = "+Git/Go",
 
-  a = {'GitSign stage_hunk',    ':Gitsigns stage_hunk<CR>'},
+  a = { 'GitSign stage_hunk',    ':Gitsigns stage_hunk<CR>' },
+  l = { 'Git link open',        ':GBrowse<CR>' },
   h = {
     name ='Git hunk',
     a = { 'GitSign stage_hunk',      ':Gitsigns stage_hunk<CR>' },
@@ -618,11 +634,15 @@ space_key_nmap.t = { --{{{1
   M  = {'Color: FZF Schema',                     ':FzfLua colorschemes<CR>'},
   s  = {'Toggle Strip Whitespace On Save',       ':EnableStripWhitespaceOnSave<CR>:echo "ToggleStripWhitespaceOnSave"<CR>'},
   S  = {'Toggle Trailling whitespace indicator', ':ToggleWhitespace<CR>'},
-  T  = {'TagbarToggle',                          ':TagbarToggle<CR>'},
-  t  = {'Toggle 80 text width',                  ':call ToggleTextWidthWithColor()<CR>'},
-
-  v  = {'Toggle vertical indent line',           ':IndentLinesToggle<CR>'},
+  w  = {'Toggle 80 text width',                  ':call ToggleTextWidthWithColor()<CR>'},
   p  = {'Toggle findroot',                       ':call ToggleFindRootScope()<CR>'},
+  h  = {'Toggle left',                           ':CocCommand explorer<CR>'},
+  l  = {'Toggle right',                          ':SymbolsOutline<CR><c-w>h'},
+
+  o = {
+    name = 'Toggle+',
+    v  = {'Toggle vertical indent line',           ':IndentLinesToggle<CR>'},
+  },
 
   f = {
     name = 'Fold+',
@@ -646,11 +666,12 @@ local toggle_keymap = {
   n = {'number',         'set',      'Toggle line number '},
   r = {'relativenumber', 'set',      'Toggle relative line number'},
   w = {'wrap',           'set',      'Toggle line wrap'},
+  s = {'wrapscan',       'set',      'Toggle wrapscan'},
 }
 
 local settingToggle = function(keymap)
   for k, v in pairs(keymap) do
-    space_key_nmap.t[k] = { v[3], ":" .. v[2] .. " " .. v[1] .. "!<CR>:" .. v[2] .. " " .. v[1] .. "?<CR>" }
+    space_key_nmap.t.o[k] = { v[3], ":" .. v[2] .. " " .. v[1] .. "!<CR>:" .. v[2] .. " " .. v[1] .. "?<CR>" }
   end
 end
 settingToggle(toggle_keymap)
@@ -675,15 +696,22 @@ vim.cmd("vnoremap v :lua require'nvim-treesitter.incremental_selection'.node_inc
 space_key_nmap.w = { --{{{1
   name = "+Window",
 
-  c = { "Delete this window",            ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
-  C = { "Delete this window and buffer", ":call undoquit#SaveWindowQuitHistory()<CR>:bdelete!<CR>" },
-  s = { "Window Swap",                   ":call WindowSwap#EasyWindowSwap()<CR>" },
-  u = { "Undoquit Window",               ":Undoquit<CR>" },
+  d = { "Window split move down",        ":aboveleft sbuffer#<CR><C-w>w" },
+  l = { "Window split move right",       ":vert sbuffer#<CR><C-w>w" },
+
+  s = { "Window split move down",        ":aboveleft sbuffer#<CR><C-w>w" },
+  v = { "Window split vertical",         ":vert sbuffer#<CR><C-w>w" },
+  c = { "Window close",                  ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
+  C = { "Window close!",                 ":call undoquit#SaveWindowQuitHistory()<CR>:bdelete!<CR>" },
+
   w = { "VimWiki Index Page",            ":e ~/vimwiki/index.md<CR>" },
+  r = { "Window resize",                 ":WinResizerStartResize<CR>" },
   m = { "Maximum Current window",        ":ZoomToggle<CR>"},
 
+  u = { "Undoquit Window",               ":Undoquit<CR>" },
   o  = {'Window Only WIP',               "<C-w><C-o>"},
   q = { "Write and quit",                ":wq<CR>" },
+
 
 }
 
@@ -705,6 +733,7 @@ space_key_nmap.z = { --{{{1
 space_key_nmap.X = { --{{{1
   name = "+Help",
 }
+-- stylua: ignore end
 
 -- Register key map {{{1
 --

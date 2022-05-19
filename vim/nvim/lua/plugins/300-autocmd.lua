@@ -41,7 +41,7 @@ vim.diagnostic.float_toggle = function()
   local group = {
     DIAGNOSTICS_FLOAT = {
       -- Only show diagnostic when edit complete. This will help me to get clean complete list
-       {'CursorHold', '*', "lua require'lspsaga.diagnostic'.show_line_diagnostics()"}
+      --  {'CursorHold', '*', "lua require'lspsaga.diagnostic'.show_line_diagnostics()"}
      }
   }
   if diagnostics_float_enabled then
