@@ -34,25 +34,32 @@ setopt AUTO_CD                # ZSH AUTO CD into directories
 zshaddhistory() { # {{{1
   emulate -L zsh
 
-  # return 1 when first command is unknown command
-  whence ${${(z)1}[1]} >| /dev/null || return 1
-
   local line=${1%%$'\n'}
   local cmd=${line%% *}
+
+
+  if [[ ${cmd} != (*=*) ]] ; then
+    # return 1 when first command is unknown command
+    # 2022-05-25 Wrap with if, I want to keep environment variable updates
+    whence ${${(z)1}[1]} >| /dev/null || return 1
+  fi
 
   # mlog "zshaddhistory: "
   # mlog ${${(z)1}[1]}
   # mlog ${(z)1}
   # mlog $@
   # mlog $line
+  # mlog ${#line}
   # mlog $cmd
   # mlog $(pwd)
+
   # his="$(date +%s): $(pwd): $@"
   his="$(date +%s): $(pwd): ${(z)1}"
   echo $his >> ~/.zsh_history_bk/.zsh_hist_cust_bk
 
   # Modified from https://mollifier.hatenablog.com/entry/20090
   # Not necessary, Most of them will be cleanup by zsh
+  # -ge 4 > Have more than 4 chars
   if [[ ${#line} -ge 4
           && ${cmd} != ("")
           && ${cmd} != (gc)
