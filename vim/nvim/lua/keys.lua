@@ -632,15 +632,20 @@ space_key_nmap.t = { --{{{1
 
   m  = {'Color: Dark/Light Mode',                ':ToggleColorschemeMode<CR>'},
   M  = {'Color: FZF Schema',                     ':FzfLua colorschemes<CR>'},
-  s  = {'Toggle Strip Whitespace On Save',       ':EnableStripWhitespaceOnSave<CR>:echo "ToggleStripWhitespaceOnSave"<CR>'},
+  s  = {'Toggle Strip Whitespace On Save',       ':ToggleStripWhitespaceOnSave<CR>:echo "ToggleStripWhitespaceOnSave"<CR>'},
   S  = {'Toggle Trailling whitespace indicator', ':ToggleWhitespace<CR>'},
   w  = {'Toggle 80 text width',                  ':call ToggleTextWidthWithColor()<CR>'},
   p  = {'Toggle findroot',                       ':call ToggleFindRootScope()<CR>'},
   h  = {'Toggle left',                           ':CocCommand explorer<CR>'},
   l  = {'Toggle right',                          ':SymbolsOutline<CR><c-w>h'},
 
+  d  = {
+    name = 'vimDiff+',
+    w  = {'Toggle vimdiff whitespace',           ':call VimDiffWhiteToggle()<CR>'},
+  },
+
   o = {
-    name = 'Toggle+',
+    name = 'Options+',
     v  = {'Toggle vertical indent line',           ':IndentLinesToggle<CR>'},
   },
 
