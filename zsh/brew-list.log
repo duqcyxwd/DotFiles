@@ -1,4 +1,4 @@
-timestamp: 2022-03-25 20:14:52 EDT
+timestamp: 2022-10-14 09:49:20 EDT
 tap: brew tap
 tap: borkdude/brew
 tap: clojure-lsp/brew
@@ -6,9 +6,12 @@ tap: clojure/tools
 tap: code-hex/pget
 tap: conduktor/brew
 tap: homebrew/cask
+tap: homebrew/cask-versions
 tap: homebrew/core
 tap: let-us-go/zkcli
+tap: spring-io/tap
 tap: teamookla/speedtest
+tap: ubuntu/microk8s
 brew: brew leaves
 brew: ack
 brew: autojump
@@ -18,6 +21,7 @@ brew: borkdude/brew/babashka
 brew: borkdude/brew/clj-kondo
 brew: borkdude/brew/jet
 brew: boxes
+brew: cassandra@3
 brew: clojure-lsp/brew/clojure-lsp-native
 brew: clojure/tools/clojure
 brew: cmake
@@ -25,6 +29,7 @@ brew: cmatrix
 brew: code-hex/pget/pget
 brew: coreutils
 brew: ctags
+brew: emscripten
 brew: entr
 brew: exa
 brew: fd
@@ -33,25 +38,24 @@ brew: fortune
 brew: fzf
 brew: git
 brew: git-extras
+brew: git-review
 brew: gnu-sed
 brew: gnu-time
-brew: gnutls
 brew: go
 brew: gotop
 brew: grc
 brew: grep
 brew: gtk+3
 brew: helm
-brew: helm@2
 brew: highlight
 brew: htop
 brew: hub
 brew: hugo
+brew: iperf3
 brew: jq
 brew: jump
 brew: kafka
 brew: kcat
-brew: kubernetes-cli
 brew: leiningen
 brew: let-us-go/zkcli/zkcli
 brew: libass
@@ -61,14 +65,17 @@ brew: lua-language-server
 brew: luajit
 brew: luarocks
 brew: maven
+brew: maven@3.5
 brew: micro
+brew: minikube
 brew: mit-scheme
-brew: neovim
+brew: mkcert
 brew: neovim-remote
-brew: node
 brew: nvm
-brew: openjdk@8
+brew: openjdk@11
 brew: php
+brew: podman
+brew: pstree
 brew: pyenv
 brew: python@3.8
 brew: ranger
@@ -76,6 +83,7 @@ brew: ripgrep-all
 brew: shellcheck
 brew: shfmt
 brew: showkey
+brew: spring-io/tap/spring-boot
 brew: srt
 brew: teamookla/speedtest/speedtest
 brew: telnet
@@ -86,12 +94,14 @@ brew: toilet
 brew: trash
 brew: tree
 brew: tree-sitter
+brew: ubuntu/microk8s/microk8s
 brew: vim
 brew: watch
 brew: watchman
 brew: wget
 brew: zsh
 cask: brew list --cask
+cask: adoptopenjdk8
 cask: alacritty
 cask: altair-graphql-client
 cask: amethyst
@@ -102,6 +112,7 @@ cask: graphiql
 cask: graphql-playground
 cask: keycastr
 cask: mark-text
+cask: neovide
 cask: osxfuse
 cask: v2rayu
 cask: vimr
