@@ -12,7 +12,7 @@ M.config = function()
         ["XXX"] = "Identifier",
       },
       -- disable = { "c", "rust", "vim", "clojure", "bash", "zsh" },  -- list of language that will be disabled
-      disable = { "c", "rust" }, -- list of language that will be disabled
+      disable = { "c", "rust", "yaml" }, -- list of language that will be disabled
 
       -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
       -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).

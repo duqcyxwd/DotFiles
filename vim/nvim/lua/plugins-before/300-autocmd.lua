@@ -24,10 +24,10 @@ local autocmds = {
   },
 
   run = {
-    { "FileType", "sh",    'let @g=":w\\<CR>:sp |terminal %\\<CR>"' },
-    { "BufEnter", "*.py",  'let @g=":w\\<CR>:sp |terminal python %\\<CR>"' },
-    { "BufEnter", "*.js",  'let @g=":w\\<CR>:sp |terminal node %\\<CR>"' },
-    { "BufEnter", "*.zsh", 'let @g=":w\\<CR>:sp |terminal %\\<CR>"' },
+    { "BufEnter", "*.graphqls",    'set syntax=graphql filetype=graphql' },
+    { "BufEnter", "*.py",          'let @g=":w\\<CR>:sp |terminal python %\\<CR>"' },
+    { "BufEnter", "*.js",          'let @g=":w\\<CR>:sp |terminal node %\\<CR>"' },
+    { "BufEnter", "*.zsh",         'let @g=":w\\<CR>:sp |terminal %\\<CR>"' },
   },
 
 

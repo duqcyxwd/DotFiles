@@ -11,6 +11,10 @@ local autocmds = {
     -- Keep folding when switch buffer
     { "BufEnter", "*",        "silent! loadview" },
     { "BufLeave", "*",        "silent! mkview" },
+    -- VimLeave called when exit vim. Last edit location will be saved
+    { "VimLeave", "*",        "silent! mkview" },
+    -- " Manully update last open session so __LAST__ will not be updated
+    { "VimLeave", "*",        "call SaveCurrentSessions()" },
 
   },
   commentary_config = {

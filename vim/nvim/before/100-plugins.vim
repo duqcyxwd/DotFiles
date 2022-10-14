@@ -153,6 +153,7 @@ Plug 'tfnico/vim-gradle'
 Plug 'tmux-plugins/vim-tmux'                           " Vim plugin for .tmux.conf.
 Plug 'tweekmonster/gofmt.vim'
 Plug 'zdharma-continuum/zinit-vim-syntax'
+Plug 'jparise/vim-graphql'
 
 " I don't need them yet and they overwrite my formatoptions
 " Plug 'rust-lang/rust.vim'
@@ -191,10 +192,12 @@ Plug 'venantius/vim-cljfmt', { 'for': 'clojure' }                        " uses 
 
 " Markdown
 " Plug 'jtratner/vim-flavored-markdown'
-Plug 'plasticboy/vim-markdown'                      " A better markdown plugin
+" Plug 'plasticboy/vim-markdown'                      " A better markdown plugin
 " I just need one for folding
 " Plug 'rlue/vim-getting-things-down'
-" Plug 'masukomi/vim-markdown-folding'
+
+Plug 'plasticboy/vim-markdown'                      " A better markdown syntax plugin than vimwiki
+Plug 'masukomi/vim-markdown-folding'                " Can fold by header
 
 
 " Git {{{1

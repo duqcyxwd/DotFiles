@@ -21,7 +21,7 @@ set cursorline                  " highlights line numbers (vim-airline-colornum)
 set encoding=utf8               " Set utf8 as standard encoding
 set ffs=unix,dos,mac            " Use Unix as the standard file type
 set hidden                      " A buffer becomes hidden when it is abandoned
-set history=1000                 " Sets how many lines of history VIM has to remember
+set history=1000                " Sets how many lines of history VIM has to remember
 set ignorecase                  " Ignore case when searching
 set incsearch                   " Makes search act like search in modern browsers
 set langmenu=en
@@ -66,7 +66,7 @@ set softtabstop=2
 set textwidth=0                 " Disable auto break line
 
 set nowrap                      " Wrap lines
-set wrapscan                  " Do not wrap around when search reach end of file
+set wrapscan                    " Do not wrap around when search reach end of file
 
 set foldcolumn=0                " Disable fold column by default, <Space>tfc to enable it
 set foldmethod=marker           " Use braces by default
@@ -121,20 +121,11 @@ if has('persistent_undo')
 endif
 
 
-
 " autocmd group {{{2
 " augroup i_like_folding_lol
 "   autocmd!
 "   " autocmd BufWinEnter * silent! :%foldopen!
 " augroup END
-
-" auto-Load fold views
-" augroup AutoSaveFolds
-"   autocmd!
-"   " autocmd BufWinLeave ?* mkview
-"   " autocmd BufWinEnter ?* silent! loadview
-" augroup END
-
 
 " Save last session using startify
 " Moved to autocmd.lua
@@ -143,15 +134,6 @@ endif
 "   autocmd VimLeave * SSave! last-open-session | echom 'Save last session'
 " augroup END
 
-" Return to last edit position when opening files (You want this!)
-" VIM info can do samething
-augroup RETURN_LAST_EDIT_POSITION
-  autocmd!
-  autocmd BufReadPost *
-        \ if line("'\"") > 0 && line("'\"") <= line("$") |
-        \   exe "normal! g`\"" |
-        \ endif
-augroup END
 
 augroup AUTO_RELOADFILE
   " Triger `autoread` when files changes on disk

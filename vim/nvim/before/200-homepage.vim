@@ -58,7 +58,7 @@ let g:startify_lists = [
 
 
 let g:startify_commands = [
-            \ {'b': ['Back to last loaded Session', 'SLoad!']},
+            \ {'b': ['Back to last Session', 'SLoad!']},
             \ ]
 
 " # A Smart way to auto generate Sessions
@@ -80,14 +80,14 @@ endfunction
 function! SaveCurrentSessions()
     let session_name = fnamemodify(v:this_session, ':t')
     if session_name ==# ''
-      let session_name = '_last_open'
+      let session_name = '_last_view'
     endif
 
     " mksession! $XDG_DATA_HOME/nvim/session/_last_open
     " execute 'mksession! $XDG_DATA_HOME/nvim/session/' . session_name
 
     " Save _last_open first, so __LAST__ will point to current session
-    silent execute 'SSave! _last_open'
+    silent execute 'SSave! _last_view'
     silent execute 'SSave! ' . session_name
 
     " silent execute 'SSave! ' . GetUniqueSessionName()
@@ -95,8 +95,6 @@ endfunction
 
 
 
-" Manully update last open session so __LAST__ will not be updated
-autocmd VimLeave *             call SaveCurrentSessions()
 
 " tpope/vim-obsession has conflict with startify which lead to empty buffer
 

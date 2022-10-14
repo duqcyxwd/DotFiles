@@ -14,6 +14,16 @@
 " /******************************************************/
 
 " Setting toggle/Config Functions
+" [Functions] Vimdiff whitespace toggle {{{1
+" ------------------------------------------------------------------------------
+function! VimDiffWhiteToggle() abort
+  if &diffopt =~ 'iwhite'
+    set diffopt-=iwhite
+  else
+    set diffopt+=iwhite
+  endif
+endfunction
+
 " [Functions] HighlightCharactersOver80 {{{1
 " ------------------------------------------------------------------------------
 " Highlight characters in column 81+ with a red background.
