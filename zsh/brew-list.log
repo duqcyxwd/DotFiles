@@ -1,4 +1,4 @@
-timestamp: 2022-10-14 09:49:20 EDT
+timestamp: 2022-10-14 10:00:48 EDT
 tap: brew tap
 tap: borkdude/brew
 tap: clojure-lsp/brew
@@ -62,7 +62,6 @@ brew: libass
 brew: libheif
 brew: lolcat
 brew: lua-language-server
-brew: luajit
 brew: luarocks
 brew: maven
 brew: maven@3.5
@@ -93,7 +92,6 @@ brew: tmux
 brew: toilet
 brew: trash
 brew: tree
-brew: tree-sitter
 brew: ubuntu/microk8s/microk8s
 brew: vim
 brew: watch
