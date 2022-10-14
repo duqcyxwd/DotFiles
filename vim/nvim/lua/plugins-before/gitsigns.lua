@@ -1,5 +1,6 @@
 require("funcs.global")
 
+-- Plug 'lewis6991/gitsigns.nvim'                         " git decorations
 -- stylua: ignore
 SR("gitsigns").setup({
   signs = {
@@ -42,5 +43,3 @@ SR("gitsigns").setup({
     enable = false,
   },
 })
-
-

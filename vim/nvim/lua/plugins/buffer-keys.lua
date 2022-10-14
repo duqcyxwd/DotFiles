@@ -28,6 +28,8 @@ M.lsp_on_attach_power = function(_, bufnr)
 	end
 	-- bmap("n", "K", "<CMD>lua vim.lsp.buf.hover()<CR>", opts)
 	bmap("n", "K", "<CMD>lua require('lspsaga.hover').render_hover_doc()<CR>", opts)
+	-- WIP
+	bmap("n", "L", "<CMD>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>", opts)
 	bmap("n", "<localleader>K", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
 
 	-- lspsaga config: https://github.com/tami5/lspsaga.nvim/wiki

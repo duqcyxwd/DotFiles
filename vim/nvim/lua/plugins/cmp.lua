@@ -130,10 +130,6 @@ cmp.setup({
     }),
   },
   completion = { border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" }, scrollbar = "║" },
-  documentation = {
-    border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
-    scrollbar = "║",
-  },
 
   snippet = {
     -- REQUIRED - you must specify a snippet engine
@@ -172,3 +168,10 @@ cmp.setup({
   }),
 })
 
+
+
+-- documentation is replaced with window.documentation = cmp.config.window.bordered()
+  -- documentation = {
+  --   border = { "╭", "─", "╮", "│", "╯", "─", "╰", "│" },
+  --   scrollbar = "║",
+  -- },

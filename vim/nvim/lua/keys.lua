@@ -530,6 +530,8 @@ space_key_nmap.p = { --{{{1
   e = {'Project files',                   ':FzfLua files<CR>'},
   i = {'Plug Install',                    ':PlugInstall<CR>'},
   u = {'Plug Update',                     ':PlugUpdate<CR>'},
+  C = {'Plug Clean',                      ':PlugClean<CR>'},
+  S = {'Plug Status',                     ':PlugStatus<CR>'},
   o = {'Plugin main page open in Github', ':call OpenGithubPlugin()<CR>'},
 
 }
@@ -637,6 +639,8 @@ space_key_nmap.t = { --{{{1
   w  = {'Toggle 80 text width',                  ':call ToggleTextWidthWithColor()<CR>'},
   p  = {'Toggle findroot',                       ':call ToggleFindRootScope()<CR>'},
   h  = {'Toggle left',                           ':CocCommand explorer<CR>'},
+  -- WIP Test
+  h  = {'Toggle left',                           ':NvimTreeToggle<CR>'},
   l  = {'Toggle right',                          ':SymbolsOutline<CR><c-w>h'},
 
   d  = {
