@@ -8,8 +8,6 @@ __fzf_config() {
 
   # FZF KEYBINDING {{{1
     export FZF_MY_KEYBINDING="
-    --bind '?:toggle-preview'
-
     --bind 'left:up'
     --bind 'left:+toggle'
     --bind 'right:toggle+down'
@@ -37,9 +35,14 @@ __fzf_config() {
     --bind 'ctrl-n:down'
     --bind 'up:previous-history'
     --bind 'down:next-history'
+
+    --bind 'ctrl-\\:change-preview-window(right,70%|down,40%,border-top|hidden|)'
+    --bind '?:change-preview-window(right,70%|down,40%,border-top|hidden|)'
     "
     # Notes: In tmux with vim, ctrl-kjhl is used....
     # Need to find other better keyding
+
+    # --bind '?:toggle-preview'
 
     # --bind 'ctrl-p:up'
     # --bind 'ctrl-n:down'
@@ -109,7 +112,7 @@ __fzf_config() {
     # FZF Theme }}}
   # FZF Default Config {{{1
     # export FZF_MY_OPTS="--reverse --ansi --multi --exit-0 --cycle --height 80% --preview-window border-left"
-    export FZF_MY_OPTS="--reverse --ansi --multi --cycle --height 80% --preview-window border-left --history=$XDG_CACHE_HOME/fzf/fzf_history"
+    export FZF_MY_OPTS="--reverse --scroll-off=999 --ansi --multi --cycle --height 80% --preview-window border-left --history=$XDG_CACHE_HOME/fzf/fzf_history"
 
     # FZF Default options
     export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_DRACULA "

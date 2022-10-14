@@ -40,25 +40,29 @@
     fzf_git_commit_preview(){
       FZF_DEFAULT_OPTS="$__git_commit_fzf_opts" fzf_tp --preview="$__git_commit_preview_cmd" $@
     }
-    alias fgcp=fzf_git_commit_preview
 
     # Usage: gloo | fgcp
+    # Usage: glog | fgcp
+    alias fgcp=fzf_git_commit_preview
 
     # gloo is an alias but we should not use alias in function
     # https://stackoverflow.com/questions/45601589/zsh-not-recognizing-alias-from-within-function
     # It works only they are sourced in different stage
-    git_log_interactive_preview(){
-      gloo $@ | fzf_git_commit_preview
-      }
 
     # get git commit SHA1 short
     git_log_interactive_select(){
-      # gloo $@  \
-      glog $@  \
-        | fzf_git_commit_preview \
+      # glog $@  \
+      #   | fzf_git_commit_preview \
+      #   | sha1grep \
+      #   | pbcopy && pbpaste
+
+      # git log preview with filtered file/directory
+      local __git_commit_preview_cmd2="echo {} | sha1grep | xargs -I% git_commit_preview % $@ |$__git_pager | LESS='-R' less"
+      glog $@  | FZF_DEFAULT_OPTS="$__git_commit_fzf_opts" fzf_tp --preview="$__git_commit_preview_cmd2" \
         | sha1grep \
         | pbcopy && pbpaste
     }
+
 
     git_revert_interactive() {
       git_log_interactive_select | xargs git revert $@

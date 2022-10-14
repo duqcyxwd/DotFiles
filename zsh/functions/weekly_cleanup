@@ -8,4 +8,9 @@ zinit compinit
 
 brew update            # update brew
 # brew upgrade           # update formula
+#
+# Other clean up
+# yarn cache clean       # Cleanup yarn cache
+# go clean -modcache     # Clean go cache
+# Cleanup helm file: rm ~/.cache/helm/repository
 

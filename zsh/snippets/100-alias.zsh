@@ -3,8 +3,12 @@
 # --------------------------------------------------------------------------
 alias mvimr='mvim --remote'
 
-alias vi='nvim'
-alias vim='nvim'
+{
+    if [ $commands[nvim] ]; then
+      alias vim='nvim'
+      alias vi='nvim'
+    fi
+}
 alias mypath='echo ${PATH//:/\\n}'
 alias mvnt='/usr/local/bin/mvn -T 1C'
 
@@ -51,6 +55,7 @@ alias notes="mvim ~/repo/Notes/CLojure.md"
 
 alias kafkacat=kcat
 alias topics="kcat -b localhost:9092 -L -J | jq -S -r '.topics |=sort_by(.topic) | .topics[].topic'"
+
 alias topicsi="runcached kcat -b localhost:9092 -L -J | awk 'NR>1'| jq -S -r '.topics |=sort_by(.topic) | .topics[].topic' | fzf"
 alias topics0='kafka-topics.sh --list --zookeeper localhost'
 alias topics1='kafka-topics.sh --bootstrap-server localhost:9092 --command-config $KAFKA_CONFIG/cust.properties --list'
@@ -70,8 +75,21 @@ alias kafka08="cd /usr/local && ln -s kafka_2.9.1-0.8.2.2 kafka"
 alias copen='open -a Google\ Chrome'
 alias ems='open -a /Applications/Emacs.app $@'
 alias py='python'
-alias rmt='/bin/rm'
-alias rm="trash"
+
+
+case `uname` in
+  Darwin)
+    # commands for OS X go here
+    alias rmt='/bin/rm'
+    alias rm="trash"
+    ;;
+  Linux)
+    # commands for Linux go here
+    ;;
+esac
+
+alias rmi="lai | xargs rm -r"
+
 
 alias em='ems'
 alias subl="/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl"

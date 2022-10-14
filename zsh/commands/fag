@@ -14,7 +14,7 @@ FZF_FAG_BIND_OPTS=" \
 FLAGS=""
 while :; do
   case "${1-}" in
-  -G | --file-search-regex)
+  -G | --file-search-regex | -g | --ignore | --ignore-dir)
     FLAGS="$FLAGS $1"
     shift
     FLAGS="$FLAGS $1"
@@ -31,6 +31,14 @@ INITIAL_QUERY="$*"
 # Fag 2.0
 AG_PREFIX="ag --hidden --nobreak --noheading --color $FLAGS"
 
+# mlog () {
+#         echo "[" $$ "]: " $@ >> $ZSH_LOADING_LOG
+# }
+
+# mlog "$INITIAL_QUERY"
+# mlog "$AG_PREFIX"
+
+
 # By pass all flag to ag, keep last argument as query argument
 INITIAL_QUERY="${@: -1}"
 IFS=: read -ra selected < <(
@@ -39,11 +47,15 @@ IFS=: read -ra selected < <(
   fzf_tp --history="$XDG_CACHE_HOME/fag/fag_history" --disabled --query "$*" \
       --bind "change:reload:sleep 0.3; $AG_PREFIX {q} || true" \
       --bind "alt-enter:unbind(change,alt-enter)+change-prompt(2. fzf> )+enable-search+clear-query" \
+      --bind "ctrl-r:unbind(ctrl-r)+change-prompt(1. ripgrep> )+disable-search+reload($AG_PREFIX {q} || true)+rebind(change,alt-enter)" \
       --prompt '1. ripgrep> ' \
       --delimiter : \
       --preview 'bat --style=numbers --color=always --highlight-line {2} {1}' \
-      --preview-window 'bottom,80%,border-top,+{2}+3/3'
+      --preview-window 'right,60%,border-left,+{2}+3/3'
 
+      # Preivew bottom
+      # TODO Make this configurable
+      # --preview-window 'bottom,80%,border-top,+{2}+3/3'
       # --preview-window +{2} \
       # --preview-window border-none \
 )

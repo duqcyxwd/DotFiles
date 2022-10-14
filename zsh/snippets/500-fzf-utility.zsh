@@ -157,4 +157,8 @@ fpathi() { #{{{1
   echo $FPATH | tr ':' '\n' | sort | fzf
 }
 
+diri() { #{{{1
+  cd $(dirs | awk '{gsub(" ","\n", $0); print $0}' | fzf | sed "s|~|$HOME|g")
+}
+
 #}}}

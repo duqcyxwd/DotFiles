@@ -1,4 +1,5 @@
 #!/bin/zsh
+# A script that called by crontab job
 
 function zsh_history_bk {
   zparseopts -E r=raw

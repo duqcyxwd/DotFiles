@@ -36,32 +36,50 @@ mlog "$(date) : zshrc start loading"
   # --------------------------------------------------------------------------
   export PATH="$HOME/bin:/usr/local/sbin:/usr/local/bin:$PATH"
   export PATH="$HOME/.gem/ruby/2.7.0/bin:$PATH"
-  export PATH="$HOME/.SpaceVim/bin:$PATH"
   export PATH="$HOME/script:$PATH"
   export PATH="$HOME/my_script:$PATH"
   export PATH="$HOME/my_script/zsh:$PATH"
   export PATH="$HOME/.cargo/bin:$PATH"
   export PATH="/usr/local/heroku/bin:$PATH"
   export PATH="/usr/local/opt/ruby/bin:$PATH"
-  export PATH="./node_modules/.bin:$PATH"
-  export PATH=/usr/local/opt/python/libexec/bin:$PATH         # Use brew install python/pip as default
-  export PATH=/usr/local/opt/coreutils/bin/:$PATH             # Add gnu fns.
-
-
-  # export KAFKA_HOME=/usr/local/kafka-2.1.0
-  export KAFKA_HOME=/usr/local/kafka_2.12-2.5.1
-  # export KAFKA_HOME=/usr/local/Cellar/kafka/2.8.0/libexec   #Homebrew installed
-
-  export KAFKA_CONFIG=$KAFKA_HOME/config
-  export PATH="$KAFKA_HOME/bin:$PATH"
-
-  export JAVA_HOME=$(/usr/libexec/java_home)
-  export PATH=$JAVA_HOME/bin:$PATH
 
   export GOPATH=$HOME/go
   export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
-
+  export PATH="./node_modules/.bin:$PATH"
   export NODE_PATH=/usr/lib/node_modules
+
+
+  case `uname` in
+    Darwin)
+      # commands for OS X go here
+
+      # Kafka
+      # export KAFKA_HOME=/usr/local/kafka-2.1.0
+      export KAFKA_HOME=/usr/local/kafka_2.12-2.5.1
+      # export KAFKA_HOME=/usr/local/Cellar/kafka/2.8.0/libexec   #Homebrew installed
+
+      export KAFKA_CONFIG=$KAFKA_HOME/config
+      export PATH="$KAFKA_HOME/bin:$PATH"
+
+      # Java 8
+      # export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
+      # IntelliJ jdk /Applications/IntelliJ IDEA.app/Contents/jbr/Contents/Home
+      # export JAVA_HOME="/Applications/IntelliJ IDEA.app/Contents/jbr/Contents/Home"
+      # Java 11
+      export JAVA_HOME=/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home
+      export PATH=$JAVA_HOME/bin:$PATH
+      export PATH="$HOME/.SpaceVim/bin:$PATH"
+      export PATH=/usr/local/opt/coreutils/bin/:$PATH             # Add gnu fns.
+
+
+      # Python
+      export PATH=/usr/local/opt/python/libexec/bin:$PATH         # Use brew install python/pip as default
+      ;;
+    Linux)
+      # commands for Linux go here
+
+      ;;
+  esac
 
 
   # PATH: Global Parameter {{{2
@@ -86,9 +104,10 @@ mlog "$(date) : zshrc start loading"
 # }}}
 }
 
-# SECTION: : Zinit {{{1
+# SECTION: : Zinit Fn {{{1
 zinit_load() {
   # https://zdharma.github.io/zinit/wiki/INTRODUCTION/
+  # zinit is now supported by https://github.com/zdharma-continuum/zinit
   ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
   source "${ZINIT_HOME}/zinit.zsh"
 
@@ -181,6 +200,7 @@ zinit_load() {
       wfxr/forgit \
       zpm-zsh/template \
       OMZ::plugins/brew/brew.plugin.zsh \
+      OMZ::plugins/multipass/multipass.plugin.zsh \
       OMZ::plugins/git-extras/git-extras.plugin.zsh \
       OMZ::plugins/iterm2/iterm2.plugin.zsh \
       OMZ::plugins/systemd/systemd.plugin.zsh
@@ -198,7 +218,7 @@ zinit_load() {
   # zinit self-update updates zinit
 }
 
-# SECTION: : zsh_plugins_config {{{1
+# SECTION: : zsh_plugins_config Fn {{{1
 zsh_plugins_config() {
 
   # vi-mode
@@ -231,8 +251,13 @@ zsh_plugins_config() {
 
 # Quick Dirty config before lazy loading 1{{{
 # Add some quick dirty useful alias so I can use them before they are loaded
-alias vim='nvim'
-alias vi='nvim'
+
+{
+    if [ $commands[nvim] ]; then
+      alias vim='nvim'
+      alias vi='nvim'
+    fi
+}
 alias gst='git status'
 [[ $commands[exa] ]] && alias la="exa -lbFa"
 ce() { cd $_comp_dir_cenxdir$1 }
@@ -286,3 +311,14 @@ unsetopt LIST_BEEP
 mlog "zshrc loaded"
 
 ### End of Zinit's installer chunk
+
+# 2022-09-27, Not sure if I still need to keep it
+# # Load a few important annexes, without Turbo
+# # (this is currently required for annexes)
+# zinit light-mode for \
+#     zdharma-continuum/zinit-annex-as-monitor \
+#     zdharma-continuum/zinit-annex-bin-gem-node \
+#     zdharma-continuum/zinit-annex-patch-dl \
+#     zdharma-continuum/zinit-annex-rust
+
+# ### End of Zinit's installer chunk

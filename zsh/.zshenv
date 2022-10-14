@@ -5,14 +5,27 @@ export XDG_CACHE_HOME=$HOME/.cache
 
 export ZDOTDIR=$HOME/.config/zsh
 
+declare -A ZINIT
+ZINIT[ZCOMPDUMP_PATH]="$XDG_CACHE_HOME/zsh/.zcompdump"
+
 # Overwrite by /etc/zshrc
 export HIST_STAMPS="yyyy-mm-dd" # ZSH History time format
 export HISTSIZE=10000002          #The maximum number of events stored in the internal history list.
 export SAVEHIST=10000002          #The maximum number of history events to save in the history file.
 
-HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
 
-export PATH=$ZDOTDIR/commands:$PATH
+case `uname` in
+  Darwin)
+    # commands for OS X go here
+    HISTFILE=${ZDOTDIR:-$HOME}/.zsh_history
+    ;;
+  Linux)
+    # commands for Linux go here
+    HISTFILE=$HOME/.zsh_history
+    ;;
+esac
+
+export PATH="$ZDOTDIR/commands:$PATH"
 
 # Some env which could be used in fzf_tp
 export ZSH_LOADING_LOG=$XDG_CACHE_HOME/.startup.log
@@ -33,3 +46,8 @@ autoload -Uz $ZDOTDIR/functions/kube/*(:t)
 FPATH=$FPATH:$ZDOTDIR/completions
 
 export KUBECONFIG=$HOME/.kube/config
+
+export HOMEBREW_NO_AUTO_UPDATE=0
+function brew2() {
+    HOMEBREW_NO_AUTO_UPDATE=1 brew "$@" && brew update
+}

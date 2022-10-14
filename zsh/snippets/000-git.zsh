@@ -180,14 +180,15 @@ alias gloo="git log --graph --color=always --format='$_glog_format'"
 # git log with author
 # glog git log graph with author
 _glog_auth_format="%C(green bold)%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(cyan)%C(bold)%cr%Creset"
-alias glog="git log --graph --pretty='$_glog_auth_format' --color=always"
+alias glog="git log --graph --color=always --pretty='$_glog_auth_format'"
 
 # git log graph simple graph with stat
 alias glogs="git log --stat --graph --pretty='%C(green bold)%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(cyan)%C(bold)%cr%Creset'"
 
 alias gke='\gitk --all $(git log -g --pretty=%h)'
 
-# --follow Continue listing the history of a file beyond renames (works only for a single file).
+# --follow
+#  Continue listing the history of a file beyond renames (works only for a single file).
 alias glof='git log --follow -p --'
 
 
@@ -231,6 +232,7 @@ alias gbud="echo 'git branch update with develop' && git pull origin develop"
 
 #  --ff-only is same to use
 alias gcod="ee 'git checkout develop && git merge origin/develop --ff-only'"
+alias gcom="ee 'git checkout master && git merge origin/master --ff-only'"
 
 # The following way will remove my unstashed change
 # alias gcod="git checkout develop && git reset origin/develop --hard"

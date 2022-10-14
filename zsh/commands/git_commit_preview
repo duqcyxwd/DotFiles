@@ -2,9 +2,13 @@
 
 echo "Sha1: " "$@"
 
-git show --stat --stat-width=80 --color=always --compact-summary "$@" --
+
+# git show --stat-width=80 --color=always --compact-summary --patch "$@"
+# 2022-10-13 Use two command to clean up format
+
+git show --stat --stat-width=80 --color=always --compact-summary "$@"
 echo ""
-git show --color=always --format=format:"" "$@" --
+git --no-pager show --color=always --format=format:"" "$@"
 
 echo ""
 echo "-------------------------------------------------------------------------------"

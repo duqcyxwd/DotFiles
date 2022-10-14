@@ -3,6 +3,7 @@
 unalias kgpn 2>/dev/null || true
 unalias kgns 2>/dev/null || true
 unalias kgp 2>/dev/null || true
+unalias kgsec 2>/dev/null || true
 
 FZF_KUBECTL_DEFAULT_OPTS=" --exit-0 --info=inline --layout=reverse"
 
@@ -48,6 +49,19 @@ kgseci() { #{{{2
   # runcached --ignore-pwd --ignore-env --cache-dir $CACHE_DIR kube_secret_preview $SEC $KUBECONFIG
 }
 
+kgsec() { #{{{2
+  if [ "$1" != "" ]; then
+    local SEC="$1"
+  else
+    local SEC=$(kgseci)
+  fi
+
+  if [ "$SEC" = "" ]; then
+    return 0
+  fi
+  kube_secret_preview $SEC
+}
+
 # KUBECTL configmap #{{{1
 kgcmi() { #{{{2
   local RES=$( runcached_ns kubectl get configmaps | fzf_tp --header-lines=2 \
@@ -82,8 +96,16 @@ kgdi() { #{{{2
 }
 
 
+kddi() { #{{{2
+  local deploy=$(kgdi);
+  if [ "$deploy" = "" ]; then
+    return 0
+  fi
+  kubectl describe deployment $deploy
+}
+
 kgdpi() { #{{{2
-  # Return pod id by given deployment.
+  # Return pod id by given deployment name.
   if [ "$1" -eq "" ]; then
     deployment=$(kgdi)
   else
@@ -112,14 +134,6 @@ kgdpi() { #{{{2
 }
 
 
-kddi() { #{{{2
-  local deploy=$(kgdi);
-  if [ "$deploy" = "" ]; then
-    return 0
-  fi
-  kubectl describe deployment $deploy
-}
-
 # KUBECTL service #{{{1
 kgsi() { #{{{2
   runcached_ns kubectl get svc --namespace $(kcgcn) --kubeconfig $KUBECONFIG \
@@ -130,6 +144,25 @@ kgsi() { #{{{2
     | awk '{print $1}'
 }
 
+
+# KUBECTL Ingress #{{{1
+kgii() { #{{{2
+  runcached_ns kubectl get ingress --namespace $(kcgcn) --kubeconfig $KUBECONFIG \
+    | fzf_tp --header-lines=2 \
+    --bind "ctrl-r:reload(runcached_ns kubectl get ingress --namespace $(kcgcn) --kubeconfig $KUBECONFIG)" \
+    --preview-window right \
+    --preview 'runcached_ns kubectl describe ingress {1}' \
+    | awk '{print $1}'
+}
+
+
+kdii() { #{{{2
+  local ingress=$(kgii);
+  if [ "$ingress" = "" ]; then
+    return 0
+  fi
+  kubectl describe ingress $ingress
+}
 
 #    K8S: scale deployment {{{1
 # Useage:
@@ -193,6 +226,8 @@ kgsi() { #{{{2
 
   # use kcgc to get context
   alias contexti=set-contexti
+  alias ctxi=set-contexti
+  alias ctx=set-context
   alias kcuci=set-contexti
 
   alias kgnsi=nsi
@@ -200,7 +235,6 @@ kgsi() { #{{{2
   alias kgns='kgns_cached'
   alias ns='kgns_cached'
 
-  alias kgsec=kube_secret_preview
   alias kgsecl="runcached_ns kubectl get secret --namespace $(kcgcn) --kubeconfig $KUBECONFIG"
 
   # Produce a period-delimited tree of all keys returned for pods, etc
