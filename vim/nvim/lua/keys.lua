@@ -170,14 +170,7 @@ end
 -------------------------------------------------------------------------------
 -- This is similaer to emacs transit mode
 
-local default_impair_keys = { --{{{2
-  -- Default unimar already supported
-  "`", -- Mark
-  "f", -- file preceding the current one alphabetically in the current file's directory
-  "c", -- vim diff next hunk
-}
-
-local impair_map = { --{{{2
+local impair_map_config = { --{{{2
   -- in pair
 
   -- Jump list
@@ -206,53 +199,56 @@ local impair_map = { --{{{2
 
   { "[f", ":FloatermPrev<CR><C-Bslash><C-n>" },
   { "]f", ":FloatermNext<CR><C-Bslash><C-n>" },
+
+
+  -- buffer
+  { "[b", ":bprev<CR>" },
+  { "]b", ":bnext<CR>" },
+  { "[B", ":bfirst<CR>" },
+  { "]B", ":blast<CR>" },
+
+  -- t tabs
+  { "[t", ":tabprev<CR>" },
+  { "]t", ":tabnext<CR>" },
+  { "[T", ":tabfirst<CR>" },
+  { "]T", ":tablast<CR>" },
+
+  -- quffer
+  { "[q", ":qprev<CR>" },
+  { "]q", ":qnext<CR>" },
+  { "[Q", ":qfirst<CR>" },
+  { "]Q", ":qlast<CR>" },
+
 }
 
 
-local map_family_table = { --{{{2
-  { "b", "b" },    -- Buffer
-  -- { "c", "c" },    -- next error
-  { "q", "q" },    -- quick fixt
-  { "t", "tab" },  -- Tab
+local default_impair_keys = { --{{{2
+  -- Default unimar already supported, no mapping need but need to add them to shortcut
+  "`", -- Mark
+  "f", -- Next float term
+  "c", -- vim diff next hunk
 }
-local addNextFamily = function(map, impair_map_table)  --{{{2
-  for _, entry in pairs(map) do
-    table.insert(impair_map_table, { "]" .. entry[1], "<cmd>" .. entry[2] .. "next<CR>" })
-    table.insert(impair_map_table, { "[" .. entry[1], "<cmd>" .. entry[2] .. "prev<CR>" })
-    table.insert(impair_map_table, { "]" .. entry[1]:upper(), "<cmd>" .. entry[2] .. "last<CR>" })
-    table.insert(impair_map_table, { "[" .. entry[1]:upper(), "<cmd>" .. entry[2] .. "first<CR>" })
-  end
-end
 
--- Update impair_map
-addNextFamily(map_family_table, impair_map)
 
-local getKeys = function(maps) --{{{2
-  -- get keys from a impar map
-  local res = {}
-  for _, entry in pairs(maps) do
-    local c = string.gsub(entry[1], "[%[%]]", "")
-    table.insert(res, c)
-  end
-  return res
-end
+local brackets_keymap= { name = "+bracket jumps" } --{{{2
 
-local brackets = { name = "+bracket jumps" } --{{{2
-local impar_keys  = remove_dups(join(default_impair_keys, getKeys(impair_map)))
-
+-- Add mapping to keymap
+local impar_keys  = remove_dups(join(default_impair_keys, GetKeys(impair_map_config)))
 for _, char in ipairs(impar_keys) do
-  brackets[char] = {
+  brackets_keymap[char] = {
     string.format("Set bracket jump (%s)", char),
     function()
       brj.set(char)
+      brj.next()
     end,
   }
 end
 -- }}}2
 
-set_keymap("n", { noremap = true, silent = true }, impair_map)
-space_key_nmap.k = brackets
-space_key_nmap.n = brackets
+-- Set impair map
+set_keymap("n", { noremap = true, silent = true }, impair_map_config)
+space_key_nmap.k = brackets_keymap
+space_key_nmap.n = brackets_keymap
 
 -- }}}1
 
@@ -375,6 +371,7 @@ space_key_nmap.g = { --{{{1
   b = { 'Git blame',            ':Git blame --date=relative<CR>' },
   c = { 'Git commit',           ':Git commit -v<CR>' },
   d = { 'Git diff',             ':Gdiffsplit<CR>' },
+  D = { 'Git diff Close',       ':bwipeout! fugitive://*<CR>' },
   e = { 'Gitsign Edit mode',    ':Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>' },
   s = { 'Git status',           ':Git<CR>' },
   i = { 'Git line info',        ":lua require('gitsigns').blame_line({ full = true})<CR>" },
@@ -638,9 +635,9 @@ space_key_nmap.t = { --{{{1
   S  = {'Toggle Trailling whitespace indicator', ':ToggleWhitespace<CR>'},
   w  = {'Toggle 80 text width',                  ':call ToggleTextWidthWithColor()<CR>'},
   p  = {'Toggle findroot',                       ':call ToggleFindRootScope()<CR>'},
-  h  = {'Toggle left',                           ':CocCommand explorer<CR>'},
+  -- h  = {'Toggle left',                           ':CocCommand explorer<CR>'},
   -- WIP Test
-  h  = {'Toggle left',                           ':NvimTreeToggle<CR>'},
+  h  = {'Toggle left',                           ':NvimTreeFindFileToggle<CR>'},
   l  = {'Toggle right',                          ':SymbolsOutline<CR><c-w>h'},
 
   d  = {
@@ -702,6 +699,7 @@ space_key_vmap.v = { --{{{1
 
 vim.cmd("vnoremap v :lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>")
 
+-- stylua: ignore
 space_key_nmap.w = { --{{{1
   name = "+Window",
 
@@ -718,7 +716,7 @@ space_key_nmap.w = { --{{{1
   m = { "Maximum Current window",        ":ZoomToggle<CR>"},
 
   u = { "Undoquit Window",               ":Undoquit<CR>" },
-  o  = {'Window Only WIP',               "<C-w><C-o>"},
+  o = { "Window Only",                   "<C-w><C-o>"},
   q = { "Write and quit",                ":wq<CR>" },
 
 
@@ -734,7 +732,7 @@ space_key_nmap.z = { --{{{1
   u = {'Undo tree',                  ':UndotreeToggle<CR>'},
   z = {'Goyo',                       ':Goyo<CR>'},
   n = {'Zen mode (Similar to Goyo)', ':ZenMode<CR>'},
-
+  m = {'Maximum Current window',     ':ZoomToggle<CR>'},
 }
 
 

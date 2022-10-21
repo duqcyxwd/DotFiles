@@ -64,3 +64,21 @@ function join(t1, t2)
 end
 
 -- nvim_print(join({ 1, 2, 3 }, { 4, 5, 6 }))
+
+
+function GetKeys(maps)
+  -- get keys from a impar map
+  local res = {}
+  for _, entry in pairs(maps) do
+    local c = string.gsub(entry[1], "[%[%]]", "")
+    table.insert(res, c)
+  end
+  return res
+end
+
+local tuple_obj = { --{{{2
+  { "k1", "value_1" },
+  { "k2", "value_1" },
+  { "k3", "value_1" },
+}
+-- nvim_print(getKeys(tuple_obj))
