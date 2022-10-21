@@ -3,21 +3,19 @@ require("funcs.global")
 -- https://github.com/kyazdani42/nvim-tree.lua
 -- following options are the default
 -- each of these are documented in `:help nvim-tree.OPTION_NAME`
-SR'nvim-tree'.setup {
+SR("nvim-tree").setup({
   sort_by = "name",
-  open_on_setup = true,
-  open_on_setup_file = true,
   diagnostics = {
     enable = false,
   },
   update_focused_file = {
-    enable      = true,
-    update_cwd  = false,
-    ignore_list = {}
+    enable = true,
+    update_cwd = false,
+    ignore_list = {},
   },
   filters = {
     dotfiles = false,
-    custom = {}
+    custom = {},
   },
   git = {
     enable = true,
@@ -30,11 +28,9 @@ SR'nvim-tree'.setup {
       custom_only = false,
       list = {
         { key = "?", action = "toggle_help" },
-
-      }
+      },
     },
   },
-
   renderer = {
     highlight_git = true,
     indent_markers = {
@@ -77,12 +73,10 @@ SR'nvim-tree'.setup {
           filetype = {
             "notify",
             "packer",
-            "qf"
-          }
-        }
-      }
-    }
-  }
-}
-
-DR("nvim-tree").setup()
+            "qf",
+          },
+        },
+      },
+    },
+  },
+})
