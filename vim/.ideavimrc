@@ -172,7 +172,7 @@ noremap <leader>; mQA;<Esc>'Q
 
 
 " hybrid.vim
-" unnnoremap <C-a> 
+" unnnoremap <C-a>
 nnoremap <C-a> :action VimChangeNumberInc<CR>
 
 " Other
@@ -225,49 +225,37 @@ nnoremap <leader>[ :action GotoSuperMethod<cr>
 
 " Fold and unfold
 nnoremap <CR> zc
-" vnoremap <CR> zo
-
-
-" nnoremap <leader>gg :action Switcher<cr>
-" nnoremap <leader>su :action FindUsages<cr>
-" nnoremap gu :action FindUsages<cr>
-" nnoremap <leader>gt :action GotoTest<cr>
-" nnoremap <leader>k :action HighlightUsagesInFile<cr>
-" nnoremap <leader>tt :action RerunFailedTests<CR>
-" nnoremap <leader>ta :action RunClass<CR>
-" nnoremap <leader>ra :action Run<cr>
-nnoremap <leader>rr :action Run<cr>
-" nnoremap <leader>rr :action RunClass<cr>
-" nnoremap <leader>rc :action Compile<cr>
-" nnoremap \d :action DebugClass<cr>
-" nnoremap \D :action Debug<cr>
-" nnoremap \c :action CheckStyleCurrentFileAction<cr>
 
 nnoremap \a    :action RunAnything<CR>
 nnoremap \c    :action Compile<CR>
 nnoremap \k    :action Stop<CR>
-nnoremap \q    :nohlsearch<CR>
+nnoremap \q    :action Refactorings.QuickListPopupAction<CR>
 nnoremap \R    :action RunClass<CR>
-nnoremap \r    :action Run<CR>
+nnoremap \r    :action Rerun<CR>
 nnoremap \d    :action Debug<CR>
 nnoremap \w    :action EditorToggleUseSoftWraps<CR>
-
-"map \\    :action GuiDesigner.ExpandSelection<CR>
+nnoremap \d    :action com.github.setial.intellijjavadocs.action.JavaDocGenerateActionOnEditor<CR>
+nnoremap \D    :action com.github.setial.intellijjavadocs.action.JavaDocsGenerateActionOnEditor<CR>
+nnoremap \p    :action TogglePowerSave<CR>
 
 nnoremap <leader>mcC      :action Compile<CR>
 
 " Select configuration and run
-nnoremap <leader>Rs    :action ChooseRunConfiguration<CR>
-vnoremap <leader>Rs    <Esc>:action ChooseRunConfiguration<CR>
+nnoremap <leader>Rs  :action ChooseRunConfiguration<CR>
+vnoremap <leader>Rs  <Esc>:action ChooseRunConfiguration<CR>
 
 nnoremap <leader>mrd :action com.github.setial.intellijjavadocs.action.JavaDocGenerateActionOnEditor<CR>
 nnoremap <leader>mrD :action com.github.setial.intellijjavadocs.action.JavaDocsGenerateActionOnEditor<CR>
 
-noremap <leader>mR :action Refactorings.QuickListPopupAction<CR>
-noremap <leader>rrr:action Refactorings.QuickListPopupAction<CR>
+noremap <leader>mR   :action Refactorings.QuickListPopupAction<CR>
+noremap <leader>mrf  :action Refactorings.QuickListPopupAction<CR>
+" noremap <leader>mrr  Rename
+"
+noremap <leader>gp  :action PinActiveTab<CR>
+noremap <leader>tt  :action PinActiveTab<CR>
 
-noremap <leader>ee :action :cursive.repl.actions/run-top-sexp<CR>
-noremap <leader>ec :action :cursive.repl.actions/run-last-sexp<CR>
+" noremap <leader>ee   :action :cursive.repl.actions/run-top-sexp<CR>
+" noremap <leader>ec   :action :cursive.repl.actions/run-last-sexp<CR>
 
 
 " code refactoring
@@ -276,6 +264,7 @@ noremap <leader>ec :action :cursive.repl.actions/run-last-sexp<CR>
 
 "https://github.com/saaguero/ideavimrc/blob/master/.ideavimrc
 "https://github.com/rekendahl/dotfiles/blob/master/.ideavimrc
+" :actionlist
 "Action List https://gist.github.com/zchee/9c78f91cc5ad771c1f5d
 "
 
