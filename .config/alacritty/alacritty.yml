@@ -152,11 +152,6 @@ font:
     x: 0
     y: 0
 
-  # Thin stroke font rendering (macOS only)
-  #
-  # Thin strokes are suitable for retina displays, but for non-retina screens
-  # it is recommended to set `use_thin_strokes` to `false`.
-  use_thin_strokes: true
 
 
 colors:
@@ -209,9 +204,6 @@ colors:
     focused_match:
       foreground: '0x44475a'
       background: '0xffb86c'
-    bar:
-      background: '0x282a36'
-      foreground: '0xf8f8f2'
   line_indicator:
     foreground: None
     background: None
@@ -246,6 +238,10 @@ colors:
     cyan:    '0x59dffc'
     white:   '0xe6e6d1'
 
+
+  footbar:
+    background: '0x282a36'
+    foreground: '0xf8f8f2'
 
   # # Colors (Tokyo Night)
   # # Colors (Tokyo Night)
