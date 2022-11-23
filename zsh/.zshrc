@@ -14,6 +14,7 @@
 # SECTION: : SCRIPT LOADING VARIABLE {{{1
 # --------------------------------------------------------------------------
 export P10K_INSTANT_PROMOT=0
+export ZINIT_PLUGIN_DELAY=0
 export ZPROF_TRACK=0
 
 mlog "$(date) : zshrc start loading"
@@ -159,7 +160,7 @@ zinit_load() {
       as'completion' is-snippet 'https://github.com/Valodim/zsh-curl-completion/blob/master/_curl' \
       blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions \
 
-    zinit wait silent light-mode for \
+    zinit wait="$ZINIT_PLUGIN_DELAY" silent light-mode for \
       ~/duqcyxwd/kube-int
     }
 
@@ -173,7 +174,7 @@ zinit_load() {
     for snippet in $ZDOTDIR/snippets/*.zsh; do
       # mlog "snippet loading $snippet"
       # zinit update $snippet
-      zinit ice wait=0 silent;
+      zinit ice wait="$ZINIT_PLUGIN_DELAY" silent;
       zinit snippet $snippet
     done
     unset snippet
@@ -194,7 +195,7 @@ zinit_load() {
     # 3. Plugins
     # Don't use kubectl-fzf, it will disable auto complte
     # bonnefoa/kubectl-fzf \
-    zinit wait="0" lucid silent light-mode for \
+    zinit wait="$ZINIT_PLUGIN_DELAY" lucid silent light-mode for \
       agkozak/zsh-z \
       djui/alias-tips \
       wfxr/forgit \
@@ -212,7 +213,7 @@ zinit_load() {
 
   #}}}
 
-  zinit ice wait="0" atload'source ~/.zshrc-local.sh; zicompinit; zicdreplay;' silent;
+  zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'source ~/.zshrc-local.sh; zicompinit; zicdreplay;' silent;
   zinit light zpm-zsh/empty
 
   # zinit self-update updates zinit
