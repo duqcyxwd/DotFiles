@@ -758,7 +758,7 @@ wk.register(space_key_nmap, { prefix = "<Space>" })
 wk.register(space_key_vmap, { prefix = "<Space>", mode = "v" })
 
 ------------------------------------------------------------------------------
-space_key_nmap_Plan = {
+local space_key_nmap_plan = {
   a = {
     name = "+Applications",
     u = { "Undo tree", ":UndotreeToggle<CR>" },
@@ -789,8 +789,8 @@ space_key_nmap_Plan = {
   x = { name = "Text" },
   z = { name = "Zoom" },
 }
-reformate_key_map(space_key_nmap_Plan)
--- nvim_print(space_key_nmap_Plan)
+reformate_key_map(space_key_nmap_plan)
+-- nvim_print(space_key_nmap_plan)
 -- wk.register(space_key_nmap_test, { prefix = "<Space>" })
 
 -- }}}1
