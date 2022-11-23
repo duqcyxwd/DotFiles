@@ -219,6 +219,7 @@ alias gbrr="ee 'gbr |grep r/'"                                      # ggsup or g
 
 # Others
 alias gcam='git commit --amend'
+alias gcamne='git commit --amend --no-edit'
 
 alias gre="ee 'git recent | head'"
 alias grec="ee 'git recent | grep -i chuan | grep -v gone'"
@@ -249,6 +250,7 @@ git_pager=$(git config core.pager || echo 'cat')
 alias gdd="{git diff --stat --color origin/develop.. && git diff --color origin/develop.. } | ${git_pager}"
 alias gitxdd="git diff origin/develop.. | gitx"
 alias gds="ee 'git diff -w --stat'"
+alias gdmi="ee 'gdi origin/master..'"
 
 }
 

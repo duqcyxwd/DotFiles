@@ -10,10 +10,14 @@ function _expand_stuff() { zle _expand_alias || zle .expand-word || true }
 __zsh_cust_bindkey() {
   mlog "bindkey.zsh: Update bindkey"
 
-  bindkey '^k'      autosuggest-accept
+  # jkhl is preserved by tmux
+
+  # bindkey '^k'      autosuggest-accept
   bindkey "^n"      autosuggest-execute
+  bindkey "^O"      autosuggest-execute
   bindkey '^u'      vi-forward-blank-word-end  # only use one from $zsh_autosuggest_partial_accept_widgets
-  bindkey '^\n'     autosuggest-execute
+  # bindkey '^\n'     autosuggest-execute
+  bindkey '^N'     down-line-or-history
   bindkey "^r"      history-search-multi-word  # use multi word. fzf is too aggressive
 
 
@@ -23,7 +27,6 @@ __zsh_cust_bindkey() {
   bindkey '^F'      ls_fuzzy_preview_widget
 
   bindkey '^T'      toggle-fzf-tab
-  bindkey "^O"      zca-widget                # Zsh Command Architect zsh-cmd-architect
 
   # ^M for enter
   # bindkey "^M"      accept-line

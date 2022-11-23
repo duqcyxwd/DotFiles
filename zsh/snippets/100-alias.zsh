@@ -134,4 +134,5 @@ function whichb()  { bat $(which $@) }
 function whichp()  { quick-preview $(which $@) }
 
 function cdf() { cd $(dirname $(greadlink -f $@)) }
+function cdroot() { cd $(git root) }
 

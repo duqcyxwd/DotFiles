@@ -284,18 +284,12 @@
 # FZF: ALIAS {{{1
 # --------------------------------------------------------------------------
 {
-  alias fga='forgit::add'
-  alias fgrs='forgit::restore'
-  alias fgclean='forgit::clean'
   alias fgd='forgit::diff'
-  # alias fgl='forgit::log'
-  # alias fgss='forgit::stash::show'
   alias fgrh='forgit::reset::head'
   alias fgi='forgit::ignore'
 
   alias gai=forgit::add
   alias gdi=forgit::diff
-  alias gstsi0=forgit::stash::show
   alias gstsi=git_stash_list_interactive
   alias gstli=git_stash_list_interactive
   alias gstaai='git_stash_list_interactive | xargs git stash apply $@'
@@ -305,7 +299,11 @@
 # 1}}}
 
 
-git_folders() { for i in */.git; do ( echo $i); done }
-git-pull-all(){
-  git_folders | fzf | xargs -I% git_pull_at_directory %
+__git_folders() {
+  # Find git repos under current director
+  for i in */.git; do ( echo $i); done
+}
+
+git_folders_pull() {
+  __git_folders | fzf | xargs -I% git_pull_at_directory %
 }

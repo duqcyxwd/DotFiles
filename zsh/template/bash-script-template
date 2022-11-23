@@ -23,6 +23,16 @@ setup_colors() {
   fi
 }
 
+confirm() {
+    echo "Continue? y or n? "
+    read -r REPLY
+    case $REPLY in
+    [Yy]) echo 'Continue' ;;
+    [Nn]) break && exit ;;
+    *) confirm ;;
+    esac
+}
+
 msg() {
   echo >&2 -e "${1-}${NOFORMAT}"
 }
@@ -111,3 +121,6 @@ msg "${CYAN} CYAN"
 msg "${YELLOW} YELLOW"
 msg "${NOFORMAT} NOFORMAT"
 
+if [[ $flag == "1" ]]; then
+  msg "${GREEN}Flag is set to 1"
+fi

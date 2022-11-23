@@ -16,21 +16,10 @@ brew_install_plugin_int() { # {{{2
 
   if [[ $formula ]]; then
     for prog in $(echo $formula);
-    do; brew install $prog; done;
+    do; HOMEBREW_NO_AUTO_UPDATE=0 brew install $prog; done;
   fi
 }
 
-
-# Update (one or multiple) selected application(s)
-# mnemonic [B]rew [U]pdate [P]lugin
-brew_update_plugin_int() { # {{{2
-  local formula=$(runcached --bg-update brew outdated | fzf_tp --header-lines=1 -m --preview "$__BRREW_PREVIEW_CMD")
-
-  if [[ $formula ]]; then
-    for prog in $(echo $formula);
-    do; brew upgrade $prog; done;
-  fi
-}
 # Delete (one or multiple) selected application(s)
 # mnemonic [B]rew [C]lean [P]lugin (e.g. uninstall)
 brew_clean_plugin_int() { # {{{2
@@ -48,7 +37,7 @@ brew_update_outdated_package_int() { # {{{2
 
   if [[ $formula ]]; then
     for prog in $(echo $formula);
-    do; brew upgrade $prog; done;
+    do; HOMEBREW_NO_AUTO_UPDATE=0 brew upgrade $prog; done;
   fi
 }
 
@@ -64,13 +53,12 @@ brew_list_plugin_int() { # {{{2
 
 # Alias # {{{2
 alias bip=brew_install_plugin_int
-alias bupi=brew_update_plugin_int
 alias buni=brew_clean_plugin_int
 alias bcp=brew_clean_plugin_int
 alias blp=brew_list_plugin_int
-alias blpi=brew_list_plugin_int
 alias bli=brew_list_plugin_int
 alias buo=brew_update_outdated_package_int
+alias bupi=brew_update_outdated_package_int
 
 # other alias
 # Dependencies
@@ -161,4 +149,7 @@ diri() { #{{{1
   cd $(dirs | awk '{gsub(" ","\n", $0); print $0}' | fzf | sed "s|~|$HOME|g")
 }
 
+ifconfigi(){ #{{{1
+  ifconfig -l | xargs -n 1 | fzf_tp --preview "ifconfig {1}" | xargs -I {} ifconfig {} $@
+}
 #}}}
