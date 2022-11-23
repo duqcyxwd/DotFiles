@@ -1,0 +1,32 @@
+[color]
+        diff         = auto
+        status       = auto
+        branch       = auto
+        interactive  = auto
+        pager        = true
+	ui = true
+[alias]
+	root = rev-parse --show-toplevel
+	co = checkout
+	br = branch
+	ci = commit
+	st = status
+	a = add
+        open   = !gitopen
+	gerritpush = push origin HEAD:refs/for/master
+[user]
+	name         = Yongqinchuan Du
+	email        = duqcyxwd@gmail.com
+[core]
+	pager        = less --tabs=7 -RFX
+	excludesfile = /Users/EYONDUU/.config/gitglobalignore
+	editor = /usr/local/bin/nvim
+
+[include]
+	path = ~/duqcyxwd/DotFiles/git/colors.config
+
+[mergetool "smerge"]
+	cmd = smerge mergetool \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
+	trustExitCode = true
+[merge]
+	tool = smerge

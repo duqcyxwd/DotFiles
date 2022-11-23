@@ -13,3 +13,6 @@ yarn.lock
 __pycache__
 .luarc.json
 testfile/
+.nrepl-port
+vim/nvim/log/startup*
+
