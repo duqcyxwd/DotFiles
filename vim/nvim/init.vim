@@ -17,7 +17,10 @@ for f in split(glob(vimrootPath), '\n')
   exe 'source' f
 endfor
 
+" 'lewis6991/impatient.nvim'
 lua require('impatient')
+" :LuaCacheClear
+" :LuaCacheLog
 
 " " WIP Required
 " lua require("nvim_utils")
@@ -31,17 +34,11 @@ function! s:LazyLoadPlugs(timer) abort  " {{{1
 
   " 1. Lazy Load vim plugs before config
   " Load lua plugins and require plugin before config
-  call plug#load(
-        \   'nvim-lspconfig',
-        \   'lspsaga.nvim',
-        \   'lsp-status.nvim',
-        \   'nvim-treesitter-textobjects',
-        \   'nvim-treesitter-refactor',
-        \   'nvim-ts-rainbow',
-        \   'playground',
-        \   'nvim-treesitter-context',
-        \   'nvim-treesitter-pairs',
-        \ )
+  " call plug#load(
+  "       \ )
+
+        " \   'nvim-lspconfig',
+        " \   'lspsaga.nvim',
 
   " 2. Lazy Load vim plugs before config
   let vimrootPath = $XDG_CONFIG_HOME.'/vim/after/*.vim'
@@ -70,6 +67,8 @@ endfunction
 
 " {time} is the waiting time in milliseconds.
 call timer_start(200, function("s:LazyLoadPlugs"))
+" call s:LazyLoadPlugs(200)
+" TODO Try reload file in after lazy load
 
-" set verbosefile=~/temp/log/vim.log
+set verbosefile=$XDG_CACHE_HOME/nvim/nvim.log
 " set verbose=1

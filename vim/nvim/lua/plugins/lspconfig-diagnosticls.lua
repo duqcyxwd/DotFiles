@@ -4,7 +4,7 @@ local mapping = require("plugins.buffer-keys")
 -- https://github.com/neovim/nvim-lspconfig
 require("lspconfig").diagnosticls.setup({
   on_attach = mapping.lsp_on_attach,
-  capabilities = SR("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities()),
+  capabilities = SR("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
   cmd = { "diagnostic-languageserver", "--stdio" },
   filetypes = {
     "css",
@@ -18,6 +18,7 @@ require("lspconfig").diagnosticls.setup({
     "typescriptreact",
     "vim",
     "lua",
+    "xml"
   },
   init_options = {
     linters = {
@@ -110,6 +111,12 @@ require("lspconfig").diagnosticls.setup({
         -- args = {"--config-path $XDG_CONFIG_HOME/stylua/stylua.toml", "%file" },
         args = { "--search-parent-directories", "%file" },
       },
+      xmllint = {
+        command = "xmllint",
+        isStdout = true,
+        doesWriteToFile = false,
+        args = { "--format", "%file" },
+      }
     },
     formatFiletypes = {
       sh = "shfmt",
@@ -123,6 +130,7 @@ require("lspconfig").diagnosticls.setup({
       json = "prettier",
       markdown = "prettier",
       lua = "stylua",
+      xml = "xmllint",
     },
   },
 })

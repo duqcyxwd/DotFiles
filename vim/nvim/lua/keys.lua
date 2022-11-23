@@ -186,8 +186,8 @@ local impair_map_config = { --{{{2
   -- { "]c", "]c" },
 
   -- Git chagne Hunk
-  { "[h", ":Gitsigns prev_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
-  { "]h", ":Gitsigns next_hunk<CR>zz:Gitsigns preview_hunk<CR>" },
+  { "[h", ":lua require'gitsigns'.prev_hunk({ preview = true})<CR>" },
+  { "]h", ":lua require'gitsigns'.next_hunk({ preview = true})<CR>" },
 
   -- jump diagnostic
   { "[g", "<Cmd>lua vim.diagnostic.goto_prev({float = true})<CR>" },
@@ -373,10 +373,13 @@ space_key_nmap.g = { --{{{1
   d = { 'Git diff',             ':Gdiffsplit<CR>' },
   D = { 'Git diff Close',       ':bwipeout! fugitive://*<CR>' },
   e = { 'Gitsign Edit mode',    ':Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>' },
-  s = { 'Git status',           ':Git<CR>' },
+  s = { 'Gitsign Edit mode',    ':Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>' },
+  S = { 'Git status',           ':Git<CR>' },
   i = { 'Git line info',        ":lua require('gitsigns').blame_line({ full = true})<CR>" },
   l = { 'Git link open',        ':GBrowse<CR>' },
   p = { 'Git Gina Push',        ':Gina push<CR>' },
+  y = { 'Git link yank',        ':lua require"gitlinker".get_buf_range_url("n")<CR>' },
+
 
   h = {
     name ='Git hunk',
@@ -400,7 +403,8 @@ space_key_vmap.g = { --{{{1
   name = "+Git/Go",
 
   a = { 'GitSign stage_hunk',    ':Gitsigns stage_hunk<CR>' },
-  l = { 'Git link open',        ':GBrowse<CR>' },
+  l = { 'Git link open',         ':GBrowse<CR>' },
+  y = { 'Git link yank',         ':lua require"gitlinker".get_buf_range_url("v")<CR>' },
   h = {
     name ='Git hunk',
     a = { 'GitSign stage_hunk',      ':Gitsigns stage_hunk<CR>' },
@@ -408,6 +412,7 @@ space_key_vmap.g = { --{{{1
     R = { 'GitSign hunk restore',    ':Gitsigns reset_hunk<CR>' },
 
   },
+
 
   x = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
 }
@@ -629,14 +634,16 @@ space_key_nmap.S = { --{{{1
 space_key_nmap.t = { --{{{1
   name = "+Toggle",
 
+  a  = {
+    name = 'auto+',
+    s  = {'Toggle Strip Whitespace On Save',       ':ToggleStripWhitespaceOnSave<CR>:echo "ToggleStripWhitespaceOnSave"<CR>'},
+  },
   m  = {'Color: Dark/Light Mode',                ':ToggleColorschemeMode<CR>'},
   M  = {'Color: FZF Schema',                     ':FzfLua colorschemes<CR>'},
-  s  = {'Toggle Strip Whitespace On Save',       ':ToggleStripWhitespaceOnSave<CR>:echo "ToggleStripWhitespaceOnSave"<CR>'},
   S  = {'Toggle Trailling whitespace indicator', ':ToggleWhitespace<CR>'},
   w  = {'Toggle 80 text width',                  ':call ToggleTextWidthWithColor()<CR>'},
   p  = {'Toggle findroot',                       ':call ToggleFindRootScope()<CR>'},
   -- h  = {'Toggle left',                           ':CocCommand explorer<CR>'},
-  -- WIP Test
   h  = {'Toggle left',                           ':NvimTreeFindFileToggle<CR>'},
   l  = {'Toggle right',                          ':SymbolsOutline<CR><c-w>h'},
 

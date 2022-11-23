@@ -7,5 +7,5 @@ for plug in $XDG_DATA_HOME/nvim-plug/*; do
 
 done
 unset plug
-} > "$XDG_CONFIG_HOME/vim/VIM_PLUG_LIST.log"
+} > "$XDG_CONFIG_HOME/vim/log/VIM_PLUG_LIST.log"
 

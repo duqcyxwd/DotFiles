@@ -13,9 +13,6 @@ end
 
 local lspkind = require("lspkind")
 local neogen = require("neogen")
-local str = require("cmp.utils.str")
-local types = require("cmp.types")
-local fmt = string.format
 
 local t = function(str)
   return vim.api.nvim_replace_termcodes(str, true, true, true)

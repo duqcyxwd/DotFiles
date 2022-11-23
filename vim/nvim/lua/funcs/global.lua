@@ -44,7 +44,7 @@ local empty_module = {
   setup = function(_) end,
   init = function(_) end,
   config = function(_) end,
-  update_capabilities = function(_) end,
+  default_capabilities = function(_) end,
 }
 
 -- Safe Require
@@ -63,6 +63,7 @@ DR = function(_)
 end
 
 -- Require all modules from folder
+-- TODO Add a black list
 R_FOLD = function(dir)
   for filename in io.popen('ls -pUqAL "$XDG_CONFIG_HOME/nvim/lua/' .. dir .. '"'):lines() do
     filename = filename:match("^(.*)%.lua$")

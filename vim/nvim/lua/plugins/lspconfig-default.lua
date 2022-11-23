@@ -1,3 +1,4 @@
+ -- 'neovim/nvim-lspconfig'
 local nvim_lsp = SR("lspconfig")
 local mapping  = SR('plugins.mapping')
 
@@ -38,7 +39,8 @@ local handlers = {
 
 
 -- Setup lspconfig.
-local capabilities = SR("cmp_nvim_lsp").update_capabilities(vim.lsp.protocol.make_client_capabilities())
+-- TODO Check this
+local capabilities = SR("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 
 for _, lsp in pairs(servers) do
 	local not_created = not nvim_lsp[lsp].commands_created

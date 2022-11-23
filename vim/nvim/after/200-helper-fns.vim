@@ -278,6 +278,7 @@ function! g:GotoFirstFloat() abort  " {{{1
     let c = nvim_win_get_config(win_getid(w))
     if c.focusable && !empty(c.relative)
       execute w . 'wincmd w'
+      " Close float window with q
       nmap <buffer> q :q<CR>
       return
     endif

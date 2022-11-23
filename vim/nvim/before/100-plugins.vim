@@ -69,15 +69,16 @@ Plug 'unblevable/quick-scope', {'on': []}                               " Quick 
 Plug 'phaazon/hop.nvim'                                                 " Jump Everywhere
 
 " Tree sitter
-Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate' }           " Better syntax highlight
-Plug 'p00f/nvim-ts-rainbow', { 'commit': 'c6c26c4', 'on': []}           " nvim-treesitter module, add ranbow
-Plug 'nvim-treesitter/playground',               {'on': []}
-Plug 'romgrk/nvim-treesitter-context',           {'on': []}
-Plug 'theHamsta/nvim-treesitter-pairs',          {'on': []}             " Create your own pair objects using tree-sitter queries!
-Plug '~/duqcyxwd/nvim-treesitter-textobjects',   {'on': []}             " Testing my textobjects for comments
-Plug 'nvim-treesitter/nvim-treesitter-refactor', {'on': []}             " Provide some highlight navigation based on treesitter
+" Plug 'nvim-treesitter/nvim-treesitter', {'commit': 'e7bdcee167ae41295a3e99ad460ae80d2bb961d7'} " Better syntax highlight
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}              " Better syntax highlight
 
-Plug 'kyazdani42/nvim-tree.lua'
+Plug 'nvim-treesitter/playground'
+Plug 'romgrk/nvim-treesitter-context'
+Plug '~/duqcyxwd/nvim-treesitter-textobjects'                           " Testing my textobjects for comments
+" Plug 'theHamsta/nvim-treesitter-pairs',                                 " Create your own pair objects using tree-sitter queries!
+" Plug 'nvim-treesitter/nvim-treesitter-refactor',                        " Provide some highlight navigation based on treesitter
+
+Plug 'kyazdani42/nvim-tree.lua'                                         "A File Explorer For Neovim Written In Lua
 
 Plug 'simrat39/symbols-outline.nvim'
 Plug '~/duqcyxwd/coc.nvim'                                              " Fix the compete problem with cmp
@@ -132,9 +133,10 @@ Plug 'rafamadriz/friendly-snippets' " Snippet collection
 " LSP+ {{{1
 " ------------------------------------------------------------------------------
 " https://medium.com/prodhacker/how-to-set-up-neovim-0-5-modern-plugins-lsp-treesitter-etc-542c3d9c9887
-Plug 'neovim/nvim-lspconfig',    {'on': []}
-Plug 'tami5/lspsaga.nvim',       {'on': []}
-Plug 'nvim-lua/lsp-status.nvim', {'on': []}
+Plug 'neovim/nvim-lspconfig'
+" Plug 'neovim/nvim-lspconfig',    {'on': []}
+Plug 'tami5/lspsaga.nvim'
+" Plug 'tami5/lspsaga.nvim',       {'on': []}
 
 " Languages/Filetypes {{{1
 " ------------------------------------------------------------------------------
@@ -154,6 +156,8 @@ Plug 'tmux-plugins/vim-tmux'                           " Vim plugin for .tmux.co
 Plug 'tweekmonster/gofmt.vim'
 Plug 'zdharma-continuum/zinit-vim-syntax'
 Plug 'jparise/vim-graphql'
+
+Plug 'othree/xml.vim'
 
 " I don't need them yet and they overwrite my formatoptions
 " Plug 'rust-lang/rust.vim'
@@ -213,6 +217,10 @@ Plug 'nvim-lua/plenary.nvim'                           " Required by gitsigns
 Plug 'junegunn/gv.vim'                                 " A git better commit browser.
 Plug 'itchyny/vim-gitbranch'                           " WIP Add branch for auto save session name
 
+" WIP
+Plug 'nvim-lua/plenary.nvim'
+Plug 'ruifm/gitlinker.nvim'
+
 
 
 " Misc+ {{{1
@@ -233,10 +241,7 @@ Plug 'tyru/open-browser.vim', { 'on': ['OpenBrowser', '<Plug>(openbrowser-', 'Op
 " impaient lazy load lua plugins
 Plug 'lewis6991/impatient.nvim'
 
-" Plug 'daveyarwood/vim-alda'                             "editing and playing Alda scores.
-" Plug 'habamax/vim-asciidoctor'
 " Plug 'junegunn/vader.vim'                               "use Vader to test Vimscript.
-Plug 'vlime/vlime', {'rtp': 'vim/'}                       "Common Lisp dev environment
 Plug 'chrisbra/Colorizer'                                 " View log file :ColorToggle  TEST: r! exa --color=always --icons -l
 
 " }}}1
@@ -247,9 +252,6 @@ Plug 'chrisbra/Colorizer'                                 " View log file :Color
 " ------------------------------------------------------------------------------
 
 Plug 'benmills/vimux'
-" Plug 'dyng/ctrlsf.vim'
-" Plug 'tpope/vim-unimpaired'
-
 Plug 'wellle/targets.vim'
 
 "}}}1

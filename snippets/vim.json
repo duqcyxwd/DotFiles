@@ -1,0 +1,25 @@
+{
+  "lua": {
+    "prefix": "lua",
+    "body": [
+      "lua <<EOF",
+      "${0:-- code}",
+      "EOF"
+    ],
+    "description": ""
+  },
+  "fold1": {
+    "prefix": "f1",
+    "body": [
+      "\" {{{1"
+    ],
+    "description": ""
+  },
+  "foldc1": {
+    "prefix": "fc1",
+    "body": [
+      "\" }}}1"
+    ],
+    "description": ""
+  }
+}

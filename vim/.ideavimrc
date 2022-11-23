@@ -227,6 +227,7 @@ nnoremap <leader>[ :action GotoSuperMethod<cr>
 nnoremap <CR> zc
 
 nnoremap \a    :action RunAnything<CR>
+nnoremap \A    :action SonarLint.AnalyzeChangedFiles<CR>
 nnoremap \c    :action Compile<CR>
 nnoremap \k    :action Stop<CR>
 nnoremap \q    :action Refactorings.QuickListPopupAction<CR>

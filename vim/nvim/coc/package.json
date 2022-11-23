@@ -1,10 +1,10 @@
 {
   "dependencies": {
-    "coc-explorer": ">=0.25.1",
-    "coc-jedi": ">=0.32.0",
-    "coc-json": ">=1.6.1",
-    "coc-lists": ">=1.4.4",
+    "coc-explorer": ">=0.25.4",
+    "coc-jedi": ">=0.34.0",
+    "coc-json": ">=1.7.0",
+    "coc-lists": ">=1.4.5",
     "coc-prettier": ">=9.3.1",
-    "coc-pyright": ">=1.1.272"
+    "coc-pyright": ">=1.1.280"
   }
 }

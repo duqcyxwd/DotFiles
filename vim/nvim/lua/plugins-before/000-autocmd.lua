@@ -9,12 +9,18 @@ local autocmds = {
 
   default = {
     -- Keep folding when switch buffer
-    { "BufEnter", "*",        "silent! loadview" },
-    { "BufLeave", "*",        "silent! mkview" },
+    { "BufEnter",   "*",        "silent! loadview" },
+    { "BufLeave",   "*",        "silent! mkview" },
     -- VimLeave called when exit vim. Last edit location will be saved
-    { "VimLeave", "*",        "silent! mkview" },
+    { "VimLeave",   "*",        "silent! mkview" },
     -- " Manully update last open session so __LAST__ will not be updated
-    { "VimLeave", "*",        "call SaveCurrentSessions()" },
+    { "VimLeave",   "*",        "call SaveCurrentSessions()" },
+    -- Disable syntax for large file and syntax can be turn on by syntax on
+    { "BufReadPre", "*",        "if getfsize(expand(\"%\")) > 150000 | syn off | set foldmethod=manual | endif" },
+
+    -- https://stackoverflow.com/questions/178257/how-to-avoid-syntax-highlighting-for-large-files-in-vim
+    -- autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | endif
+    -- autocmd BufReadPre * if getfsize(expand("%")) > 10000000 | syntax off | endif
 
   },
   commentary_config = {
