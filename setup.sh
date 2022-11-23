@@ -19,7 +19,9 @@ mkdir -p $XDG_CONFIG_HOME
 mkdir -p $XDG_DATA_HOME
 mkdir -p $XDG_STATE_HOME
 mkdir -p $XDG_CACHE_HOME
+
 mkdir -p $XDG_CACHE_HOME/fag
+mkdir -p $XDG_CACHE_HOME/fzf
 
 # ZSH
 mkdir -p $HOME/.zsh_history_bk
@@ -39,6 +41,7 @@ case `uname` in
     # commands for Linux go here
 
     if ! type zsh > /dev/null; then
+      echo "Install zsh"
       sudo apt install zsh
     fi
 
@@ -55,12 +58,22 @@ case `uname` in
 
     # Seutp fd
     if ! type fd > /dev/null; then
+        echo "Install fd"
         sudo apt install fd-find
         sudo ln -s /usr/bin/fdfind /usr/local/bin/fd
     fi
 
+    if ! type bat > /dev/null; then
+        echo "Install bat"
+        sudo apt install bat
+        mkdir -p ~/.local/bin
+        sudo ln -s /usr/bin/batcat /usr/local/bin/bat
+    fi
+
+
     # Seutp exa
     if ! type exa > /dev/null; then
+        echo "Install exa"
         curl -L -o exa.zip https://github.com/ogham/exa/releases/download/v0.10.1/exa-linux-x86_64-v0.10.1.zip
         sudo apt-get install unzip
         unzip exa.zip -d exa
@@ -70,6 +83,7 @@ case `uname` in
 
     ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local}/zinit/zinit.git"
     if [[ ! -f "${ZINIT_HOME}/zinit.zsh" ]] ; then
+      echo "Install exa"
       mkdir -p "$(dirname $ZINIT_HOME)"
       git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
     fi

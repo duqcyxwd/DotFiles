@@ -1,6 +1,6 @@
 {
   "happy": {
-    "prefix": "happy",
+    "prefix": "happy-test",
     "body": [
       "f = io.open(${1:\"${2:filename}\"}, \"${3:r}\")\n",
       "while true do",
@@ -17,5 +17,15 @@
       "nvim_print(${1})"
     ],
     "description": "Nice print"
+  },
+  "custom_require": {
+    "prefix": "reqR",
+    "body": ["R(\"${1:module}\")"],
+    "description": "Require module"
+  },
+  "require(Safe)": {
+    "prefix": "reqs",
+    "body": ["SR(\"${1:module}\")"],
+    "description": "Require module"
   }
 }
