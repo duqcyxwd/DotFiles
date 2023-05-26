@@ -49,6 +49,10 @@ mlog "$(date) : zshrc start loading"
   export PATH="./node_modules/.bin:$PATH"
   export NODE_PATH=/usr/lib/node_modules
 
+  export PATH="/usr/local/opt/postgresql@11/bin:$PATH"
+  # if you don't want/need a background service you can just run:
+  #   /usr/local/opt/postgresql@11/bin/postgres -D /usr/local/var/postgresql@11
+
 
   case `uname` in
     Darwin)
