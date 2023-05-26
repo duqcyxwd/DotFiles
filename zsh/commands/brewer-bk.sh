@@ -1,6 +1,6 @@
 #!/bin/bash
 # This script is modified from https://github.com/kawarimidoll/dotfiles/blob/master/etc/mac/brewer.sh
-# homebrew update script
+# This script back brew package with its version number. 
 
 set -e
 
