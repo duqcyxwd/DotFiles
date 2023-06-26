@@ -77,8 +77,11 @@ git_create_branch() {
     fi
 }
 
+alias gopen=gitopen
 function gitopenc() { ee "/usr/local/bin/gitopen -b $(get_current_branch) $@" }
 function gitopend() { /usr/local/bin/gitopen $@ :develop }
+function gitopeng() { /usr/local/bin/gitopen $(git rev-parse HEAD) --path $@ }
+function gitopenm() { /usr/local/bin/gitopen $@ :master }
 alias gitopen_raw=/usr/local/bin/gitopen
 
 git_blame() {
@@ -167,8 +170,7 @@ gbr() { git for-each-ref --sort=-committerdate refs/remotes/ --format="$_gb_form
 
 # Git Others Alias {{{3
 # --------------------------------------------------------------------------
-#
-alias gopen=gitopen
+
 # Non interactive git log
 alias glos='git log --stat'
 
@@ -225,6 +227,8 @@ alias gre="ee 'git recent | head'"
 alias grec="ee 'git recent | grep -i chuan | grep -v gone'"
 alias gstau='git stash -u'         # git stash include untracked
 alias gru="ee 'git remote update origin --prune'"
+
+alias git-clone-shallow="git clone --depth 1"
 
 #======================= Git Alias for work  =========================================
 

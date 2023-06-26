@@ -7,7 +7,13 @@
 "
 " Chuan's .ideavimrc for IntelliJ
 
-" Section: Spacemacs {{{1
+" Inspired from
+"https://github.com/saaguero/ideavimrc/blob/master/.ideavimrc
+"https://github.com/rekendahl/dotfiles/blob/master/.ideavimrc
+" :actionlist
+"Action List https://gist.github.com/zchee/9c78f91cc5ad771c1f5d
+
+" Section: intelli-space Setting {{{1
 " =================================================================
 """ This file contains default spacemacs settings and key bindings
 " Settings
@@ -32,8 +38,8 @@ source ~/github/intelli-space/spacemacs/jump-join-split.vim
 " source ~/github/intelli-space/extra/leader.vim {{{2
 " =================================================================
 " Execute an action. Like <M-x>
-nnoremap <leader><Space>    :action GotoAction<CR>
-vnoremap <leader><Space>    <Esc>:action GotoAction<CR>
+" nnoremap <leader><Space>    :action GotoAction<CR>
+" vnoremap <leader><Space>    <Esc>:action GotoAction<CR>
 
 " Focus last buffer
 nnoremap <leader><tab>    :action VimFilePrevious<CR>
@@ -152,6 +158,13 @@ set ignorecase smartcase
 set scrolloff=3
 set history=2000
 
+
+" ---------------
+" Ideavim only
+" ---------------
+set ideajoin " https://github.com/JetBrains/ideavim/wiki/%22ideajoin%22-examples
+" <leader><leader>
+
 " }}}
 " Addition to intelli-space {{{2
 " =================================================================
@@ -263,10 +276,85 @@ noremap <leader>tt  :action PinActiveTab<CR>
 " nnoremap <space>rn :action RenameElement<cr>
 " nnoremap <leader>cc :action ReformatCode<CR>
 
-"https://github.com/saaguero/ideavimrc/blob/master/.ideavimrc
-"https://github.com/rekendahl/dotfiles/blob/master/.ideavimrc
-" :actionlist
-"Action List https://gist.github.com/zchee/9c78f91cc5ad771c1f5d
 "
 
-}}}
+" }}}
+"
+" Plugins {{{2
+" =================================================================
+Plug 'preservim/nerdtree'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-commentary'
+Plug 'tommcdo/vim-exchange'
+Plug 'machakann/vim-highlightedyank'
+set textobj-indent
+set quickscope
+" Plug 'michaeljsmith/vim-indent-object'
+
+
+Plug 'easymotion/vim-easymotion'
+" map <leader>F <Plug>(easymotion-s)
+
+" TODO FIX THIS
+" Emulates vim-multiple-cursors. Commands: <A-n>, <A-x>, <A-p>, g<A-n>
+set multiple-cursors
+" Plug 'terryma/vim-multiple-cursors'
+nmap <C-n> <A-n>
+xmap <C-n> <A-n>
+vmap <C-n> <A-n>
+
+nmap <C-x> <A-x>
+xmap <C-x> <A-x>
+vmap <C-x> <A-x>
+
+nmap <C-p> <A-p>
+xmap <C-p> <A-p>
+vmap <C-p> <A-p>
+
+  " e = {'Source current file!',              ':so %<CR>'},
+  " v = {'Source vimrc',                      ':so $XDG_CONFIG_HOME/nvim/init.vim<CR>'},
+
+
+" Add text object for function arguments: aa (around argument), ia (inside argument)
+" Plug 'vim-scripts/argtextobj.vim'
+set argtextobj
+
+" Add text object for entire buffer: ae (around buffer), ie (inside buffer)
+set textobj-entire
+
+nnoremap <leader>se    :action IdeaVim.ReloadVimRc.reload<CR>
+nnoremap <leader>sv    :action IdeaVim.ReloadVimRc.reload<CR>
+nnoremap <leader>fei   :e ~/.ideavimrc<CR>
+nnoremap <leader>zz    :action ToggleDistractionFreeMode<CR>
+nnoremap <leader>`     :action ActivateTerminalToolWindow<CR>
+
+
+nnoremap [[ :action MethodUp<CR>
+nnoremap ]] :action MethodDown<CR>
+
+sethandler <c-x> a:vim
+
+" WIP
+nnoremap <Leader>=  :action ReformatCode<CR>
+nnoremap <leader>o :action OptimizeImports<CR>
+
+nnoremap gb :action Back<CR>
+nnoremap gd :action GotoDeclaration<CR>
+nnoremap gf :action Forward<CR>
+nnoremap gi :action GotoImplementation<CR>
+nnoremap gr :action GotoRelated<CR>
+nnoremap gt :action GotoTest<CR>
+nnoremap gu :action FindUsages<CR>
+
+nnoremap <leader><Esc> :action JumpToLastWindow<CR>
+" nnoremap <leader><Esc> :action HideAllWindows<CR>
+
+" nnoremap ,r :action ContextRun<CR>
+" nnoremap ,c :action RunClass<CR>
+" nnoremap ,f :action ChooseRunConfiguration<CR>
+" nnoremap ,t :action ActivateRunToolWindow<CR>
+" nnoremap ,u :action Rerun<CR>
+" nnoremap ,b :action ToggleLineBreakpoint<CR>
+" nnoremap ,d :action ContextDebug<CR>
+" nnoremap ,n :action ActivateDebugToolWindow<CR>
+" Some example: https://towardsdatascience.com/the-essential-ideavim-remaps-291d4cd3971b

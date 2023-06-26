@@ -77,22 +77,36 @@ function getElementsByText(str, tag = 'a') {
 function copyToClipboard(text) {
   Front.showBanner('Coping: ' + text);
   if (window.clipboardData && window.clipboardData.setData) {
+    console.info('window.clipboardData');
     /*IE specific code path to prevent textarea being shown while dialog is visible.*/
     return clipboardData.setData('Text', text);
   } else if (document.queryCommandSupported && document.queryCommandSupported('copy')) {
+    console.info('Create a child object to copy');
     var textarea = document.createElement('textarea');
     textarea.textContent = text;
     textarea.style.position = 'fixed'; /* Prevent scrolling to bottom of page in MS Edge.*/
     document.body.appendChild(textarea);
     textarea.select();
     try {
-      document.execCommand('copy'); /* Security exception may be thrown by some browsers.*/
+      // document.execCommand('copy'); /* Security exception may be thrown by some browsers.*/
+      // Front.showBanner('Copied: ' + text);
     } catch (ex) {
       console.warn('Copy to clipboard failed.', ex);
       return false;
     } finally {
-      document.body.removeChild(textarea);
+      setTimeout(() =>{
+        document.body.removeChild(textarea);
+      }, 7000);
     }
+
+    setTimeout(() =>{
+      Front.showBanner("Select");
+      textarea.select();
+    }, 1000);
+    setTimeout(() =>{
+      Front.showBanner("copy");
+      document.execCommand('copy')
+    }, 2000);
   }
 }
 
@@ -122,7 +136,7 @@ const atlassianJIRAMapping = () => {
   function jiraLinkCopy() {
     // let header = document.querySelectorAll('h1[data-test-id="issue.views.issue-base.foundation.summary.heading"]')[0].textContent,
     let header = document.querySelectorAll('.editable-field')[0].textContent;
-    (url = window.location.href), (cd = url.match(/CD-[0-9]*/)[0]);
+    (url = window.location.href), (cd = url.match(/(CD|IDUN)-[0-9]*/)[0]);
 
     let type = document.querySelectorAll('#issuedetails .item #type-val')[0],
       typeText = '';
@@ -141,6 +155,9 @@ const atlassianJIRAMapping = () => {
           break;
         case 'Bug':
           cd = '🔴' + '  [' + 'B:' + cd + ']';
+          break;
+        case 'Task':
+          cd = '🔵' + '  [' + 'T:' + cd + ']';
           break;
         default:
           cd = '[' + 'I:' + cd + ']';
@@ -511,7 +528,7 @@ function copyTextToMarkdown() {
 }
 //}}}2
 
-mapkey(',y', 'Copy URL TO MarkDown', copyTextToMarkdown);
+mapkey(',y', 'Copy URL TO MarkDown ALL', copyTextToMarkdown);
 mapkey('`c', 'Copy URL TO MarkDown', copyTextToMarkdown);
 
 atlassianJIRAMapping();

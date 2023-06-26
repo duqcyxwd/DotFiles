@@ -88,6 +88,7 @@
   }
   # FZF: GIT FILES {{{1
   # --------------------------------------------------------------------------
+  {
 
     # Restore modified file
     alias grsi=forgit::checkout::file
@@ -165,8 +166,10 @@
     # gcleani -x
     alias gcleani=git_clean_interactive
 
-    # }}}1
+  }
   # FZF: GIT stash {{{1
+  # --------------------------------------------------------------------------
+  {
     FORGIT_STASH_FZF_OPTS='
     --bind="ctrl-d:reload(git stash drop $(cut -d: -f1 <<<{}) 1>/dev/null && git stash list)"
     '
@@ -184,9 +187,10 @@
       git stash list | FZF_DEFAULT_OPTS="$opts" fzf_tp --preview="$cmd" | cut -d: -f1
     }
 
-
+  }
   # FZF: GIT BRANCH {{{1
   # --------------------------------------------------------------------------
+  {
     # Git loves FZF
     # My personal git preivew scripts
 
@@ -217,6 +221,7 @@
     alias fgbcp=fzf_git_branch_to_commit_preview
 
 
+  # 2}}}
   # fzf: git branch alias {{{2
 
     gbi(){ gb $@ | fzf_git_branch_to_history_preview }
@@ -280,6 +285,10 @@
     # Can be replaced with gbi --merged
     # alias gbri_merged="gb_merged_remote | fzf | cut -d ' ' -f6 | cut -c8-1000"
     # alias gbri_me="gbr | grep chuan | fzf | cut -d ' ' -f6 | cut -c8-1000"
+    # 2}}}
+  }
+
+  # 1}}}
 
 # FZF: ALIAS {{{1
 # --------------------------------------------------------------------------
@@ -297,13 +306,31 @@
 }
 
 # 1}}}
+# FZF: Git Review {{{1
+# --------------------------------------------------------------------------
+{
+  fzf_git_review_preview() { fzf --header-lines=1 "$@" | awk '{print $1}' }
 
-
-__git_folders() {
-  # Find git repos under current director
-  for i in */.git; do ( echo $i); done
+  grvw() { git review $@ }
+  # grvl() { runcached --bg-update --ignore-env --ttl 1800  git review -l --color=always $@ }
+  grvl() { RUNCACHED_IGNORE_PWD=0 runcached --bg-update --ttl 1800  git review -l --color=always $@ }
+  grvli() { grvl $@ | fzf_git_review_preview | xargs git review -d }
+  # TODO RUNCACHED_IGNORE_PWD is not working
 }
 
-git_folders_pull() {
-  __git_folders | fzf | xargs -I% git_pull_at_directory %
+# 1}}}
+
+
+# Git: Update all subfolders {{{1
+# --------------------------------------------------------------------------
+{
+  __git_folders() {
+    # Find git repos under current director
+    for i in */.git; do ( echo $i); done
+  }
+
+  git_folders_pull() {
+    __git_folders | fzf | xargs -I% git_pull_at_directory %
+  }
 }
+# 1}}}

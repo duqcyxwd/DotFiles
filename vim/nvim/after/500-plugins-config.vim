@@ -973,9 +973,7 @@ command! -bang -nargs=* MyFzfAg
 
 
 command! -bang -nargs=? -complete=dir MyFzfFiles       call fzf#vim#queryfiles(<q-args>, fzf#vim#with_preview(), <bang>0)
-
 " command!      -bang -nargs=* LL                        call fzf#vim#lines(<q-args>, <bang>0),
-
 " command!      -bang -nargs=* Lines                     call fzf#vim#lines(<q-args>, <bang>0),
 " command!      -bang -nargs=* BLines                    call fzf#vim#buffer_lines(<q-args>, <bang>0),
 
@@ -1485,7 +1483,7 @@ augroup neoterm
 augroup END
 
 
-" Works great with nvr
+" Works great with nvr, works through varible $NVIM in its child terminal
 " https://github.com/mhinz/neovim-remote
 
 

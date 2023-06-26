@@ -13,4 +13,12 @@ zinit compinit
 # yarn cache clean       # Cleanup yarn cache
 # go clean -modcache     # Clean go cache
 # Cleanup helm file: rm ~/.cache/helm/repository
+# n prune                # Node version cleanup
+# Docker cleanup
+# docker system prune -a
+# kdelns test            # Delete test namespace
+# Goto rancher desktop and remove images
+#
+# IntelliJ
+# Go to ~/Library/Caches/JetBrains and delete cache for old version
 

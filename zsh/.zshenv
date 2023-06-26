@@ -31,10 +31,6 @@ export PATH="$ZDOTDIR/commands:$PATH"
 export ZSH_LOADING_LOG=$XDG_CACHE_HOME/.startup.log
 export RUNCACHED_CACHE_DIR=$XDG_CACHE_HOME/.runcached
 
-export RUNCACHED_MAX_AGE=1800
-export RUNCACHED_IGNORE_ENV=1
-export RUNCACHED_IGNORE_PWD=1
-
 # Put function in FAPTH so it is faster to run as a script
 # Add autoload so I don't need to put them into PATH
 FPATH=$FPATH:$ZDOTDIR/functions/

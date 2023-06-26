@@ -13,7 +13,7 @@
 
 # SECTION: : SCRIPT LOADING VARIABLE {{{1
 # --------------------------------------------------------------------------
-export P10K_INSTANT_PROMOT=0
+export P10K_INSTANT_PROMOT=1
 export ZINIT_PLUGIN_DELAY=0
 export ZPROF_TRACK=0
 
@@ -41,6 +41,7 @@ mlog "$(date) : zshrc start loading"
   export PATH="$HOME/my_script:$PATH"
   export PATH="$HOME/my_script/zsh:$PATH"
   export PATH="$HOME/.cargo/bin:$PATH"
+  export PATH="$HOME/.rd/bin:$PATH"
   export PATH="/usr/local/heroku/bin:$PATH"
   export PATH="/usr/local/opt/ruby/bin:$PATH"
 
@@ -106,6 +107,11 @@ mlog "$(date) : zshrc start loading"
   # export NVIM_LISTEN_ADDRESS=$XDG_CACHE_HOME/nvimsocket
 
   [[ $ZPROF_TRACK -eq "1" ]] && zmodload zsh/zprof
+
+  # Can't move them into zshenv since it is hard to overwrite
+  export RUNCACHED_MAX_AGE=1800
+  export RUNCACHED_IGNORE_ENV=1
+  export RUNCACHED_IGNORE_PWD=1
 # }}}
 }
 
@@ -265,8 +271,6 @@ zsh_plugins_config() {
 }
 alias gst='git status'
 [[ $commands[exa] ]] && alias la="exa -lbFa"
-ce() { cd $_comp_dir_cenxdir$1 }
-alias c=ce
 # }}}
 
 zinit_load
