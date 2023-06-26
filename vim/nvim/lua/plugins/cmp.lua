@@ -12,7 +12,7 @@ if not has_luasnip then
 end
 
 local lspkind = require("lspkind")
-local neogen = require("neogen")
+local has_neogen, neogen = pcall(require, "neogen")
 
 local t = function(str)
   return vim.api.nvim_replace_termcodes(str, true, true, true)
@@ -49,7 +49,7 @@ end
 local next_parameter = function(fallback)
   if luasnip.expand_or_jumpable() then
     vim.fn.feedkeys(t("<Plug>luasnip-expand-or-jump"), "")
-  elseif neogen.jumpable() then
+  elseif has_neogen and neogen.jumpable() then
     vim.fn.feedkeys(t("<cmd>lua require('neogen').jump_next()<CR>"), "")
   else
     fallback()

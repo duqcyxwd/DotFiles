@@ -553,20 +553,9 @@ augroup END
 " StripWhitespaceOnChangedLines
 let g:better_whitespace_filetypes_blacklist = ['diff', 'gitcommit', 'unite', 'qf', 'help', 'ctrlsf']
 
-" function! ReloadWithoutScrolling() abort
-"   let l:currentview = winsaveview()
-"   edit
-"   call winrestview(l:currentview)
-" endfunction
-
 let g:better_whitespace_enabled=1
 let g:strip_whitespace_on_save=1
 let g:strip_whitespace_confirm=0
-
-" g:strip_only_modified_lines
-
-let g:better_whitespace_ctermcolor='LightYellow'
-let g:better_whitespace_guicolor='#6272a4'
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => buffergator {{{1

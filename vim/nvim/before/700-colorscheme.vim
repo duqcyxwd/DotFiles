@@ -65,6 +65,10 @@ function! s:LightMode() abort
 
   " colorscheme onehalflight
   " let g:airline_theme='onehalflight'
+
+  " :hi CursorLine
+  " CursorLine     xxx ctermbg=230 guibg=#fffbdd
+  "
 endfunction
 command! LightMode call s:LightMode()
 
@@ -77,6 +81,7 @@ fun! g:MultiThemesDark()  "{{{1
   hi! VM_Cursor ctermbg=31    ctermfg=237    guibg=#0087af    guifg=#87dfff
   hi! VM_Insert ctermbg=239                  guibg=#4c4e50
   hi! VM_Mono   ctermbg=167   ctermfg=253    guibg=#df5f5f    guifg=#dadada cterm=bold term=bold gui=bold
+
 endfun
 
 fun! g:MultiThemesLight() "{{{1
@@ -84,15 +89,16 @@ fun! g:MultiThemesLight() "{{{1
   hi! VM_Cursor ctermbg=64    ctermfg=186    guibg=olivedrab  guifg=khaki
   hi! VM_Insert ctermbg=239                  guibg=#4c4e50
   hi! VM_Mono   ctermbg=131   ctermfg=235    guibg=#AF5F5F    guifg=#262626
+
 endfun
 " Toggle {{{1
 function! s:ToggleColorschemeMode() abort
   if g:colorscheme_mode ==# 'dark'
     call s:LightMode()
-    call s:MultiThemesLight()
+    call g:MultiThemesLight()
   else
     call s:DarkMode()
-    call s:MultiThemesDark()
+    call g:MultiThemesDark()
   endif
  syntax enable               " Enable syntax highlighting
 endfunction
@@ -108,6 +114,13 @@ let g:colorscheme_mode = 'dark'
 colorscheme dracula
 
 set termguicolors
+
+
+" I am using better-whitespace
+" but the color setting in that plugin is not working
+" let g:better_whitespace_ctermcolor='LightYellow'
+" let g:better_whitespace_guicolor='#6272a4'
+highlight ExtraWhitespace ctermbg=LightYellow guibg=#6272a4
 
 syntax enable               " Enable syntax highlighting
 syntax on                   " syntax for a lot of stuff

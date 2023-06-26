@@ -14,7 +14,7 @@ M.lsp_on_attach = function(_, bufnr)
 		vim.api.nvim_buf_set_keymap(bufnr, ...)
 	end
 
-	bmap("n", "<localleader>f", "<CMD>lua vim.lsp.buf.formatting()<CR>", opts)
+	bmap("n", "<localleader>f", "<CMD>lua vim.lsp.buf.format({async = true})<CR>", opts)
 	bmap("n", "<localleader>q", "<CMD>lua vim.diagnostic.setloclist()<CR>", opts)
 end
 

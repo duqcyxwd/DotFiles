@@ -13,6 +13,15 @@ if not status then
   return
 end
 
+wk.setup({
+  layout = {
+    height = { min = 15, max = 25 }, -- min and max height of the columns
+    width = { min = 20, max = 50 }, -- min and max width of the columns
+    spacing = 3, -- spacing between columns
+    align = "left", -- align columns left, center or right
+  }
+})
+
 local space_key_nmap = {}
 local space_key_vmap = {}
 
@@ -66,6 +75,7 @@ vim.cmd("cnoremap <C-N> <Down>")
 vim.cmd("xmap ga <Plug>(EasyAlign)")
 -- Start interactive EasyAlign for a motion/text object (e.g. gaip)
 vim.cmd("nmap ga <Plug>(EasyAlign)")
+-- this is file: do 'ga,'
 
 -- " Fix paste
 -- " p will not overwrite register
@@ -247,7 +257,7 @@ end
 
 -- Set impair map
 set_keymap("n", { noremap = true, silent = true }, impair_map_config)
-space_key_nmap.k = brackets_keymap
+-- space_key_nmap.k = brackets_keymap
 space_key_nmap.n = brackets_keymap
 
 -- }}}1
@@ -375,8 +385,11 @@ space_key_nmap.g = { --{{{1
   e = { 'Gitsign Edit mode',    ':Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>' },
   s = { 'Gitsign Edit mode',    ':Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>' },
   S = { 'Git status',           ':Git<CR>' },
+
+  -- l = { 'Git link open',        ':GBrowse<CR>' },
   i = { 'Git line info',        ":lua require('gitsigns').blame_line({ full = true})<CR>" },
-  l = { 'Git link open',        ':GBrowse<CR>' },
+  H = { 'Git home page',        ':lua require"gitlinker".get_repo_url({action_callback = require"gitlinker.actions".open_in_browser})<cr>' },
+  l = { 'Git link open',        ':lua require"gitlinker".get_buf_range_url("n", {action_callback = require"gitlinker.actions".open_in_browser})<cr>' },
   p = { 'Git Gina Push',        ':Gina push<CR>' },
   y = { 'Git link yank',        ':lua require"gitlinker".get_buf_range_url("n")<CR>' },
 
@@ -393,8 +406,8 @@ space_key_nmap.g = { --{{{1
   },
   v = {'Git history view ', ':GV<CR>'},
 
-  x = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
-  f = {'Goto floating window',        ':call GotoFirstFloat()<CR>'},
+  x = {'Goto: Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
+  f = {'Goto: floating window',             ':call GotoFirstFloat()<CR>'},
 
 }
 
@@ -402,19 +415,17 @@ space_key_nmap.g = { --{{{1
 space_key_vmap.g = { --{{{1
   name = "+Git/Go",
 
-  a = { 'GitSign stage_hunk',    ':Gitsigns stage_hunk<CR>' },
-  l = { 'Git link open',         ':GBrowse<CR>' },
-  y = { 'Git link yank',         ':lua require"gitlinker".get_buf_range_url("v")<CR>' },
+  a = { 'GitSign stage_hunk',               ':Gitsigns stage_hunk<CR>' },
+  -- l = { 'Git link open',                 ':GBrowse<CR>' },
+  l = { 'Git link open',                    ':lua require"gitlinker".get_buf_range_url("v", {action_callback = require"gitlinker.actions".open_in_browser})<cr>' },
+  y = { 'Git link yank',                    ':lua require"gitlinker".get_buf_range_url("v")<CR>' },
   h = {
     name ='Git hunk',
-    a = { 'GitSign stage_hunk',      ':Gitsigns stage_hunk<CR>' },
-    u = { 'GitSign stage_hunk undo', ':Gitsigns undo_stage_hunk<CR>' },
-    R = { 'GitSign hunk restore',    ':Gitsigns reset_hunk<CR>' },
-
+    a = { 'GitSign stage_hunk',             ':Gitsigns stage_hunk<CR>' },
+    u = { 'GitSign stage_hunk undo',        ':Gitsigns undo_stage_hunk<CR>' },
+    R = { 'GitSign hunk restore',           ':Gitsigns reset_hunk<CR>' },
   },
-
-
-  x = {'Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
+  x = {'Goto: Search and open in browser ', '<Plug>(openbrowser-smart-search)'},
 }
 
 vim.cmd('command! -bar -bang IMaps  call fzf#vim#maps("i", <bang>0)')
@@ -731,14 +742,19 @@ space_key_nmap.w = { --{{{1
 
 -- stylua: ignore
 space_key_nmap.z = { --{{{1
-  name = "+Mist",
+  name = "+Mist/Focus mode",
 
-  l = {'Limelight',                  ':Limelight!!<CR>'},
-  t = {'Twilight',                   ':Twilight<CR>'},
+  g = {'Goyo',                       ':Goyo<CR>'},
+  z = {'Zen mode (Similar to Goyo)', ':ZenMode<CR>'},
+  n = {'Zen mode (Similar to Goyo)', ':ZenMode<CR>'},
+
+  l = {
+    name = "light",
+    l = {'Limelight',                  ':Limelight!!<CR>'},
+    t = {'Twilight',                   ':Twilight<CR>'},
+  },
 
   u = {'Undo tree',                  ':UndotreeToggle<CR>'},
-  z = {'Goyo',                       ':Goyo<CR>'},
-  n = {'Zen mode (Similar to Goyo)', ':ZenMode<CR>'},
   m = {'Maximum Current window',     ':ZoomToggle<CR>'},
 }
 
@@ -752,12 +768,15 @@ space_key_nmap.X = { --{{{1
 -- Register key map {{{1
 --
 
+-- Reformat keys
 reformate_key_map(space_key_nmap)
 reformate_key_map(space_key_vmap)
+-- Register reformated keys
 wk.register(space_key_nmap, { prefix = "<Space>" })
 wk.register(space_key_vmap, { prefix = "<Space>", mode = "v" })
 
 ------------------------------------------------------------------------------
+-- My plan for keys
 local space_key_nmap_plan = {
   a = {
     name = "+Applications",
@@ -768,6 +787,15 @@ local space_key_nmap_plan = {
   },
   C = {
     name = "+Colors/Check?",
+  },
+
+  -- ","
+  comma = {
+    -- or using f??
+    -- t = { "[format] Clean trailing space",      ":StripWhitespace<CR>" },
+    f = "format file",
+    s = "cleanup white space?"
+
   },
 
   -- c = {

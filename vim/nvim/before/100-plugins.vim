@@ -15,7 +15,7 @@ call plug#begin('$XDG_DATA_HOME/nvim-plug')
 Plug 'rrethy/vim-hexokinase', { 'do': 'make hexokinase' }                "displaying the colours in the file
 
 Plug 'nvim-lualine/lualine.nvim'
-Plug 'arkav/lualine-lsp-progress'
+Plug 'arkav/lualine-lsp-progress'                                        " It is working but only on inactive line
 Plug 'kyazdani42/nvim-web-devicons'                                      " Recommended (for coloured icons)
 Plug 'akinsho/bufferline.nvim'
 
@@ -46,12 +46,17 @@ Plug 'jeetsukumaran/vim-buffergator'                                    " open a
 
 " Plug 'liuchengxu/vi|-which-key'
 Plug 'folke/which-key.nvim'
-Plug 'jiangmiao/auto-pairs'
-Plug 'junegunn/fzf',       { 'dir': '~/.fzf', 'do': './install --all' } " fzf
-Plug '~/duqcyxwd/fzf.vim', {'on': []}                                   " My quick fix for fzf vim
-Plug 'ibhagwan/fzf-lua'                                                 " fzf written in lua
-Plug 'kyazdani42/nvim-web-devicons'                                     " optional for icon support
 
+Plug 'jiangmiao/auto-pairs'
+Plug '/usr/local/opt/fzf'                                               " Use the fzf installed by brew
+" Plug 'junegunn/fzf',     { 'dir': '~/.fzf', 'do': './install --all' } " fzf Download fzf repo and install from source code???
+Plug '~/duqcyxwd/fzf.vim', {'on': []}                                   " My quick fix for fzf vim, e.g FFFiles
+Plug 'ibhagwan/fzf-lua'                                                 " fzf written in lua            TODO Explain why I need it
+
+Plug 'wellle/targets.vim'                                               " Addition support for text object
+" Cheat sheeti https://github.com/wellle/targets.vim/blob/master/cheatsheet.md
+"
+Plug 'kyazdani42/nvim-web-devicons'                                     " optional for icon support
 Plug 'Shougo/defx.nvim', { 'do': ':UpdateRemotePlugins', 'on': 'Defx' } " File browser
 Plug 'kshenoy/vim-signature'                                            " A plugin to place, toggle and display marks.
 Plug 'machakann/vim-highlightedyank'                                    " Show highlight for yank
@@ -67,6 +72,7 @@ Plug 'tpope/vim-sleuth'                                                 " Automa
 Plug 'tpope/vim-surround'
 Plug 'unblevable/quick-scope', {'on': []}                               " Quick highlight for f/F
 Plug 'phaazon/hop.nvim'                                                 " Jump Everywhere
+Plug 'Yggdroot/indentLine', {'on': []}
 
 " Tree sitter
 " Plug 'nvim-treesitter/nvim-treesitter', {'commit': 'e7bdcee167ae41295a3e99ad460ae80d2bb961d7'} " Better syntax highlight
@@ -81,10 +87,10 @@ Plug '~/duqcyxwd/nvim-treesitter-textobjects'                           " Testin
 Plug 'kyazdani42/nvim-tree.lua'                                         "A File Explorer For Neovim Written In Lua
 
 Plug 'simrat39/symbols-outline.nvim'
-Plug '~/duqcyxwd/coc.nvim'                                              " Fix the compete problem with cmp
+" Plug '~/duqcyxwd/coc.nvim'                                              " Fix the compete problem with cmp
+" 2023-03-17 disable coc, I don't need it
 " " Plug 'neoclide/coc.nvim', {'branch': 'release'}
 
-Plug 'Yggdroot/indentLine', {'on': []}
 
 " Telescope
 " Plug 'nvim-lua/popup.nvim'                        "required by telescope
@@ -110,8 +116,6 @@ Plug 'hrsh7th/cmp-path'
 Plug 'hrsh7th/cmp-cmdline'
 
 Plug 'onsails/lspkind-nvim'                          " Add icon for cmp
-" WIP
-Plug 'danymat/neogen'                                " Your Annotation Toolkit
 
 " " For vsnip users.
 " Plug 'hrsh7th/cmp-vsnip'
@@ -242,7 +246,11 @@ Plug 'tyru/open-browser.vim', { 'on': ['OpenBrowser', '<Plug>(openbrowser-', 'Op
 Plug 'lewis6991/impatient.nvim'
 
 " Plug 'junegunn/vader.vim'                               "use Vader to test Vimscript.
-Plug 'chrisbra/Colorizer'                                 " View log file :ColorToggle  TEST: r! exa --color=always --icons -l
+
+" Useage: ColorHighlight
+Plug 'chrisbra/Colorizer'                                 " View log file :ColorToggle  TEST: r! exa --color=always --icons -l,
+
+" Plug 'j-hui/fidget.nvim'                      " Show lsp progress, NOT WORKING
 
 " }}}1
 
