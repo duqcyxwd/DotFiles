@@ -54,6 +54,7 @@ Plug '~/duqcyxwd/fzf.vim', {'on': []}                                   " My qui
 Plug 'ibhagwan/fzf-lua'                                                 " fzf written in lua            TODO Explain why I need it
 
 Plug 'wellle/targets.vim'                                               " Addition support for text object
+Plug 'michaeljsmith/vim-indent-object'                                  "Text Object indent
 " Cheat sheeti https://github.com/wellle/targets.vim/blob/master/cheatsheet.md
 "
 Plug 'kyazdani42/nvim-web-devicons'                                     " optional for icon support
@@ -109,30 +110,22 @@ Plug 'voldikss/vim-floaterm', #{ on: [ 'FloatermNew', 'FloatermHide', 'FloatermT
 
 " Completion {{{1
 
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-buffer'
-Plug 'hrsh7th/cmp-nvim-lsp'
-Plug 'hrsh7th/cmp-path'
-Plug 'hrsh7th/cmp-cmdline'
+function! s:nvim_cmp()
+  Plug 'hrsh7th/nvim-cmp'
+  Plug 'hrsh7th/cmp-buffer'
+  Plug 'hrsh7th/cmp-nvim-lsp'
+  Plug 'hrsh7th/cmp-path'
+  Plug 'hrsh7th/cmp-cmdline'
+  Plug 'onsails/lspkind-nvim'                          " Add icon for cmp
 
-Plug 'onsails/lspkind-nvim'                          " Add icon for cmp
+  " For luasnip users.
+  Plug 'L3MON4D3/LuaSnip'                              " Follows lsp protocol
+  Plug 'saadparwaiz1/cmp_luasnip'
+  Plug 'rafamadriz/friendly-snippets'                  " Snippet collection
+endfunction
 
-" " For vsnip users.
-" Plug 'hrsh7th/cmp-vsnip'
-" Plug 'hrsh7th/vim-vsnip'
+call s:nvim_cmp()
 
-" For luasnip users.
-Plug 'L3MON4D3/LuaSnip'             " Follows lsp protocol
-Plug 'saadparwaiz1/cmp_luasnip'
-Plug 'rafamadriz/friendly-snippets' " Snippet collection
-
-" " For ultisnips users.
-" Plug 'SirVer/ultisnips'
-" Plug 'quangnguyen30192/cmp-nvim-ultisnips'
-
-" For snippy users.
-" Plug 'dcampos/nvim-snippy'
-" Plug 'dcampos/cmp-snippy'
 
 " LSP+ {{{1
 " ------------------------------------------------------------------------------
@@ -145,7 +138,6 @@ Plug 'tami5/lspsaga.nvim'
 " Languages/Filetypes {{{1
 " ------------------------------------------------------------------------------
 
-Plug 'nathom/filetype.nvim'                             " Increase filetype loading speed
 Plug 'OrangeT/vim-csharp'
 Plug 'adimit/prolog.vim'
 Plug 'cespare/vim-toml'
@@ -239,13 +231,13 @@ Plug 'norcalli/nvim_utils'                              " Nvim utils functions
 Plug 'christoomey/vim-tmux-navigator'                   " Quickly switch vim split with tmux panel.
 Plug 'tyru/open-browser.vim', { 'on': ['OpenBrowser', '<Plug>(openbrowser-', 'OpenBrowserSmartSearch'] }
 
+" Disabled+ {{{1
+" ------------------------------------------------------------------------------
+" Plug 'nathom/filetype.nvim'                             " Increase filetype loading speed "Disabled for nvim 0.9
 " WIP {{{1
 " ------------------------------------------------------------------------------
 
-" impaient lazy load lua plugins
-Plug 'lewis6991/impatient.nvim'
-
-" Plug 'junegunn/vader.vim'                               "use Vader to test Vimscript.
+Plug 'tommcdo/vim-exchange'                          " Exchange lines, cx/X/cxx/cxc, works with '.'
 
 " Useage: ColorHighlight
 Plug 'chrisbra/Colorizer'                                 " View log file :ColorToggle  TEST: r! exa --color=always --icons -l,
@@ -260,7 +252,6 @@ Plug 'chrisbra/Colorizer'                                 " View log file :Color
 " ------------------------------------------------------------------------------
 
 Plug 'benmills/vimux'
-Plug 'wellle/targets.vim'
 
 "}}}1
 call plug#end()

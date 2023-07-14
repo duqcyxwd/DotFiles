@@ -12,7 +12,7 @@
 "
 function! g:ToggleVerbose()
   if !&verbose
-    set verbosefile=~/temp/log/vim.log
+    set verbosefile=$XDG_CACHE_HOME/nvim/nvim.log
     set verbose=15
   else
     set verbose=0

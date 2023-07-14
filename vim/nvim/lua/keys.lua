@@ -144,9 +144,11 @@ set_keymap("n", { noremap = true, silent = true }, {
   {"gl", "<C-W>l"},
 
   -- Edit
-  {"K",              ":call Show_documentation()<CR>"},
-  {"<CR>",           "za"},
-  {"gca",            ":call NERDComment('n', 'Toggle')<CR>"},
+  { "K",    ":call Show_documentation()<CR>"       },
+  { "<CR>", "za"                                   },
+  { "gca",  ":call NERDComment('n', 'Toggle')<CR>" },
+  { "gV",   "<Plug>(VM-Reselect-Last)"             },
+
 
 })
 
@@ -655,7 +657,7 @@ space_key_nmap.t = { --{{{1
   w  = {'Toggle 80 text width',                  ':call ToggleTextWidthWithColor()<CR>'},
   p  = {'Toggle findroot',                       ':call ToggleFindRootScope()<CR>'},
   -- h  = {'Toggle left',                           ':CocCommand explorer<CR>'},
-  h  = {'Toggle left',                           ':NvimTreeFindFileToggle<CR>'},
+  h  = {'Toggle left',                           ':NvimTreeFindFileToggle<CR>:echo ":NvimTreeFindFileToggle"<CR>'},
   l  = {'Toggle right',                          ':SymbolsOutline<CR><c-w>h'},
 
   d  = {

@@ -11,11 +11,7 @@ local autocmds = {
     { "FileType", "fugitiveblame", "nmap <buffer> q gq" },
     { "FileType", "fzf", "nnoremap <buffer> <ESC> :q<CR>" },
     { "FileType", "git", "nmap <buffer> q :bd<CR>" },
-    {
-      "FileType",
-      "lua",
-      "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr tabstop=2 softtabstop=2 shiftwidth=2",
-    },
+    { "FileType", "lua", "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr tabstop=2 softtabstop=2 shiftwidth=2" },
     { "FileType", "robot", "setlocal foldmethod=indent" },
     { "FileType", "sagahover", "nnoremap <buffer> <Esc> :q<CR>" },
     { "FileType", "startify", "DisableWhitespace" },

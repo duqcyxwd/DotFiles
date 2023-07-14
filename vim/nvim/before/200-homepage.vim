@@ -47,7 +47,7 @@ function! s:gitUntracked()
 endfunction
 
 let g:startify_lists = [
-      \ { 'header': ['   Sessions'],       'type': 'sessions',   'indices': ['a', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']},
+      \ { 'header': ['   Sessions'],       'type': 'sessions',   'indices': ['a', 'c', 'd', 'e', 'f', 'g', 'v', 'r', 't', 'q']},
       \ { 'header': ['   Bookmarks'],      'type': 'bookmarks',                                                          },
       \ { 'header': ['   Commands'],       'type': 'commands',                                                           },
       \ { 'header': ['   MRU'],            'type': 'files',                                                              },

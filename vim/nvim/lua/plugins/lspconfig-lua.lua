@@ -1,11 +1,8 @@
 local mapping = require("plugins.buffer-keys")
 
 -- -- Lua LSP {{{1
--- local sumneko_lua_loaded = not vim.inspect(package.loaded["lspconfig.configs"].sumneko_lua)
--- if sumneko_lua_loaded then
--- end
 
-require("lspconfig").sumneko_lua.setup({
+require("lspconfig").lua_ls.setup({
 	on_attach = mapping.lsp_on_attach_power,
 	settings = {
 		Lua = {
@@ -23,6 +20,7 @@ require("lspconfig").sumneko_lua.setup({
 			workspace = {
 				-- Make the server aware of Neovim runtime files
 				library = vim.api.nvim_get_runtime_file("", true),
+				checkThirdParty = false,
 			},
 			-- Do not send telemetry data containing a randomized but unique identifier
 			telemetry = {
@@ -33,10 +31,3 @@ require("lspconfig").sumneko_lua.setup({
 })
 
 ------------------------------------------------------------------------------ }}}1
-
--- print(vim.inspect(package.loaded))
--- TODO Load only once
--- print(vim.inspect(require("lspconfig").sumneko_lua))
--- enew| pu=execute('lua print(vim.inspect(require("lspconfig").sumneko_lua))')
--- enew| pu=execute('lua print(vim.inspect(package.loaded["lspconfigs.configs"]))')
--- lua print(vim.inspect(package.loaded["lspconfig.configs"].sumneko_lua))

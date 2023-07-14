@@ -1,5 +1,6 @@
 require("funcs.global")
 SR("lualine").setup({
+  -- 'nvim-lualine/lualine.nvim'
   options = {
     icons_enabled = true,
     theme = "auto",
@@ -32,35 +33,23 @@ SR("lualine").setup({
 })
 
 SR("bufferline").setup({
-  -- akinsho/bufferline.nvim
+  -- 'akinsho/bufferline.nvim'
   options = {
-    numbers = function(opts)
-      return string.format('%s.', opts.ordinal)
-    end,
+    -- numbers = function(opts)
+    --   return string.format('%s.', opts.ordinal)
+    -- end,
+    numbers = "ordinal",
     diagnostics = "none",
     offsets = { { filetype = "coc-explorer" } },
     show_tab_indicators = true,
     enforce_regular_tabs = true,
     always_show_bufferline = false,
-    -- separator_style = "slant" | "thick" | "thin" | { 'any', 'any' },
     separator_style = "slant",
     max_prefix_length = 10,
     max_name_length = 30,
     tab_size = 25,
     show_buffer_close_icons = false,
     show_buffer_icons = false,
-
     middle_mouse_command = "bdelete! %d",
-    custom_filter = function(buf_number, buf_numbers)
-      -- -- filter out filetypes you don't want to see
-      -- if vim.bo[buf_number].filetype ~= "<i-dont-want-to-see-this>" then
-      --   return true
-      -- end
-      -- -- filter out by buffer name
-      -- if vim.fn.bufname(buf_number) ~= "<buffer-name-I-dont-want>" then
-      --   return true
-      -- end
-      return true
-    end,
   },
 })
