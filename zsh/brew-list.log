@@ -1,4 +1,4 @@
-timestamp: 2022-10-14 10:00:48 EDT
+timestamp: 2023-06-26 12:00:42 EDT
 tap: brew tap
 tap: borkdude/brew
 tap: clojure-lsp/brew
@@ -8,6 +8,7 @@ tap: conduktor/brew
 tap: homebrew/cask
 tap: homebrew/cask-versions
 tap: homebrew/core
+tap: homebrew/services
 tap: let-us-go/zkcli
 tap: spring-io/tap
 tap: teamookla/speedtest
@@ -34,6 +35,7 @@ brew: entr
 brew: exa
 brew: fd
 brew: figlet
+brew: flyway
 brew: fortune
 brew: fzf
 brew: git
@@ -69,19 +71,25 @@ brew: micro
 brew: minikube
 brew: mit-scheme
 brew: mkcert
+brew: neovide
 brew: neovim-remote
 brew: nvm
 brew: openjdk@11
+brew: openjdk@17
 brew: php
 brew: podman
+brew: postgresql@11
 brew: pstree
 brew: pyenv
+brew: pygments
+brew: python@3.11
 brew: python@3.8
 brew: ranger
 brew: ripgrep-all
 brew: shellcheck
 brew: shfmt
 brew: showkey
+brew: six
 brew: spring-io/tap/spring-boot
 brew: srt
 brew: teamookla/speedtest/speedtest
@@ -110,8 +118,6 @@ cask: graphiql
 cask: graphql-playground
 cask: keycastr
 cask: mark-text
-cask: neovide
 cask: osxfuse
 cask: v2rayu
-cask: vimr
 cask: visualvm

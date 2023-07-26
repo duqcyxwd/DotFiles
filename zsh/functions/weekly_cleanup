@@ -21,4 +21,13 @@ zinit compinit
 #
 # IntelliJ
 # Go to ~/Library/Caches/JetBrains and delete cache for old version
+# Go to /Users/EYONDUU/Library/Logs/JetBrains
+# Go to /Users/EYONDUU/Library/Application Support/JetBrains
+#
+# Brew
+# brew cleanup -s
+# brew clearup --pure=all
+# Teams
+# rm -r ~/Library/Application\ Support/Microsoft/Teams
+#
 
