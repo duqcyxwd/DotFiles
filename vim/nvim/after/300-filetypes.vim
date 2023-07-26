@@ -354,7 +354,8 @@ function! g:MarkdownKeyMap() " {{{2
   " nunmap <Tab>
   " nunmap <S-Tab>
 
-  nnoremap <buffer> <Tab> >>
+  " Save tab for visual multi mode
+  " nnoremap <buffer> <Tab> >>
   nnoremap <buffer> <S-Tab> <<
   vnoremap <buffer> <Tab> >
   vnoremap <buffer> <S-Tab> <

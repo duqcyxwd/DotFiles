@@ -80,8 +80,7 @@ Plug 'Yggdroot/indentLine', {'on': []}
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}              " Better syntax highlight
 
 Plug 'nvim-treesitter/playground'
-Plug 'romgrk/nvim-treesitter-context'
-Plug '~/duqcyxwd/nvim-treesitter-textobjects'                           " Testing my textobjects for comments
+Plug '~/duqcyxwd/nvim-treesitter-textobjects'                            " Testing my textobjects for comments
 " Plug 'theHamsta/nvim-treesitter-pairs',                                 " Create your own pair objects using tree-sitter queries!
 " Plug 'nvim-treesitter/nvim-treesitter-refactor',                        " Provide some highlight navigation based on treesitter
 
@@ -234,6 +233,7 @@ Plug 'tyru/open-browser.vim', { 'on': ['OpenBrowser', '<Plug>(openbrowser-', 'Op
 " Disabled+ {{{1
 " ------------------------------------------------------------------------------
 " Plug 'nathom/filetype.nvim'                             " Increase filetype loading speed "Disabled for nvim 0.9
+" Plug 'romgrk/nvim-treesitter-context'                   "Disabled for nvim 0.9
 " WIP {{{1
 " ------------------------------------------------------------------------------
 
