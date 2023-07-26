@@ -36,8 +36,8 @@ __fzf_config() {
     --bind 'up:previous-history'
     --bind 'down:next-history'
 
-    --bind 'ctrl-\\:change-preview-window(right,70%|down,40%,border-top|hidden|)'
-    --bind '?:change-preview-window(right,70%|down,40%,border-top|hidden|)'
+    --bind 'ctrl-\\:change-preview-window(right,75%|down,50%,border-top|down,84%,border-top|hidden|)'
+    --bind '?:change-preview-window(right,75%|down,50%,border-top|down,84%,border-top|hidden|)'
     "
     # Notes: In tmux with vim, ctrl-kjhl is used....
     # Need to find other better keyding

@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# This is a pipe safe bash script template
+
+process() {
+  echo "Process: $*"
+}
+
+
+while (( "$#" )); do
+  process "$1"
+  shift
+done
+
+# Check and process standin data
+# [ ! -t 0 ] && echo "stdin has data" || echo "stdin is empty"
+[ ! -t 0 ] && while read -r data
+do
+  process "$data"
+done;
+

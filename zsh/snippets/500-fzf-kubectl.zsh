@@ -4,6 +4,7 @@ unalias kgpn 2>/dev/null || true
 unalias kgns 2>/dev/null || true
 unalias kgp 2>/dev/null || true
 unalias kgsec 2>/dev/null || true
+unalias kgpw 2>/dev/null || true
 
 FZF_KUBECTL_DEFAULT_OPTS=" --exit-0 --info=inline --layout=reverse"
 
@@ -170,8 +171,22 @@ kdii() { #{{{2
 #   kgdi | ksd0
 #   kgdi | xargs -n 1 kubectl scale deployment $@ --replicas=0
 {
+
+  # kgdi | map ksdr
+  ksdr() {
+    echo "Restart deployment $@"
+    kubectl scale deployment $@ --replicas=0
+    kubectl scale deployment $@ --replicas=1
+  }
+
+  ksssr() {
+    echo "Restart statefull set $@"
+    kubectl scale statefulset $@ --replicas=0
+    kubectl scale statefulset $@ --replicas=1
+  }
+
   ksd0() {
-    # Support pipe
+    # only Support pipe
     while read data;
     do;
       kubectl scale deployment $data --replicas=0
@@ -179,7 +194,7 @@ kdii() { #{{{2
   }
 
   ksd1() {
-    # Support pipe
+    # only Support pipe
     while read data;
     do;
       kubectl scale deployment $data --replicas=1
@@ -244,6 +259,13 @@ kdii() { #{{{2
 
 
   alias kexecit='kubectl exec -it'
-  # alias kgp='kgp_cached'
+  alias kge='kubectl get events'
+  alias kgew='kubectl get events --watch'
+  alias kgp='kgp_cached'
+  alias kgpr='/usr/local/bin/kubectl get pods'
+  alias kgpw='/usr/local/bin/kubectl get pods --watch'
+  alias ke='kubectl edit'
+  alias ked='kubectl edit deployment'
+  alias kec='kubectl edit configmap'
 
 }

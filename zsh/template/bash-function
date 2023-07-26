@@ -1,0 +1,33 @@
+#!/bin/bash
+
+pipefn() {
+  # Restart deployment
+  while read -r data;
+  do
+    echo "Data from Pipe $data"
+  done;
+}
+
+parameterfn() {
+  for value in "$@"
+  do
+    echo "Parameter $value"
+  done
+}
+
+powerfn(){
+  __powerfnImpl(){
+    echo "Processing $*"
+  }
+
+  [ ! -t 0 ] && while read -r data;
+  do
+    __powerfnImpl "$data"
+  done;
+
+  for data in "$@"
+  do
+    __powerfnImpl "$data"
+  done
+
+}

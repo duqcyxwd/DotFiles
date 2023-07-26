@@ -41,7 +41,7 @@ mlog "$(date) : zshrc start loading"
   export PATH="$HOME/my_script:$PATH"
   export PATH="$HOME/my_script/zsh:$PATH"
   export PATH="$HOME/.cargo/bin:$PATH"
-  export PATH="$HOME/.rd/bin:$PATH"
+  # export PATH="$HOME/.rd/bin:$PATH"
   export PATH="/usr/local/heroku/bin:$PATH"
   export PATH="/usr/local/opt/ruby/bin:$PATH"
 
@@ -206,6 +206,7 @@ zinit_load() {
     # Don't use kubectl-fzf, it will disable auto complte
     # bonnefoa/kubectl-fzf \
     zinit wait="$ZINIT_PLUGIN_DELAY" lucid silent light-mode for \
+      Tarrasch/zsh-functional \
       agkozak/zsh-z \
       djui/alias-tips \
       wfxr/forgit \
@@ -225,6 +226,10 @@ zinit_load() {
 
   zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'source ~/.zshrc-local.sh; zicompinit; zicdreplay;' silent;
   zinit light zpm-zsh/empty
+
+  # Plugin to WIP
+  zinit light 'okapia/zsh-viexchange'
+  zstyle 'zle:exchange' highlight 'fg=26,bg=195'
 
   # zinit self-update updates zinit
 }

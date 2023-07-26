@@ -311,11 +311,10 @@
 {
   fzf_git_review_preview() { fzf --header-lines=1 "$@" | awk '{print $1}' }
 
-  grvw() { git review $@ }
+  # grvw() { git review $@ }
   # grvl() { runcached --bg-update --ignore-env --ttl 1800  git review -l --color=always $@ }
   grvl() { RUNCACHED_IGNORE_PWD=0 runcached --bg-update --ttl 1800  git review -l --color=always $@ }
   grvli() { grvl $@ | fzf_git_review_preview | xargs git review -d }
-  # TODO RUNCACHED_IGNORE_PWD is not working
 }
 
 # 1}}}
@@ -331,6 +330,11 @@
 
   git_folders_pull() {
     __git_folders | fzf | xargs -I% git_pull_at_directory %
+  }
+
+  git_folders_clean() {
+    # TODO WIP
+    __git_folders | fzf | xargs -I% git clean -d -f -x %
   }
 }
 # 1}}}

@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# https://stackoverflow.com/questions/19408649/pipe-input-into-a-script
+# Support pipeline
+# Using cat is faster then writing a zsh function
+
+# cat | tee >(grep -v "^{") | grep "^{" | jq -r '.timestamp + " [" + .severity + "] " + .service_id + ": " + .message'
+
+
+{
+  TEMPFILE=$(mktemp)
+
+  # cat | tee >(grep "^{" | jq -r '.timestamp + " [" + .severity + "] " + .service_id + ": " + .message') | grep -v "^{" > "$TEMPFILE"
+  # cat "$TEMPFILE"
+
+
+  cat | tee >(grep -v "^{" > "$TEMPFILE") | grep "^{" | jq -rc '
+def colors:
+ {
+ "black": "\u001b[30m",
+ "red": "\u001b[31m",
+ "green": "\u001b[32m",
+ "yellow": "\u001b[33m",
+ "blue": "\u001b[34m",
+ "magenta": "\u001b[35m",
+ "cyan": "\u001b[36m",
+ "white": "\u001b[37m",
+ "reset": "\u001b[0m",
+};
+colors.white + .timestamp + colors.yellow + " [" + .severity + "] " + .service_id + ": " + colors.green + .message'
+
+  echo ""
+  echo -e '\033[0;36m'
+  echo "---------"
+  cat "$TEMPFILE"
+
+  rm "$TEMPFILE"
+}
+
+
+# while read -r data;
+# do
+#   echo "$data" | tee >(grep -v "^{") | grep "^{" | jq -r '.timestamp + " [" + .severity + "] " + .service_id + ": " + .message'
+# done;
+
+

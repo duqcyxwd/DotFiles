@@ -96,7 +96,6 @@ function fh() { # {{{1
 # }}}
 
 
-alias history_count="cat $ZDOTDIR/.zsh_history| wc -l"
 dis_zsh_history() { local HISTSIZE=0; }
 # fc -p "$HISTFILE" This will chagne history file
 
