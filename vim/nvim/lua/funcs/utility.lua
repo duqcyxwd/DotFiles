@@ -1,3 +1,15 @@
+local vim = vim
+local api = vim.api
+
+function nvim_print(...)
+  if select("#", ...) == 1 then
+    api.nvim_out_write(vim.inspect((...)))
+  else
+    api.nvim_out_write(vim.inspect {...})
+  end
+  api.nvim_out_write("\n")
+end
+
 function _G.ReloadConfig() -- ReloadConfig {{{1
   local hls_status = vim.v.hlsearch
   for name, _ in pairs(package.loaded) do
@@ -15,14 +27,15 @@ end
 -- vim.api.nvim_set_keymap('n', '<space>vs', '<Cmd>lua ReloadConfig()<CR>', { silent = true, noremap = true })
 vim.cmd("command! ReloadConfig lua ReloadConfig()")
 
-function merge(t1, t2)
+-- Merge maps
+function MERGE(t1, t2)
   if type(t2) ~= "table" then
     return t1
   end
   for k, v in pairs(t2) do
     if type(v) == "table" then
       if type(t1[k] or false) == "table" then
-        merge(t1[k] or {}, t2[k] or {})
+        MERGE(t1[k] or {}, t2[k] or {})
       else
         t1[k] = v
       end
@@ -35,7 +48,7 @@ end
 
 -- nvim_print(merge({ a = 10, b = 20 }, { b = 10 }))
 
-function remove_dups(table)
+function REMOVE_DUPS(table)
   local hash = {}
   local res = {}
 
@@ -50,21 +63,23 @@ function remove_dups(table)
 end
 
 -- local test = {1,2,4,2,3,4,2,3,4,"A", "B", "A"}
--- nvim_print(remove_dups(test))
+-- nvim_print(REMOVE_DUPS(test))
 
-function join(t1, t2)
-  local res = {}
-  table.foreach(t1, function(_, v)
-    table.insert(res, v)
-  end)
-  table.foreach(t2, function(_, v)
-    table.insert(res, v)
-  end)
-  return res
+function JOIN(...)
+  local resultTable = {}
+
+  -- Loop through each argument (table) in the list
+  for _, tableToJoin in ipairs({ ... }) do
+    -- Loop through the elements in the current table and add them to the result table
+    for _, value in ipairs(tableToJoin) do
+      table.insert(resultTable, value)
+    end
+  end
+
+  return resultTable
 end
 
 -- nvim_print(join({ 1, 2, 3 }, { 4, 5, 6 }))
-
 
 function GetKeys(maps)
   -- get keys from a impar map
@@ -74,6 +89,15 @@ function GetKeys(maps)
     table.insert(res, c)
   end
   return res
+end
+
+function IS_IN(s, list)
+  for _, v in ipairs(list) do
+    if string.match(s, v) then
+      return true
+    end
+  end
+  return false
 end
 
 local tuple_obj = { --{{{2

@@ -18,7 +18,7 @@
 """ This file contains default spacemacs settings and key bindings
 " Settings
 set which-key
-set timeoutlen=800
+set timeoutlen=3000
 
 source ~/github/intelli-space/spacemacs/settings.vim
 
@@ -144,8 +144,6 @@ syntax enable
 set undolevels=100
 set mps+=<:>
 set autoread            " Automatically reload changes if detected
-set timeoutlen=1000     " Time to wait for a command (after leader for example).
-set notimeout
 
 " ---------------
 " UI
@@ -282,21 +280,24 @@ noremap <leader>tt  :action PinActiveTab<CR>
 "
 " Plugins {{{2
 " =================================================================
-Plug 'preservim/nerdtree'
-Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
-Plug 'tommcdo/vim-exchange'
 Plug 'machakann/vim-highlightedyank'
+
 set textobj-indent
 set quickscope
-" Plug 'michaeljsmith/vim-indent-object'
+set surround
+set argtextobj                " Add text object for function arguments: aa (around argument), ia (inside argument)
+set textobj-entire            " Add text object for entire buffer: ae (around buffer), ie (inside buffer)
+set easymotion                " Vim easy motion
+set exchange                  " cxc, cxx
+
+" Not working
+set matchit                   " % [% ]% a% g%
 
 
 Plug 'easymotion/vim-easymotion'
 " map <leader>F <Plug>(easymotion-s)
 
-" TODO FIX THIS
-" Emulates vim-multiple-cursors. Commands: <A-n>, <A-x>, <A-p>, g<A-n>
 set multiple-cursors
 " Plug 'terryma/vim-multiple-cursors'
 nmap <C-n> <A-n>
@@ -311,17 +312,14 @@ nmap <C-p> <A-p>
 xmap <C-p> <A-p>
 vmap <C-p> <A-p>
 
-  " e = {'Source current file!',              ':so %<CR>'},
-  " v = {'Source vimrc',                      ':so $XDG_CONFIG_HOME/nvim/init.vim<CR>'},
+
+set NERDTree                  " https://github.com/JetBrains/ideavim/wiki/NERDTree-support
+nnoremap <leader>th   :NERDTreeToggle<CR>
 
 
-" Add text object for function arguments: aa (around argument), ia (inside argument)
-" Plug 'vim-scripts/argtextobj.vim'
-set argtextobj
 
-" Add text object for entire buffer: ae (around buffer), ie (inside buffer)
-set textobj-entire
 
+" Other command
 nnoremap <leader>se    :action IdeaVim.ReloadVimRc.reload<CR>
 nnoremap <leader>sv    :action IdeaVim.ReloadVimRc.reload<CR>
 nnoremap <leader>fei   :e ~/.ideavimrc<CR>
@@ -335,8 +333,9 @@ nnoremap ]] :action MethodDown<CR>
 sethandler <c-x> a:vim
 
 " WIP
+" -------------------------------------------------------------------------------
 nnoremap <Leader>=  :action ReformatCode<CR>
-nnoremap <leader>o :action OptimizeImports<CR>
+nnoremap <leader>o  :action OptimizeImports<CR>
 
 nnoremap gb :action Back<CR>
 nnoremap gd :action GotoDeclaration<CR>

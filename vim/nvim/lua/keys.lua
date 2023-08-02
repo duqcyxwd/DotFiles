@@ -28,7 +28,7 @@ local space_key_vmap = {}
 -- Local Utility functions {{{1
 local function set_keymap(mode, opts, keymaps)
   for _, keymap in ipairs(keymaps) do
-    vim.api.nvim_set_keymap(mode, keymap[1], keymap[2], merge(opts, keymap[3]))
+    vim.api.nvim_set_keymap(mode, keymap[1], keymap[2], MERGE(opts, keymap[3]))
   end
 end
 
@@ -201,7 +201,7 @@ local impair_map_config = { --{{{2
   { "[h", ":lua require'gitsigns'.prev_hunk({ preview = true})<CR>" },
   { "]h", ":lua require'gitsigns'.next_hunk({ preview = true})<CR>" },
 
-  -- jump diagnostic
+  -- jump diagnostic, Lspsag is the replacement
   { "[g", "<Cmd>lua vim.diagnostic.goto_prev({float = true})<CR>" },
   { "]g", "<Cmd>lua vim.diagnostic.goto_next({float = true})<CR>" },
 
@@ -245,7 +245,7 @@ local default_impair_keys = { --{{{2
 local brackets_keymap= { name = "+bracket jumps" } --{{{2
 
 -- Add mapping to keymap
-local impar_keys  = remove_dups(join(default_impair_keys, GetKeys(impair_map_config)))
+local impar_keys  = REMOVE_DUPS(JOIN(default_impair_keys, GetKeys(impair_map_config)))
 for _, char in ipairs(impar_keys) do
   brackets_keymap[char] = {
     string.format("Set bracket jump (%s)", char),
@@ -511,16 +511,18 @@ space_key_nmap.l = { --{{{1
 space_key_nmap.o = { --{{{1
   name = "+Open",
 
-  t = { "Open buffer in new Tab",                  ":tabedit %<CR>" },
   T = { "Open buffer in new Tab and close window", ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:close<CR>:tabnext<CR>" },
   l = { "Open Link",                               "<Plug>(openbrowser-smart-search)"},
-  s = { "Open smart",                             "<Plug>(openbrowser-smart-search)"},
+  o = { "Open Open",                               "<Plug>(openbrowser-smart-search)"},
+  p = { "Open Plugin in Github",                   ":call OpenGithubPlugin()<CR>"},
+  s = { "Open smart",                              "<Plug>(openbrowser-smart-search)"},
+  t = { "Open buffer in new Tab",                  ":tabedit %<CR>" },
+
   g = {
     name = "Open Git",
     l = { "Open git link",                         ":GBrowse<CR>"},
     s = { "Search and open in Github ",            ":OpenBrowserSmartSearch -github <C-R><C-W><CR>"},
   },
-  p = { "Open Plugin in Github",                   ":call OpenGithubPlugin()<CR>"},
 
 }
 
@@ -529,6 +531,7 @@ space_key_vmap.o = { --{{{1
   name = "+Open",
 
   s = { 'Open search',                  '<Plug>(openbrowser-smart-search)'},
+  o = { 'Open Open',                    '<Plug>(openbrowser-smart-search)'},
   g = {
     name = "Open Git",
     l = { "Open git link",              ":GBrowse<CR>"},
@@ -731,7 +734,6 @@ space_key_nmap.w = { --{{{1
   c = { "Window close",                  ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
   C = { "Window close!",                 ":call undoquit#SaveWindowQuitHistory()<CR>:bdelete!<CR>" },
 
-  w = { "VimWiki Index Page",            ":e ~/vimwiki/index.md<CR>" },
   r = { "Window resize",                 ":WinResizerStartResize<CR>" },
   m = { "Maximum Current window",        ":ZoomToggle<CR>"},
 
@@ -748,7 +750,6 @@ space_key_nmap.z = { --{{{1
 
   g = {'Goyo',                       ':Goyo<CR>'},
   z = {'Zen mode (Similar to Goyo)', ':ZenMode<CR>'},
-  n = {'Zen mode (Similar to Goyo)', ':ZenMode<CR>'},
 
   l = {
     name = "light",
@@ -824,3 +825,20 @@ reformate_key_map(space_key_nmap_plan)
 -- wk.register(space_key_nmap_test, { prefix = "<Space>" })
 
 -- }}}1
+
+-- WIP
+local chatgpt = R("chatgpt")
+wk.register({
+    p = {
+        name = "ChatGPT",
+        e = {
+            function()
+                chatgpt.edit_with_instructions()
+            end,
+            "Edit with instructions",
+        },
+    },
+}, {
+    prefix = "<Space>",
+    mode = "v",
+})
