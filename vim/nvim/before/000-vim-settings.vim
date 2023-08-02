@@ -26,7 +26,8 @@ set ignorecase                  " Ignore case when searching
 set incsearch                   " Makes search act like search in modern browsers
 set langmenu=en
 set laststatus=2                " Always show the status line
-set lazyredraw                  " Don't redraw while executing macros (good performance config)
+" set lazyredraw                  " Don't redraw while executing macros (good performance config)
+set nolazyredraw                " Disable lazyredraw for Lazy
 set matchtime=2                 " How many tenths of a second to blink when matching brackets
 set mouse=a
 set noautochdir                 " Dont' change dir so we can use project search
@@ -83,7 +84,7 @@ set diffopt=internal,filler,vertical
 
 " Invisible char https://stackoverflow.com/a/29787362
 set listchars=eol:¬,tab:>·,trail:~,extends:>,precedes:<,space:␣
-set nolist
+set nolist " Disable invisible chars by default
 
 " Update my session setting
 " Don't reuse options, empty buffers
