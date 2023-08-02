@@ -26,7 +26,6 @@ set ignorecase                  " Ignore case when searching
 set incsearch                   " Makes search act like search in modern browsers
 set langmenu=en
 set laststatus=2                " Always show the status line
-" set lazyredraw                  " Don't redraw while executing macros (good performance config)
 set nolazyredraw                " Disable lazyredraw for Lazy
 set matchtime=2                 " How many tenths of a second to blink when matching brackets
 set mouse=a

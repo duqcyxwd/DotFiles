@@ -114,29 +114,14 @@ return {
     dependencies = {
       "nvim-treesitter/nvim-treesitter-context",
       "nvim-treesitter/playground",
-      { dir = "~/duqcyxwd/nvim-treesitter-textobjects" }, -- | Testing my textobjects for comments
+      "nvim-treesitter/nvim-treesitter-textobjects", --         | Regular text objects
+      -- { dir = "~/duqcyxwd/nvim-treesitter-textobjects" }, -- | Testing my textobjects for comments
       -- "nvim-treesitter/nvim-treesitter-refactor"
-      -- 'theHamsta/nvim-treesitter-pairs',                  | Create your own pair objects using tree-sitter queries!
+      -- 'theHamsta/nvim-treesitter-pairs',                     | Create your own pair objects using tree-sitter queries!
     },
     config = function()
       require("nvim-treesitter.configs").setup({
-        ensure_installed = {
-          "lua",
-          "python",
-          "rust",
-          "vim",
-          "vimdoc",
-          "bash",
-          "dockerfile",
-          "json",
-          "latex",
-          "yaml",
-          "html",
-          "c",
-          "cpp",
-          "markdown",
-          "markdown_inline",
-        },
+        ensure_installed = { "c", "lua", "rust" },
         -- Automatically install missing parsers when entering buffer
         -- Recommendation: set to false if you don't have `tree-sitter` CLI installed locally
         auto_install = false,
@@ -152,15 +137,7 @@ return {
           disable = { "json" },
           additional_vim_regex_highlighting = { "python" },
         },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = "gnn",
-            node_incremental = "grn",
-            scope_incremental = "grc",
-            node_decremental = "grm",
-          },
-        },
+        incremental_selection = { enable = true },
         playground = playground,
         pairs = pairs,
         textobjects = textobjects,

@@ -50,14 +50,11 @@ local gitsigns = {
 }
 
 return {
-  ----------------------------------------------------- |
-  "jreybert/vimagit",              --                   | ViMagit to stage changes
+  "jreybert/vimagit",              -- | ViMagit to stage changes
   { "lambdalisue/gina.vim", cmd = "Gina" },
-  "tpope/vim-fugitive",            --                   | Raw git command, Gblame
-  "shumphrey/fugitive-gitlab.vim", --                   | Open private git repo link
-  "tpope/vim-rhubarb",             --                   | Open github link
-  gitsigns,       --                                    | git decorations, git hunk, show diff
-  -- "nvim-lua/plenary.nvim",         --                   | Required by gitsigns
-  "junegunn/gv.vim",               --                   | A git better commit browser.
-  "itchyny/vim-gitbranch",         --                   | WIP Add branch for auto save session name
+  "tpope/vim-fugitive",            -- | Raw git command, Gblame
+  "shumphrey/fugitive-gitlab.vim", -- | Open private git repo link
+  "tpope/vim-rhubarb",             -- | Open github link
+  gitsigns,                        -- | git decorations, git hunk, show diff
+  "junegunn/gv.vim",               -- | A git better commit browser.
 }

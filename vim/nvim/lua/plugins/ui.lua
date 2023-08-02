@@ -24,7 +24,7 @@ return {
           disabled_filetypes = {},
           always_divide_middle = true,
 
-          show_bufnr = true, -- this appends [bufnr] to buffer section,
+          show_bufnr = true,    -- this appends [bufnr] to buffer section,
           modified_icon = "+ ", -- change the default modified icon
         },
         sections = {
@@ -294,24 +294,15 @@ return {
     end,
   },
 
-
   -- icons
   { "nvim-tree/nvim-web-devicons", lazy = true },
 
   -- ui components
-  { "MunifTanjim/nui.nvim", lazy = true },
-
-  -- Theme
-  "mhartington/oceanic-next",
-  "ayu-theme/ayu-vim",
-  "sonph/onehalf", -- {'rtp': 'vim/' }
-  "cormacrelf/vim-colors-github",
-  "EdenEast/nightfox.nvim",
-  { "dracula/vim", name = "dracula" }, --   { 'as': 'dracula' }
+  { "MunifTanjim/nui.nvim",        lazy = true },
 
   -- Zen
-  { "junegunn/limelight.vim", cmd = "Limelight" },
-  { "junegunn/goyo.vim", cmd = "Goyo" },
+  { "junegunn/limelight.vim",      cmd = "Limelight" },
+  { "junegunn/goyo.vim",           cmd = "Goyo" },
   { -- "folke/twilight.nvim",
     "folke/twilight.nvim",
     -- Dims inactive portions build on tree sitter
@@ -324,8 +315,8 @@ return {
           color = { "Normal", "#ffffff" },
           inactive = false, -- when true, other windows will be fully dimmed (unless they contain the same buffer)
         },
-        context = 10, -- amount of lines we will try to show around the current line
-        sitter = true, -- use treesitter when available for the filetype
+        context = 10,       -- amount of lines we will try to show around the current line
+        sitter = true,      -- use treesitter when available for the filetype
         -- treesitter is used to automatically expand the visible text,
         -- but you can further control the types of nodes that should always be fully expanded
         expand = { -- for treesitter, we we always try to expand to the top-most ancestor with these types
@@ -350,7 +341,7 @@ return {
           -- * a percentage of the width / height of the editor when <= 1
           -- * a function that returns the width or the height
           width = 120, -- width of the Zen window
-          height = 1, -- height of the Zen window
+          height = 1,  -- height of the Zen window
           -- by default, no options are changed for the Zen window
           -- uncomment any of the options below, or add other vim.wo options you want to apply
           options = {
@@ -368,12 +359,12 @@ return {
           -- comment the lines to not apply the options
           options = {
             enabled = true,
-            ruler = false, -- disables the ruler text in the cmd line area
-            showcmd = false, -- disables the command in the last line of the screen
+            ruler = false,                -- disables the ruler text in the cmd line area
+            showcmd = false,              -- disables the command in the last line of the screen
           },
-          twilight = { enabled = true }, -- enable to start Twilight when zen mode opens
+          twilight = { enabled = true },  -- enable to start Twilight when zen mode opens
           gitsigns = { enabled = false }, -- disables git signs
-          tmux = { enabled = false }, -- disables the tmux statusline
+          tmux = { enabled = false },     -- disables the tmux statusline
           -- this will change the font size on kitty when in zen mode
           -- to make this work, you need to set the following kitty options:
           -- - allow_remote_control socket-only
@@ -390,4 +381,112 @@ return {
       })
     end,
   },
+
+                                    -- | Home page and Session
+  { -- "goolord/alpha-nvim",
+    "goolord/alpha-nvim",
+    event = "VimEnter",
+    dependencies = { 'nvim-tree/nvim-web-devicons' },
+    opts = function()
+      local dashboard = require("alpha.themes.dashboard")
+      local logo = [[
+       **********************************************************************
+       *       ___          ___          ___          ___          ___      *
+       *      /\  \        /\  \        /\  \        /\__\        /|  |     *
+       *      \:\  \       \:\  \      /::\  \      /:/  /       |:|  |     *
+       *       \:\  \       \:\  \    /:/\:\  \    /:/  /        |:|  |     *
+       *   ___ /::\  \  ___ /::\  \  /:/ /::\  \  /:/  /  ___  __|:|  |     *
+       *  /\  /:/\:\__\/\  /:/\:\__\/:/_/:/\:\__\/:/__/  /\__\/\ |:|__|____ *
+       *  \:\/:/  \/__/\:\/:/  \/__/\:\/:/  \/__/\:\  \ /:/  /\:\/:::::/__/ *
+       *   \::/__/      \::/__/      \::/__/      \:\  /:/  /  \::/~~/~     *
+       *    \:\  \       \:\  \       \:\  \       \:\/:/  /    \:\~~\      *
+       *     \:\__\       \:\__\       \:\__\       \::/  /      \:\__\     *
+       *      \/__/        \/__/        \/__/        \/__/        \/__/     *
+       * Happy Hacking. Chuan's new vim                                     *
+       **********************************************************************
+      ]]
+
+      dashboard.section.header.val = vim.split(logo, "\n")
+      dashboard.section.buttons.val = {
+        dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
+        dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
+        dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
+        dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
+        dashboard.button("s", " " .. " Restore Session", [[:SessionRestore<cr>]]),
+        dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
+        dashboard.button("q", " " .. " Quit", ":qa<CR>"),
+      }
+      for _, button in ipairs(dashboard.section.buttons.val) do
+        button.opts.hl = "AlphaButtons"
+        button.opts.hl_shortcut = "AlphaShortcut"
+      end
+      dashboard.section.header.opts.hl = "AlphaHeader"
+      dashboard.section.buttons.opts.hl = "AlphaButtons"
+      dashboard.section.footer.opts.hl = "AlphaFooter"
+      dashboard.opts.layout[1].val = 8
+      return dashboard
+    end,
+    config = function(_, dashboard)
+      -- close Lazy and re-open when the dashboard is ready
+      if vim.o.filetype == "lazy" then
+        vim.cmd.close()
+        vim.api.nvim_create_autocmd("User", {
+          pattern = "AlphaReady",
+          callback = function()
+            require("lazy").show()
+          end,
+        })
+      end
+
+      require("alpha").setup(dashboard.opts)
+
+      vim.api.nvim_create_autocmd("User", {
+        pattern = "LazyVimStarted",
+        callback = function()
+          local stats = require("lazy").stats()
+          local ms = (math.floor(stats.startuptime * 100 + 0.5) / 100)
+          dashboard.section.footer.val = "⚡ Neovim loaded " .. stats.count .. " plugins in " .. ms .. "ms"
+          pcall(vim.cmd.AlphaRedraw)
+        end,
+      })
+    end,
+  },
+  { -- 'rmagatti/auto-session',
+    "rmagatti/auto-session",
+    dependencies = { "rmagatti/session-lens", "nvim-telescope/telescope.nvim" },
+    config = function()
+      require("auto-session").setup {
+        log_level = "error",
+        auto_restore_enabled = false,
+        auto_save_enabled = true,
+        auto_session_enable_last_session = true,
+        auto_session_create_enabled	= true,
+        auto_session_root_dir = vim.fn.stdpath("state") .. "/sessions/",
+        auto_session_suppress_dirs = { "~/", "~/Downloads", "/" },
+        -- auto_session_allowed_dirs = { "~/gerrit", "~/github", "~/duqcyxwd" },
+        auto_session_use_git_branch = false,
+      }
+    end
+  },
+  { -- "rmagatti/session-lens"
+    "rmagatti/session-lens",
+    dependencies = { "nvim-telescope/telescope.nvim" },
+    config = true,
+  },
+  { -- "folke/persistence.nvim", | persistence session
+    "folke/persistence.nvim",
+    disable = true,
+    event = "BufReadPre",
+    opts = {
+      dir = vim.fn.stdpath("state") .. "/sessions/",
+      options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" } 
+    },
+    config = true,
+    -- stylua: ignore
+    -- keys = {
+    --   { "<leader>qs", function() require("persistence").load() end,                desc = "Restore Session" },
+    --   { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
+    --   { "<leader>qd", function() require("persistence").stop() end,                desc = "Don't Save Current Session" },
+    -- },
+  }
 }

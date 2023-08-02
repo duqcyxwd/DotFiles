@@ -17,26 +17,10 @@ augroup END
 " Dark {{{1
 function! s:DarkMode() abort
   let g:colorscheme_mode = 'dark'
-
-  " let g:airline_theme='onehalfdark'
-  " let g:lightline.colorscheme = 'onehalfdark'
-  " colorscheme onehalfdark
-
-  " let ayucolor="mirage" " for mirage version of theme
-  " let ayucolor="dark"   " for dark version of theme
-  " colorscheme ayu
-
-  " let g:oceanic_bold = 0
-  " colorscheme OceanicNext
-  " let g:airline_theme='oceanicnext'
-
   " Hack: Call colorschem twice to get correct corlor
   colorscheme dracula
   colorscheme dracula
 
-  " Visual Selection highlight
-  " highlight Visual  guifg=White
-  " highlight Visual  guibg=Grey50
   let g:airline_theme='dracula'
 
 endfunction
@@ -96,11 +80,11 @@ command! MultiThemeDark        call s:MultiThemesDark()
 "--------------------------------------------------------------------------------
 " Start in dark mode
 let g:colorscheme_mode = 'dark'
-call s:DarkMode()
-call s:MultiThemesDark()
+" call s:DarkMode()
+" call s:MultiThemesDark()
 
 
-set termguicolors
+" set termguicolors
 
 
 " Color setting for better white space
@@ -110,5 +94,3 @@ set termguicolors
 " let g:better_whitespace_guicolor='#6272a4'
 highlight ExtraWhitespace ctermbg=LightYellow guibg=#6272a4
 
-syntax enable               " Enable syntax highlighting
-syntax on                   " syntax for a lot of stuff

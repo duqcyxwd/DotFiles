@@ -1,6 +1,8 @@
 require("funcs.utility")
 require("nvim_utils")
 local brj = require("funcs.bracket_jump")
+local color = require("config.color")
+local M ={}
 
 vim.g.mapleader = "\\"
 vim.g.maplocalleader = ","
@@ -119,8 +121,8 @@ set_keymap("n", { noremap = true, silent = true }, {
   { 'gV',      '<Plug>(VM-Reselect-Last)', { noremap = false}},
 
 
-  -- source config
-  { "<C-s>", ':lua R("funcs.config").source()<CR>' },
+  -- -- source config
+  -- { "<C-s>", ':lua R("funcs.config").source()<CR>' },
 
   -- Resize split
   { "<S-Up>", ":resize +2<CR>" },
@@ -166,7 +168,9 @@ set_keymap("v", { noremap = true, silent = true }, {
   {"K",         ":move '<-2<CR>gv-gv"},
   {"<C-Space>", ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>"},
   {"-",         ":lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>"},
+  {"v",         ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>"},
 })
+
 -- }}}1
 
 -- Buffer/Tab Switch {{{1
@@ -278,8 +282,7 @@ space_key_nmap.b = { --{{{1
   b = {'List all buffers',                   ':FFBuffers<CR>'},
   d = {'Delete this buffer',                 ':call undoquit#SaveWindowQuitHistory()<CR>:Bclose<CR>'},
   D = {'Delete this buffer!',                ':bp<bar>sp<bar>bn<bar>bd!<CR>'},
-  H = {'Startify Home',                      ':Startify<CR>'},
-  h = {'Startify Home',                      ':call SaveCurrentSessions()<CR>:SClose<CR>'},
+  h = {'Nvim Home',                          ':Alpha<CR>'},
   j = {'Buffer line jump',                   ':BufferLinePick<CR>' },
   n = {'Next buffer',                        ':bnext<CR>'},
   o = {'Buffer only',                        ':Bdelete other<CR>'},
@@ -546,6 +549,7 @@ space_key_nmap.p = { --{{{1
 
   f = {'Project files',                   ':FFFiles<CR>'},
   e = {'Project files',                   ':FzfLua files<CR>'},
+  l = {'Project List',                    ':SearchSession<CR>'},
   i = {'Plug Install',                    ':PlugInstall<CR>'},
   u = {'Plug Update',                     ':PlugUpdate<CR>'},
   C = {'Plug Clean',                      ':PlugClean<CR>'},
@@ -615,7 +619,7 @@ space_key_nmap.s = { --{{{1
 
   e = {'Source current file!',              ':so %<CR>'},
   v = {'Source vimrc',                      ':so $XDG_CONFIG_HOME/nvim/init.vim<CR>'},
-  l = {'Source lua file',                   ':lua R_FOLD("plugins")<CR>'},
+  l = {'Source lua file',                   ':luafile %<CR>'},
 
 }
 
@@ -654,7 +658,7 @@ space_key_nmap.t = { --{{{1
     name = 'auto+',
     s  = {'Toggle Strip Whitespace On Save',       ':ToggleStripWhitespaceOnSave<CR>:echo "ToggleStripWhitespaceOnSave"<CR>'},
   },
-  m  = {'Color: Dark/Light Mode',                ':ToggleColorschemeMode<CR>'},
+  m  = {'Color: Dark/Light Mode',                ":lua require'config.color'.toggle()<CR>"},
   M  = {'Color: FZF Schema',                     ':FzfLua colorschemes<CR>'},
   S  = {'Toggle Trailling whitespace indicator', ':ToggleWhitespace<CR>'},
   w  = {'Toggle 80 text width',                  ':call ToggleTextWidthWithColor()<CR>'},
@@ -670,7 +674,7 @@ space_key_nmap.t = { --{{{1
 
   o = {
     name = 'Options+',
-    v  = {'Toggle vertical indent line',           ':IndentLinesToggle<CR>'},
+    v  = {'Toggle vertical indent line',           ':IndentBlanklineToggle<CR>'},
   },
 
   f = {
@@ -716,11 +720,12 @@ space_key_nmap.T = { --{{{1
   o  = {'Tab Only',                    ':tabonly<CR>'},
 
 }
-space_key_vmap.v = { --{{{1
-  v = {  "Visual", ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>" },
+space_key_nmap.u = { --{{{1
+  name = "+UI",
+  d = { "Dismiss all Notifications", ":lua require('notify').dismiss({ silent = true, pending = true })<CR>" },
+  n = { "Viewing History",           ":lua require('telescope').extensions.notify.notify()<CR>" },
+  u = { "Undo tree",                 ":UndotreeToggle<CR>"},
 }
-
-vim.cmd("vnoremap v :lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>")
 
 -- stylua: ignore
 space_key_nmap.w = { --{{{1
@@ -842,3 +847,8 @@ wk.register({
     prefix = "<Space>",
     mode = "v",
 })
+
+M.space_key_nmap = space_key_nmap
+M.space_key_vmap = space_key_vmap
+
+return M;

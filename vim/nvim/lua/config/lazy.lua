@@ -5,42 +5,19 @@ require("funcs.utility")
 -- Setup Lazy
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
-  vim.fn.system({
-    "git",
-    "clone",
-    "--filter=blob:none",
-    "https://github.com/folke/lazy.nvim.git",
-    "--branch=stable", -- latest stable release
-    lazypath,
-  })
+  vim.fn.system({ "git", "clone", "--filter=blob:none", "https://github.com/folke/lazy.nvim.git", "--branch=stable", lazypath, })
 end
 vim.opt.rtp:prepend(lazypath)
 
-
--- local default = {}
--- local autoload = LAZY_AUTO("plugins")
--- local plugins = JOIN(default, autoload)
-
--- -- Manually load plugins
--- require("lazy").setup(plugins, {
---   default = {
---     lazy = true,
---   },
--- })
 
 vim.g.mapleader = "\\" -- Make sure to set `mapleader` before lazy so your mappings are correct
 
 -- Using LazyVim to load plugsin
 require("lazy").setup({
   spec = {
-    -- add LazyVim and import its plugins
-    -- { "LazyVim/LazyVim", import = "lazyvim.plugins" },
-    -- import any extras modules here
-    -- { import = "lazyvim.plugins.extras.lang.typescript" },
-    -- { import = "lazyvim.plugins.extras.lang.json" },
-    -- { import = "lazyvim.plugins.extras.ui.mini-animate" },
-    -- import/override with your plugins
+    -- I don't want default setting
     { import = "plugins" },
+    { import = "plugins/extra" },
   },
   defaults = {
     -- By default, only LazyVim plugins will be lazy-loaded. Your custom plugins will load during startup.
@@ -51,7 +28,7 @@ require("lazy").setup({
     version = false, -- always use the latest git commit
     -- version = "*", -- try installing the latest stable version for plugins that support semver
   },
-  install = { colorscheme = { "dracula", "habamax" } },
+  install = { missing = true, colorscheme = {} },
   checker = { enabled = false }, -- automatically check for plugin updates
   performance = {
     rtp = {

@@ -242,6 +242,17 @@ Plug 'tommcdo/vim-exchange'                          " Exchange lines, cx/X/cxx/
 " Useage: ColorHighlight
 Plug 'chrisbra/Colorizer'                                 " View log file :ColorToggle  TEST: r! exa --color=always --icons -l,
 
+" Chart GPT
+"
+"
+Plug 'jackMort/ChatGPT.nvim'
+Plug 'MunifTanjim/nui.nvim',
+Plug 'nvim-lua/plenary.nvim',
+Plug 'nvim-telescope/telescope.nvim'
+
+" Plug 'thmsmlr/gpt.nvim'
+" Plug 'nvim-telescope/telescope.nvim'
+
 " Plug 'j-hui/fidget.nvim'                      " Show lsp progress, NOT WORKING
 
 " }}}1
@@ -251,10 +262,9 @@ Plug 'chrisbra/Colorizer'                                 " View log file :Color
 " editor enhancements {{{1
 " ------------------------------------------------------------------------------
 
+ " WIP
 Plug 'benmills/vimux'
 
 "}}}1
+"
 call plug#end()
-
-" Cleanup
-" UpdateRemotePlugins
