@@ -1,0 +1,38 @@
+#!/bin/bash
+# ------------------------------------------------------------------
+# [Yongqinchuan] Bash script template
+#                Description
+# ------------------------------------------------------------------
+set -Eeuo pipefail
+trap cleanup SIGINT SIGTERM ERR EXIT
+
+# Section: Utility FUNCTIONS {{{1
+# --------------------------------------------------------------------------
+
+if [[ -t 2 ]] && [[ -z "${NO_COLOR-}" ]] && [[ "${TERM-}" != "dumb" ]]; then
+  NOFORMAT='\033[0m' RED='\033[0;31m' GREEN='\033[0;32m' ORANGE='\033[0;33m' BLUE='\033[0;34m' PURPLE='\033[0;35m' CYAN='\033[0;36m' YELLOW='\033[1;33m'
+  BOLD='\033[1m' DIM='\033[2m' ITALIC='\033[3m' UNDERLINED='\033[4m' BLINKING='\033[5m' REVERSE='\033[7m' INVISIBLE='\033[8m' CROSSLINE='\033[9m'
+else
+  NOFORMAT='' RED='' GREEN='' ORANGE='' BLUE='' PURPLE='' CYAN='' YELLOW=''
+  BOLD='' DIM='' ITALIC='' UNDERLINED='' BLINKING='' REVERSE='' INVISIBLE='' CROSSLINE=''
+fi
+
+function cleanup() { trap - SIGINT SIGTERM ERR EXIT; }
+function msg() { echo >&2 -e "${1-}${NOFORMAT}"; }
+function msgt() { echo >&2 -e "[$(date +"%H:%M:%S")]${1-}${NOFORMAT}"; }
+
+
+# Section: Main Script logic {{{1
+# --------------------------------------------------------------------------
+
+msg "${BOLD}Sample Format"
+msg ""
+msgt "${RED}${ITALIC} RED ITALIC"
+msgt "${GREEN}${UNDERLINED} GREEN UNDERLINED"
+msgt "${ORANGE}${BLINKING} ORANGE BLINKING"
+msgt "${BLUE}${REVERSE} BLUE REVERSE"
+msgt "${PURPLE}${CROSSLINE} PURPLE CROSSLINE"
+msgt "${CYAN} CYAN"
+msgt "${YELLOW} YELLOW"
+msgt "${NOFORMAT} NOFORMAT"
+

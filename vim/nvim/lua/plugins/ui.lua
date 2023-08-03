@@ -1,6 +1,72 @@
 require("funcs.global")
 
+local function nvim_tree_on_attach(bufnr)
+  local api = require("nvim-tree.api")
+
+  local function opts(desc)
+    return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+  end
+
+  -- default mappings
+  api.config.mappings.default_on_attach(bufnr)
+
+  -- custom mappings
+  vim.keymap.set("n", "<C-t>", api.tree.change_root_to_parent, opts("Up"))
+  vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
+end
+
 return {
+
+  -- " Sidebar
+  { "simrat39/symbols-outline.nvim", cmd = "SymbolsOutline", config = true },
+  { -- "kyazdani42/nvim-tree.lua"--                                     | A File Explorer For Neovim Written In Lua
+    "kyazdani42/nvim-tree.lua",
+    dependencies = {
+      "nvim-tree/nvim-web-devicons", --                                     | optional for icon support
+    },
+    cmd = "NvimTreeFindFileToggle",
+    opts = {
+      on_attach = nvim_tree_on_attach,
+      sort_by = "name",
+      diagnostics = {
+        enable = false,
+      },
+      update_focused_file = {
+        enable = true,
+        update_cwd = true,
+      },
+      renderer = {
+        highlight_git = true,
+        group_empty = true,
+        icons = {
+          padding = " ",
+          show = {
+            file = true,
+            folder = true,
+            folder_arrow = true,
+            git = true,
+          },
+          glyphs = {
+            git = {
+              unstaged = "",
+              staged = "",
+              unmerged = "",
+              renamed = "",
+              untracked = "",
+              deleted = "",
+              ignored = "",
+            },
+          },
+        },
+      },
+
+      filters = {
+        dotfiles = false,
+        custom = {},
+      },
+    },
+  },
+
 
   { -- "norcalli/nvim-colorizer.lua",     | Show color
     "norcalli/nvim-colorizer.lua",
@@ -382,7 +448,7 @@ return {
     end,
   },
 
-                                    -- | Home page and Session
+  -- Home page and Session
   { -- "goolord/alpha-nvim",
     "goolord/alpha-nvim",
     event = "VimEnter",
@@ -479,7 +545,7 @@ return {
     event = "BufReadPre",
     opts = {
       dir = vim.fn.stdpath("state") .. "/sessions/",
-      options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" } 
+      options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" }
     },
     config = true,
     -- stylua: ignore

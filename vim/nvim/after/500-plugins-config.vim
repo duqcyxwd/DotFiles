@@ -545,19 +545,6 @@ augroup autopairs_config
 augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => better-whitespace {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Handles all tailling whitespace problem
-" ToggleStripWhitespaceOnSave
-" StripWhitespace
-" StripWhitespaceOnChangedLines
-let g:better_whitespace_filetypes_blacklist = ['diff', 'gitcommit', 'unite', 'qf', 'help', 'ctrlsf']
-
-let g:better_whitespace_enabled=1
-let g:strip_whitespace_on_save=1
-let g:strip_whitespace_confirm=0
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => buffergator {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " horizontal bottom (full screen width)
