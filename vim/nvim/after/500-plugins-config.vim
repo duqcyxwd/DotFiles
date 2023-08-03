@@ -949,6 +949,9 @@ let g:findroot_search_parent = 0
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => fzf {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" '~/duqcyxwd/fzf.vim',
+"junegunn/fzf"
+" When loading with Lazy, this config needs to be add before plugins
 let g:fzf_command_prefix="FF"
 
 " Update so it will search hiddent file
@@ -962,9 +965,6 @@ command! -bang -nargs=* MyFzfAg
 
 
 command! -bang -nargs=? -complete=dir MyFzfFiles       call fzf#vim#queryfiles(<q-args>, fzf#vim#with_preview(), <bang>0)
-" command!      -bang -nargs=* LL                        call fzf#vim#lines(<q-args>, <bang>0),
-" command!      -bang -nargs=* Lines                     call fzf#vim#lines(<q-args>, <bang>0),
-" command!      -bang -nargs=* BLines                    call fzf#vim#buffer_lines(<q-args>, <bang>0),
 
 function! FloatingFZF() abort "{{{2
   let buf = nvim_create_buf(v:false, v:true)
@@ -1100,15 +1100,6 @@ let g:gitgutter_terminal_reports_focus=0
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => Indentline {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Plug 'Yggdroot/indentLine'
-
-let g:indentLine_char_list = ['|', '¦', '┆', '┊']
-let g:indentLine_leadingSpaceEnabled = 0
-let g:indentLine_enabled = 0
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 " => junegunn/limelight {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Plug 'junegunn/limelight.vim'

@@ -1,7 +1,3 @@
-" Lazy loader adapter to load orignal vim file
-set verbosefile=$XDG_CACHE_HOME/nvim/nvim.log
-set verbose=0
-
 " Loading vimscripts {{{1
 " ------------------------------------------------------------------------------
 function! s:LazyLoadPlugs(timer) abort  " {{{1

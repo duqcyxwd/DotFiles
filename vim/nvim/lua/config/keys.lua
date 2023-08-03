@@ -269,7 +269,7 @@ space_key_nmap.n = brackets_keymap
 -- }}}1
 
 -- Space Key mapping
--- Top {{{1
+-- TOP {{{1
 space_key_nmap['<space>'] = { 'FZF Command Search',         ':FFCommands<CR>'}
 space_key_nmap['<tab>']   = { 'last buffer',                ':e#<CR>'}
 space_key_nmap["\\"]      = { 'FZF Command History Search', ':FFHistory:<CR>'}

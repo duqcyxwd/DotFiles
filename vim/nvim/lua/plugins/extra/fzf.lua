@@ -1,7 +1,6 @@
 return {
   {
-    -- " Plug 'junegunn/fzf',                                                 | { 'dir': '~/.fzf', 'do': './install --all' } " fzf Download fzf repo and install from source code???
-    { dir = "/usr/local/opt/fzf" }, --                                        | Use the fzf installed by brew, Provide FZF command
+    { dir = "/usr/local/opt/fzf", lazy = true, cmd = "FZF" }, --| Use the fzf installed by brew, Provide FZF command
     {
         "junegunn/fzf.vim",
       -- dir = "~/duqcyxwd/fzf.vim",
