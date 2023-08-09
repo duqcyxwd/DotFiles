@@ -1,6 +1,8 @@
 local vim = vim
 local api = vim.api
 
+local M = {}
+
 function nvim_print(...)
   if select("#", ...) == 1 then
     api.nvim_out_write(vim.inspect((...)))
@@ -28,14 +30,14 @@ end
 vim.cmd("command! ReloadConfig lua ReloadConfig()")
 
 -- Merge maps
-function MERGE(t1, t2)
+function M.merge(t1, t2)
   if type(t2) ~= "table" then
     return t1
   end
   for k, v in pairs(t2) do
     if type(v) == "table" then
       if type(t1[k] or false) == "table" then
-        MERGE(t1[k] or {}, t2[k] or {})
+        M.merge(t1[k] or {}, t2[k] or {})
       else
         t1[k] = v
       end
@@ -48,7 +50,7 @@ end
 
 -- nvim_print(merge({ a = 10, b = 20 }, { b = 10 }))
 
-function REMOVE_DUPS(table)
+function M.remove_dups(table)
   local hash = {}
   local res = {}
 
@@ -65,7 +67,7 @@ end
 -- local test = {1,2,4,2,3,4,2,3,4,"A", "B", "A"}
 -- nvim_print(REMOVE_DUPS(test))
 
-function JOIN(...)
+function M.join(...)
   local resultTable = {}
 
   -- Loop through each argument (table) in the list
@@ -79,7 +81,14 @@ function JOIN(...)
   return resultTable
 end
 
--- nvim_print(join({ 1, 2, 3 }, { 4, 5, 6 }))
+--default_find_group_pattern -- nvim_print(M.join({ 1, 2, 3 }, { 4, 5, 6 }))
+-- local a = { 1, 2, 3 }
+-- local b = { 1, 2, 3 }
+-- nvim_print(M.join(a, b))
+-- print("-----------")
+-- nvim_print(a)
+-- print("-----------")
+-- nvim_print(b)
 
 function GetKeys(maps)
   -- get keys from a impar map
@@ -106,3 +115,5 @@ local tuple_obj = { --{{{2
   { "k3", "value_1" },
 }
 -- nvim_print(getKeys(tuple_obj))
+
+return M

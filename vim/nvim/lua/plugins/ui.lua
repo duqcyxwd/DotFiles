@@ -1,4 +1,5 @@
 require("funcs.global")
+local core = require("funcs.nvim_core")
 
 local function nvim_tree_on_attach(bufnr)
   local api = require("nvim-tree.api")
@@ -94,7 +95,13 @@ return {
           modified_icon = "+ ", -- change the default modified icon
         },
         sections = {
-          lualine_a = { "mode" },
+          lualine_a = {
+            {
+              require("noice").api.statusline.mode.get,
+              cond = require("noice").api.statusline.mode.has,
+              -- color = { fg = "#ff9e64" },
+            },
+            "mode" },
           lualine_b = { "branch", "diff", "diagnostics" },
           lualine_c = { "filename" },
           lualine_x = { "lazy" },
@@ -142,13 +149,13 @@ return {
   },
 
   { -- "Yggdroot/indentLine",
-    -- "Yggdroot/indentLine",
-    -- disable = true,
-    -- init = function()
-    --   vim.g.indentLine_char_list = { " | ", "¦", "┆", "┊" }
-    --   vim.g.indentLine_leadingSpaceEnabled = 0
-    --   vim.g.indentLine_enabled = 0
-    -- end,
+    "Yggdroot/indentLine",
+    enabled = true,
+    init = function()
+      vim.g.indentLine_char_list = { " | ", "¦", "┆", "┊" }
+      vim.g.indentLine_leadingSpaceEnabled = 0
+      vim.g.indentLine_enabled = 0
+    end,
   },
   { -- "lukas-reineke/indent-blankline.nvim",
     -- "lukas-reineke/indent-blankline.nvim",
@@ -225,7 +232,7 @@ return {
   },
   { -- "folke/noice.nvim"                 | Provides CMD, Messages provides lsp progress
     "folke/noice.nvim",
-    disable = true,
+    enabled = true,
     event = "VeryLazy",
     opts = {
       lsp = {
@@ -236,6 +243,10 @@ return {
         },
       },
       routes = {
+        {
+          view = "notify",
+          filter = { event = "msg_showmode" },
+        },
         {
           filter = {
             event = "msg_show",
@@ -334,6 +345,12 @@ return {
       end,
     },
     init = function()
+      core.nvim_create_augroups({
+        notify = {
+          { "FileType", "notify", "nmap <buffer> q :q<CR>" },
+          { "FileType", "notify", "nmap <buffer> <esc> :q<CR>" }
+        }
+      })
       -- when noice is not enabled, install notify on VeryLazy
       local Util = require("funcs.vim_utility")
       if not Util.has("noice.nvim") then
@@ -478,7 +495,8 @@ return {
         dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
         dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
         dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
-        dashboard.button("s", " " .. " Restore Session", [[:SessionRestore<cr>]]),
+        dashboard.button("R", " " .. " Restore Session", [[:SessionRestore<cr>]]),
+        dashboard.button("s", " " .. " Sessions", [[:SearchSession<cr>]]),
         dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
         dashboard.button("q", " " .. " Quit", ":qa<CR>"),
       }
@@ -525,7 +543,7 @@ return {
         log_level = "error",
         auto_restore_enabled = false,
         auto_save_enabled = true,
-        auto_session_enable_last_session = true,
+        auto_session_enable_last_session = vim.loop.cwd() == vim.loop.os_homedir(),
         auto_session_create_enabled	= true,
         auto_session_root_dir = vim.fn.stdpath("state") .. "/sessions/",
         auto_session_suppress_dirs = { "~/", "~/Downloads", "/" },

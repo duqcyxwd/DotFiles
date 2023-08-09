@@ -1,4 +1,5 @@
 require("funcs.global")
+local core = require("funcs.nvim_core")
 local lsp_util = require("config.lspconfig-util")
 
 return {
@@ -21,30 +22,26 @@ return {
 
       lspconfig.lua_ls.setup({
         on_attach = lsp_util.lsp_on_attach_power,
-        settings = {
-          Lua = {
-            runtime = {
-              -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-              version = "LuaJIT",
-              -- Setup your lua path
-              path = "/usr/local/bin/lua",
-            },
-            diagnostics = {
-              -- Get the language server to recognize the `vim` global
-              globals = { "vim" },
-              enable = true,
-            },
-            workspace = {
+        on_init = function(client)
+          local path = client.workspace_folders[1].name
+          if not vim.loop.fs_stat(path..'/.luarc.json') and not vim.loop.fs_stat(path..'/.luarc.jsonc') then
+            client.config.settings = vim.tbl_deep_extend('force', client.config.settings.Lua, {
+              runtime = {
+                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+                version = 'LuaJIT'
+              },
               -- Make the server aware of Neovim runtime files
-              library = vim.api.nvim_get_runtime_file("", true),
-              checkThirdParty = false,
-            },
-            -- Do not send telemetry data containing a randomized but unique identifier
-            telemetry = {
-              enable = false,
-            },
-          },
-        },
+              workspace = {
+                library = { vim.env.VIMRUNTIME }
+                -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
+                -- library = vim.api.nvim_get_runtime_file("", true)
+              }
+            })
+
+            client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
+          end
+          return true
+        end,
       })
 
       lspconfig.diagnosticls.setup({
@@ -62,7 +59,7 @@ return {
           "typescript",
           "typescriptreact",
           "vim",
-          "lua",
+          -- "lua",
           "xml",
         },
         init_options = {
@@ -149,13 +146,14 @@ return {
               command = "shfmt",
               args = { "-i", "2", "-bn", "-ci", "-sr" },
             },
-            stylua = {
-              command = "stylua",
-              isStdout = true,
-              doesWriteToFile = false,
-              -- args = {"--config-path $XDG_CONFIG_HOME/stylua/stylua.toml", "%file" },
-              args = { "--search-parent-directories", "%file" },
-            },
+            -- Stylua is already configured
+            -- stylua = {
+            --   command = "stylua",
+            --   isStdout = true,
+            --   doesWriteToFile = false,
+            --   -- args = {"--config-path $XDG_CONFIG_HOME/stylua/stylua.toml", "%file" },
+            --   args = { "--search-parent-directories", "%file" },
+            -- },
             xmllint = {
               command = "xmllint",
               isStdout = true,
@@ -183,6 +181,14 @@ return {
   },
   { -- "tami5/lspsaga.nvim",
     "tami5/lspsaga.nvim",
+    init = function()
+      core.nvim_create_augroups({
+        lspsagaHover = {
+          { "FileType", "LspsagaHover", "nmap <buffer> q :q<CR>" },
+          { "FileType", "LspsagaHover", "nmap <buffer> <esc> :q<CR>" }
+        }
+      })
+    end,
     config = function()
       R("lspsaga").setup({ -- defaults ...
         debug = false,

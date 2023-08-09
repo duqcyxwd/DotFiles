@@ -1,4 +1,3 @@
-
 -- stylua: ignore
 -- EasyAlign /--/
 local setup = function()
@@ -28,7 +27,7 @@ local setup = function()
   vim.opt.lazyredraw     = false                                -- | Disable lazyredraw for Lazy
   vim.opt.matchtime      = 2                                    -- | How many tenths of a second to blink when matching brackets
   vim.opt.mouse          = "a"                                  -- | Enable mouse support in all modes
-  vim.opt.autochdir      = false                                -- | Don't change the directory so we can use project search
+  vim.opt.autochdir      = false                                -- | Don't change the directory, this is controller by my toggle_find_root fn
   vim.opt.errorbells     = false                                -- | No annoying sound on errors
   vim.opt.joinspaces     = false                                -- | No extra space when joining lines
   vim.opt.ruler          = true                                 -- | Always show the current position
@@ -52,16 +51,16 @@ local setup = function()
   vim.opt.expandtab      = true                                 -- | Use spaces instead of tabs
   vim.opt.tabstop        = 2                                    -- | Set tabstop and softtabstop to 2vim.opt.softtabstop = 2
   vim.opt.textwidth      = 0                                    -- | Disable auto break line
-  vim.opt.wrap           = true                                 -- | Wrap lines
+  vim.opt.wrap           = false                                -- | Wrap lines
   vim.opt.wrapscan       = true                                 -- | Do not wrap around when search reaches the end of the file
-  vim.opt.foldcolumn     = "0"                                  -- | Disable fold column by default
+  vim.opt.foldcolumn     = "0"                                  -- | foldcolumn is an extra column on left of lines to show fold leve. Disable to save space
   vim.opt.foldmethod     = 'marker'                             -- | Use braces for fold method by default
   vim.opt.foldlevel      = 2                                    -- | Set the fold level to 2, fold all by default
   vim.opt.foldlevelstart = 99                                   -- | Set the start fold level to 99, for no folds closed
 
   vim.opt.backspace      = 'eol,start,indent'                   -- | Configure backspace
   vim.opt.whichwrap:append('<,>,h,l')                           -- | Allow specified keys to move the cursor left/right to move to the previous/next line
-  vim.opt.diffopt        = 'internal,filler,vertical'           -- | Configure diff options
+  vim.opt.diffopt        = 'internal,filler,vertical,'           -- | Configure diff options
                                                                 -- Invisible characters settings
   vim.opt.listchars      = { eol = '¬',
     tab                  = '>·',

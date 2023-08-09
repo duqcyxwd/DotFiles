@@ -7,7 +7,7 @@ M.dark = function()
   vim.cmd("colorscheme dracula")
   vim.cmd("colorscheme dracula")
 
-  -- Color setting for better white space ExtraWhitespace defined in  [[better-whitespace]]
+  -- Color setting for better white space ExtraWhitespace defined in [[better-whitespace]]
   vim.cmd [[highlight ExtraWhitespace ctermbg=LightYellow guibg=#6272a4 ]]
   vim.cmd [[highlight ExtraWhitespace ctermbg=LightYellow guibg=#6272a4 ]]
 end

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-echo "Pull repo: $*"
-git --git-dir="$*" pull 
+echo "Going to pull git repo in directory $*"
+git --git-dir="$*" pull
 
 echo ""

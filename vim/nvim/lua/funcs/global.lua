@@ -1,4 +1,5 @@
 require("funcs.utility")
+local u = require("funcs.utility")
 
 P = function(thing)
   print(vim.inspect(thing))
@@ -100,7 +101,7 @@ LAZY_AUTO = function(dir)
   for path in io.popen('ls -pUqAL "$XDG_CONFIG_HOME/nvim/lua/' .. dir .. '"'):lines() do
     local filename = path:match("^(.*)%.lua$")
     if filename then
-      configs = JOIN(configs, RE(dir .. "." .. filename))
+      configs = u.join(configs, RE(dir .. "." .. filename))
     end
   end
   return configs

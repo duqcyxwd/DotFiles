@@ -4,14 +4,16 @@ return { -- Editor enhancements
   "folke/which-key.nvim",
 
   "jiangmiao/auto-pairs",
-  "wellle/targets.vim",              --                                     | Addition support for text object
+  -- Text Objedt
+  --                                                                        | Cheat sheeti https://github.com/wellle/targets.vim/blob/master/cheatsheet.md
+  "wellle/targets.vim",--                                                   | Addition support for text object
   "michaeljsmith/vim-indent-object", --                                     | Text Object indent
-  -- " Cheat sheeti https://github.com/wellle/targets.vim/blob/master/cheatsheet.md
-  -- "
-  -- Plug 'Shougo/defx.nvim',                                               | { 'do': ':UpdateRemotePlugins', 'on': 'Defx' } " File browser
+  "tpope/vim-sleuth",--                                                     | Automatically adjusts 'shiftwidth' and 'expandtab'
+  "tpope/vim-surround",
+  "machakann/vim-sandwich",
+  --
   "kshenoy/vim-signature",         --                                       | A plugin to place, toggle and display marks.
   "machakann/vim-highlightedyank", --                                       | Show highlight for yank
-  "machakann/vim-sandwich",        --
   "mbbill/undotree",               --
   { -- "mg979/vim-visual-multi",                                            | vim multi cursor
     "mg979/vim-visual-multi",
@@ -26,8 +28,7 @@ return { -- Editor enhancements
     end
 
   },
-  {
-    -- "cappyzawa/trim.nvim",                                               | Use to auto trim whitespace
+  { -- "cappyzawa/trim.nvim",                                               | Use to auto trim whitespace
     "cappyzawa/trim.nvim",
     opts = {
       ft_blocklist = {'diff', 'gitcommit', 'unite', 'qf', 'help', 'ctrlsf'},
@@ -38,10 +39,14 @@ return { -- Editor enhancements
   "preservim/tagbar",               --                                      | Create tag on fly, used by markdown
   "tpope/vim-commentary",           --                                      | Gcc
   "tpope/vim-repeat",
-  "tpope/vim-sleuth",               --                                      | Automatically adjusts 'shiftwidth' and 'expandtab'
-  "tpope/vim-surround",             --
   -- "unblevable/quick-scope", --, {'on': []}                               | Quick highlight for f/F
-  "phaazon/hop.nvim",               --                                      | Jump Everywhere
+  -- "unblevable/quick-scope",
+  {-- "phaazon/hop.nvim",                                                   | Jump Everywhere
+    "phaazon/hop.nvim",
+    config = true,
+    lazy = true,
+    cmd = {"HopVerticalMW", "HopChar1"}
+  },
 
   -- " Align text
   "godlygeek/tabular", --, {'on': 'Tabularize'}
@@ -49,8 +54,9 @@ return { -- Editor enhancements
 
   -- " Terminal
   "kassio/neoterm",        --                                               | Terminal
-  "voldikss/vim-floaterm", --,                                              | #{ on: [ 'FloatermNew', 'FloatermHide', 'FloatermToggle' ] }
-  {                        -- "nvim-telescope/telescope.nvim",
+  "voldikss/vim-floaterm", --                                               | #{ on: [ 'FloatermNew', 'FloatermHide', 'FloatermToggle' ] }
+
+  { -- "nvim-telescope/telescope.nvim",
     "nvim-telescope/telescope.nvim",
     commit = vim.fn.has("nvim-0.9.0") == 0 and "057ee0f8783" or nil,
     cmd = "Telescope",
