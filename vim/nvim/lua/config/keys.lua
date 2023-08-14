@@ -126,7 +126,7 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "j",         'gj' },
   { "k",         'gk' },
 
-  { 'gs',        ':Gitsigns stage_hunk<CR>' },
+  -- { 'gs',        ':Gitsigns stage_hunk<CR>' },
   { 'gV',        '<Plug>(VM-Reselect-Last)',               { noremap = false } },
 
 
@@ -186,9 +186,9 @@ set_keymap("v", { noremap = true, silent = true }, {
 -- Map <Space>1..8 to buffers
 -- Map [1..8 to tabs
 for i = 1, 8, 1 do
-  -- space_key_nmap[tostring(i)] = { "which_key_ignore", "<Plug>AirlineSelectTab" .. tostring(i) .. "<CR>" }
   space_key_nmap[tostring(i)] = { "which_key_ignore", "<Cmd>BufferLineGoToBuffer " .. tostring(i) .. "<CR>" }
   set_keymap("n", { noremap = true, silent = true }, { { "[" .. tostring(i), tostring(i) .. "gt" } })
+  set_keymap("n", { noremap = true, silent = true }, { { "]" .. tostring(i), tostring(i) .. "gt" } })
 end
 
 -- Impair keys and Bracket jump {{{1
@@ -214,12 +214,11 @@ local impair_map_config = { --{{{2
   { "[h", ":lua require'gitsigns'.prev_hunk({ preview = true})<CR>" },
   { "]h", ":lua require'gitsigns'.next_hunk({ preview = true})<CR>" },
 
-  -- jump diagnostic, Lspsag is the replacement
-  { "[g", "<Cmd>lua vim.diagnostic.goto_prev({float = true})<CR>" },
-  { "]g", "<Cmd>lua vim.diagnostic.goto_next({float = true})<CR>" },
-
-  { "[e", "<CMD>Lspsaga diagnostic_jump_next<CR>" },
-  { "]e", "<CMD>Lspsaga diagnostic_jump_prev<CR>" },
+  -- Place holder for g e
+  { "[g", "" },
+  { "]g", "" },
+  { "[e", "" },
+  { "]e", "" },
 
 
   { "[f", ":FloatermPrev<CR><C-Bslash><C-n>" },
@@ -483,7 +482,7 @@ space_key_nmap.j = { --{{{1 +Jump
   i = { 'Fzf Jump def',            ':FFLines (def<CR>' },
   I = { 'Fzf Jump def in project', ':MyFzfAg (def[n]? <CR>' },
   t = { 'Fzf BTags',               ':FFBTags<CR>' },
-  w = { 'Hop Jump Word',           ':HopChar1<CR>' },
+  w = { 'Hop Jump Word',           ':HopChar2<CR>' },
   c = { 'Fzf Jump Changes',        ':FzfLua changes<CR>' },
   l = { 'Hop Jump Line',           ':HopVerticalMW<CR>' },
   j = { 'Fzf Jump jumps',          ':FzfLua jumps<CR>' },
@@ -667,14 +666,19 @@ space_key_nmap.S = { --{{{1 +SESSION
 space_key_nmap.t = { --{{{1 +Toggle
   name = "+Toggle",
 
+
+  -- UI
+  h = { 'Toggle left',                             ':NvimTreeFindFileToggle<CR>' },
+  l = { 'Toggle right',                            ':SymbolsOutline<CR><c-w>h' },
+  c = { 'Toggle ChatGPT',                          ':ChatGPT<CR>' },
+
   a = {
     name = 'auto+',
     s    = { 'Toggle Strip Whitespace On Save',    ':TrimToggle<CR>' },
   },
   m = { 'Color: Dark/Light Mode',                  ":lua require'config.color'.toggle()<CR>" },
   M = { 'Color: FZF Schema',                       ':FzfLua colorschemes<CR>' },
-  h = { 'Toggle left',                             ':NvimTreeFindFileToggle<CR>' },
-  l = { 'Toggle right',                            ':SymbolsOutline<CR><c-w>h' },
+
 
   p = {
     name = 'project+',
@@ -810,67 +814,24 @@ reformate_key_map(space_key_vmap)
 wk.register(space_key_nmap, { prefix = "<Space>" })
 wk.register(space_key_vmap, { prefix = "<Space>", mode = "v" })
 
-------------------------------------------------------------------------------
--- My plan for keys, not implimented {{{1
-local space_key_nmap_plan = {
-  a = {
-    name = "+Applications",
-    u = { "Undo tree", ":UndotreeToggle<CR>" },
-  },
-  B = {
-    name = "Global buffers",
-  },
-  C = {
-    name = "+Colors/Check?",
-  },
-
-  -- ","
-  comma = {
-    f = "format file",
-    s = "cleanup white space?"
-
-  },
-
-  -- c = {
-  --   name = "+comments/copy?"
-  -- },
-  d = {
-    name = "+Diagnostic/directory",
-    d = { "XXX" },
-  },
-  e = { name = "+EDIT" },
-  i = { name = "+Insert ? snipper, Inspect" },
-  k = { name = "Lisp/kill" },
-  m = { name = "Major" },
-  n = { name = "number?" },
-  r = { name = "Run/Resume/Register" },
-  T = { name = "UI toggle/theme" },
-  u = { name = "universal " },
-  v = { name = "visual, or maping v to expand" },
-  x = { name = "Text" },
-  z = { name = "Zoom" },
-}
-reformate_key_map(space_key_nmap_plan)
--- nvim_print(space_key_nmap_plan)
-
 -- }}}1
 
 -- WIP
-local chatgpt = R("chatgpt")
-wk.register({
-  p = {
-    name = "ChatGPT",
-    e = {
-      function()
-        chatgpt.edit_with_instructions()
-      end,
-      "Edit with instructions",
-    },
-  },
-}, {
-  prefix = "<Space>",
-  mode = "v",
-})
+-- local chatgpt = R("chatgpt")
+-- wk.register({
+--   p = {
+--     name = "ChatGPT",
+--     e = {
+--       function()
+--         chatgpt.edit_with_instructions()
+--       end,
+--       "Edit with instructions",
+--     },
+--   },
+-- }, {
+--   prefix = "<Space>",
+--   mode = "v",
+-- })
 
 M.space_key_nmap = space_key_nmap
 M.space_key_vmap = space_key_vmap

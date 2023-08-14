@@ -2,15 +2,17 @@ local core = require("funcs.nvim_core")
 
 -- diagnostic Autocmd
 
+local M = {}
+
 vim.o.updatetime = 250
 vim.cmd([[ autocmd! ColorScheme * highlight NormalFloat guibg=#1f2335]])
 vim.cmd([[ autocmd! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]])
 
 
-vim.cmd[[let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"]]
-vim.cmd[[let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"]]
+vim.cmd [[let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"]]
+vim.cmd [[let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"]]
 
-vim.cmd[[autocmd ColorScheme * highlight Comment cterm=italic gui=italic]]
+vim.cmd [[autocmd ColorScheme * highlight Comment cterm=italic gui=italic]]
 
 local autocmds = {
 
@@ -81,21 +83,23 @@ local diagnostics_float_enabled = true
 local float_toggle_group = {
   DIAGNOSTICS_FLOAT = {
     -- Only show diagnostic when edit complete. This will help me to get clean complete list
-    { "CursorHold", "*", "lua require'lspsaga.diagnostic'.show_line_diagnostics()" },
+    { "CursorHold", "*", function()  require'lspsaga.diagnostic'.show_line_diagnostics() end },
   },
 }
 vim.diagnostic.float_toggle = function()
   if diagnostics_float_enabled then
     print("Disable diagnostics float")
-      core.nvim_create_augroups({ DIAGNOSTICS_FLOAT = {} })
+    -- core.nvim_create_augroups({ DIAGNOSTICS_FLOAT = {} })
+    core.autogroup({ DIAGNOSTICS_FLOAT = {} })
     diagnostics_float_enabled = false
   else
     print("Enable diagnostics float")
-    core.nvim_create_augroups(float_toggle_group)
+    -- core.nvim_create_augroups(float_toggle_group)
+    core.autogroup(float_toggle_group)
     diagnostics_float_enabled = true
   end
 end
 
 -- Enable by default
-core.nvim_create_augroups(autocmds)
-core.nvim_create_augroups(float_toggle_group)
+core.autogroup(autocmds)
+core.autogroup(float_toggle_group)

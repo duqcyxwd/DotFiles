@@ -5,6 +5,7 @@ local config = {
     diff = false,
     keymaps = {
       close = "<C-c>",
+      -- close = { "<Esc>" },
       accept = "<C-y>",
       toggle_diff = "<C-d>",
       toggle_settings = "<C-o>",
@@ -13,7 +14,7 @@ local config = {
     },
   },
   chat = {
-    welcome_message = WELCOME_MESSAGE,
+    welcome_message = "Welcome",
     loading_text = "Loading, please wait ...",
     question_sign = "",
     answer_sign = "ﮧ",
@@ -145,6 +146,8 @@ return {
     config = function()
       require("chatgpt").setup(config)
     end,
+    commit = "2107f703",
+    pin = true,
     dependencies = {
       "MunifTanjim/nui.nvim",
       "nvim-lua/plenary.nvim",

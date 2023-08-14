@@ -61,7 +61,8 @@ end
 M.open_github_plugin = function()
   -- Get the plugin name and owner/repo from the current line
   local line = vim.fn.getline('.')
-  local plugin = line:match("[0-9a-z|%.%-/]+")
+  local pattern = "[a-zA-Z][0-9a-zA-Z|%.%-]+[/][0-9a-zA-Z|%.%-]+"
+  local plugin = line:match(pattern)
 
 
   if plugin and plugin ~= "" then
@@ -71,6 +72,19 @@ M.open_github_plugin = function()
   else
   end
 end
+
+
+-- local line = "jackMort/ChatGPT.nvim"
+-- local pattern = "[a-zA-Z][0-9a-zA-Z|%.%-]+[/][0-9a-zA-Z|%.%-]+"
+-- print(string.match(line, pattern))
+-- print(string.match("--- xx/xxsa12", pattern))
+-- print(string.match("--- x-y", pattern))
+-- print(string.match("--- xy", pattern))
+-- print(string.match("--- xaaay/x|xa", pattern))
+-- print(string.match("--- 0xaaay/x|xa", pattern))
+-- print(string.match("--- -0xaaay/x|xa", pattern))
+-- print(string.match("--- xx-0xaaay/x-xa.nvim", pattern))
+
 
 M.goto_first_float = function()
   for _, w in ipairs(vim.api.nvim_list_wins()) do

@@ -27,6 +27,13 @@ local lsp_on_attach = function(_, bufnr)
 
   bmap("n", "<localleader>f", "<CMD>lua vim.lsp.buf.format({async = true})<CR>", opts)
   bmap("n", "<localleader>q", "<CMD>lua vim.diagnostic.setloclist()<CR>", opts)
+
+  -- jump diagnostic, Lspsag is the replacement
+  bmap( "n", "[g", "<Cmd>lua vim.diagnostic.goto_prev({float = true})<CR>", opts)
+  bmap( "n", "]g", "<Cmd>lua vim.diagnostic.goto_next({float = true})<CR>", opts)
+
+  bmap( "n", "[e", "<CMD>Lspsaga diagnostic_jump_next<CR>", opts)
+  bmap( "n", "]e", "<CMD>Lspsaga diagnostic_jump_prev<CR>", opts)
 end
 
 local lsp_on_attach_power = function(_, bufnr)

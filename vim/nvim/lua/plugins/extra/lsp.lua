@@ -1,12 +1,29 @@
 require("funcs.global")
 local core = require("funcs.nvim_core")
+local vim_u = require("funcs.vim_utility")
 local lsp_util = require("config.lspconfig-util")
 
 return {
-  --" https://medium.com/prodhacker/how-to-set-up-neovim-0-5-modern-plugins-lsp-treesitter-etc-542c3d9c9887
+  {-- "folke/neodev.nvim",      | Automatically configures lua-language-server
+    "folke/neodev.nvim", opts = {} },
   { -- "neovim/nvim-lspconfig", | Configs for the Nvim LSP client
     "neovim/nvim-lspconfig",
+    event = { "BufReadPre", "BufNewFile" },
+    dependencies = {
+      { "folke/neoconf.nvim", cmd = "Neoconf", config = false, dependencies = { "nvim-lspconfig" } },
+      { "folke/neodev.nvim",  opts = {} },
+      "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
+      {
+        "hrsh7th/cmp-nvim-lsp",
+        cond = function()
+          return require("funcs.vim_utility").has("nvim-cmp")
+        end,
+      },
+    },
     config = function()
+      SR("neodev").setup({})
+
       local lspconfig = SR("lspconfig")
       local servers = { "pyright", "tsserver", "clojure_lsp" }
       for _, lsp in pairs(servers) do
@@ -22,26 +39,20 @@ return {
 
       lspconfig.lua_ls.setup({
         on_attach = lsp_util.lsp_on_attach_power,
-        on_init = function(client)
-          local path = client.workspace_folders[1].name
-          if not vim.loop.fs_stat(path..'/.luarc.json') and not vim.loop.fs_stat(path..'/.luarc.jsonc') then
-            client.config.settings = vim.tbl_deep_extend('force', client.config.settings.Lua, {
-              runtime = {
-                -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
-                version = 'LuaJIT'
-              },
-              -- Make the server aware of Neovim runtime files
-              workspace = {
-                library = { vim.env.VIMRUNTIME }
-                -- or pull in all of 'runtimepath'. NOTE: this is a lot slower
-                -- library = vim.api.nvim_get_runtime_file("", true)
-              }
-            })
-
-            client.notify("workspace/didChangeConfiguration", { settings = client.config.settings })
-          end
-          return true
-        end,
+        settings = {
+          Lua = {
+            diagnostics = {
+              -- Get the language server to recognize the `vim` global
+              globals = { 'vim' },
+            },
+            workspace = {
+              checkThirdParty = false,
+            },
+            completion = {
+              callSnippet = "Replace",
+            },
+          },
+        },
       })
 
       lspconfig.diagnosticls.setup({
@@ -59,7 +70,6 @@ return {
           "typescript",
           "typescriptreact",
           "vim",
-          -- "lua",
           "xml",
         },
         init_options = {
@@ -146,14 +156,6 @@ return {
               command = "shfmt",
               args = { "-i", "2", "-bn", "-ci", "-sr" },
             },
-            -- Stylua is already configured
-            -- stylua = {
-            --   command = "stylua",
-            --   isStdout = true,
-            --   doesWriteToFile = false,
-            --   -- args = {"--config-path $XDG_CONFIG_HOME/stylua/stylua.toml", "%file" },
-            --   args = { "--search-parent-directories", "%file" },
-            -- },
             xmllint = {
               command = "xmllint",
               isStdout = true,
@@ -172,7 +174,6 @@ return {
             typescriptreact = "eslint_d",
             json = "prettier",
             markdown = "prettier",
-            lua = "stylua",
             xml = "xmllint",
           },
         },

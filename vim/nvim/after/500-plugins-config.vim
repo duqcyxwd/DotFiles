@@ -459,92 +459,8 @@ let g:vista#renderer#ctags = 'kind'
 
 
 """"""""""""""""""""""""""""""
-" => YankRing {{{1
-""""""""""""""""""""""""""""""
-if has("win16") || has("win32")
-    " Don't do anything
-else
-    let g:yankring_history_dir = '~/.vim_runtime/temp_dirs/'
-endif
-
-
 " Chuan's Config: ===================================================================================={{{1
 "
-" => airline {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-if exists('g:plugs["vim-airline"]')
-
-  " let g:airline_theme = 'luna'                         " airline colorscheme
-  let g:airline_powerline_fonts = 1                    " Fancy symbols
-  let g:airline#extensions#tabline#enabled = 1         " Enable the list of buffers
-  " let g:airline#extensions#tabline#fnamemod = ':t'     " Show just the filename
-  let g:airline#extensions#tabline#tab_nr_type = 1     " Show buffer #, not # of splits
-  let g:airline#extensions#tabline#show_tab_nr = 1     " Show buffer # in tabline
-  let g:airline#extensions#tabline#show_tab_type = 1   " Show the tab type
-  let g:airline#extensions#tabline#buffer_idx_mode = 1 " Show buffer index
-
-  " let spc = g:airline_symbols.space
-  call airline#parts#define('cust_line_col', {
-	\ 'raw': '%l/%L',
-	\ 'accent': 'bold'})
-
-  call airline#parts#define('cust_line_col_nr', {
-	\ 'raw': '%l:%v/%L',
-	\ 'accent': 'bold'})
-
-  let g:airline_section_b = airline#section#create(['hunks', 'file'])
-  let g:airline_section_c = airline#section#create(['%<', 'readonly', 'coc_status', 'lsp_progress', 'scrollbar'])
-  let g:airline_section_x = airline#section#create_right(['coc_current_function', 'bookmark', 'tagbar', 'vista', 'gutentags', 'gen_tags', 'omnisharp', 'grepper', 'filetype'])
-  " let g:airline_section_z = airline#section#create(['windowswap', 'obsession', '%p%%', 'linenr', 'maxlinenr', 'colnr'])
-  let g:airline_section_z = airline#section#create(['%p%% ', 'cust_line_col'])
-
-
-
-  let g:airline_symbols.linenr = ''
-  let g:airline_symbols.maxlinenr = ''
-  let g:airline_symbols.colnr = ''
-
-endif
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => anyfold {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Plug 'pseewald/vim-anyfold'
-
-" autocmd Filetype * AnyFoldActivate               " activate for all filetypes
-" or
-" autocmd Filetype <your-filetype> AnyFoldActivate " activate for a specific filetype
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" => auto-pairs {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-let g:AutoPairsMapSpace=0
-
-augroup autopairs_config
-  autocmd!
-  " autocmd Filetype clojure let g:AutoPairsFlyMode = 1
-
-  " don't pair single quotes or backticks when editing lisp code
-  " autocmd Filetype lisp,scheme,clojure,lfe let b:AutoPairs = {'(':')', '[':']', '{':'}','"':'"'}
-
-  " disable auto-pairs for lisp -- it interferes with parinfer
-  autocmd Filetype lisp,scheme,clojure,lfe let b:AutoPairs = {}
-
-
-  " Default
-  " let g:AutoPairs={'(':')', '[':']', '{':'}',"'":"'",'"':'"', "`":"`", '```':'```', '"""':'"""', "'''":"'''"}
-
-  " Don't auto pair " and { when it is vim mode
-  " It pairs for """
-  " autocmd Filetype vim let b:AutoPairs = {'<':'>', '(':')', '[':']', "'":"'",'"':'', "`":"`", '```':'```', '""':'"', "'''":"'''"}
-  autocmd Filetype vim let b:AutoPairs = {'<':'>', '(':')', '[':']', "'":"'",'"':'', "`":"`", '```':'```', "'''":"'''"}
-
-augroup END
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => buffergator {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " horizontal bottom (full screen width)
@@ -912,26 +828,6 @@ nnoremap <silent> -
       \ -search=`expand('%:p')`<CR>
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-" => mattn/vim-findroot {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:findroot_not_for_subdir = 0
-" # 0 works for my root toggle
-" # 1 break session??? need confirm
-let g:default_patterns = [
-      \  '.git/',
-      \  '.svn/',
-      \  '.hg/',
-      \  '.bzr/',
-      \  'Rakefile',
-      \  'pom.xml',
-      \  'project.clj',
-      \  '*.csproj',
-      \  '*.sln',
-      \]
-let g:findroot_patterns = g:default_patterns + [ '.vimroot' ]
-let g:findroot_search_parent = 0
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => fzf {{{1

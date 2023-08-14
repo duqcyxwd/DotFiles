@@ -35,7 +35,7 @@ return {
 
   { "Olical/conjure", ft = "clojure" }, --,                               " Add for lazy loading
   -- " Plug '~/duqcyxwd/conjure',                                         " Add for lazy loading
-  { dir = "~/duqcyxwd/vim-sexp", ft = "clojure" }, --,                           " My version of vim-sexp
+  { dir = "~/duqcyxwd/vim-sexp", ft = "clojure", pin = true }, --,        " My version of vim-sexp
 
   -- " Interesting tag jumping!
   { "tpope/vim-fireplace", ft = "clojure" },

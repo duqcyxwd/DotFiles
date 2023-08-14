@@ -1,5 +1,6 @@
 require("funcs.global")
 local core = require("funcs.nvim_core")
+local vim_u = require("funcs.vim_utility")
 
 local function nvim_tree_on_attach(bufnr)
   local api = require("nvim-tree.api")
@@ -82,6 +83,16 @@ return {
     "nvim-lualine/lualine.nvim",
     dependencies = { "arkav/lualine-lsp-progress" },
     config = function()
+      local statusLineMode = { "mode" } -- Indicate macro
+      if vim_u.has("noice.nvim") then
+        -- TODO Check if this works
+        local mode_indicator = {
+          require("noice").api.statusline.mode.get,
+          cond = require("noice").api.statusline.mode.has,
+          -- color = { fg = "#ff9e64" },
+        }
+        statusLineMode = { mode_indicator, "mode" }
+      end
       R("lualine").setup({
         options = {
           icons_enabled = true,
@@ -95,13 +106,7 @@ return {
           modified_icon = "+ ", -- change the default modified icon
         },
         sections = {
-          lualine_a = {
-            {
-              require("noice").api.statusline.mode.get,
-              cond = require("noice").api.statusline.mode.has,
-              -- color = { fg = "#ff9e64" },
-            },
-            "mode" },
+          lualine_a = statusLineMode,
           lualine_b = { "branch", "diff", "diagnostics" },
           lualine_c = { "filename" },
           lualine_x = { "lazy" },
@@ -330,8 +335,9 @@ return {
       },
     },
   },
-  { -- "rcarriga/nvim-notify",            | A fancy, configurable, notification manager for NeoVim
+  { -- "rcarriga/nvim-notify",            | A fancy notification manager for NeoVim
     "rcarriga/nvim-notify",
+    enabled = true,
     opts = {
       fps = 30,
       render = "default",
