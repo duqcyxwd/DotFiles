@@ -34,5 +34,3 @@ alias wildfly-standalone-deploy-war-disable-all="echo 'disable app from ' $JBOSS
 alias wildfly-standalone-restart='$WILDFLY_BIN/jboss-cli.sh -c --command=":shutdown(restart=true)"'
 
 alias wfsstart=wildfly-standalone
-
-

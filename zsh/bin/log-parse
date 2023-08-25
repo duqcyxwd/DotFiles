@@ -27,7 +27,7 @@ def colors:
  "white": "\u001b[37m",
  "reset": "\u001b[0m",
 };
-colors.white + .timestamp + colors.yellow + " [" + .severity + "] " + .service_id + ": " + colors.green + .message'
+colors.white + .timestamp + colors.yellow + " [" + .severity + "] " + .service_id + ": " + colors.green + .message + " " + .stack_trace'
 
   echo ""
   echo -e '\033[0;36m'

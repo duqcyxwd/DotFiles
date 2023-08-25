@@ -6,4 +6,3 @@ for snippet in $ZDOTDIR/snippets/*.zsh; do
   source $snippet
 done
 unset snippet
-

@@ -25,7 +25,7 @@ case `uname` in
     ;;
 esac
 
-export PATH="$ZDOTDIR/commands:$PATH"
+export PATH="$ZDOTDIR/bin:$PATH"
 
 # Some env which could be used in fzf_tp
 export ZSH_LOADING_LOG=$XDG_CACHE_HOME/.startup.log
@@ -33,12 +33,13 @@ export RUNCACHED_CACHE_DIR=$XDG_CACHE_HOME/.runcached
 
 # Put function in FAPTH so it is faster to run as a script
 # Add autoload so I don't need to put them into PATH
-FPATH=$FPATH:$ZDOTDIR/functions/
-autoload -Uz $ZDOTDIR/functions/*(:t)
+FPATH=$FPATH:$ZDOTDIR/autoload/
+autoload -Uz $ZDOTDIR/autoload/*(:t)
 
-FPATH=$FPATH:$ZDOTDIR/functions/kube/
-autoload -Uz $ZDOTDIR/functions/kube/*(:t)
+FPATH=$FPATH:$ZDOTDIR/autoload/kube/
+autoload -Uz $ZDOTDIR/autoload/kube/*(:t)
 
+# Add completions
 FPATH=$FPATH:$ZDOTDIR/completions
 
 export KUBECONFIG=$HOME/.kube/config

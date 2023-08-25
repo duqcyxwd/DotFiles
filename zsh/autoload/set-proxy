@@ -11,4 +11,3 @@ unset-proxy() {
 }
 
 set-proxy
-

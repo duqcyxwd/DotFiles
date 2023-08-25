@@ -44,6 +44,7 @@ alias p10ksigns="open https://github.com/romkatv/powerlevel10k#what-do-different
       alias lxaa='lx .?* -d'
 
 
+      alias ltc='exa --group-directories-first --no-permissions -T'
       alias lta='exa --group-directories-first --no-permissions -lTa'
       alias lt1='exa --group-directories-first --no-permissions -lT -L 1'
       alias lt2='exa --group-directories-first --no-permissions -lT -L 2'

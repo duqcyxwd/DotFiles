@@ -7,6 +7,7 @@ alias mvimr='mvim --remote'
     if [ $commands[nvim] ]; then
       alias vim='nvim'
       alias vi='nvim'
+      alias vir='usr/bin/vi'
     fi
 }
 alias mypath='echo ${PATH//:/\\n}'
@@ -48,7 +49,6 @@ alias fzfc='fzf | tr -d "\n" | pbcopy && pbpaste'
 
 
 alias mysql="/Applications/XAMPP/xamppfiles/bin/mysql --use=root"
-alias notes="mvim ~/repo/Notes/CLojure.md"
 
 
 #============= Kafka =============
@@ -139,4 +139,3 @@ alias cdr=cdroot
 
 
 alias sm='smerge .'
-

@@ -121,22 +121,10 @@ fkilll() {
     fi
 }
 
-psi() {
+psi() { #{{{1
   ps -ef | fzf_tp -m --header-lines=1 --border=none --preview-window=border-horizontal --preview-window=down,30% --preview "echo {} | awk '{for(i=8;i<=NF;i++){ printf \"%s \\n\", \$i };}' | bat"
 }
 
-
-f() { #{{{1
-  # Use fd and fzf to get the args to a command.
-  # Works only with zsh
-  # Examples:
-  # f mv # To move files. You can write the destination after selecting the files.
-  # f 'echo Selected:'
-  # f 'echo Selected music:' --extension mp3
-  # fm rm # To rm files in current directory
-    sels=( "${(@f)$(fd "${fd_default[@]}" "${@:2}"| fzf)}" )
-    test -n "$sels" && print -z -- "$1 ${sels[@]:q:q}"
-}
 
 pathi() { #{{{1
   echo $PATH | tr ':' '\n' | sort | fzf

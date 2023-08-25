@@ -272,6 +272,7 @@ zsh_plugins_config() {
     if [ $commands[nvim] ]; then
       alias vim='nvim'
       alias vi='nvim'
+      alias vir='usr/bin/vi'
     fi
 }
 alias gst='git status'
