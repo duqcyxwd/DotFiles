@@ -83,16 +83,16 @@ return {
     "nvim-lualine/lualine.nvim",
     dependencies = { "arkav/lualine-lsp-progress" },
     config = function()
-      local statusLineMode = { "mode" } -- Indicate macro
-      if vim_u.has("noice.nvim") then
-        -- TODO Check if this works
-        local mode_indicator = {
-          require("noice").api.statusline.mode.get,
-          cond = require("noice").api.statusline.mode.has,
-          -- color = { fg = "#ff9e64" },
-        }
-        statusLineMode = { mode_indicator, "mode" }
-      end
+      -- local statusLineMode = { "mode" } -- Indicate macro
+      -- if vim_u.has("noice.nvim") then
+      --   -- TODO Check if this works
+      --   local mode_indicator = {
+      --     require("noice").api.statusline.mode.get,
+      --     cond = require("noice").api.statusline.mode.has,
+      --     -- color = { fg = "#ff9e64" },
+      --   }
+      --   statusLineMode = { mode_indicator, "mode" }
+      -- end
       R("lualine").setup({
         options = {
           icons_enabled = true,
@@ -106,7 +106,7 @@ return {
           modified_icon = "+ ", -- change the default modified icon
         },
         sections = {
-          lualine_a = statusLineMode,
+          lualine_a = { "mode" },
           lualine_b = { "branch", "diff", "diagnostics" },
           lualine_c = { "filename" },
           lualine_x = { "lazy" },
@@ -248,9 +248,19 @@ return {
         },
       },
       routes = {
+         {
+           -- Allow indicator for @
+           view = "mini",
+           filter = { event = "msg_showmode" },
+           format = {
+             align = "left"
+           },
+         },
+
         {
-          view = "notify",
-          filter = { event = "msg_showmode" },
+          filter = { event = "msg_show", kind = "search_count" },
+          view = "mini",
+          opts = { skip = false },
         },
         {
           filter = {
@@ -497,14 +507,14 @@ return {
 
       dashboard.section.header.val = vim.split(logo, "\n")
       dashboard.section.buttons.val = {
-        dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
-        dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
-        dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
-        dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
-        dashboard.button("R", " " .. " Restore Session", [[:SessionRestore<cr>]]),
-        dashboard.button("s", " " .. " Sessions", [[:SearchSession<cr>]]),
-        dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
-        dashboard.button("q", " " .. " Quit", ":qa<CR>"),
+        dashboard.button("f", " " .. " Find file",                            ":Telescope find_files <CR>"),
+        dashboard.button("n", " " .. " New file",                             ":ene <BAR> startinsert <CR>"),
+        dashboard.button("r", " " .. " Recent files",                         ":Telescope oldfiles <CR>"),
+        dashboard.button("c", " " .. " Config",                               ":e $MYVIMRC <CR>"),
+        dashboard.button("R", " " .. " Restore Session in current directory", [[:SessionRestore<cr>]]),
+        dashboard.button("s", " " .. " Sessions",                             [[:SearchSession<cr>]]),
+        dashboard.button("l", "󰒲 " .. " Lazy",                                 ":Lazy<CR>"),
+        dashboard.button("q", " " .. " Quit",                                 ":qa<CR>"),
       }
       for _, button in ipairs(dashboard.section.buttons.val) do
         button.opts.hl = "AlphaButtons"
@@ -552,7 +562,7 @@ return {
         auto_session_enable_last_session = vim.loop.cwd() == vim.loop.os_homedir(),
         auto_session_create_enabled	= true,
         auto_session_root_dir = vim.fn.stdpath("state") .. "/sessions/",
-        auto_session_suppress_dirs = { "~/", "~/Downloads", "/" },
+        auto_session_suppress_dirs = { "~/", "~/Downloads", "/", "~/.local/", "~/work_credential/", "/private/" },
         -- auto_session_allowed_dirs = { "~/gerrit", "~/github", "~/duqcyxwd" },
         auto_session_use_git_branch = false,
       }
