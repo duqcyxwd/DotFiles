@@ -134,7 +134,7 @@ return {
           -- disable = function()
           --   return vim.bo.filetype == "json" and vim.api.nvim_buf_line_count(0) > 1000
           -- end,
-          disable = { "json" },
+          disable = { "markdown", "json" },
           additional_vim_regex_highlighting = { "python" },
         },
         incremental_selection = { enable = true },

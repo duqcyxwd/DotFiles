@@ -33,13 +33,9 @@ confirm() {
     esac
 }
 
-msg() {
-  echo >&2 -e "${1-}${NOFORMAT}"
-}
+msg(){ echo >&2 -e "${1-}${NOFORMAT}"; }
 
-msgt() {
-  echo >&2 -e "[$(date +"%H:%M:%S")]${1-}${NOFORMAT}"
-}
+msgt() { echo >&2 -e "[$(date +"%H:%M:%S")]${1-}${NOFORMAT}"; }
 
 die() {
   local msg=$1

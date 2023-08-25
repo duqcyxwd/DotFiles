@@ -14,6 +14,23 @@ vim.cmd [[let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"]]
 
 vim.cmd [[autocmd ColorScheme * highlight Comment cterm=italic gui=italic]]
 
+local markdown_key_map = function ()
+  vim.cmd([[
+    nnoremap <buffer> <Tab> >>
+    nnoremap <buffer> <S-Tab> <<
+
+    vnoremap <buffer> <Tab> >
+    vnoremap <buffer> <S-Tab> <
+
+    inoremap <buffer> <Tab> >
+    inoremap <buffer> <S-Tab> <
+
+    imap <buffer> <Tab> <C-t>
+    imap <buffer> <S-Tab> <C-d>
+  ]])
+
+end
+
 local autocmds = {
 
   default = {
@@ -64,6 +81,7 @@ local autocmds = {
     { "FileType", "startify",      "DisableWhitespace" },
     { "FileType", "vim",           "setlocal foldmethod=marker" },
   },
+
   Session = {
     -- { "VimLeave", "*", "SSave! cached | echom 'Save last session'" },
     -- testing
@@ -75,6 +93,11 @@ local autocmds = {
     { "BufEnter", "*.js",       'let @g=":w\\<CR>:sp |terminal node %\\<CR>"' },
     { "BufEnter", "*.zsh",      'let @g=":w\\<CR>:sp |terminal %\\<CR>"' },
   },
+
+  markdown = {
+    { "FileType", "markdown",   "setlocal foldmethod=expr conceallevel=2" },
+    { "FileType", "markdown",   markdown_key_map },
+  }
 }
 
 

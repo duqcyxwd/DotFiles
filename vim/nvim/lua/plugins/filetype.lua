@@ -54,6 +54,11 @@ return {
   -- " I just need one for folding
   -- " Plug 'rlue/vim-getting-things-down'
 
-  { "plasticboy/vim-markdown", ft = "markdown" }, --                      " A better markdown syntax plugin than vimwiki
-  { "masukomi/vim-markdown-folding", ft = "markdown"  }, --                " Can fold by header
+  { "plasticboy/vim-markdown", --                       | A better markdown syntax plugin than vimwiki
+    ft = "markdown", config = function ()
+      vim.g.vim_markdown_folding_disabled = 1
+      vim.g.vim_markdown_conceal = 1
+  end
+},
+  { "masukomi/vim-markdown-folding", ft = "markdown"  }, --                | Can fold by header
 }
