@@ -1,8 +1,8 @@
 return {
 
-  "nvim-lua/plenary.nvim",--             | Lua fns
+  "nvim-lua/plenary.nvim", --             | Lua fns
 
-  "tommcdo/vim-exchange", --             | Exchange lines, cx/X/cxx/cxc, works with '.'
+  "tommcdo/vim-exchange",  --             | Exchange lines, cx/X/cxx/cxc, works with '.'
 
   "benmills/vimux",
 

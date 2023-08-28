@@ -1,6 +1,6 @@
 -- stylua: ignore
 -- EasyAlign /--/
-local setup = function()
+local set_options = function()
 
   vim.cmd("filetype plugin on")                                 -- | Enable filetype plugins
   vim.cmd("syntax enable")
@@ -96,4 +96,4 @@ local setup = function()
 
 end
 
-setup()
+set_options()

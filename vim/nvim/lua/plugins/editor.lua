@@ -77,10 +77,10 @@ return { -- Editor enhancements
 
   -- Vim motions, jump, search
   -- "unblevable/quick-scope", --, {'on': []}                               | Quick highlight for f/F | Not working with Lazy
-  { -- "ggandor/lightspeed.nvim",--                                         | A motion plugin, f/F
+  { -- "ggandor/lightspeed.nvim",                                           | A motion plugin, f/F
     "ggandor/lightspeed.nvim",
     config = {
-      special_keys = { },
+      special_keys = {},
       limit_ft_matches = 10,
     },
   },
@@ -99,7 +99,17 @@ return { -- Editor enhancements
   "kassio/neoterm",        --                                               | Terminal
   "voldikss/vim-floaterm", --                                               | #{ on: [ 'FloatermNew', 'FloatermHide', 'FloatermToggle' ] }
 
-  {                        -- "nvim-telescope/telescope.nvim",
+  { "anuvyklack/pretty-fold.nvim", --                                       | Setup my folding text
+    config = function()
+      require('pretty-fold').setup({})
+      require('pretty-fold').ft_setup('lua', {
+        fill_char = '-',
+        add_close_pattern = false, -- true, 'last_line' or false
+      })
+    end,
+  },
+
+  { -- "nvim-telescope/telescope.nvim",
     "nvim-telescope/telescope.nvim",
     commit = vim.fn.has("nvim-0.9.0") == 0 and "057ee0f8783" or nil,
     cmd = "Telescope",

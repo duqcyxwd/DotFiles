@@ -95,11 +95,37 @@ local autocmds = {
   },
 
   markdown = {
-    { "FileType", "markdown",   "setlocal foldmethod=expr conceallevel=2" },
+    { "FileType", "markdown",   "setlocal foldmethod=expr conceallevel=2 foldtext=foldtext()" },
     { "FileType", "markdown",   markdown_key_map },
+  },
+
+  lua = {
+    -- { "FileType", "lua",   "setlocal foldtext=v:lua.lua_custom_fold_text()" },
+    { "FileType", "lua",   "setlocal foldmethod=expr" },
   }
 }
 
+
+-- My custom fold will be replace by pretty-fold
+-- vim.opt.foldtext = 'v:lua.custom_fold_text()'
+-- vim.opt.foldtext = 'v:lua.nvim_treesitter#foldexpr()'
+function _G.custom_fold_text()
+
+    local line = vim.fn.getline(vim.v.foldstart)
+
+    local repeatsymbol = '-'
+    local prefix = ''
+
+    local w = vim.fn.winwidth(0) - vim.o.foldcolumn - (vim.o.number and 8 or 0)
+    local foldSize = 1 + vim.v.foldend - vim.v.foldstart
+    local foldSizeStr = ' ' .. foldSize .. ' lines '
+    local foldLevelStr = string.rep('+--', vim.v.foldlevel)
+    local lineCount = vim.fn.line('$')
+    local foldPercentage = string.format('[%.1f', (foldSize * 1.0) / lineCount * 100) .. '%] '
+    local expansionString = string.rep(repeatsymbol, w - vim.fn.strwidth(prefix .. foldSizeStr .. line .. foldLevelStr .. foldPercentage))
+
+    return prefix .. line .. expansionString .. foldSizeStr .. foldPercentage .. foldLevelStr
+end
 
 -- autogroup toggle
 local diagnostics_float_enabled = true
