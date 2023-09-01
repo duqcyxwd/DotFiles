@@ -36,35 +36,11 @@ __fzf_config() {
     --bind 'up:previous-history'
     --bind 'down:next-history'
 
-    --bind 'ctrl-\\:change-preview-window(right,75%|down,50%,border-top|down,84%,border-top|hidden|)'
+    --bind 'ctrl-\\:toggle-preview'
     --bind '?:change-preview-window(right,75%|down,50%,border-top|down,84%,border-top|hidden|)'
     "
     # Notes: In tmux with vim, ctrl-kjhl is used....
     # Need to find other better keyding
-
-    # --bind '?:toggle-preview'
-
-    # --bind 'ctrl-p:up'
-    # --bind 'ctrl-n:down'
-    # --bind 'up:previous-history'
-    # --bind 'down:next-history'
-    # Why not tab:toggle+down
-    # {{{
-    # Need a way to move cursor
-    # --bind 'left:up'
-
-    # --bind='ctrl-u:half-page-up'
-    # --bind='ctrl-d:half-page-down'
-    # }}}
-
-    # Other Default keybinding
-    # ctrl-n
-    # ctrl-p
-    #
-    # ctrl-e
-    # ctrl-a
-    # ctrl-u
-    # ctrl-w
 
     #### My fzf shared general keybinding
     # ctrl-r vim open remote

@@ -17,9 +17,9 @@ FZF_KUBECTL_DEFAULT_OPTS=" --exit-0 --info=inline --layout=reverse"
 
 kdelnsi() { #{{{2
   # Prefilter with my name to avoid accident delete important namespace
-  local namespace=$(nsi --query "chuan ")
+  local namespace=$(nsi --query "swordform ")
   if [ "$namespace" = "" ]; then
-    echo "No namespace from chuan found"
+    echo "No namespace found"
     return 0
   fi
   echo "Will delete namespace: $namespace"

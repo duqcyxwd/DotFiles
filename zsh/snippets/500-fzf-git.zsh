@@ -1,5 +1,14 @@
 #!/bin/sh
 
+# Git loves FZF
+# My personal git preivew scripts
+
+# A, input   | B parse selection and preview | C, output action
+# GIT commit | fzf                           | reset/checkout/rebase
+# GIT branch | fzf                           | checkout/delete
+# GIT file   | fzf                           | checkout/delete
+# GIT stash  | fzf                           | drop/checkout/preview
+
 # FZF forgit basic config {{{1
 # --------------------------------------------------------------------------
 {
@@ -22,6 +31,7 @@
     # load fzf default options
 
     FORGIT_FZF_DEFAULT_OPTS=" $FZF_DEFAULT_OPTS --height='80%' +1 "
+    FZF_GIT_DEFAULT_OPTS=" $FZF_DEFAULT_OPTS --height='80%' +1 "
 
     __git_pager=$(git config core.pager || echo 'cat')                           # to use diff-so-fancy
 
@@ -64,21 +74,27 @@
     }
 
 
-    git_revert_interactive() {
-      git_log_interactive_select | xargs git revert $@
-    }
+    git_revert_interactive() { git_log_interactive_select | xargs git revert $@ }
 
-    git_reset_interactive(){
-      git_log_interactive_select | xargs git reset $@
-    }
+    git_reset_interactive(){ git_log_interactive_select | xargs git reset $@ }
 
-    git_rebase_interactive(){
-      git_log_interactive_select | xargs git rebase $@
+    git_rebase_interactive(){ git_log_interactive_select | xargs git rebase $@ }
+
+    git_gerritopen_interactive(){
+      forgit::inside_work_tree || return 1
+      # if [ $(git rev-parse --is-inside-work-tree) = false ]; then
+      #   echo "Not in git repo"
+      #   return
+      # fi
+      change_id="$(git_log_interactive_select | sha1grep | xargs git show --no-patch | grep Change-Id | awk '{print $2}')"
+      server="$(git config --get remote.origin.url | grep -o 'gerrit.\w*.\w*')"
+      ee "open 'https://$server/#/q/$change_id'"
     }
 
     # alias glop=glopi
     alias gloi=git_log_interactive_select
     alias glo=gloi
+    alias gloigo=git_gerritopen_interactive
     # get git commit SHA1 long
     alias gloil='git_log_interactive_select | sha1grep | xargs git show | head -1 | sha1grep'
 
@@ -98,6 +114,7 @@
     # git clean selector
     # alias git_clean_dry_run=
     git_clean_interactive() {
+      forgit::inside_work_tree || return 1
 
       local FZF_GIT_FILE_BIND_OPTS=" \
         --bind=\"ctrl-space:execute(bat --style=numbers --color=always --paging always {} )\"
@@ -111,19 +128,18 @@
       forgit::inside_work_tree || return 1
       local files opts
       opts="
-        $FORGIT_FZF_DEFAULT_OPTS
+        $FZF_GIT_DEFAULT_OPTS
         -m -0
         $FORGIT_CLEAN_FZF_OPTS
         "
         # Note: Postfix '/' in directory path should be removed. Otherwise the directory itself will not be removed.
-        files=$(git clean -dfn "$@"| sed 's/^Would remove //' | FZF_DEFAULT_OPTS="$FORGIT_FZF_DEFAULT_OPTS $FZF_GIT_FILE_BIND_OPTS" \
+        files=$(git clean -dfn "$@"| sed 's/^Would remove //' | FZF_DEFAULT_OPTS="$FZF_GIT_DEFAULT_OPTS $FZF_GIT_FILE_BIND_OPTS" \
           fzf_tp --preview 'quick-preview {}' | sed 's#/$##')
         [[ -n "$files" ]] && echo "$files" | tr '\n' '\0' | xargs -0 -I% git clean -xdf '%' && return
         echo 'Nothing to clean.'
     }
 
     gsti() {
-      # WIP, find a way to show changed file
       # this can be used in git checkout/add/reset or diff?
       forgit::inside_work_tree || return 1
       # Add files if passed as arguments
@@ -147,7 +163,7 @@
               git diff --color=always -- \$file | $forgit_diff_pager
           fi"
       opts="
-          $FORGIT_FZF_DEFAULT_OPTS
+          $FZF_GIT_DEFAULT_OPTS
           -0 -m --nth 2..,..
           $FORGIT_ADD_FZF_OPTS
       "
@@ -180,7 +196,7 @@
       local cmd opts
       cmd="echo {} |cut -d: -f1 |xargs -I% git_stash_preview % |$__git_pager"
       opts="
-          $FORGIT_FZF_DEFAULT_OPTS
+          $FZF_GIT_DEFAULT_OPTS
           +s +m -0
           $FORGIT_STASH_FZF_OPTS
       "
@@ -191,31 +207,25 @@
   # FZF: GIT BRANCH {{{1
   # --------------------------------------------------------------------------
   {
-    # Git loves FZF
-    # My personal git preivew scripts
-
-    # A, input, B parse selection and preview, C, output
 
     # branch FZF config {{{2
-    __git_branch_fzf_opts="$FORGIT_FZF_DEFAULT_OPTS -m -0 +s
-    --bind=\"ctrl-y:execute-silent(echo {} | git_branch_grep | tr-newline | pbcopy)\"
-    --preview-window hidden
+    __git_branch_fzf_opts="$FZF_GIT_DEFAULT_OPTS -m -0 +s
+    --bind='ctrl-y:execute-silent(echo {} | git_branch_grep | tr-newline | pbcopy)'
     --preview-window right:70%
-    " # $FZF_DEFAULT_OPTS is used by default
+    --preview-window hidden
+    "
 
 
-  # fzf: git branch functions {{{2
+  # fzf: git branch preview functions {{{2
     __git_branch_history_preview_cmd="xargs -I$$ git log -50 --stat --graph --color=always --format='$_glog_auth_format' $$"
     fzf_git_branch_to_history_preview(){
-      FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf -m --preview="echo {} | git_branch_grep | $__git_branch_history_preview_cmd"  "$@" \
+      FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | git_branch_grep | $__git_branch_history_preview_cmd"  "$@" \
         | git_branch_grep
-        # | git_branch_grep | tr-newline | pbcopy && pbpaste
     }
 
     fzf_git_branch_to_commit_preview(){
       FZF_DEFAULT_OPTS="$__git_branch_fzf_opts" fzf --preview="echo {} | git_branch_grep | xargs -I% git_commit_preview %"  "$@" \
         | git_branch_grep | tr-newline | pbcopy && pbpaste
-        # | git_branch_grep | tr-newline | pbcopy && pbpaste
     }
     alias fgbp=fzf_git_branch_to_history_preview
     alias fgbcp=fzf_git_branch_to_commit_preview
@@ -265,26 +275,13 @@
     alias gcobri2="gbri2 | xargs git checkout"
 
     #===== Branch clean up (House Clean) ======
-    #
+
     # Removed remote merged branch
-    # alias gb_merged_remote="git for-each-ref --merged HEAD --sort=-committerdate refs/remotes/ --format='(%(color:green)%(committerdate:relative)%(color:reset)) %(HEAD) %(color:yellow)%(refname:short)%(color:reset) - %(color:red)%(objectname:short)%(color:reset) - %(authorname)' --color=always"
-    # alias gb_merged_remote_me='ee "gb_merged_remote |grep chuan"'
-    # alias gb-merged='git branch --merged'
-    # Replaced by
     # gbrdi --merged
-    #
-    #
-    # Clean merged Branch (Delete local branches which are already merged)
-    # alias gbd-merged-branch-local='git branch --merged | grep -v "\*" | xargs -n 1 git branch -d'
-    # alias git-house-clean="echo gbd-merged-branch-local \ngb_merged_remote_me\n"
+
+    # Clean local merged Branch (Delete local branches which are already merged)
     # gbdi --merged
 
-
-    # gbr show merged branched
-    # Cleanup
-    # Can be replaced with gbi --merged
-    # alias gbri_merged="gb_merged_remote | fzf | cut -d ' ' -f6 | cut -c8-1000"
-    # alias gbri_me="gbr | grep chuan | fzf | cut -d ' ' -f6 | cut -c8-1000"
     # 2}}}
   }
 
@@ -309,32 +306,45 @@
 # FZF: Git Review {{{1
 # --------------------------------------------------------------------------
 {
-  fzf_git_review_preview() { fzf --header-lines=1 "$@" | awk '{print $1}' }
-
   # grvw() { git review $@ }
   # grvl() { runcached --bg-update --ignore-env --ttl 1800  git review -l --color=always $@ }
-  grvl() { RUNCACHED_IGNORE_PWD=0 runcached --bg-update --ttl 1800  git review -l --color=always $@ }
-  grvli() { grvl $@ | fzf_git_review_preview | xargs git review -d }
+  grvl() { RUNCACHED_IGNORE_PWD=0 runcached --bg-update --ttl 1800 git review -l --color=always $@ }
+  grvli() { grvl $@ | fzf --header-lines=1 | awk '{print $1}' }
+  gcorvi() { grvl $@ | fzf --header-lines=1 | awk '{print $1}' | xargs git review -d }
 }
 
 # 1}}}
 
 
-# Git: Update all subfolders {{{1
+# Git: Subfolders Run git command against a list of folders {{{1
 # --------------------------------------------------------------------------
 {
   __git_folders() {
     # Find git repos under current director
-    for i in */.git; do ( echo $i); done
+    for i in */.git; do ( echo $i ); done
+  }
+
+  __git_foldersi() {
+    __git_folders | sed 's/\/.git//' | fzf --preview "git_folder_preview {}"
   }
 
   git_folders_pull() {
-    __git_folders | fzf | xargs -I% git_pull_at_directory %
+    __git_foldersi | xargs -I% git_pull_at_directory %
   }
 
   git_folders_clean() {
-    # TODO WIP
-    __git_folders | fzf | xargs -I% git clean -d -f -x %
+    __git_foldersi | xargs -I % sh -c "echo 'path: %' && git -C % clean -d -f $@"
   }
+
+  git_folders_run() {
+    folders=$(__git_foldersi)
+    read CMD\?"cmd: "
+    echo $folders | xargs -I % sh -c "echo 'path: %' && git -C % $CMD"
+  }
+
+  alias gsp=git_folders_pull
+  alias gsc=git_folders_clean
+  alias gsr=git_folders_run
+
 }
 # 1}}}

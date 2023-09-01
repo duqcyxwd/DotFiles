@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "Path: " "$@"
+
+git -C "$@" -c color.status=always status
+echo ""
+echo "-------------------------------------------------------------------------------"
+git -C "$@" log --graph --color=always --pretty='%C(green bold)%h%Creset -%C(auto)%d%Creset %s %C(bold blue)<%an>%Creset %C(cyan)%C(bold)%cr%Creset'
+
+echo ""

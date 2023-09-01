@@ -3,15 +3,27 @@
 # TOOL: FZF RELATED FUNCTIONS
 
 # FZF with Brew {{{1
+# -------------------------------------------------------------------------------
 
 # brew list | fzf_tp --query="$1" +m --preview 'brew info {}'
 
 __BRREW_PREVIEW_CMD="BACKGROUND_UPDATE_MAX_AGE=30 runcached brew list --versions {1} && BACKGROUND_UPDATE_MAX_AGE=300 runcached brew info {1}"
 
-# Install (one or multiple) selected application(s)
-# using "brew search" as source input
-# mnemonic [B]rew [I]nstall [P]lugin
-brew_install_plugin_int() { # {{{2
+brew_list_int() { # {{{2
+  local formula=$(runcached --bg-update brew list --full-name | fzf_tp --header-lines=1 -m --preview "$__BRREW_PREVIEW_CMD")
+
+  if [[ $formula ]]; then
+    for prog in $(echo $formula);
+    do; brew info $prog; done;
+  fi
+}
+
+
+
+# Install or open the webpage for the selected application
+# using brew cask search as input source
+# and display a info quickview window for the currently marked application
+brew_install_int() { # {{{2
   local formula=$(runcached brew search "$@" | fzf_tp --header-lines=1 -m --preview "$__BRREW_PREVIEW_CMD")
 
   if [[ $formula ]]; then
@@ -22,7 +34,7 @@ brew_install_plugin_int() { # {{{2
 
 # Delete (one or multiple) selected application(s)
 # mnemonic [B]rew [C]lean [P]lugin (e.g. uninstall)
-brew_clean_plugin_int() { # {{{2
+brew_uninstall_int() { # {{{2
   local uninst=$(runcached --bg-update brew list --full-name | fzf_tp --header-lines=1 -m --preview "$__BRREW_PREVIEW_CMD")
 
   if [[ $uninst ]]; then
@@ -42,34 +54,7 @@ brew_update_outdated_package_int() { # {{{2
 }
 
 
-brew_list_plugin_int() { # {{{2
-  local formula=$(runcached --bg-update brew list --full-name | fzf_tp --header-lines=1 -m --preview "$__BRREW_PREVIEW_CMD")
-
-  if [[ $formula ]]; then
-    for prog in $(echo $formula);
-    do; brew info $prog; done;
-  fi
-}
-
-# Alias # {{{2
-alias bip=brew_install_plugin_int
-alias buni=brew_clean_plugin_int
-alias bcp=brew_clean_plugin_int
-alias blp=brew_list_plugin_int
-alias bli=brew_list_plugin_int
-alias buo=brew_update_outdated_package_int
-alias bupi=brew_update_outdated_package_int
-
-# other alias
-# Dependencies
-alias bdep="brew deps --installed --tree"
-# brew autoremove
-
-
-# Install or open the webpage for the selected application
-# using brew cask search as input source
-# and display a info quickview window for the currently marked application
-bc_install() { # {{{2
+brew_cask_install() { # {{{2
     local token
     token=$(runcached --bg-update brew search --casks "$1" | fzf_tp --query="$1" +m --preview "$__BRREW_PREVIEW_CMD" )
 
@@ -86,7 +71,7 @@ bc_install() { # {{{2
     fi
 }
 
-btapi() { # {{{2
+bbrew_tapi() { # {{{2
   brew tap | fzf +m --preview 'runcached brew ls --full-name --formula | grep {}'
 }
 
@@ -100,10 +85,22 @@ buntapi() { # {{{2
   ee brew untap $tap
 }
 
+# FZF with Brew Alias # {{{1
+# -------------------------------------------------------------------------------
+alias bip=brew_install_int
+alias buni=brew_uninstall_int
+alias bcp=brew_uninstall_int
+alias blp=brew_list_int
+alias bli=brew_list_int
+alias buo=brew_update_outdated_package_int
+alias bupi=brew_update_outdated_package_int
 
-# FZF with kill {{{1
-# fkill - kill processes - list only the ones you can kill. Modified the earlier script.
-# This is better than default completion
+# other alias
+# Dependencies
+alias bdep="brew deps --installed --tree"
+# brew autoremove
+# FZF with process {{{1
+# -------------------------------------------------------------------------------
 fkilll() {
 
     # at test | awk '{for(i=8;i<=NF;i++){printf "%s ", $i}; printf "\n"}'
@@ -121,23 +118,27 @@ fkilll() {
     fi
 }
 
-psi() { #{{{1
+psi() { #{{{2
   ps -ef | fzf_tp -m --header-lines=1 --border=none --preview-window=border-horizontal --preview-window=down,30% --preview "echo {} | awk '{for(i=8;i<=NF;i++){ printf \"%s \\n\", \$i };}' | bat"
 }
 
 
-pathi() { #{{{1
+
+# FZF Mist {{{1
+# -------------------------------------------------------------------------------
+
+pathi() { #{{{2
   echo $PATH | tr ':' '\n' | sort | fzf
 }
-fpathi() { #{{{1
+fpathi() { #{{{2
   echo $FPATH | tr ':' '\n' | sort | fzf
 }
 
-diri() { #{{{1
+diri() { #{{{2
   cd $(dirs | awk '{gsub(" ","\n", $0); print $0}' | fzf | sed "s|~|$HOME|g")
 }
 
-ifconfigi(){ #{{{1
+ifconfigi(){ #{{{2
   ifconfig -l | xargs -n 1 | fzf_tp --preview "ifconfig {1}" | xargs -I {} ifconfig {} $@
 }
 #}}}
