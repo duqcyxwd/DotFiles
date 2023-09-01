@@ -61,7 +61,7 @@ mlog "$(date) : zshrc start loading"
 
       # Kafka
       # export KAFKA_HOME=/usr/local/kafka-2.1.0
-      export KAFKA_HOME=/usr/local/kafka_2.12-2.5.1
+      export KAFKA_HOME=/usr/local/kafka_2.12-2.5.1               # Manual installed
       # export KAFKA_HOME=/usr/local/Cellar/kafka/2.8.0/libexec   #Homebrew installed
 
       export KAFKA_CONFIG=$KAFKA_HOME/config
@@ -69,17 +69,20 @@ mlog "$(date) : zshrc start loading"
 
       # Java 8
       # export JAVA_HOME=/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home
-      # IntelliJ jdk /Applications/IntelliJ IDEA.app/Contents/jbr/Contents/Home
-      # export JAVA_HOME="/Applications/IntelliJ IDEA.app/Contents/jbr/Contents/Home"
-      # Java 11
-      export JAVA_HOME=/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home
-      export PATH=$JAVA_HOME/bin:$PATH
-      export PATH="$HOME/.SpaceVim/bin:$PATH"
-      export PATH=/usr/local/opt/coreutils/bin/:$PATH             # Add gnu fns.
 
+      # Java 11
+      # export JAVA_HOME=/Library/Java/JavaVirtualMachines/openjdk-11.jdk/Contents/Home
+
+      # Java 17
+      export JAVA_HOME=/Library/Java/JavaVirtualMachines/openjdk-17.jdk/Contents/Home
+
+      export PATH=$JAVA_HOME/bin:$PATH
+
+      export PATH=/usr/local/opt/coreutils/bin/:$PATH             # Add gnu fns.
 
       # Python
       export PATH=/usr/local/opt/python/libexec/bin:$PATH         # Use brew install python/pip as default
+
       ;;
     Linux)
       # commands for Linux go here
@@ -122,6 +125,11 @@ zinit_load() {
   ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
   source "${ZINIT_HOME}/zinit.zsh"
 
+  # Load zinit completion
+  autoload -Uz _zinit
+  (( ${+_comps} )) && _comps[zinit]=_zinit
+
+
   # This solves problem in Catalina
   # sudo chmod 777 /private/tmp
   # sudo chmod +t /private/tmp
@@ -131,19 +139,13 @@ zinit_load() {
 
   # Stage 1 Must have plugins before prompt {{{2
   {
-    # zinit ice wait atload'ac_my_colors' silent;
-    # zinit light shayneholmes/zsh-iterm2colors
-
-    ZVM_LAZY_KEYBINDINGS=false
     zinit light-mode for \
-      jeffreytse/zsh-vi-mode
-
-
-    # To customize prompt, run `p10k configure` or edit ~/.config/zsh/.p10k.zsh.
-    # Load p10k
-    zinit ice depth=1 ; zinit light romkatv/powerlevel10k
-    [[ ! -f $ZDOTDIR/.p10k.zsh ]] || source $ZDOTDIR/.p10k.zsh
-
+            atinit"ZVM_LAZY_KEYBINDINGS=false" \
+              jeffreytse/zsh-vi-mode \
+              romkatv/powerlevel10k \
+            id-as"p10k-theme" \
+            atinit"[[ -f $ZDOTDIR/.p10k.zsh ]] && source $ZDOTDIR/.p10k.zsh" \
+                zdharma-continuum/null
   }
 
   # Stage 2 Lazy load Plugins {{{2
@@ -166,11 +168,13 @@ zinit_load() {
       OMZ::plugins/git/git.plugin.zsh \
       OMZ::plugins/autojump/autojump.plugin.zsh
 
-    zinit wait lucid silent light-mode for \
-      as'completion' is-snippet 'https://github.com/Valodim/zsh-curl-completion/blob/master/_curl' \
-      blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions \
 
-    zinit wait="$ZINIT_PLUGIN_DELAY" silent light-mode for \
+    zinit wait lucid silent light-mode for \
+      blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions
+
+      # as'completion' is-snippet 'https://raw.githubusercontent.com/zdharma-continuum/zinit/main/_zinit' \
+
+    zinit wait silent light-mode for \
       ~/duqcyxwd/kube-int
     }
 
@@ -193,7 +197,8 @@ zinit_load() {
     # The last plugin to load need overwrite alias and keybinding
     # check loading order by zinit time (-m)
 
-    zinit ice wait="0" atload'source-all-snippets && bindkey.zsh' silent;
+    # zinit ice wait="0" atload'source-all-snippets && bindkey.zsh' silent;
+    zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'source-all-snippets && bindkey.zsh' silent;
     zinit light zpm-zsh/empty
 
   }
@@ -224,12 +229,15 @@ zinit_load() {
 
   #}}}
 
-  zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'source ~/.zshrc-local.sh; zicompinit; zicdreplay;' silent;
-  zinit light zpm-zsh/empty
 
   # Plugin to WIP
+  zinit ice wait lucid;
   zinit light 'okapia/zsh-viexchange'
   zstyle 'zle:exchange' highlight 'fg=26,bg=195'
+
+
+  zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'source ~/.zshrc-local.sh; zicompinit; zicdreplay;' silent;
+  zinit light zpm-zsh/empty
 
   # zinit self-update updates zinit
 }
@@ -294,6 +302,7 @@ zsh_plugins_config
   zstyle ':fzf-tab:*' switch-group '[' ','
   zstyle ':fzf-tab:*' show-group full
   zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
+  zstyle ':fzf-tab:*' popup-smart-tab no
 
   zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
   zstyle ':fzf-tab:complete:cd:*' fzf-command
@@ -312,8 +321,6 @@ zsh_plugins_config
 }
 
 # due to a bug in fzf-tab, bell is always, triggered https://github.com/Aloxaf/fzf-tab/issues/187
-# TODO: this should be removed when the aforementioned bug is fixed
-# unsetopt BEEP
 unsetopt LIST_BEEP
 
 # SECTION: : After Load {{{1
@@ -324,16 +331,3 @@ unsetopt LIST_BEEP
 # }}}
 
 mlog "zshrc loaded"
-
-### End of Zinit's installer chunk
-
-# 2022-09-27, Not sure if I still need to keep it
-# # Load a few important annexes, without Turbo
-# # (this is currently required for annexes)
-# zinit light-mode for \
-#     zdharma-continuum/zinit-annex-as-monitor \
-#     zdharma-continuum/zinit-annex-bin-gem-node \
-#     zdharma-continuum/zinit-annex-patch-dl \
-#     zdharma-continuum/zinit-annex-rust
-
-# ### End of Zinit's installer chunk

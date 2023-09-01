@@ -45,6 +45,3 @@ FPATH=$FPATH:$ZDOTDIR/completions
 export KUBECONFIG=$HOME/.kube/config
 
 export HOMEBREW_NO_AUTO_UPDATE=0
-function brew2() {
-    HOMEBREW_NO_AUTO_UPDATE=1 brew "$@" && brew update
-}
