@@ -1,25 +1,25 @@
-timestamp: 2023-06-26 12:00:47 EDT
+timestamp: 2023-09-01 08:31:41 EDT
 brew: brew list --version
-brew: ack 3.6.0
-brew: aom 3.4.0
-brew: apr 1.7.0_3
-brew: apr-util 1.6.1_4
+brew: ack 3.7.0
+brew: aom 3.4.0 3.6.1
+brew: apr 1.7.0_3 1.7.4
+brew: apr-util 1.6.1_4 1.6.3_1
 brew: argon2 20190702_1
 brew: aspell 0.60.8
 brew: atk 2.38.0
 brew: autoconf 2.71
 brew: autojump 22.5.3_3
 brew: avro-c 1.11.0
-brew: babashka 0.8.156
+brew: babashka 1.3.181
 brew: bash 5.1.16
-brew: bat 0.22.1
+brew: bat 0.23.0
 brew: bdw-gc 8.2.2
-brew: berkeley-db 18.1.40_1
+brew: berkeley-db 18.1.40_1 18.1.40_2
 brew: boost 1.80.0
 brew: boxes 2.1.1
 brew: brotli 1.0.9
-brew: c-ares 1.18.1_1
-brew: ca-certificates 2022-10-11
+brew: c-ares 1.19.1
+brew: ca-certificates 2023-05-30
 brew: cairo 1.16.0_5
 brew: capstone 4.0.2
 brew: cassandra@3 3.11.10
@@ -30,45 +30,45 @@ brew: cmake 3.22.3
 brew: cmatrix 2.0
 brew: coreutils 9.0_1
 brew: ctags 5.8_2
-brew: curl 7.86.0
+brew: curl 8.1.2_1
 brew: docbook 5.1_1
 brew: docbook-xsl 1.79.2_1
 brew: double-conversion 3.2.1
 brew: edencommon 2022.10.10.00
-brew: emscripten 3.1.21
+brew: emscripten 3.1.43
 brew: entr 5.2
 brew: exa 0.10.1
 brew: fb303 2022.10.10.00
 brew: fbthrift 2022.10.10.00
-brew: fd 8.5.3
+brew: fd 8.7.0
 brew: figlet 2.2.5
 brew: fizz 2022.10.10.00
-brew: flyway 9.8.2
+brew: flyway 9.20.1
 brew: fmt 9.1.0
 brew: folly 2022.10.10.00
-brew: fontconfig 2.14.1
+brew: fontconfig 2.14.2
 brew: fortune 9708
-brew: freetds 1.3.13
-brew: freetype 2.12.1
+brew: freetds 1.3.13 1.3.18_1
+brew: freetype 2.13.1
 brew: fribidi 1.0.12
-brew: fzf 0.35.1
-brew: gd 2.3.3_3
+brew: fzf 0.42.0
+brew: gd 2.3.3_5 2.3.3_3
 brew: gdbm 1.23
 brew: gdk-pixbuf 2.42.9
 brew: gettext 0.21.1
 brew: gflags 2.2.2
 brew: giflib 5.2.1
-brew: git 2.35.1
-brew: git-extras 6.5.0
+brew: git 2.41.0_2
+brew: git-extras 7.0.0
 brew: git-review 2.3.1
-brew: glib 2.74.0
+brew: glib 2.76.4
 brew: glog 0.6.0
 brew: gmp 6.2.1_1
 brew: gnu-getopt 2.38.1
 brew: gnu-sed 4.8
 brew: gnu-time 1.9
-brew: gnutls 3.7.8
-brew: go 1.18
+brew: gnutls 3.7.8 3.8.0
+brew: go 1.20.6
 brew: gobject-introspection 1.74.0
 brew: gotop 4.2.0
 brew: graphite2 1.3.14
@@ -77,73 +77,76 @@ brew: grep 3.8_1
 brew: gsettings-desktop-schemas 43.0
 brew: gtk+3 3.24.34
 brew: guile 3.0.8_2
-brew: harfbuzz 5.3.1
+brew: harfbuzz 8.0.1
 brew: helm 3.6.3
 brew: hicolor-icon-theme 0.17
-brew: highlight 4.2
-brew: htop 3.2.1
+brew: highlight 4.6
+brew: highway 1.0.4
+brew: htop 3.2.2
 brew: hub 2.14.2
 brew: hugo 0.95.0
-brew: icu4c 71.1
-brew: imath 3.1.5
+brew: icu4c 73.2
+brew: imath 3.1.5 3.1.9
 brew: imlib2 1.8.1
 brew: iperf3 3.12
 brew: jansson 2.14
 brew: jet 0.1.0
 brew: jpeg 9e
-brew: jpeg-turbo 2.1.4
-brew: jpeg-xl 0.6.1_1
+brew: jpeg-turbo 2.1.5.1
+brew: jpeg-xl 0.6.1_1 0.8.2
 brew: jq 1.6
 brew: jump 0.41.0
+brew: k9s 0.27.4
 brew: kafka 2.8.0
 brew: kcat 1.7.0
-brew: krb5 1.20
+brew: krb5 1.20 1.21.1
 brew: kubernetes-cli 1.25.3
+brew: lazygit 0.38.2
 brew: leiningen 2.9.5
 brew: libass 0.16.0
-brew: libavif 0.10.1_1
+brew: libavif 0.11.1 0.10.1_1
 brew: libcaca 0.99b20
 brew: libde265 1.0.8
 brew: libepoxy 1.5.10
-brew: libevent 2.1.12
+brew: libevent 2.1.12_1 2.1.12
 brew: libffi 3.4.2
 brew: libheif 1.13.0
-brew: libidn2 2.3.4
-brew: libnghttp2 1.51.0
-brew: libpng 1.6.38
-brew: libpq 14.5
+brew: libidn2 2.3.4 2.3.4_1
+brew: libnghttp2 1.54.0
+brew: libpng 1.6.40
+brew: libpq 15.3_1 14.5
 brew: libpthread-stubs 0.4
 brew: librdkafka 1.9.2
 brew: libserdes 8.0.0
 brew: libslirp 4.7.0
 brew: libsodium 1.0.18_1
-brew: libssh 0.10.4
-brew: libssh2 1.10.0
+brew: libssh 0.10.5_1 0.10.4
+brew: libssh2 1.11.0_1 1.10.0
 brew: libtasn1 4.19.0
 brew: libtermkey 0.22
-brew: libtiff 4.4.0_1
+brew: libtiff 4.5.1
 brew: libtool 2.4.7
-brew: libunistring 1.0
+brew: libunistring 1.0 1.1
 brew: libusb 1.0.26
-brew: libuv 1.44.2
+brew: libuv 1.46.0
 brew: libvmaf 2.3.1
-brew: libvterm 0.3
-brew: libx11 1.8.2
-brew: libxau 1.0.10
-brew: libxcb 1.15
-brew: libxdmcp 1.1.3
+brew: libvterm 0.3.2
+brew: libx11 1.8.6
+brew: libxau 1.0.11
+brew: libxcb 1.15_1
+brew: libxdmcp 1.1.4
 brew: libxext 1.3.5
-brew: libxrender 0.9.10
+brew: libxrender 0.9.11
 brew: libyaml 0.2.5
-brew: libzip 1.9.2
-brew: little-cms2 2.14
+brew: libzip 1.10.0_1 1.9.2
+brew: little-cms2 2.15
 brew: lolcat 100.0.1
-brew: lua 5.4.4_1
-brew: lua-language-server 3.6.3
-brew: luajit 2.1.0-beta3-20221122.1
+brew: lua 5.4.6 5.4.4_1
+brew: lua-language-server 3.6.23
+brew: luajit 2.1.0-beta3-20230709.3
 brew: luajit-openresty 2.1-20220411
-brew: luarocks 3.8.0
-brew: luv 1.44.2-1
+brew: luarocks 3.9.2
+brew: luv 1.45.0-0
 brew: lz4 1.9.4
 brew: lzlib 1.13
 brew: lzo 2.10
@@ -156,57 +159,59 @@ brew: minikube 1.27.1
 brew: mit-scheme 11.2
 brew: mkcert 1.4.4
 brew: mpdecimal 2.5.1
-brew: msgpack 4.0.0
-brew: ncurses 6.3
-brew: neovide 0.10.3
-brew: neovim HEAD-9fe8d2c 0.8.1
+brew: msgpack 6.0.0
+brew: ncurses 6.4 6.3
+brew: neovide 0.10.4
+brew: neovim 0.9.1 HEAD-9fe8d2c
 brew: neovim-remote 2.5.1
-brew: nettle 3.8.1
-brew: node 19.1.0
+brew: nettle 3.9.1 3.8.1
+brew: node 20.4.0
 brew: nvm 0.39.1_1
 brew: oniguruma 6.9.8
-brew: openexr 3.1.5
-brew: openjdk 19.0.1
+brew: openexr 3.1.5 3.1.9
+brew: openjdk 20.0.1
 brew: openjdk@11 11.0.16.1
 brew: openjdk@17 17.0.5
 brew: openjdk@8 1.8.0+322
-brew: openldap 2.6.3
+brew: openldap 2.6.3 2.6.5
 brew: openssl@1.1 1.1.1s
-brew: p11-kit 0.24.1_1
+brew: openssl@3 3.1.1_1
+brew: p11-kit 0.24.1_1 0.25.0
+brew: pandoc 3.1.5
 brew: pango 1.50.9
 brew: pcre 8.45
-brew: pcre2 10.40
-brew: perl 5.36.0
+brew: pcre2 10.42
+brew: perl 5.36.0 5.36.1
 brew: pget 0.0.6
-brew: php 8.1.10_1
-brew: pixman 0.40.0
+brew: php 8.2.8
+brew: pixman 0.42.2
 brew: pkg-config 0.29.2_3
-brew: podman 4.2.1
+brew: podman 4.5.1
 brew: postgresql@11 11.18
 brew: pstree 2.39
 brew: pyenv 2.3.4
 brew: pygments 2.13.0_1
 brew: python@3.10 3.10.8
-brew: python@3.11 3.11.0
+brew: python@3.11 3.11.4_1
 brew: python@3.8 3.8.14
 brew: python@3.9 3.9.14
-brew: qemu 7.1.0
+brew: qemu 8.0.3
 brew: ranger 1.9.3_2
 brew: readline 8.2.1
 brew: ripgrep 13.0.0
 brew: ripgrep-all 0.9.6
 brew: rlwrap 0.46.1
-brew: rtmpdump 2.4+20151223_1
-brew: ruby 3.1.2_1
+brew: rtmpdump 2.4+20151223_1 2.4+20151223_2
+brew: ruby 3.1.2_1 3.2.2_1
 brew: shared-mime-info 2.2
 brew: shellcheck 0.8.0
 brew: shfmt 3.4.3
 brew: showkey 1.8
 brew: six 1.16.0_3
-brew: snappy 1.1.9
+brew: snappy 1.1.10 1.1.9
 brew: speedtest 1.1.1.84
 brew: spring-boot 2.7.1
-brew: sqlite 3.39.4
+brew: sqlite 3.42.0
 brew: srt 1.5.0
 brew: tcl-tk 8.6.12_1
 brew: telnet 63
@@ -217,28 +222,27 @@ brew: tmux 3.3a
 brew: toilet 0.3
 brew: trash 0.9.2
 brew: tree 2.0.4
-brew: tree-sitter 0.20.7 HEAD-ccd6bf5
-brew: unbound 1.17.0
+brew: tree-sitter 0.20.8 HEAD-ccd6bf5
+brew: unbound 1.17.0 1.17.1_1
 brew: unibilium 2.1.1
 brew: unixodbc 2.3.11
 brew: utf8proc 2.7.0
-brew: vde 2.3.2_1
-brew: vim 9.0.0350_1
+brew: vde 2.3.2_1 2.3.3
 brew: wangle 2022.10.10.00
-brew: watch 4.0.0
+brew: watch 4.0.3
 brew: watchman 2022.10.10.00
-brew: webp 1.2.4
+brew: webp 1.3.1 1.2.4
 brew: wget 1.21.3
 brew: x265 3.5
 brew: xmlto 0.0.28
-brew: xorgproto 2022.2
-brew: xz 5.2.7
+brew: xorgproto 2023.2
+brew: xz 5.4.3
 brew: yajl 2.1.0
 brew: yuicompressor 2.4.8_1
 brew: zkcli 0.4.0
 brew: zookeeper 3.7.0
-brew: zsh 5.8.1
-brew: zstd 1.5.2
+brew: zsh 5.9
+brew: zstd 1.5.5
 brew: adoptopenjdk8 8,292,b10
 brew: alacritty 0.11.0
 brew: altair-graphql-client 4.5.0
