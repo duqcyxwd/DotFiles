@@ -60,7 +60,7 @@ local set_options = function()
 
   vim.opt.backspace      = 'eol,start,indent'                   -- | Configure backspace
   vim.opt.whichwrap:append('<,>,h,l')                           -- | Allow specified keys to move the cursor left/right to move to the previous/next line
-  vim.opt.diffopt        = 'internal,filler,vertical,'           -- | Configure diff options
+  vim.opt.diffopt        = 'internal,filler,vertical,'          -- | Configure diff options
                                                                 -- Invisible characters settings
   vim.opt.listchars      = { eol = '¬',
     tab                  = '>·',
@@ -93,6 +93,8 @@ local set_options = function()
     '.git/', '.hg/', '.svn/',                                   -- Version control directories
     '.DS_Store', 'Thumbs.db',                                   -- System-specific files
   })
+
+  vim.opt.shada          =  "!,'500,f1,<300,s10,h"              -- | Set shada value, Keep 500 recent files SEE :help 21.3
 
 end
 

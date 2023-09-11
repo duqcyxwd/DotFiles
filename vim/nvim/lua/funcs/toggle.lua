@@ -14,88 +14,178 @@ M.vim_diff_whitespace = function() --| " [Functions] Vim diff whitespace toggle
 end
 
 M.highlight_over_80 = function()
-  if vim.o.textwidth == 0 then
-    vim.o.textwidth = 80
-    vim.g.highlightCharacterOver80 = 1
-    vim.cmd('highlight OverLength ctermbg=red ctermfg=white guibg=#592929')
-    vim.cmd('match OverLength /\\%81v.\\+/')
-    vim.cmd('syntax enable')
-  else
-    vim.o.textwidth = 0
-    vim.g.highlightCharacterOver80 = 0
-    vim.cmd('highlight OverLength ctermbg=red ctermfg=white guibg=#592929')
-    vim.cmd('match OverLength /\\%999v.\\+/')
-    vim.cmd('syntax enable')
+  local fn = function()
+    if vim.o.textwidth == 0 then
+      vim.o.textwidth = 80
+      vim.g.highlightCharacterOver80 = 1
+      vim.cmd('highlight OverLength ctermbg=red ctermfg=white guibg=#592929')
+      vim.cmd('match OverLength /\\%81v.\\+/')
+      vim.cmd('syntax enable')
+    else
+      vim.o.textwidth = 0
+      vim.g.highlightCharacterOver80 = 0
+      vim.cmd('highlight OverLength ctermbg=red ctermfg=white guibg=#592929')
+      vim.cmd('match OverLength /\\%999v.\\+/')
+      vim.cmd('syntax enable')
+    end
   end
+  M.highlight_over_80 = fn
+  fn()
 end
-
-local foldMethodList = { 'indent', 'expr', 'marker', 'syntax' }
-local foldMethodIndex = 1
 
 M.loop_fold_method = function()
-  print('set foldmethod=' .. foldMethodList[foldMethodIndex])
-  vim.cmd('set foldmethod=' .. foldMethodList[foldMethodIndex])
-  foldMethodIndex = foldMethodIndex % #foldMethodList + 1
+  local foldMethodList = { 'indent', 'expr', 'marker', 'syntax' }
+  local foldMethodIndex = 1
+
+  local fn = function()
+    print('set foldmethod=' .. foldMethodList[foldMethodIndex])
+    vim.cmd('set foldmethod=' .. foldMethodList[foldMethodIndex])
+    foldMethodIndex = foldMethodIndex % #foldMethodList + 1
+  end
+
+  M.loop_fold_method = fn
+  fn()
 end
 
-local default_find_group_pattern = { '.git/' }
-local local_find_group_pattern = { '.vimroot', '.svn/', '.hg/', '.bzr/', 'Rakefile', 'pom.xml', 'project.clj', '*.csproj', '*.sln', }
-
--- Set initial findroot patterns
-local vim_root = true
-vim.g.findroot_patterns = u.join(default_find_group_pattern, local_find_group_pattern)
-vim.g.findroot_not_for_subdir = 1
-
-local find_root_enable = true
-function M.toggle_find_root()
-  vim.opt.autochdir = false
-  if find_root_enable then
-    print("Disable find root")
-    print("PWD: " .. vim.fn.getcwd())
-    find_root_enable = false
-    vim.cmd("CDC")
-    local find_root_autocmd = {
-      FindRoot = {
-        { "BufEnter", '*', "CDC" }
-      }
-    }
-    core.nvim_create_augroups(find_root_autocmd)
-  else
-    print("Enable find root")
-    print("PWD: " .. vim.fn.getcwd())
-    find_root_enable = true
-    vim.cmd('FindRoot!')
-
-    local find_root_autocmd = {
-      FindRoot = {
-        { "BufEnter", vim.g.findroot_mask or '*', ":call findroot#cd(0)" }
-      }
-    }
-    core.nvim_create_augroups(find_root_autocmd)
+-- TODO Toggle relative number!
+-- local augroup = vim.api.nvim_create_augroup("numbertoggle", {})
+M.toggle_relative_num_state = true
+M.toggle_relative_num = function()
+  M.toggle_relative_num_state = vim.opt.relativenumber
+  local fn = function()
+    if M.toggle_relative_num_state then
+      M.toggle_relative_num_state = false
+      vim.opt.relativenumber = false
+    else
+      M.toggle_relative_num_state = true
+      vim.opt.relativenumber = true
+    end
   end
+  M.toggle_relative_num = fn
+  fn()
 end
 
-function M.toggle_find_root_scope()
-  vim.opt.autochdir = false
-  if not find_root_enable then
-    print("vim-findroot is not enabled")
-    return
+M.relative_num_buffer_hook = {
+  enter = function()
+    if M.toggle_relative_num_state and vim.o.nu and vim.api.nvim_get_mode().mode ~= "i" then
+      vim.opt.relativenumber = true
+    end
+  end,
+  leave = function()
+    if vim.opt.number then
+      vim.opt.relativenumber = false
+      vim.cmd "redraw"
+    end
   end
-  if vim_root then
-    print("[Parent] find root path " .. vim.fn.getcwd())
-    vim_root = false
+}
 
-    vim.g.findroot_patterns = default_find_group_pattern
-    nvim_print(vim.g.findroot_patterns)
-    vim.cmd('FindRoot!')
-  else
-    print("[VimRoot] find root path " .. vim.fn.getcwd())
-    vim_root = true
 
-    vim.g.findroot_patterns = u.join(default_find_group_pattern, local_find_group_pattern)
-    nvim_print(vim.g.findroot_patterns)
-    vim.cmd('FindRoot!')
+-- Toggle Project Root
+RootPattern = {
+  default = { '.git/' },
+  more = { '.git/', '.vimroot', '.svn/', '.hg/', '.bzr/', 'Rakefile', 'pom.xml', 'project.clj', '*.csproj', '*.sln', },
+  current = {}
+}
+
+M.set_root = function()
+  RootPattern.current = RootPattern.more
+  -- Cache to use for speed up (at cost of possibly outdated results)
+  local root_cache = {}
+  local fn = function()
+    -- Get directory path to start search from
+    local path = vim.api.nvim_buf_get_name(0)
+    if path == '' then return end
+    path = vim.fs.dirname(path)
+
+    -- -- TODO Add cache with different pattern
+    -- -- Try cache and resort to searching upward for root directory
+    -- local root = root_cache[path]
+    -- if root == nil then
+    --   local root_file = vim.fs.find(current, { path = path, upward = true })[1]
+    --   if root_file == nil then return end
+    --   root = vim.fs.dirname(root_file)
+    --   root_cache[path] = root
+    -- end
+
+    -- Work without cache
+    local root_file = vim.fs.find(RootPattern.current, { path = path, upward = true })[1]
+    if root_file == nil then return end
+    local root = vim.fs.dirname(root_file)
+
+    -- Set current directory
+    vim.fn.chdir(root)
+    print("Set root path: " .. vim.fn.getcwd())
   end
+  M.set_root = fn
+  fn()
 end
+
+M.toggle_set_root_scope = function()
+  local root_scope_flat = true
+  local fn = function()
+    vim.opt.autochdir = false
+    if root_scope_flat then
+      RootPattern.current = RootPattern.default
+      root_scope_flat = false
+    else
+      root_scope_flat = true
+      RootPattern.current = RootPattern.more
+    end
+    M.set_root()
+  end
+  print("Set Toogl FN")
+  M.toggle_set_root_scope = fn
+  fn()
+end
+
+-- local default_find_group_pattern = { '.git/' }
+-- local local_find_group_pattern = { '.vimroot', '.svn/', '.hg/', '.bzr/', 'Rakefile', 'pom.xml', 'project.clj', '*.csproj', '*.sln', }
+
+-- -- Manul set_root method
+-- -- Array of file names indicating root directory. Modify to your liking.
+-- local set_root_patterns = u.join(default_find_group_pattern, local_find_group_pattern)
+
+
+-- M.set_root = function()
+--   -- Get directory path to start search from
+--   local path = vim.api.nvim_buf_get_name(0)
+--   if path == '' then return end
+--   path = vim.fs.dirname(path)
+
+--   -- -- TODO Add cache with different pattern
+--   -- -- Try cache and resort to searching upward for root directory
+--   -- local root = root_cache[path]
+--   -- if root == nil then
+--   --   local root_file = vim.fs.find(set_root_patterns, { path = path, upward = true })[1]
+--   --   if root_file == nil then return end
+--   --   root = vim.fs.dirname(root_file)
+--   --   root_cache[path] = root
+--   -- end
+
+--   -- Work without cache
+--   local root_file = vim.fs.find(set_root_patterns, { path = path, upward = true })[1]
+--   if root_file == nil then return end
+--   local root = vim.fs.dirname(root_file)
+
+--   -- Set current directory
+--   vim.fn.chdir(root)
+--   print("Set root path: " .. vim.fn.getcwd())
+-- end
+
+-- local root_scope_flat = true
+-- function M.toggle_set_root_scope()
+--   vim.opt.autochdir = false
+--   if root_scope_flat then
+--     vim_root = false
+--     set_root_patterns = default_find_group_pattern
+--   else
+--     root_scope_flat = true
+--     set_root_patterns = u.join(default_find_group_pattern, local_find_group_pattern)
+--   end
+--   M.set_root()
+-- end
+
+-- local root_augroup = vim.api.nvim_create_augroup('MyAutoRoot', {})
+-- vim.api.nvim_create_autocmd('BufEnter', { group = root_augroup, callback = set_root })
 
 return M

@@ -4,8 +4,9 @@ return { -- Editor enhancements
 
   ------------------------------------------------------------------------- |
   "folke/which-key.nvim",
-  { -- "jiangmiao/auto-pairs"                                               | Auto pair quote and add space
-    "jiangmiao/auto-pairs",
+  {
+    "jiangmiao/auto-pairs", --                                              | Auto pair quote and add space
+    -- "jiangmiao/auto-pairs",
     init = function()
       vim.g.AutoPairsMapSpace = 0 --                                        | Disable because it adds space for test('abc')
       core.autogroup({
@@ -37,8 +38,8 @@ return { -- Editor enhancements
     "wellle/targets.vim",
     init = function(...)
       -- " Target, use single quote for "'`, which is default to q
-      vim.cmd(
-        [[ autocmd User targets#mappings#user call targets#mappings#extend({ "'": {'quote': [{'d':"'"}, {'d':'"'}, {'d':'`'}]} }) ]])
+      -- vim.cmd(
+      --   [[ autocmd User targets#mappings#user call targets#mappings#extend({ "'": {'quote': [{'d':"'"}, {'d':'"'}, {'d':'`'}]} }) ]])
     end
   },
   "michaeljsmith/vim-indent-object", --                                     | Text Object indent
@@ -47,8 +48,7 @@ return { -- Editor enhancements
   -- "machakann/vim-sandwich", --                                           | Should be replace by vim-surround, sa -> ys, visual -> S
 
 
-  "kshenoy/vim-signature",         --                                       | A plugin to place, toggle and display marks.
-  "machakann/vim-highlightedyank", --                                       | Show highlight for yank
+  "kshenoy/vim-signature", --                                               | A plugin to place, toggle and display marks.
   "mbbill/undotree",
   { -- "mg979/vim-visual-multi",                                            | vim multi cursor
     "mg979/vim-visual-multi",
@@ -70,18 +70,40 @@ return { -- Editor enhancements
       trim_on_write = true,
     }
   },
-  "osyo-manga/vim-over",  --                                                | Preview replace chanage
   "preservim/tagbar",     --                                                | Create tag on fly, used by markdown
   "tpope/vim-commentary", --                                                | Gcc
   "tpope/vim-repeat",
+
+  -- Highlight
+  "machakann/vim-highlightedyank", --                                       | Show highlight for yank
+  "osyo-manga/vim-over",           --                                       | Preview replace chanage
 
   -- Vim motions, jump, search
   -- "unblevable/quick-scope", --, {'on': []}                               | Quick highlight for f/F | Not working with Lazy
   { -- "ggandor/lightspeed.nvim",                                           | A motion plugin, f/F
     "ggandor/lightspeed.nvim",
+    enabled = false,
     config = {
       special_keys = {},
       limit_ft_matches = 10,
+    },
+  },
+  { -- "folke/flash.nvim",                                                  | Replacement for light speed, support Tree sitter search
+    "folke/flash.nvim",
+    event = "VeryLazy",
+    enabled = true,
+    opts = {
+      modes = {
+        char = {
+          jump_labels = false
+        }
+      }
+    },
+    -- stylua: ignore
+    keys = {
+      { "s", mode = { "n", "o", "x" }, function() require("flash").jump() end,              desc = "Flash" },
+      { "r", mode = { "o" },               function() require("flash").remote() end,            desc = "Remote Flash" },
+      { "R", mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
     },
   },
   { -- "phaazon/hop.nvim",                                                  | Jump Everywhere
@@ -99,7 +121,8 @@ return { -- Editor enhancements
   "kassio/neoterm",        --                                               | Terminal
   "voldikss/vim-floaterm", --                                               | #{ on: [ 'FloatermNew', 'FloatermHide', 'FloatermToggle' ] }
 
-  { "anuvyklack/pretty-fold.nvim", --                                       | Setup my folding text
+  {
+    "anuvyklack/pretty-fold.nvim", --                                       | Setup my folding text
     config = function()
       require('pretty-fold').setup({})
       require('pretty-fold').ft_setup('lua', {

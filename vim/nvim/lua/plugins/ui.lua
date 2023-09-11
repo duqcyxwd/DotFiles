@@ -1,6 +1,6 @@
 require("funcs.global")
 local core = require("funcs.nvim_core")
-local vim_u = require("funcs.vim_utility")
+local vim_u = require("funcs.nvim_utility")
 
 local function nvim_tree_on_attach(bufnr)
   local api = require("nvim-tree.api")
@@ -126,27 +126,30 @@ return {
       })
     end,
   },
-  { -- "akinsho/bufferline.nvim",
+  { -- "akinsho/bufferline.nvim",   --- | Show top tab/buffer lines
     "akinsho/bufferline.nvim",
     main = "bufferline",
     config = function()
       R("bufferline").setup({
         options = {
-          -- numbers = function(opts)
-          --   return string.format('%s.', opts.ordinal)
-          -- end,
-          numbers = "ordinal",
           diagnostics = "none",
-          offsets = { { filetype = "coc-explorer" } },
+          offsets = {
+            {
+              filetype = "NvimTree",
+              text = "File Explorer",
+              text_align = "left",
+              separator = true
+            }
+          },
           show_tab_indicators = true,
           enforce_regular_tabs = true,
-          always_show_bufferline = false,
+          always_show_bufferline = true,
           separator_style = "slant",
-          max_prefix_length = 10,
           max_name_length = 30,
-          tab_size = 25,
+          tab_size = 18,
+          buffer_close_icon = '',       -- Set to '' to save space
           show_buffer_close_icons = false,
-          show_buffer_icons = false,
+          show_buffer_icons = true,
           middle_mouse_command = "bdelete! %d",
         },
       })
@@ -352,7 +355,7 @@ return {
       fps = 30,
       render = "default",
       stages = "static",
-      timeout = 2000,
+      timeout = 5000,
       max_height = function()
         return math.floor(vim.o.lines * 0.75)
       end,
@@ -368,7 +371,7 @@ return {
         }
       })
       -- when noice is not enabled, install notify on VeryLazy
-      local Util = require("funcs.vim_utility")
+      local Util = require("funcs.nvim_utility")
       if not Util.has("noice.nvim") then
         Util.on_very_lazy(function()
           vim.notify = require("notify")

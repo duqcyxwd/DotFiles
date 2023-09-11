@@ -1,6 +1,6 @@
 require("funcs.global")
 local core = require("funcs.nvim_core")
-local vim_u = require("funcs.vim_utility")
+local vim_u = require("funcs.nvim_utility")
 local lsp_util = require("config.lspconfig-util")
 
 return {
@@ -17,7 +17,7 @@ return {
       {
         "hrsh7th/cmp-nvim-lsp",
         cond = function()
-          return require("funcs.vim_utility").has("nvim-cmp")
+          return require("funcs.nvim_utility").has("nvim-cmp")
         end,
       },
     },

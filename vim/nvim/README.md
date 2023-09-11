@@ -17,7 +17,8 @@
 │  ├──  bracket_jump.lua
 │  ├──  global.lua
 │  ├──  utility.lua
-│  └──  vim_utility.lua
+│  ├──  nvim_core.lua
+│  └──  nvim_utility.lua
 ├──  plugins/              | Plugins will be auto load by lazy
 │  ├──  cmp.lua
 │  ├──  editor.lua

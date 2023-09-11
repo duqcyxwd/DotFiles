@@ -748,88 +748,6 @@ let g:conjure#client#clojure#nrepl#connection#auto_repl#hidden  = v:true
 
 " """"""""""""""""""""""""""""""
 "
-" => defx {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" defx somewhat annoyingly doesn't provide any default mappings. I copy-pasted
-" this example config from :help defx and modified it.
-function! s:defx_my_settings() abort "{{{2
-  " Define mappings
-  nnoremap <silent><buffer><expr> <CR>    defx#do_action('open')
-  nnoremap <silent><buffer><expr> c       defx#do_action('copy')
-  nnoremap <silent><buffer><expr> m       defx#do_action('move')
-  nnoremap <silent><buffer><expr> p       defx#do_action('paste')
-  nnoremap <silent><buffer><expr> l       defx#do_action('open')
-  nnoremap <silent><buffer><expr> E       defx#do_action('open', 'vsplit')
-  nnoremap <silent><buffer><expr> P       defx#do_action('open', 'pedit')
-  nnoremap <silent><buffer><expr> o       defx#do_action('open_or_close_tree')
-  nnoremap <silent><buffer><expr> K       defx#do_action('new_directory')
-  nnoremap <silent><buffer><expr> N       defx#do_action('new_file')
-  nnoremap <silent><buffer><expr> M       defx#do_action('new_multiple_files')
-  nnoremap <silent><buffer><expr> C       defx#do_action('toggle_columns', 'mark:indent:icon:filename:type:size:time')
-  nnoremap <silent><buffer><expr> S       defx#do_action('toggle_sort', 'time')
-  nnoremap <silent><buffer><expr> d       defx#do_action('remove')
-  nnoremap <silent><buffer><expr> r       defx#do_action('rename')
-  nnoremap <silent><buffer><expr> !       defx#do_action('execute_command')
-  nnoremap <silent><buffer><expr> x       defx#do_action('execute_system')
-  nnoremap <silent><buffer><expr> yy      defx#do_action('yank_path')
-  nnoremap <silent><buffer><expr> .       defx#do_action('toggle_ignored_files')
-  nnoremap <silent><buffer><expr> ;       defx#do_action('repeat')
-  nnoremap <silent><buffer><expr> h       defx#do_action('cd', ['..'])
-  nnoremap <silent><buffer><expr> ~       defx#do_action('cd')
-  nnoremap <silent><buffer><expr> q       defx#do_action('quit')
-  nnoremap <silent><buffer><expr> <Space> defx#do_action('toggle_select') . 'j'
-  nnoremap <silent><buffer><expr> *       defx#do_action('toggle_select_all')
-  nnoremap <silent><buffer><expr> j       line('.') == line('$') ? 'gg' : 'j'
-  nnoremap <silent><buffer><expr> k       line('.') == 1 ? 'G' : 'k'
-  nnoremap <silent><buffer><expr> <C-l>   defx#do_action('redraw')
-  nnoremap <silent><buffer><expr> <C-g>   defx#do_action('print')
-  nnoremap <silent><buffer><expr> C       defx#do_action('change_vim_cwd')
-
-  call defx#custom#option('_',    { 'columns': 'mark:indent:icon:filename:type:size:time' })
-  call defx#custom#column('time', { 'format':  '%Y-%m-%d %I:%M %p'                        })
-
-endfunction
-
-function! s:open_defx_if_directory() abort "{{{2
-  " This throws an error if the buffer name contains unusual characters like
-  " [[buffergator]]. Desired behavior in those scenarios is to consider the
-  " buffer not to be a directory.
-  try
-    let l:full_path = expand(expand('%:p'))
-  catch
-    return
-  endtry
-
-  " If the path is a directory, delete the (useless) buffer and open defx for
-  " that directory instead.
-  if isdirectory(l:full_path)
-    execute "Defx `expand('%:p')` | bd " . expand('%:r')
-  endif
-endfunction
-
-augroup defx_config "{{{2
-
-  autocmd!
-  autocmd FileType defx call s:defx_my_settings()
-
-  " It seems like BufReadPost should work for this, but for some reason, I can't
-  " get it to fire. BufEnter seems to be more reliable.
-  autocmd BufEnter * call s:open_defx_if_directory()
-augroup END
-" }}}2
-
-" netrw apparently has a similar callback, because sometimes netrw opens instead
-" of defx! According to https://stackoverflow.com/a/21687112/2338327, this
-" disables netrw.
-let loaded_netrwPlugin = 1
-
-nnoremap <silent> -
-      \ :Defx `expand('%:p:h')`
-      \ -search=`expand('%:p')`<CR>
-
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => fzf {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " '~/duqcyxwd/fzf.vim',
@@ -1335,6 +1253,7 @@ let g:neoterm_autoscroll = 1
 let g:neoterm_keep_term_open = 1
 let g:neoterm_autoinsert = 0
 let g:neoterm_autojump = 1          "Jump to window
+let g:neoterm_automap_keys = '-tt'
 
 augroup neoterm
   autocmd!
@@ -1355,9 +1274,7 @@ augroup END
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:floaterm_width      = 0.8
 let g:floaterm_height     = 0.9
-" WIP This change might cause vim start with insert mode
 let g:floaterm_autoinsert = v:true
-" let g:floaterm_opener     = 'tabe'
 let g:floaterm_opener     = 'vsplit'
 let g:floaterm_autohide   = 1                " Hide when open new file
 let g:floaterm_autoclose  = 1

@@ -1,4 +1,5 @@
 local core = require("funcs.nvim_core")
+local toggle = require("funcs.toggle")
 
 -- diagnostic Autocmd
 
@@ -14,7 +15,7 @@ vim.cmd [[let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"]]
 
 vim.cmd [[autocmd ColorScheme * highlight Comment cterm=italic gui=italic]]
 
-local markdown_key_map = function ()
+local markdown_key_map = function()
   vim.cmd([[
     nnoremap <buffer> <Tab> >>
     nnoremap <buffer> <S-Tab> <<
@@ -28,13 +29,11 @@ local markdown_key_map = function ()
     imap <buffer> <Tab> <C-t>
     imap <buffer> <S-Tab> <C-d>
   ]])
-
 end
 
 local autocmds = {
 
   default = {
-
     -- Large file loading: disable syntax for large file and syntax can be turn on by syntax on
     -- { "BufReadPre", "*", 'if getfsize(expand("%")) > 150000 | syn off | set foldmethod=manual | set noswapfile | echom "XXX Large file detected" | endif' },
 
@@ -43,7 +42,6 @@ local autocmds = {
     -- autocmd BufReadPre * if getfsize(expand("%")) > 10000000 | syntax off | endif
 
   },
-
 
   buffer_view = {
     -- Keep folding when switch buffer
@@ -70,18 +68,6 @@ local autocmds = {
     { "BufEnter", "keys.lua", "set foldmethod=marker" },
   },
 
-  allFileTypes = {
-    { "FileType", "clojure",       "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
-    { "FileType", "fugitive",      "nmap <buffer> q gq" },
-    { "FileType", "fugitiveblame", "nmap <buffer> q gq" },
-    { "FileType", "git",           "nmap <buffer> q :bd<CR>" },
-    { "FileType", "lua",           "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr tabstop=2 softtabstop=2 shiftwidth=2" },
-    { "FileType", "robot",         "setlocal foldmethod=indent" },
-    { "FileType", "sagahover",     "nnoremap <buffer> <Esc> :q<CR>" },
-    { "FileType", "startify",      "DisableWhitespace" },
-    { "FileType", "vim",           "setlocal foldmethod=marker" },
-  },
-
   Session = {
     -- { "VimLeave", "*", "SSave! cached | echom 'Save last session'" },
     -- testing
@@ -95,14 +81,38 @@ local autocmds = {
   },
 
   markdown = {
-    { "FileType", "markdown",   "setlocal foldmethod=expr conceallevel=2 foldtext=foldtext()" },
-    { "FileType", "markdown",   markdown_key_map },
+    { "FileType", "markdown", "setlocal foldmethod=expr conceallevel=2 foldtext=foldtext()" },
+    { "FileType", "markdown", markdown_key_map },
   },
 
-  lua = {
-    -- { "FileType", "lua",   "setlocal foldtext=v:lua.lua_custom_fold_text()" },
-    { "FileType", "lua",   "setlocal foldmethod=expr" },
-  }
+  line_number = {
+    { { "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, "*", toggle.relative_num_buffer_hook.enter },
+    { { "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" },   "*", toggle.relative_num_buffer_hook.leave },
+  },
+
+  DEV_DEV = {
+    -- { "DirChanged", "*",   "echom 'Current Directory changed'; pwd" },
+    -- { "DirChanged", "*",   function () print("Current directory changed."); print(vim.fn.getcwd()) end },
+    -- { "BufEnter", "*",   function () print(vim.fn.getcwd()) end },
+  },
+
+}
+
+local file_type_autocmds = {
+
+  DEFAULT_FILE_TYPE = {
+    { "FileType", "clojure",       "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
+    { "FileType", "fugitive",      "nmap <buffer> q gq" },
+    { "FileType", "fugitiveblame", "nmap <buffer> q gq" },
+    { "FileType", "git",           "nmap <buffer> q :bd<CR>" },
+    { "FileType", "json",          "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
+    { "FileType", "lua",
+                                     "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr tabstop=2 softtabstop=2 shiftwidth=2" },
+    { "FileType", "robot",         "setlocal foldmethod=indent" },
+    { "FileType", "sagahover",     "nnoremap <buffer> <Esc> :q<CR>" },
+    { "FileType", "startify",      "DisableWhitespace" },
+    { "FileType", "vim",           "setlocal foldmethod=marker" },
+  },
 }
 
 
@@ -110,21 +120,21 @@ local autocmds = {
 -- vim.opt.foldtext = 'v:lua.custom_fold_text()'
 -- vim.opt.foldtext = 'v:lua.nvim_treesitter#foldexpr()'
 function _G.custom_fold_text()
+  local line = vim.fn.getline(vim.v.foldstart)
 
-    local line = vim.fn.getline(vim.v.foldstart)
+  local repeatsymbol = '-'
+  local prefix = ''
 
-    local repeatsymbol = '-'
-    local prefix = ''
+  local w = vim.fn.winwidth(0) - vim.o.foldcolumn - (vim.o.number and 8 or 0)
+  local foldSize = 1 + vim.v.foldend - vim.v.foldstart
+  local foldSizeStr = ' ' .. foldSize .. ' lines '
+  local foldLevelStr = string.rep('+--', vim.v.foldlevel)
+  local lineCount = vim.fn.line('$')
+  local foldPercentage = string.format('[%.1f', (foldSize * 1.0) / lineCount * 100) .. '%] '
+  local expansionString = string.rep(repeatsymbol,
+    w - vim.fn.strwidth(prefix .. foldSizeStr .. line .. foldLevelStr .. foldPercentage))
 
-    local w = vim.fn.winwidth(0) - vim.o.foldcolumn - (vim.o.number and 8 or 0)
-    local foldSize = 1 + vim.v.foldend - vim.v.foldstart
-    local foldSizeStr = ' ' .. foldSize .. ' lines '
-    local foldLevelStr = string.rep('+--', vim.v.foldlevel)
-    local lineCount = vim.fn.line('$')
-    local foldPercentage = string.format('[%.1f', (foldSize * 1.0) / lineCount * 100) .. '%] '
-    local expansionString = string.rep(repeatsymbol, w - vim.fn.strwidth(prefix .. foldSizeStr .. line .. foldLevelStr .. foldPercentage))
-
-    return prefix .. line .. expansionString .. foldSizeStr .. foldPercentage .. foldLevelStr
+  return prefix .. line .. expansionString .. foldSizeStr .. foldPercentage .. foldLevelStr
 end
 
 -- autogroup toggle
@@ -132,7 +142,7 @@ local diagnostics_float_enabled = true
 local float_toggle_group = {
   DIAGNOSTICS_FLOAT = {
     -- Only show diagnostic when edit complete. This will help me to get clean complete list
-    { "CursorHold", "*", function()  require'lspsaga.diagnostic'.show_line_diagnostics() end },
+    { "CursorHold", "*", function() require 'lspsaga.diagnostic'.show_line_diagnostics() end },
   },
 }
 vim.diagnostic.float_toggle = function()
@@ -151,4 +161,5 @@ end
 
 -- Enable by default
 core.autogroup(autocmds)
+core.autogroup(file_type_autocmds)
 core.autogroup(float_toggle_group)

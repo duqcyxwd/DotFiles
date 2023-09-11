@@ -2,12 +2,13 @@ require("nvim_utils")
 
 local u = require("funcs.utility")
 local brj = require("funcs.bracket_jump")
-local vim_u = require('funcs.vim_utility')
+local vim_u = require('funcs.nvim_utility')
 
 local M = {}
 
 vim.g.mapleader = "\\"
-vim.g.maplocalleader = ","
+-- vim.g.maplocalleader = ","
+vim.g.maplocalleader = "-"
 
 -- init which-key {{{1
 -- stylua: ignore start
@@ -157,7 +158,6 @@ set_keymap("n", { noremap = true, silent = true }, {
   -- Edit
   { "K",         ":call Show_documentation()<CR>" },
   { "<CR>",      "za" },
-  { "gca",       ":call NERDComment('n', 'Toggle')<CR>" },
   { "gV",        "<Plug>(VM-Reselect-Last)" },
 
 
@@ -202,9 +202,6 @@ local impair_map_config = { --{{{2
   { "[j", "<C-o>" },
   { "]j", "<C-i>" },
 
-  -- Page down/up
-  { "[d", "<PageUp>" },
-  { "]d", "<PageDown>" },
 
   -- -- vim diff next hunk
   -- { "[c", "[c" },
@@ -214,11 +211,11 @@ local impair_map_config = { --{{{2
   { "[h", ":lua require'gitsigns'.prev_hunk({ preview = true})<CR>" },
   { "]h", ":lua require'gitsigns'.next_hunk({ preview = true})<CR>" },
 
-  -- Place holder for g e
-  { "[g", "" },
-  { "]g", "" },
+  -- Place holder for e[rror] d[iagnostic]
   { "[e", "" },
   { "]e", "" },
+  { "[d", "" },
+  { "]d", "" },
 
 
   { "[f", ":FloatermPrev<CR><C-Bslash><C-n>" },
@@ -278,45 +275,52 @@ space_key_nmap.n = brackets_keymap
 
 -- Space Key mapping
 -- TOP {{{1
-space_key_nmap['<space>'] = { 'FZF Command Search', ':FzfLua commands<CR>' }
-space_key_nmap['<tab>']   = { 'last buffer', ':e#<CR>' }
+space_key_nmap['<space>'] = { 'FZF Command Search',         ':FzfLua commands<CR>' }
+space_key_nmap['<tab>']   = { 'last buffer',                ':e#<CR>' }
 space_key_nmap["\\"]      = { 'FZF Command History Search', ':FzfLua command_history<CR>' }
-space_key_nmap["'"]       = { 'Toggles the neoterm', ':above Ttoggle<CR>' }
+space_key_nmap["'"]       = { 'Toggles the neoterm',        ':above Ttoggle<CR>' }
 space_key_nmap["`"]       = { 'Toggles the Float Terminal', ':FloatermToggle<CR>' }
+space_key_nmap[";"]       = { 'BufferLinePick',             ':BufferLinePick<CR>' }
+space_key_nmap["v"]       = { 'Flash Treesitter',           function() require("flash").treesitter() end }
 
 space_key_nmap.b = { --{{{1 +buffer
   name = '+buffer',
 
+  a = { 'List all buffers',        ':Telescope scope buffers<CR>' },
   b = { 'List all buffers',        ':FzfLua buffers<CR>' },
-  d = { 'Delete this buffer',      ':call undoquit#SaveWindowQuitHistory()<CR>:Bclose<CR>' },
+  f = { 'Buffer line Pick',        ':BufferLinePick<CR>' },
+  d = { 'Delete this buffer',      vim_u.close_current_buffer },
   D = { 'Delete this buffer!',     ':bp<bar>sp<bar>bn<bar>bd!<CR>' },
   h = { 'Nvim Home',               ':Alpha<CR>' },
   j = { 'Buffer line jump',        ':BufferLinePick<CR>' },
+  o = { 'Buffer Only',             ':Bdelete other<CR>' },
+  c = { 'Buffer Clean unattached', ':Bdelete hidden<CR>' },
   n = { 'Next buffer',             ':bnext<CR>' },
-  o = { 'Buffer only',             ':Bdelete other<CR>' },
-  c = { 'Buffer clean unattached', ':Bdelete hidden<CR>' },
   p = { 'Previous buffer',         ':bprev<CR>' },
 
-  t = { 'Buffer tabs',             ':FzfLua tabs<CR>' },
   l = { 'Buffer tabs list',        ':FzfLua tabs<CR>' },
 
 }
 
 -- stylua: ignore
-space_key_nmap.c = { --{{{1 +COC/Change
+space_key_nmap.c = { --{{{1 +COC/Change/CD
   name = "+COC/Change",
 
-  R = { "Help tag",        ":<C-u>CocList extensions<CR>" },
-  e = { "Coc Explorer",    ":CocCommand explorer<CR>" },
-  c = { "Commands",        ":<C-u>CocList commands<CR>" },
-  l = { "List",            ":CocList<CR>" },
-  i = { "Info",            ":CocInfo<CR>" },
-  E = { "extensions",      ":<C-u>CocList extensions<CR>" },
-  -- s = { "symbols",      ":<C-u>CocList -I symbols<CR>" },
+  R = { "Help tag",                ":<C-u>CocList extensions<CR>" },
+  e = { "Coc Explorer",            ":CocCommand explorer<CR>" },
+  c = { "Commands",                ":<C-u>CocList commands<CR>" },
+  -- l = { "List",                 ":CocList<CR>" },
+  i = { "Info",                    ":CocInfo<CR>" },
+  E = { "extensions",              ":<C-u>CocList extensions<CR>" },
+  -- s = { "symbols",              ":<C-u>CocList -I symbols<CR>" },
 
 
-  s = { "Change Schema",   ":FzfLua colorschemes<CR>" },
-  f = { "Change FileType", ":FzfLua fileTypes<CR>" },
+  s = { "Change Schema",           ":FzfLua colorschemes<CR>" },
+  f = { "Change FileType",         ":FzfLua fileTypes<CR>" },
+  p = { "CD root",                 ":lua require'funcs.toggle'.set_root()<CR>" },
+  d = { "CD local dir",            ":tcd %:p:h<CR>" },
+  t = { "CD local dir for Tab",    ":tcd %:p:h<CR>" },
+  l = { "CD local dir for Buffer", ":lcd %:p:h<CR>" },
 
 }
 
@@ -324,12 +328,9 @@ space_key_nmap.c = { --{{{1 +COC/Change
 space_key_nmap.d = { --{{{1 +Delete window/tab/buffer
   name = "+Delete window/tab/buffer",
 
-  -- Bclose: close buffer without close window
   h = { "Delete hidden unattached buffer", ":Bdelete hidden<CR>" },
-  b = { "Delete this buffer",              ":call undoquit#SaveWindowQuitHistory()<CR>:Bclose<CR>" },
-  B = { "Delete this buffer!",             ":call undoquit#SaveWindowQuitHistory()<CR>:bp<bar>sp<bar>bn<bar>bd!<CR>" },
-  w = { "Delete this window",              ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
-  W = { "Delete this window and buffer",   ":call undoquit#SaveWindowQuitHistory()<CR>:bdelete!<CR>" },
+  b = { "Delete this buffer",              vim_u.close_current_buffer },
+  w = { "Delete this window",              ":close<CR>" },
   t = { "Delete this tab",                 ":tabclose<CR>" },
   T = { "Delete this tab and buffer",      ":Bclose<CR>:tabclose<CR>" },
 
@@ -338,8 +339,8 @@ space_key_nmap.d = { --{{{1 +Delete window/tab/buffer
 -- stylua: ignore
 space_key_nmap.e = { --{{{1 +EDIT/Explorer
   name = "+EDIT/Explorer",
-  e = { "Coc Explorer",               ":CocCommand explorer<CR>" },
-  t = { "open current buffer in tab", ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:close<CR>:tabnext<CR>" },
+  -- e = { "Coc Explorer",               ":CocCommand explorer<CR>" },
+  t = { "open current buffer in tab", ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:lua require('funcs.nvim_utility').close_current_buffer()<CR>:tabnext<CR>" },
 }
 
 -- stylua: ignore
@@ -467,7 +468,7 @@ space_key_nmap.h = { --{{{1 +Help
 space_key_nmap.i = { --{{{1 +Inspect
   name = "+Inspect",
 
-  f = { 'Inspect file type',         ":lua require('funcs.vim_utility').show_buffer_info()<CR>" },
+  f = { 'Inspect file type',         ":lua require('funcs.nvim_utility').show_buffer_info()<CR>" },
   p = { 'Inspect installed plugins', ":enew|pu=execute('echo g:plugs')<CR>" },
   r = { 'Fzf inspect registers',     ":FzfLua registers<CR>" },
   a = { 'Fzf inspect autocmds',      ":FzfLua autocmd<CR>" },
@@ -503,16 +504,20 @@ space_key_nmap.L = { --{{{1 +LSP
 }
 
 -- stylua: ignore
-space_key_nmap.l = { --{{{1 +LSP
-  name = '+LSP',
+space_key_nmap.L = { --{{{1 +LSP
+  name = "+LSP",
 
-  d = { 'lsp toggle diagnostics',       '<Cmd>lua vim.diagnostic.toggle()<CR>' },
-  f = { 'lsp toggle diagnostics float', '<Cmd>lua vim.diagnostic.float_toggle()<CR>' },
-  s = { 'LSP Stop',                     ':LspStop<CR>' },
-  r = { 'LSP Restart',                  ':LspRestart<CR>' },
-  g = { 'LSP Start',                    ':LspStart<CR>' },
-  i = { 'LSP Info',                     ':LspInfo<CR>' },
+  S = { 'LSP Stop',    ':LspStop<CR>' },
+  R = { 'LSP Restart', ':LspRestart<CR>' },
+  G = { 'LSP Start',   ':LspStart<CR>' },
+  I = { 'LSP Info',    ':LspInfo<CR>' },
 
+}
+
+-- stylua: ignore
+space_key_nmap.m = { --{{{1 +Move
+  name = '+Move',
+  t = { "Move current buffer to tab", ":ScopeMoveBuf<CR>" },
 }
 
 -- stylua: ignore
@@ -634,7 +639,10 @@ space_key_nmap.s = { --{{{1 +Search/Source
 
   e = { 'Source current file!',                     ':so %<CR>' },
   v = { 'Source vimrc',                             ':so $XDG_CONFIG_HOME/nvim/init.vim<CR>' },
-  l = { 'Source lua file',                          ':luafile %<CR>' },
+  -- l = { 'Source lua file',                          ':luafile %<CR>' },
+
+  l = { 'Source lua code',                          ":lua loadstring( require'funcs.nvim_utility'.get_current_line())()<CR>" },
+  i = { 'Inspec lua code result',                   ":lua loadstring('nvim_print(' .. require'funcs.nvim_utility'.get_current_line() .. ')')()<CR>" },
 
 }
 
@@ -647,7 +655,11 @@ space_key_vmap.s = { --{{{1 +Search/Source
   p = { 'FZF Live Grep Current Project', "y:lua require('fzf-lua').live_grep({ search = vim.fn.getreg('+'), current_buffer_only = false })<CR>" },
   f = { 'run fag',                       ":<C-U>execute ':FloatermSend FZF_TP_OPTS=\"-p 95\\%\" fag '.GetCurrentWord('v')<CR>" },
 
+  l = { 'Source lua code',               ":luado loadstring(line)()<CR>" },
+  i = { 'Source lua code',               ":luado loadstring('nvim_print(' .. line .. ')')()<CR>" },
+
 }
+
 
 -- stylua: ignore
 space_key_nmap.S = { --{{{1 +SESSION
@@ -682,8 +694,9 @@ space_key_nmap.t = { --{{{1 +Toggle
 
   p = {
     name = 'project+',
-    r = { 'Toggle findroot',                       ":lua require'funcs.toggle'.toggle_find_root()<CR>" },
-    s = { 'Toggle root scope with .vimroot',       ":lua require'funcs.toggle'.toggle_find_root_scope()<CR>" },
+    -- Rooter is not really useful and confuzing. Use <SPC>cd or <SPC>cp instead, <SPC>toa can autodir to current folder
+    -- r = { 'Toggle findroot',                       ":lua require'funcs.toggle'.toggle_find_root()<CR>" },
+    s = { 'Toggle root scope with .vimroot',       ":lua require'funcs.toggle'.toggle_set_root_scope()<CR>" },
   },
 
   i = {
@@ -707,6 +720,7 @@ space_key_nmap.t = { --{{{1 +Toggle
     name = 'Options+',
     -- v = { 'Toggle vertical indent line',           ':IndentBlanklineToggle<CR>' },
     v = { 'Toggle vertical indent line',           ':IndentLinesToggle<CR>' },
+    r = { 'Toggle relative line number',           ":lua require'funcs.toggle'.toggle_relative_num()<CR>"},
   },
 
   f = {
@@ -716,7 +730,8 @@ space_key_nmap.t = { --{{{1 +Toggle
     e = { 'change foldmethod to expr',             ':set foldmethod=expr<CR>:set foldmethod<CR>zv' },
     s = { 'change foldmethod to syntax',           ':set foldmethod=syntax<CR>:set foldmethod<CR>zv' },
     i = { 'change foldmethod to indent',           ':set foldmethod=indent<CR>:set foldmethod<CR>zv' },
-  }
+  },
+  s = { 'Toggle Flash Search',                     function() require("flash").toggle() end },
 
 }
 
@@ -728,9 +743,9 @@ local toggle_keymap = {
   h = { 'hlsearch',       'set',      'Toggle highlight matches' },
   i = { 'list',           'set',      'Toggle invisible char (set list)' },
   n = { 'number',         'set',      'Toggle line number ' },
-  r = { 'relativenumber', 'set',      'Toggle relative line number' },
   w = { 'wrap',           'set',      'Toggle line wrap' },
   s = { 'wrapscan',       'set',      'Toggle wrapscan' },
+  a = { 'autochdir',      'set',      'Toggle autochdir' },
 }
 
 local settingToggle = function(keymap)

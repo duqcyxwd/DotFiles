@@ -53,4 +53,23 @@ M.vm_dark()
 
 -- but the color setting in that plugin is not working
 
+-- Highlight enhancement for flash
+
+-- Global highlight
+-- vim.cmd [[highlight Comment       guifg=#545c7e]]
+-- vim.cmd [[highlight Search        guibg=#3e68d7 guifg=#c8d3f5]]
+-- vim.cmd [[highlight IncSearch     guibg=#ff966c guifg=#1b1d2b]]
+-- vim.cmd [[highlight Substitute    guibg=#ff007c guifg=#c8d3f5 cterm=bold term=bold gui=bold]]
+
+
+-- Flash highlight
+vim.cmd [[highlight FlashBackdrop guifg=#545c7e]]
+-- vim.cmd [[highlight FlashMatch    guibg=#3e68d7 guifg=#c8d3f5]]
+-- vim.cmd [[highlight FlashCurrent  guibg=#ff966c guifg=#1b1d2b]]
+-- vim.cmd [[highlight FlashLabel    guibg=#ff007c guifg=#c8d3f5 cterm=bold term=bold gui=bold]]
+
+vim.cmd [[highlight Search        guibg=#FFB86C guifg=#191A21]]
+vim.cmd [[highlight FlashLabel    guibg=#21222C guifg=#fc2a05]]
+
+
 return M
