@@ -4,7 +4,7 @@ local vim_u = require("funcs.nvim_utility")
 local lsp_util = require("config.lspconfig-util")
 
 return {
-  {-- "folke/neodev.nvim",      | Automatically configures lua-language-server
+  { -- "folke/neodev.nvim",      | Automatically configures lua-language-server
     "folke/neodev.nvim", opts = {} },
   { -- "neovim/nvim-lspconfig", | Configs for the Nvim LSP client
     "neovim/nvim-lspconfig",
@@ -37,23 +37,31 @@ return {
         end
       end
 
-      lspconfig.lua_ls.setup({
+      lspconfig.lua_ls.setup {
         on_attach = lsp_util.lsp_on_attach_power,
         settings = {
           Lua = {
+            runtime = {
+              version = 'LuaJIT'
+            },
             diagnostics = {
               -- Get the language server to recognize the `vim` global
               globals = { 'vim' },
             },
             workspace = {
               checkThirdParty = false,
+              library = {
+                vim.env.VIMRUNTIME
+                -- "${3rd}/luv/library"
+                -- "${3rd}/busted/library",
+              }
             },
             completion = {
               callSnippet = "Replace",
             },
           },
         },
-      })
+      }
 
       lspconfig.diagnosticls.setup({
         on_attach = lsp_util.lsp_on_attach,

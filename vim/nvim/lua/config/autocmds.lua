@@ -32,8 +32,8 @@ local markdown_key_map = function()
 end
 
 local autocmds = {
-
   default = {
+
     -- Large file loading: disable syntax for large file and syntax can be turn on by syntax on
     -- { "BufReadPre", "*", 'if getfsize(expand("%")) > 150000 | syn off | set foldmethod=manual | set noswapfile | echom "XXX Large file detected" | endif' },
 
@@ -86,8 +86,10 @@ local autocmds = {
   },
 
   line_number = {
-    { { "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, "*", toggle.relative_num_buffer_hook.enter },
-    { { "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" },   "*", toggle.relative_num_buffer_hook.leave },
+    { { "BufEnter", "FocusGained", "WinEnter" }, "*", toggle.relative_num_buffer_hook.enter },
+    { { "BufLeave", "FocusLost", "InsertEnter", "WinLeave" },   "*", toggle.relative_num_buffer_hook.leave },
+    -- { { "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, "*", toggle.relative_num_buffer_hook.enter },
+    -- { { "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" },   "*", toggle.relative_num_buffer_hook.leave },
   },
 
   DEV_DEV = {
@@ -101,17 +103,19 @@ local autocmds = {
 local file_type_autocmds = {
 
   DEFAULT_FILE_TYPE = {
-    { "FileType", "clojure",       "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
-    { "FileType", "fugitive",      "nmap <buffer> q gq" },
-    { "FileType", "fugitiveblame", "nmap <buffer> q gq" },
-    { "FileType", "git",           "nmap <buffer> q :bd<CR>" },
-    { "FileType", "json",          "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
-    { "FileType", "lua",
-                                     "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr tabstop=2 softtabstop=2 shiftwidth=2" },
-    { "FileType", "robot",         "setlocal foldmethod=indent" },
-    { "FileType", "sagahover",     "nnoremap <buffer> <Esc> :q<CR>" },
-    { "FileType", "startify",      "DisableWhitespace" },
-    { "FileType", "vim",           "setlocal foldmethod=marker" },
+    -- Fix <CR> in quickfix
+    { "BufReadPost", "quickfix",      'nnoremap <buffer> <CR> <CR>' },
+
+    { "FileType",    "clojure",       "set foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
+    { "FileType",    "fugitive",      "nmap <buffer> q gq" },
+    { "FileType",    "fugitiveblame", "nmap <buffer> q gq" },
+    { "FileType",    "git",           "nmap <buffer> q :bd<CR>" },
+    { "FileType",    "json",          "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
+    { "FileType",    "lua",           "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr tabstop=2 softtabstop=2 shiftwidth=2" },
+    { "FileType",    "robot",         "setlocal foldmethod=indent" },
+    { "FileType",    "sagahover",     "nnoremap <buffer> <Esc> :q<CR>" },
+    { "FileType",    "startify",      "DisableWhitespace" },
+    { "FileType",    "vim",           "setlocal foldmethod=marker" },
   },
 }
 

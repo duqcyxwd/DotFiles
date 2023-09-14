@@ -1,8 +1,26 @@
 local M = {}
 
--- Example: require'funcs.nvim_utility'.get_listed_buffer()
+M.on_very_lazy = function(fn) -- Call some method with this helper
+  vim.api.nvim_create_autocmd("User", {
+    pattern = "VeryLazy",
+    callback = function()
+      fn()
+    end,
+  })
+end
+
+M.lazy_run_if_has = function (plugin, callback)
+  if M.has(plugin) then
+    callback()
+  end
+end
+
+M.has = function(plugin)
+  return require("lazy.core.config").spec.plugins[plugin] ~= nil
+end
 
 M.get_current_line = function()
+  -- Example: require'funcs.nvim_utility'.get_listed_buffer()
   local current_line = vim.fn.line(".")
 
   return vim.fn.getline(current_line)
@@ -114,7 +132,6 @@ M.close_current_buffer = function() -- A safe method works for tab, buffer, wind
   vim.api.nvim_command('bdelete')
 end
 
-
 M.clear = function() -- Clear floating window and searches
   local function close_float()
     -- https://github.com/neovim/neovim/issues/11440#issuecomment-877693865
@@ -131,9 +148,16 @@ M.clear = function() -- Clear floating window and searches
   end
 
   vim.cmd("nohlsearch")
+
   vim.lsp.buf.clear_references()
-  IfHas("notify", function(notify) notify.dismiss() end)
-  IfHas("flash", function() vim.api.nvim_buf_clear_namespace(0, vim.api.nvim_get_namespaces().flash, 0, -1) end)
+  M.lazy_run_if_has("nvim-notify", function() require('notify').dismiss() end)
+  M.lazy_run_if_has("vim-exchange", function() vim.cmd[[ XchangeClear ]] end)
+
+  if vim.api.nvim_get_namespaces().flash ~= nil then
+    vim.api.nvim_buf_clear_namespace(0, vim.api.nvim_get_namespaces().flash, 0, -1)
+  end
+  -- TOWO check plugin before call
+
   close_float()
 end
 
@@ -146,19 +170,6 @@ M.goto_first_float = function()
       return
     end
   end
-end
-
-M.on_very_lazy = function(fn) -- Call some method with this helper
-  vim.api.nvim_create_autocmd("User", {
-    pattern = "VeryLazy",
-    callback = function()
-      fn()
-    end,
-  })
-end
-
-M.has = function(plugin)
-  return require("lazy.core.config").spec.plugins[plugin] ~= nil
 end
 
 M.diff_with_saved = function() -- | Diff current buffer with saved file

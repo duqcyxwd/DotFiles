@@ -36,7 +36,7 @@ RE = function(module)
   return require(module)
 end
 
-IfHas = function(plugin_name, callback, default)
+IfHasModule = function(plugin_name, callback, default)
   local has_plugin, plugin = pcall(require, plugin_name)
   if has_plugin then
     return callback(plugin)

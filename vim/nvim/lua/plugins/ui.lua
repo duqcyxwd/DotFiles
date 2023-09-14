@@ -19,12 +19,12 @@ end
 
 return {
 
-  -- " Sidebar
+  -- " Sidebar --------------------------------- | Description
   { "simrat39/symbols-outline.nvim", cmd = "SymbolsOutline", config = true },
-  { -- "kyazdani42/nvim-tree.lua"--                                     | A File Explorer For Neovim Written In Lua
+  { -- "kyazdani42/nvim-tree.lua"--              | A File Explorer For Neovim Written In Lua
     "kyazdani42/nvim-tree.lua",
     dependencies = {
-      "nvim-tree/nvim-web-devicons", --                                     | optional for icon support
+      "nvim-tree/nvim-web-devicons", --          | optional for icon support
     },
     cmd = "NvimTreeFindFileToggle",
     opts = {
@@ -70,7 +70,7 @@ return {
   },
 
 
-  { -- "norcalli/nvim-colorizer.lua",     | Show color
+  { -- "norcalli/nvim-colorizer.lua",            | Show color
     "norcalli/nvim-colorizer.lua",
     init = function()
       vim.opt.termguicolors = true
@@ -79,7 +79,7 @@ return {
       require("colorizer").setup()
     end,
   },
-  { -- "nvim-lualine/lualine.nvim",
+  { -- "nvim-lualine/lualine.nvim",              | Lines at bottom
     "nvim-lualine/lualine.nvim",
     dependencies = { "arkav/lualine-lsp-progress" },
     config = function()
@@ -126,8 +126,9 @@ return {
       })
     end,
   },
-  { -- "akinsho/bufferline.nvim",   --- | Show top tab/buffer lines
+  { -- "akinsho/bufferline.nvim",   --           | Show top tab/buffer lines
     "akinsho/bufferline.nvim",
+    enabled = true,
     main = "bufferline",
     config = function()
       R("bufferline").setup({
@@ -147,7 +148,7 @@ return {
           separator_style = "slant",
           max_name_length = 30,
           tab_size = 18,
-          buffer_close_icon = '',       -- Set to '' to save space
+          buffer_close_icon = '', -- Set to '' to save space
           show_buffer_close_icons = false,
           show_buffer_icons = true,
           middle_mouse_command = "bdelete! %d",
@@ -156,11 +157,19 @@ return {
     end,
   },
 
+  { -- "tiagovla/scope.nvim",                    | Add buffer scope to Tabs
+    "tiagovla/scope.nvim",
+    config = function()
+      require("telescope").load_extension("scope")
+      require("scope").setup({})
+    end
+  },
+
   { -- "Yggdroot/indentLine",
     "Yggdroot/indentLine",
     enabled = true,
     init = function()
-      vim.g.indentLine_char_list = { " | ", "¦", "┆", "┊" }
+      vim.g.indentLine_char_list = { "           | ", "¦", "┆", "┊" }
       vim.g.indentLine_leadingSpaceEnabled = 0
       vim.g.indentLine_enabled = 0
     end,
@@ -238,7 +247,7 @@ return {
       })
     end,
   },
-  { -- "folke/noice.nvim"                 | Provides CMD, Messages provides lsp progress
+  { -- "folke/noice.nvim"                        | Provides CMD, Messages provides lsp progress
     "folke/noice.nvim",
     enabled = true,
     event = "VeryLazy",
@@ -251,14 +260,14 @@ return {
         },
       },
       routes = {
-         {
-           -- Allow indicator for @
-           view = "mini",
-           filter = { event = "msg_showmode" },
-           format = {
-             align = "left"
-           },
-         },
+        {
+          -- Allow indicator for @
+          view = "mini",
+          filter = { event = "msg_showmode" },
+          format = {
+            align = "left"
+          },
+        },
 
         {
           filter = { event = "msg_show", kind = "search_count" },
@@ -348,7 +357,7 @@ return {
       },
     },
   },
-  { -- "rcarriga/nvim-notify",            | A fancy notification manager for NeoVim
+  { -- "rcarriga/nvim-notify",                   | A fancy notification manager for NeoVim
     "rcarriga/nvim-notify",
     enabled = true,
     opts = {
@@ -397,14 +406,14 @@ return {
   },
 
   -- icons
-  { "nvim-tree/nvim-web-devicons", lazy = true },
+  { "nvim-tree/nvim-web-devicons",   lazy = true },
 
   -- ui components
-  { "MunifTanjim/nui.nvim",        lazy = true },
+  { "MunifTanjim/nui.nvim",          lazy = true },
 
   -- Zen
-  { "junegunn/limelight.vim",      cmd = "Limelight" },
-  { "junegunn/goyo.vim",           cmd = "Goyo" },
+  { "junegunn/limelight.vim",        cmd = "Limelight" },
+  { "junegunn/goyo.vim",             cmd = "Goyo" },
   { -- "folke/twilight.nvim",
     "folke/twilight.nvim",
     -- Dims inactive portions build on tree sitter
@@ -510,14 +519,14 @@ return {
 
       dashboard.section.header.val = vim.split(logo, "\n")
       dashboard.section.buttons.val = {
-        dashboard.button("f", " " .. " Find file",                            ":Telescope find_files <CR>"),
-        dashboard.button("n", " " .. " New file",                             ":ene <BAR> startinsert <CR>"),
-        dashboard.button("r", " " .. " Recent files",                         ":Telescope oldfiles <CR>"),
-        dashboard.button("c", " " .. " Config",                               ":e $MYVIMRC <CR>"),
+        dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
+        dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
+        dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
+        dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
         dashboard.button("R", " " .. " Restore Session in current directory", [[:SessionRestore<cr>]]),
-        dashboard.button("s", " " .. " Sessions",                             [[:SearchSession<cr>]]),
-        dashboard.button("l", "󰒲 " .. " Lazy",                                 ":Lazy<CR>"),
-        dashboard.button("q", " " .. " Quit",                                 ":qa<CR>"),
+        dashboard.button("s", " " .. " Sessions", [[:SearchSession<cr>]]),
+        dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
+        dashboard.button("q", " " .. " Quit", ":qa<CR>"),
       }
       for _, button in ipairs(dashboard.section.buttons.val) do
         button.opts.hl = "AlphaButtons"
@@ -563,7 +572,7 @@ return {
         auto_restore_enabled = false,
         auto_save_enabled = true,
         auto_session_enable_last_session = vim.loop.cwd() == vim.loop.os_homedir(),
-        auto_session_create_enabled	= true,
+        auto_session_create_enabled = true,
         auto_session_root_dir = vim.fn.stdpath("state") .. "/sessions/",
         auto_session_suppress_dirs = { "~/", "~/Downloads", "/", "~/.local/", "~/work_credential/", "/private/" },
         -- auto_session_allowed_dirs = { "~/gerrit", "~/github", "~/duqcyxwd" },
@@ -591,5 +600,5 @@ return {
     --   { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
     --   { "<leader>qd", function() require("persistence").stop() end,                desc = "Don't Save Current Session" },
     -- },
-  }
+  },
 }

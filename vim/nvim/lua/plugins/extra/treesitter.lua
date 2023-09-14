@@ -63,10 +63,12 @@ local textobjects = {
   swap = {
     enable = true,
     swap_next = {
-      ["]a"] = "@list.inner",
+      ["]A"] = "@list.inner",
+      ["]a"] = "@parameter.inner",
     },
     swap_previous = {
-      ["[a"] = "@list.inner",
+      ["[A"] = "@list.inner",
+      ["[a"] = "@parameter.inner",
     },
   },
   select = {
@@ -77,6 +79,8 @@ local textobjects = {
 
     keymaps = {
       -- You can use the capture groups defined in textobjects.scm
+      ["il"] = "@parameter.inner",
+      ["al"] = "@parameter.outer",
       ["af"] = "@function.outer",
       ["if"] = "@function.inner",
       ["ac"] = "@comment.outer",
@@ -148,10 +152,10 @@ return {
       -- WIP Not sure if I need treesitter for bash and zsh
       local ft_to_lang = require('nvim-treesitter.parsers').ft_to_lang
       require('nvim-treesitter.parsers').ft_to_lang = function(ft)
-          if ft == 'zsh' then
-              return 'bash'
-          end
-          return ft_to_lang(ft)
+        if ft == 'zsh' then
+          return 'bash'
+        end
+        return ft_to_lang(ft)
       end
     end,
   },

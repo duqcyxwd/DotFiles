@@ -122,6 +122,7 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "gp",        '"+p' },
   { "gP",        '"+P' },
   { "gY",        '"+y$' },
+
   { "gf",        vim_u.goto_first_float },
 
   { "j",         'gj' },
@@ -816,6 +817,12 @@ space_key_nmap.z = { --{{{1 +Mist/Focus mode
 -- stylua: ignore
 space_key_nmap.X = { --{{{1 +XXX
   name = "+XXX",
+}
+-- stylua: ignore end
+
+space_key_nmap.y = { --{{{1 +Yank/Copy
+  name = "+Yank",
+  p = { 'Yank file path',                       ':!cpath %<CR>' },
 }
 -- stylua: ignore end
 
