@@ -96,6 +96,21 @@ local autocmds = {
     -- { "DirChanged", "*",   "echom 'Current Directory changed'; pwd" },
     -- { "DirChanged", "*",   function () print("Current directory changed."); print(vim.fn.getcwd()) end },
     -- { "BufEnter", "*",   function () print(vim.fn.getcwd()) end },
+    -- Check Event
+    --
+
+    -- {"BufNewFile",   "*", "echom 'BufNewFile'"},
+    -- {"BufEnter",     "*", "echom 'BufEnter'"},
+    -- {"BufWritePre",  "*", "echom 'BufWritePre'"},
+    -- {"BufWritePost", "*", "echom 'BufWritePost'"},
+    -- {"VimEnter",     "*", "echom 'VimEnter'"},
+    -- {"VimLeave",     "*", "echom 'VimLeave'"},
+    -- {"WinEnter",     "*", "echom 'WinEnter'"},
+    -- {"WinLeave",     "*", "echom 'WinLeave'"},
+    -- {"InsertEnter",  "*", "echom 'InsertEnter'"},
+    -- {"InsertLeave",  "*", "echom 'InsertLeave'"},
+
+    -- {"FileType",     "*", "echom 'FileType'"},
   },
 
 }

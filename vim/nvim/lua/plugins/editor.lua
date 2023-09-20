@@ -1,12 +1,10 @@
 local core = require("funcs.nvim_core")
 
-return { -- Editor enhancements
-
+return {
   ------------------------------------------------------------------------- |
   "folke/which-key.nvim",
   { -- "jiangmiao/auto-pairs",                                              | Auto pair quote and add space
-    "jiangmiao/auto-pairs", --                                              | Auto pair quote and add space
-    -- "jiangmiao/auto-pairs",
+    "jiangmiao/auto-pairs",
     init = function()
       vim.g.AutoPairsMapSpace = 0 --                                        | Disable because it adds space for test('abc')
       core.autogroup({
@@ -52,7 +50,7 @@ return { -- Editor enhancements
   -- "tpope/vim-surround",           --                                     | provides mappings to easily delete, change and add such surroundings in pairs, e.g cs"'
 
   -- Text Objedt Operator
-  { -- "kylechui/nvim-surround",                                            | Surround Operator, use for normal: ys/ds/cs/ + '"`f visual:S
+  {                -- "kylechui/nvim-surround",                                            | Surround Operator, use for normal: ys/ds/cs/ + '"`f visual:S
     "kylechui/nvim-surround",
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
     event = "VeryLazy",
@@ -131,11 +129,11 @@ return { -- Editor enhancements
     end,
   },
 
-  "tommcdo/vim-exchange", --             | Exchange lines, cx/X/cxx/cxc, works with '.'
+  "tommcdo/vim-exchange",  --             | Exchange lines, cx/X/cxx/cxc, works with '.'
 
   "kshenoy/vim-signature", --                                               | A plugin to place, toggle and display marks.
   "mbbill/undotree",
-  { -- "mg979/vim-visual-multi",                                            | vim multi cursor
+  {                        -- "mg979/vim-visual-multi",                                            | vim multi cursor
     "mg979/vim-visual-multi",
     lazy = true,
     event = "VeryLazy",
@@ -154,13 +152,13 @@ return { -- Editor enhancements
       trim_on_write = true,
     },
   },
-  "preservim/tagbar", --                                                | Create tag on fly, used by markdown
+  "preservim/tagbar",     --                                                | Create tag on fly, used by markdown
   "tpope/vim-commentary", --                                                | Gcc
   "tpope/vim-repeat",
 
   -- Highlight
   "machakann/vim-highlightedyank", --                                       | Show highlight for yank
-  "osyo-manga/vim-over", --                                       | Preview replace chanage
+  "osyo-manga/vim-over",           --                                       | Preview replace chanage
 
   -- Vim motions, jump, search
   -- "unblevable/quick-scope", --, {'on': []}                               | Quick highlight for f/F | Not working with Lazy
@@ -172,7 +170,7 @@ return { -- Editor enhancements
       limit_ft_matches = 10,
     },
   },
-  { -- "folke/flash.nvim",                                                  | Replacement for light speed, support Tree sitter search, e.g f/F/sS, + search /
+  { -- "folke/flash.nvim",                                                  | Replacement for light speed, support Tree sitter search, e.g f/F/sS, + search / <Space>v
     "folke/flash.nvim",
     event = "VeryLazy",
     enabled = true,
@@ -185,30 +183,9 @@ return { -- Editor enhancements
     },
     -- stylua: ignore
     keys = {
-      {
-        "s",
-        mode = { "n", "o", "x" },
-        function()
-          require("flash").jump()
-        end,
-        desc = "Flash",
-      },
-      {
-        "r",
-        mode = { "o" },
-        function()
-          require("flash").remote()
-        end,
-        desc = "Remote Flash",
-      },
-      {
-        "R",
-        mode = { "o", "x" },
-        function()
-          require("flash").treesitter_search()
-        end,
-        desc = "Treesitter Search",
-      },
+      { "s", mode = { "n", "o", "x" }, function() require("flash").jump() end,              desc = "Flash", },
+      { "r", mode = { "o" },           function() require("flash").remote() end,            desc = "Remote Flash", },
+      { "R", mode = { "o", "x" },      function() require("flash").treesitter_search() end, desc = "Treesitter Search", },
     },
   },
   { -- "phaazon/hop.nvim",                                                  | Jump Everywhere
@@ -223,9 +200,13 @@ return { -- Editor enhancements
   "junegunn/vim-easy-align",
 
   -- " Terminal
-  "kassio/neoterm", --                                               | Terminal
+  "kassio/neoterm",        --                                                      | Terminal
   "voldikss/vim-floaterm", --                                               | #{ on: [ 'FloatermNew', 'FloatermHide', 'FloatermToggle' ] }
-
+  {                        -- "chrisgrieser/nvim-origami",                                         | Fold with relentless elegance. h/l
+    "chrisgrieser/nvim-origami",
+    event = "BufReadPost", -- later or on keypress would prevent saving folds
+    opts = true,           -- needed even when using default config
+  },
   {
     "anuvyklack/pretty-fold.nvim", --                                       | Setup my folding text
     config = function()
@@ -237,17 +218,50 @@ return { -- Editor enhancements
     end,
   },
 
+  {
+    'nvim-telescope/telescope-fzf-native.nvim',
+    build = 'make',
+    init = function()
+      -- You dont need to set any of these options. These are the default ones. Only
+      -- the loading is important
+      require('telescope').setup {
+        extensions = {
+          fzf = {
+            fuzzy = true,                   -- false will only do exact matching
+            override_generic_sorter = true, -- override the generic sorter
+            override_file_sorter = true,    -- override the file sorter
+            case_mode = "smart_case",       -- or "ignore_case" or "respect_case"
+            -- the default case_mode is "smart_case"
+          }
+        }
+      }
+      -- To get fzf loaded and working with telescope, you need to call
+      -- load_extension, somewhere after setup function:
+      require('telescope').load_extension('fzf')
+    end
+  },
   { -- "nvim-telescope/telescope.nvim",
     "nvim-telescope/telescope.nvim",
     commit = vim.fn.has("nvim-0.9.0") == 0 and "057ee0f8783" or nil,
     cmd = "Telescope",
     version = false, -- telescope did only one release, so use HEAD for now
+    config = true,
     opts = {
+      extensions = {
+        fzf = {
+          fuzzy = true,               -- false will only do exact matching
+          override_generic_sorter = true, -- override the generic sorter
+          override_file_sorter = true, -- override the file sorter
+          case_mode = "smart_case",   -- or "ignore_case" or "respect_case"
+          -- the default case_mode is "smart_case"
+        }
+      },
       defaults = {
         prompt_prefix = " ",
         selection_caret = " ",
         mappings = {
           i = {
+            ["<C-h>"] = "which_key",
             ["<esc>"] = function(...)
               return require("telescope.actions").close(...)
             end,
@@ -257,16 +271,22 @@ return { -- Editor enhancements
             ["<a-t>"] = function(...)
               return require("trouble.providers.telescope").open_selected_with_trouble(...)
             end,
-            ["<C-Down>"] = function(...)
+            ["<Down>"] = function(...)
               return require("telescope.actions").cycle_history_next(...)
             end,
-            ["<C-Up>"] = function(...)
+            ["<Up>"] = function(...)
               return require("telescope.actions").cycle_history_prev(...)
             end,
             ["<C-f>"] = function(...)
-              return require("telescope.actions").preview_scrolling_down(...)
+              return require("telescope.actions").results_scrolling_down(...)
             end,
             ["<C-b>"] = function(...)
+              return require("telescope.actions").results_scrolling_up(...)
+            end,
+            ["<C-j>"] = function(...)
+              return require("telescope.actions").preview_scrolling_down(...)
+            end,
+            ["<C-k>"] = function(...)
               return require("telescope.actions").preview_scrolling_up(...)
             end,
           },
@@ -279,4 +299,5 @@ return { -- Editor enhancements
       },
     },
   },
+
 }

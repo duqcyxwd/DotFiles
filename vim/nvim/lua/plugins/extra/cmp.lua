@@ -1,5 +1,63 @@
 require("funcs.global")
 
+local my_cmp_default_mapping = function(...)
+  local cmp = require('cmp')
+  return {
+    ['<C-Space>'] = { c = function() cmp.complete() end, },
+    ['<CR>'] = { c = function(fallback)
+      if cmp.visible() then
+        cmp.confirm({ select = false })
+      else
+        fallback()
+      end
+    end },
+    ['<Tab>'] = {
+      c = function()
+        if cmp.visible() then
+          cmp.select_next_item()
+        else
+          cmp.complete()
+        end
+      end,
+    },
+    ['<C-n>'] = {
+      c = function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        else
+          fallback()
+        end
+      end,
+    },
+    ['<C-p>'] = {
+      c = function(fallback)
+        if cmp.visible() then
+          cmp.select_prev_item()
+        else
+          fallback()
+        end
+      end,
+    },
+    ['<C-e>'] = { c = function(fallback)
+      if cmp.visible() then
+        cmp.confirm({ select = false })
+      else
+        fallback()
+      end
+    end },
+    ['<esc>'] = {
+      c = function(fallback)
+        if cmp.visible() then
+          if not require('cmp').abort() then
+            fallback()
+          end
+        else
+          fallback()
+        end
+      end,
+    },
+  }
+end
 local build_cmp_mapping = function(cmp, luasnip, neogen, has_neogen)
   local t = function(str)
     return vim.api.nvim_replace_termcodes(str, true, true, true)
@@ -79,6 +137,7 @@ local build_cmp_mapping = function(cmp, luasnip, neogen, has_neogen)
   }
   return map
 end
+
 
 return {
   {
@@ -192,7 +251,7 @@ return {
 
       cmp.setup(opts)
 
-      require("luasnip.loaders.from_vscode").load() --                                                | Load friendly-snippets
+      require("luasnip.loaders.from_vscode").load()                                                --                                                | Load friendly-snippets
       require("luasnip.loaders.from_vscode").load({ paths = { "~/duqcyxwd/DotFiles/snippets/" } }) -- | Load snippets from my-snippets folder
       require("luasnip.loaders.from_snipmate").load({
         paths = { "~/github/vim-snippets/snippets/" },
@@ -200,72 +259,12 @@ return {
       })
 
       -- Set configuration for specific filetype.
-      cmp.setup.filetype("gitcommit", {
-        sources = cmp.config.sources({
-          { name = "cmp_git" }, -- You can specify the `cmp_git` source if you were installed it.
-        }, {
-          { name = "buffer" },
-        }),
-      })
-
-      local cmdline_mapping = {
-          ['<C-Space>'] = {
-            c = function()
-              require('cmp').complete()
-            end,
-          },
-          ['<Tab>'] = {
-            c = function()
-              local cmp = require('cmp')
-              if cmp.visible() then
-                cmp.select_next_item()
-              else
-                cmp.complete()
-              end
-            end,
-          },
-          ['<C-n>'] = {
-            c = function(fallback)
-              local cmp = require('cmp')
-              if cmp.visible() then
-                cmp.select_next_item()
-              else
-                fallback()
-              end
-            end,
-          },
-          ['<C-p>'] = {
-            c = function(fallback)
-              local cmp = require('cmp')
-              if cmp.visible() then
-                cmp.select_prev_item()
-              else
-                fallback()
-              end
-            end,
-          },
-
-          ['<C-e>'] = {
-            c = mapping.confirm({ select = false }),
-          },
-          ['<esc>'] = {
-            c = function(fallback)
-              local cmp = require('cmp')
-              if cmp.visible() then
-                if not require('cmp').abort() then
-                  fallback()
-                end
-              else
-                fallback()
-              end
-            end,
-          },
-        }
+      cmp.setup.filetype("gitcommit", { sources = cmp.config.sources({ { name = "cmp_git" }, }, { { name = "buffer" }, }) })
 
       -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline("/", {
         -- mapping = cmp.mapping.preset.cmdline(),
-        mapping = cmdline_mapping,
+        mapping = my_cmp_default_mapping(),
         completion = { autocomplete = false },
         sources = {
           { name = "buffer" },
@@ -275,7 +274,7 @@ return {
       -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline(':', {
         completion = { autocomplete = false },
-        mapping = cmdline_mapping,
+        mapping = my_cmp_default_mapping(),
         sources = cmp.config.sources({ { name = 'path' } },
           { { name = 'cmdline', option = { ignore_cmds = { 'Man', '!' } } } })
       })

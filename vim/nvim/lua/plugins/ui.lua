@@ -26,7 +26,7 @@ return {
     dependencies = {
       "nvim-tree/nvim-web-devicons", --          | optional for icon support
     },
-    cmd = "NvimTreeFindFileToggle",
+    cmd = { "NvimTreeFindFileToggle", "NvimTreeToggle" },
     opts = {
       on_attach = nvim_tree_on_attach,
       sort_by = "name",
@@ -159,6 +159,7 @@ return {
 
   { -- "tiagovla/scope.nvim",                    | Add buffer scope to Tabs
     "tiagovla/scope.nvim",
+    enabled = true,
     config = function()
       require("telescope").load_extension("scope")
       require("scope").setup({})
@@ -390,6 +391,7 @@ return {
   },
   { -- "stevearc/dressing.nvim", better vim.ui
     "stevearc/dressing.nvim",
+    enabled = true,
     lazy = true,
     init = function()
       ---@diagnostic disable-next-line: duplicate-set-field

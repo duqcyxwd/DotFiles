@@ -2,7 +2,15 @@ require("funcs.utility")
 local u = require("funcs.utility")
 
 P = function(thing)
-  print(vim.inspect(thing))
+  if select("#", thing) == 1 then
+    vim.api.nvim_out_write(vim.inspect((thing)))
+  else
+    vim.api.nvim_out_write(vim.inspect {thing})
+  end
+  vim.api.nvim_out_write("\n")
+  -- # Notes: Otherway to show message
+  -- vim.notify(vim.inspect(plug_info))
+  -- print(vim.inspect(thing))
   return thing
 end
 
@@ -70,12 +78,22 @@ DR = function(_)
   return empty_module
 end
 
+
+local is_in_str = function(s, list)
+  for _, v in ipairs(list) do
+    if string.match(s, v) then
+      return true
+    end
+  end
+  return false
+end
+
 -- Require all modules from folder
 R_FOLD = function(dir, ignore)
   ignore = ignore or {}
   for filename in io.popen('ls -pUqAL "$XDG_CONFIG_HOME/nvim/lua/' .. dir .. '"'):lines() do
     filename = filename:match("^(.*)%.lua$")
-    local is_filter = IS_IN(filename, ignore)
+    local is_filter = is_in_str(filename, ignore)
     if is_filter then
       -- print("ignore file: " .. filename)
     end
@@ -89,7 +107,7 @@ R_VIM_FOLD = function(dir, ignore)
   ignore = ignore or {}
   for path in io.popen('ls -pUqAL "$XDG_CONFIG_HOME/vim/' .. dir .. '"'):lines() do
     local filename = path:match("^(.*)%.vim$")
-    local is_filter = IS_IN(filename, ignore)
+    local is_filter = is_in_str(filename, ignore)
     if filename and not is_filter then
       R_VIM("$XDG_CONFIG_HOME/vim/" .. dir .. "/" .. path)
     end

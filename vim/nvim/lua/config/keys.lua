@@ -255,9 +255,20 @@ local default_impair_keys = { --{{{2
 
 
 local brackets_keymap= { name = "+bracket jumps" } --{{{2
-
 -- Add mapping to keymap
-local impar_keys  = u.remove_dups(u.join(default_impair_keys, GetKeys(impair_map_config)))
+
+
+local retrieveKeys = function(maps)
+  -- get keys from a impar map
+  local res = {}
+  for _, entry in pairs(maps) do
+    local c = string.gsub(entry[1], "[%[%]]", "")
+    table.insert(res, c)
+  end
+  return res
+end
+
+local impar_keys  = u.remove_dups(u.join(default_impair_keys, retrieveKeys(impair_map_config)))
 for _, char in ipairs(impar_keys) do
   brackets_keymap[char] = {
     string.format("Set bracket jump (%s)", char),
@@ -301,7 +312,7 @@ space_key_nmap.b = { --{{{1 +buffer
   a = { 'List all buffers',        ':Telescope scope buffers<CR>' },
   b = { 'List all buffers',        ':FzfLua buffers<CR>' },
   f = { 'Buffer line Pick',        ':BufferLinePick<CR>' },
-  d = { 'Delete this buffer',      vim_u.close_current_buffer },
+  d = { 'Delete this buffer',      vim_u.smart_buffer_close },
   D = { 'Delete this buffer!',     ':bp<bar>sp<bar>bn<bar>bd!<CR>' },
   h = { 'Nvim Home',               ':Alpha<CR>' },
   j = { 'Buffer line jump',        ':BufferLinePick<CR>' },
@@ -341,7 +352,7 @@ space_key_nmap.d = { --{{{1 +Delete window/tab/buffer
   name = "+Delete window/tab/buffer",
 
   h = { "Delete hidden unattached buffer", ":Bdelete hidden<CR>" },
-  b = { "Delete this buffer",              vim_u.close_current_buffer },
+  b = { "Delete this buffer",              vim_u.smart_buffer_close },
   w = { "Delete this window",              ":close<CR>" },
   t = { "Delete this tab",                 ":tabclose<CR>" },
   T = { "Delete this tab and buffer",      ":Bclose<CR>:tabclose<CR>" },
@@ -353,7 +364,7 @@ space_key_nmap.d = { --{{{1 +Delete window/tab/buffer
 space_key_nmap.e = { --{{{1 +EDIT/Explorer
   name = "+EDIT/Explorer",
   -- e = { "Coc Explorer",               ":CocCommand explorer<CR>" },
-  t = { "open current buffer in tab", ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:lua require('funcs.nvim_utility').close_current_buffer()<CR>:tabnext<CR>" },
+  t = { "open current buffer in tab", ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:lua require('funcs.nvim_utility').smart_buffer_close()<CR>:tabnext<CR>" },
 }
 
 -- stylua: ignore
@@ -538,6 +549,7 @@ space_key_nmap.l = { --{{{1 +LSP
 space_key_nmap.m = { --{{{1 +Move
   name = '+Move',
   t = { "Move current buffer to tab", ":ScopeMoveBuf<CR>" },
+  w = { "Move current window to tab", "<c-w>T" },
 }
 
 -- stylua: ignore
@@ -678,7 +690,7 @@ space_key_vmap.s = { --{{{1 +Search/Source
   f = { 'run fag',                       ":<C-U>execute ':FloatermSend FZF_TP_OPTS=\"-p 95\\%\" fag '.GetCurrentWord('v')<CR>" },
 
   l = { 'Source selected lua code',      ":luado loadstring(line)()<CR>" },
-  i = { 'Inpsect selected lua code',     ":luado loadstring('nvim_print(' .. line .. ')')()<CR>" },
+  i = { 'Inpsect selected lua code',     ":luado loadstring('P(' .. line .. ')')()<CR>" },
 
 }
 
@@ -822,6 +834,8 @@ space_key_nmap.w = { --{{{1 +Window
   u = { "Undoquit Window",         ":Undoquit<CR>" },
   o = { "Window Only",             "<C-w><C-o>" },
   q = { "Write and quit",          ":wq<CR>" },
+
+  t = { "Move current window to tab", "<c-w>T" },
 
 }
 

@@ -1,18 +1,5 @@
 local M = {}
 
-function nvim_print(...)
-  if select("#", ...) == 1 then
-    vim.api.nvim_out_write(vim.inspect((...)))
-  else
-    vim.api.nvim_out_write(vim.inspect {...})
-  end
-  vim.api.nvim_out_write("\n")
-  -- # Notes: Otherway to show message
-  -- vim.notify(vim.inspect(plug_info))
-end
-
-
-
 function _G.ReloadConfig() -- ReloadConfig {{{1
   local hls_status = vim.v.hlsearch
   for name, _ in pairs(package.loaded) do
@@ -27,7 +14,6 @@ function _G.ReloadConfig() -- ReloadConfig {{{1
   end
 end
 
--- vim.api.nvim_set_keymap('n', '<space>vs', '<Cmd>lua ReloadConfig()<CR>', { silent = true, noremap = true })
 vim.cmd("command! ReloadConfig lua ReloadConfig()")
 
 -- Merge maps
@@ -89,16 +75,6 @@ end
 -- nvim_print(a)
 -- print("-----------")
 -- nvim_print(b)
-
-function IS_IN(s, list)
-  for _, v in ipairs(list) do
-    if string.match(s, v) then
-      return true
-    end
-  end
-  return false
-end
-
 
 function M.is_in(s, list)
   for _, i in ipairs(list) do

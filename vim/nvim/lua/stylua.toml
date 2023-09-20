@@ -4,3 +4,6 @@ line_endings = "Unix"
 indent_type = "Spaces"
 indent_width = 2
 call_parentheses = "Always"
+
+[sort_requires]
+enabled = true
