@@ -9,6 +9,8 @@
 # GIT file   | fzf                           | checkout/delete
 # GIT stash  | fzf                           | drop/checkout/preview
 
+__inside_work_tree() { git rev-parse --is-inside-work-tree >/dev/null; }
+
 # FZF forgit basic config {{{1
 # --------------------------------------------------------------------------
 {
@@ -81,7 +83,7 @@
     git_rebase_interactive(){ git_log_interactive_select | xargs git rebase $@ }
 
     git_gerritopen_interactive(){
-      forgit::inside_work_tree || return 1
+      __inside_work_tree || return 1
       # if [ $(git rev-parse --is-inside-work-tree) = false ]; then
       #   echo "Not in git repo"
       #   return
@@ -114,7 +116,7 @@
     # git clean selector
     # alias git_clean_dry_run=
     git_clean_interactive() {
-      forgit::inside_work_tree || return 1
+      __inside_work_tree || return 1
 
       local FZF_GIT_FILE_BIND_OPTS=" \
         --bind=\"ctrl-space:execute(bat --style=numbers --color=always --paging always {} )\"
@@ -125,7 +127,7 @@
         --header \"ctrl-o:fzfexec, ctrl-y:pbcopy, ctrl-r:nvim_remote, ctrl-v:nvim\"
       "
 
-      forgit::inside_work_tree || return 1
+      __inside_work_tree || return 1
       local files opts
       opts="
         $FZF_GIT_DEFAULT_OPTS
@@ -141,7 +143,7 @@
 
     gsti() {
       # this can be used in git checkout/add/reset or diff?
-      forgit::inside_work_tree || return 1
+      __inside_work_tree || return 1
       # Add files if passed as arguments
       [[ $# -ne 0 ]] && git add "$@" && git status -su && return
 
@@ -192,7 +194,7 @@
 
     git_stash_list_interactive() {
       # ctrl-d for drop stash
-      forgit::inside_work_tree || return 1
+      __inside_work_tree || return 1
       local cmd opts
       cmd="echo {} |cut -d: -f1 |xargs -I% git_stash_preview % |$__git_pager"
       opts="
@@ -310,7 +312,7 @@
   # grvl() { runcached --bg-update --ignore-env --ttl 1800  git review -l --color=always $@ }
   grvl() { RUNCACHED_IGNORE_PWD=0 runcached --bg-update --ttl 1800 git review -l --color=always $@ }
   grvli() { grvl $@ | fzf --header-lines=1 | awk '{print $1}' }
-  gcorvi() { grvl $@ | fzf --header-lines=1 | awk '{print $1}' | xargs git review -d }
+  grvi() { grvl $@ | fzf --header-lines=1 | awk '{print $1}' | xargs git review -d }
 }
 
 # 1}}}
@@ -320,8 +322,12 @@
 # --------------------------------------------------------------------------
 {
   __git_folders() {
+    # https://github.com/sdkman/sdkman-cli/issues/231
+    # Somehow i is not always working, it causes $zsh: bad floating point constant
+    # for i in */.git; do echo $i; done
+
     # Find git repos under current director
-    for i in */.git; do ( echo $i ); done
+    for gitfolder in */.git; do echo $gitfolder; done
   }
 
   __git_foldersi() {
@@ -337,8 +343,11 @@
   }
 
   git_folders_run() {
+    CMD="$@"
     folders=$(__git_foldersi)
-    read CMD\?"cmd: "
+    if [[ $CMD == '' ]]; then
+      read CMD\?"cmd: "
+    fi
     echo $folders | xargs -I % sh -c "echo 'path: %' && git -C % $CMD"
   }
 

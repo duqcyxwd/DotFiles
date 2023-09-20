@@ -25,9 +25,8 @@ alias svi=/usr/local/bin/vi                   # Use vi to open spacevim
 # TODO auto complete for nvr
 # https://github.com/mhinz/neovim-remote
 alias vim_remote_notes='echo "nsvc is to start static vim server, nvr is the client"'
-# alias vr='nvr'
 alias nvr="/usr/local/bin/nvr --nostart -p"
-alias nvrr="/usr/local/bin/nvr"
+alias vr='/usr/local/bin/nvr'
 
 alias history='fc -l 1'
 

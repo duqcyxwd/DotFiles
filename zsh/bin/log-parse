@@ -1,4 +1,8 @@
 #!/bin/bash
+# ------------------------------------------------------------------
+# [Yongqinchuan] Bash script template
+#                Description
+# ------------------------------------------------------------------
 
 # https://stackoverflow.com/questions/19408649/pipe-input-into-a-script
 # Support pipeline
@@ -13,8 +17,7 @@
   # cat | tee >(grep "^{" | jq -r '.timestamp + " [" + .severity + "] " + .service_id + ": " + .message') | grep -v "^{" > "$TEMPFILE"
   # cat "$TEMPFILE"
 
-
-  cat | tee >(grep -v "^{" > "$TEMPFILE") | grep "^{" | jq -rc '
+  JQ_QUERY='
 def colors:
  {
  "black": "\u001b[30m",
@@ -29,6 +32,9 @@ def colors:
 };
 colors.white + .timestamp + colors.yellow + " [" + .severity + "] " + .service_id + ": " + colors.green + .message + " " + .stack_trace'
 
+
+  cat | tee >(grep -v "^{" > "$TEMPFILE") | grep "^{" | jq -rc "$JQ_QUERY"
+
   echo ""
   echo -e '\033[0;36m'
   echo "---------"
@@ -42,5 +48,3 @@ colors.white + .timestamp + colors.yellow + " [" + .severity + "] " + .service_i
 # do
 #   echo "$data" | tee >(grep -v "^{") | grep "^{" | jq -r '.timestamp + " [" + .severity + "] " + .service_id + ": " + .message'
 # done;
-
-

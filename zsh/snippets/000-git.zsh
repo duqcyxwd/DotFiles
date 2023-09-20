@@ -1,4 +1,3 @@
-
 # Git config {{{2
 git config --global color.ui true
 git config --global alias.co checkout
@@ -121,6 +120,7 @@ unalias -m gloga 2>/dev/null || true
 unalias -m glp 2>/dev/null || true
 unalias -m gb 2>/dev/null || true
 unalias -m gbr 2>/dev/null || true
+unalias -m ggp 2>/dev/null || true
 
 # Git Alias {{{2
 # --------------------------------------------------------------------------
@@ -245,6 +245,7 @@ alias gcom="ee 'git checkout master && git merge origin/master --ff-only'"
 alias gf='git fetch --prune'
 alias gfco='git fetch -p && git checkout'
 alias gitf='open -a GitFiend --args $(git rev-parse --show-toplevel)'
+alias ggp='git gerritpush'
 
 # run gitk
 alias gk="ee 'gitk --all&'"

@@ -70,12 +70,9 @@ end
 
 -- }}}1
 
--- Mapping
--- normal mapping {{{1
+-- Mappings
 
-
--- vim.cmd("vnoremap <silent> <C-Space> :lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>")
--- vim.cmd("vnoremap <silent> -         :lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>")
+-- Command Mode mapping {{{1
 
 -- Bash like keys for the command line
 vim.cmd("cnoremap <C-A> <Home>")
@@ -84,26 +81,19 @@ vim.cmd("cnoremap <C-K> <C-U>")
 vim.cmd("cnoremap <C-P> <Up>")
 vim.cmd("cnoremap <C-N> <Down>")
 
--- Start interactive EasyAlign in visual mode (e.g. vipga)
-vim.cmd("xmap ga <Plug>(EasyAlign)")
--- Start interactive EasyAlign for a motion/text object (e.g. gaip)
-vim.cmd("nmap ga <Plug>(EasyAlign)")
--- this is file: do 'ga,'
+vim.keymap.set({ "i", "c" }, "<C-x><C-r>", function() require("fzf-lua").registers() end, { silent = true, desc = "Fzf Register" })
 
--- " Fix paste
--- " p will not overwrite register
--- " https://vim.fandom.com/wiki/Replace_a_word_with_yanked_text
--- " xnoremap p "_dP
-vim.cmd('xnoremap <silent> p p:let @+=@0<CR>:let @"=@0<CR>')
+-- Normal Mode mapping --{{{1
+-- -- " j, k          Store relative line number jumps in the jumplist.
+vim.api.nvim_set_keymap('n', 'j', 'v:count ? (v:count > 1 ? "m\'" .. v:count : "") .. "j" : "gj"', { expr = true, noremap = true })
+vim.api.nvim_set_keymap('n', 'k', 'v:count ? (v:count > 1 ? "m\'" .. v:count : "") .. "k" : "gk"', { expr = true, noremap = true })
 
--- WIP Add jump by j k
--- " j, k          Store relative line number jumps in the jumplist.
-vim.cmd("nnoremap <expr> k (v:count > 1 ? \"m'\" . v:count : '') . 'k'")
-vim.cmd("nnoremap <expr> j (v:count > 1 ? \"m'\" . v:count : '') . 'j'")
+-- vim.api.nvim_set_keymap('n', '<C-f>', ':lua require"funcs.nvim_core".jumpWrap("<c-f>")', { expr = true, noremap = true })
 
 
--- Normal mapping --{{{1
 set_keymap("n", { noremap = true, silent = true }, {
+  { "'",         "`" },
+
   -- execute q macro
   { "Q",         "@q" },
 
@@ -125,9 +115,7 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "gY",        '"+y$' },
 
   { "gf",        vim_u.goto_first_float },
-
-  { "j",         'gj' },
-  { "k",         'gk' },
+  { "ga",        '<Plug>(EasyAlign)',                      { desc = "Easy Align!" } },
 
   -- { 'gs',        ':Gitsigns stage_hunk<CR>' },
   { 'gV',        '<Plug>(VM-Reselect-Last)',               { noremap = false } },
@@ -151,6 +139,10 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "cg*",       "*Ncgn" },
   { "g.",        [[/\V<C-r>"<CR>cgn<C-a><Esc>]] },
 
+  -- Not wokring yet, need to reload this file to work
+  { "<C-f>",     "<cmd>lua require'funcs.nvim_core'.jumpWrap('<c-f>')<CR>"},
+  { "<C-b>",     "<cmd>lua require'funcs.nvim_core'.jumpWrap('<c-b>')<CR>"},
+
   -- window
   { "gj",        "<C-W>j" },
   { "gk",        "<C-W>k" },
@@ -167,13 +159,8 @@ set_keymap("n", { noremap = true, silent = true }, {
 })
 
 
--- Leaderkey mapping --{{{1
-set_keymap("n", { noremap = true, silent = true }, {
-  { "<localleader>k", ":call Show_documentation()<CR>" },
-  { "<localleader>j", vim_u.goto_first_float },
-})
+-- Visual Mode mapping --{{{1
 
--- Visual mode mapping --{{{1
 set_keymap("v", { noremap = true, silent = true }, {
   { "9",         "c()<Esc>hp" },
   { "J",         ":move '<+1<CR>gv-gv" },
@@ -181,10 +168,11 @@ set_keymap("v", { noremap = true, silent = true }, {
   { "<C-Space>", ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>" },
   { "-",         ":lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>" },
   { "v",         ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>" },
+  { "p",         'p:let @+=@0<CR>:let @"=@0<CR>' },
+  { "ga",        '<Plug>(EasyAlign)' },
 })
 
 -- }}}1
-
 -- Buffer/Tab Switch {{{1
 -- Map <Space>1..8 to buffers
 -- Map [1..8 to tabs
@@ -248,13 +236,13 @@ local impair_map_config = { --{{{2
 
 local default_impair_keys = { --{{{2
   -- Default unimar already supported, no mapping need but need to add them to shortcut
-  "`", -- Mark
-  "f", -- Next float term
-  "c", -- vim diff next hunk
+  "`",                        -- Mark
+  "f",                        -- Next float term
+  "c",                        -- vim diff next hunk
 }
 
 
-local brackets_keymap= { name = "+bracket jumps" } --{{{2
+local brackets_keymap = { name = "+bracket jumps" } --{{{2
 -- Add mapping to keymap
 
 
@@ -268,7 +256,7 @@ local retrieveKeys = function(maps)
   return res
 end
 
-local impar_keys  = u.remove_dups(u.join(default_impair_keys, retrieveKeys(impair_map_config)))
+local impar_keys   = u.remove_dups(u.join(default_impair_keys, retrieveKeys(impair_map_config)))
 for _, char in ipairs(impar_keys) do
   brackets_keymap[char] = {
     string.format("Set bracket jump (%s)", char),
@@ -287,8 +275,15 @@ space_key_nmap.n = brackets_keymap
 
 -- }}}1
 
+-- Leaderkey mapping --{{{1
+set_keymap("n", { noremap = true, silent = true }, {
+  { "<localleader>k", ":call Show_documentation()<CR>" },
+  { "<localleader>j", vim_u.goto_first_float },
+})
+-- }}}1
+
 -- Space Key mapping
--- TOP {{{1
+-- <SPACE-*> {{{1
 space_key_nmap['<space>'] = { 'FZF Command Search',         ':FzfLua commands<CR>' }
 space_key_nmap['<tab>']   = { 'last buffer',                ':e#<CR>' }
 space_key_nmap["\\"]      = { 'FZF Command History Search', ':FzfLua command_history<CR>' }
@@ -299,10 +294,8 @@ space_key_nmap["v"]       = { 'Flash Treesitter',           function() require("
 
 space_key_nmap.a = { --{{{1 +append
   name = '+append',
-  [","] = {'Toggle Append ,',              ':lua require("chartoggle").toggle(",")<CR>'},
-  [";"] = {'Toggle Append ;',              ':lua require("chartoggle").toggle(";")<CR>'},
-
-    -- M.map('n', options.leader .. key, ':lua require("chartoggle").toggle("' .. key .. '")<CR>', { noremap = true, silent = true })
+  [","] = { 'Toggle Append ,', ':lua require("chartoggle").toggle(",")<CR>' },
+  [";"] = { 'Toggle Append ;', ':lua require("chartoggle").toggle(";")<CR>' },
 }
 
 -- stylua: ignore
@@ -363,7 +356,6 @@ space_key_nmap.d = { --{{{1 +Delete window/tab/buffer
 -- stylua: ignore
 space_key_nmap.e = { --{{{1 +EDIT/Explorer
   name = "+EDIT/Explorer",
-  -- e = { "Coc Explorer",               ":CocCommand explorer<CR>" },
   t = { "open current buffer in tab", ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:lua require('funcs.nvim_utility').smart_buffer_close()<CR>:tabnext<CR>" },
 }
 
@@ -452,7 +444,6 @@ space_key_vmap.g = { --{{{1 +Git/Go
   name = "+Git/Go",
 
   a = { 'GitSign stage_hunk',                ':Gitsigns stage_hunk<CR>' },
-  -- l = { 'Git link open',                  ':GBrowse<CR>' },
   l = { 'Git link open',                     ':lua require"gitlinker".get_buf_range_url("v", {action_callback = require"gitlinker.actions".open_in_browser})<cr>' },
   y = { 'Git link yank',                     ':lua require"gitlinker".get_buf_range_url("v")<CR>' },
   h = {
@@ -476,15 +467,11 @@ space_key_nmap.h = { --{{{1 +Help
 
   k = {
     name = "+Keymap",
-
-    -- v = { '[visual] Key Maps',            ':VMaps<CR>' },
-    -- i = { '[insert] Key Maps',            ':IMaps<CR>' },
     a = { '[all] Key Maps',               ":FzfLua keymaps<CR>" },
     b = { '[Buffer] Key Maps',            ":FzfLua keymaps<CR>" },
     i = { '[insert] Key Maps',            ":lua require'fzf-lua'.keymaps({modes = {'i'}})<CR>" },
     v = { '[visual] Key Maps',            ":lua require'fzf-lua'.keymaps({modes = {'v'}})<CR>" },
     m = { '[normal] Key Maps',            ":lua require'fzf-lua'.keymaps({modes = {'n'}})<CR>" },
-    -- m = { '[normal] Key Maps',            ':FzfLua keymaps<CR>' },
     d = { 'Debug Key Maps',               ':verbose map' },
     D = { 'Debug Key Maps in new buffer', ':execute "enew| pu=execute(\'verbos map\')"' },
 
@@ -673,7 +660,6 @@ space_key_nmap.s = { --{{{1 +Search/Source
 
   e = { 'Source current file!',                     ':so %<CR>' },
   v = { 'Source vimrc',                             ':so $XDG_CONFIG_HOME/nvim/init.vim<CR>' },
-  -- l = { 'Source lua file',                          ':luafile %<CR>' },
 
   l = { 'Source lua code',                          ":lua loadstring( require'funcs.nvim_utility'.get_current_line())()<CR>" },
   i = { 'Inspec lua code result',                   ":lua loadstring('nvim_print(' .. require'funcs.nvim_utility'.get_current_line() .. ')')()<CR>" },
@@ -712,76 +698,64 @@ space_key_nmap.S = { --{{{1 +SESSION
 space_key_nmap.t = { --{{{1 +Toggle
   name = "+Toggle",
 
-
   -- UI
-  h = { 'Toggle left',                             '<CMD>NvimTreeFindFileToggle<CR>' },
-  l = { 'Toggle right',                            ':SymbolsOutline<CR><c-w>h' },
-  c = { 'Toggle ChatGPT',                          ':ChatGPT<CR>' },
+  h = { 'Toggle left',                    '<CMD>NvimTreeFindFileToggle<CR>' },
+  l = { 'Toggle right',                   ':SymbolsOutline<CR><c-w>h' },
+  c = { 'Toggle ChatGPT',                 ':ChatGPT<CR>' },
+  m = { 'Color: Dark/Light Mode',         ":lua require'config.color'.toggle()<CR>" },
+  M = { 'Color: FZF Schema',              ':FzfLua colorschemes<CR>' },
+
+  s = { 'Toggle Flash Search',            function() require("flash").toggle() end },
+  w = { 'Toggle Word',                    core.dotCall(require('nvim-toggler').toggle), expr = true },
 
   a = {
     name = 'auto+',
-    s    = { 'Toggle Strip Whitespace On Save',    ':TrimToggle<CR>' },
+    s    = { 'Toggle Strip Space OnSave', ':TrimToggle<CR>' },
   },
-  m = { 'Color: Dark/Light Mode',                  ":lua require'config.color'.toggle()<CR>" },
-  M = { 'Color: FZF Schema',                       ':FzfLua colorschemes<CR>' },
-
-
   p = {
     name = 'project+',
-    -- Rooter is not really useful and confuzing. Use <SPC>cd or <SPC>cp instead, <SPC>toa can autodir to current folder
-    -- r = { 'Toggle findroot',                       ":lua require'funcs.toggle'.toggle_find_root()<CR>" },
-    s = { 'Toggle root scope with .vimroot',       ":lua require'funcs.toggle'.toggle_set_root_scope()<CR>" },
+    s = { 'Toggle root scope .vimroot',   ":lua require'funcs.toggle'.toggle_set_root_scope()<CR>" },
   },
-
   i = {
     name = 'indicator+',
-    o = { 'Toggle 80 text width',                  ":lua require'funcs.toggle'.highlight_over_80()<CR>" },
-    s = { 'Toggle Trailling whitespace indicator', ':ToggleWhitespace<CR>' },
+    o = { 'Toggle 80 text width',         ":lua require'funcs.toggle'.highlight_over_80()<CR>" },
+    s = { 'Toggle Trailling whitespace',  ':ToggleWhitespace<CR>' },
   },
-
   g = {
     name = 'Git+',
-    s = { 'Gitsign Edit mode',                     ':Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>' },
+    s = { 'Gitsign Edit mode',            ':Gitsigns toggle_linehl<CR>:Gitsigns toggle_deleted<CR>:Gitsigns toggle_numhl<CR>' },
   },
-
-
   d = {
     name = 'vimDiff+',
-    w = { 'Toggle vimdiff whitespace',             ":lua require'funcs.toggle'.vim_diff_whitespace()<CR>" },
+    w = { 'Toggle vimdiff whitespace',    ":lua require'funcs.toggle'.vim_diff_whitespace()<CR>" },
   },
-
   o = {
     name = 'Options+',
-    -- v = { 'Toggle vertical indent line',           ':IndentBlanklineToggle<CR>' },
-    v = { 'Toggle vertical indent line',           ':IndentLinesToggle<CR>' },
-    r = { 'Toggle relative line number',           ":lua require'funcs.toggle'.toggle_relative_num()<CR>"},
+    v = { 'Toggle vertical indent line',  ':IndentLinesToggle<CR>' },
+    r = { 'Toggle relative line number',  ":lua require'funcs.toggle'.toggle_relative_num()<CR>" },
   },
-
   f = {
     name = 'Fold+',
-    l = { '[loop] foldmethod',                     ":lua require'funcs.toggle'.loop_fold_method()<CR>" },
-    m = { 'change foldmethod to marker',           ':set foldmethod=marker<CR>:set foldmethod<CR>zv' },
-    e = { 'change foldmethod to expr',             ':set foldmethod=expr<CR>:set foldmethod<CR>zv' },
-    s = { 'change foldmethod to syntax',           ':set foldmethod=syntax<CR>:set foldmethod<CR>zv' },
-    i = { 'change foldmethod to indent',           ':set foldmethod=indent<CR>:set foldmethod<CR>zv' },
+    l = { '[loop] foldmethod',            ":lua require'funcs.toggle'.loop_fold_method()<CR>" },
+    m = { 'change foldmethod to marker',  ':set foldmethod=marker<CR>:set foldmethod<CR>zv' },
+    e = { 'change foldmethod to expr',    ':set foldmethod=expr<CR>:set foldmethod<CR>zv' },
+    s = { 'change foldmethod to syntax',  ':set foldmethod=syntax<CR>:set foldmethod<CR>zv' },
+    i = { 'change foldmethod to indent',  ':set foldmethod=indent<CR>:set foldmethod<CR>zv' },
   },
-  s = { 'Toggle Flash Search',                     function() require("flash").toggle() end },
-  -- w = { 'Toggle Word',                             function() return core.repeatableCall(require('nvim-toggler').toggle) end, expr = true },
-  w = { 'Toggle Word',                             core.dotCall(require('nvim-toggler').toggle) , expr = true },
 
 }
 
 
 -- stylua: ignore
 local toggle_keymap = {
-  l = { 'cursorline',     'setlocal', 'Toggle line cursorline' },
-  c = { 'cursorcolumn',   'setlocal', 'Toggle line cursorcolumn' },
-  h = { 'hlsearch',       'set',      'Toggle highlight matches' },
-  i = { 'list',           'set',      'Toggle invisible char (set list)' },
-  n = { 'number',         'set',      'Toggle line number ' },
-  w = { 'wrap',           'set',      'Toggle line wrap' },
-  s = { 'wrapscan',       'set',      'Toggle wrapscan' },
-  a = { 'autochdir',      'set',      'Toggle autochdir' },
+  l = { 'cursorline',   'setlocal', 'Toggle line cursorline' },
+  c = { 'cursorcolumn', 'setlocal', 'Toggle line cursorcolumn' },
+  h = { 'hlsearch',     'set',      'Toggle highlight matches' },
+  i = { 'list',         'set',      'Toggle invisible char (set list)' },
+  n = { 'number',       'set',      'Toggle line number ' },
+  w = { 'wrap',         'set',      'Toggle line wrap' },
+  s = { 'wrapscan',     'set',      'Toggle wrapscan' },
+  a = { 'autochdir',    'set',      'Toggle autochdir' },
 }
 
 local settingToggle = function(keymap)
@@ -795,7 +769,7 @@ settingToggle(toggle_keymap)
 -- stylua: ignore
 space_key_vmap.t = { --{{{1 +Toggle
   name = "+Toggle",
-  w = { 'Toggle Word',                             core.dotCall(require('nvim-toggler').toggle) , expr = true },
+  w = { 'Toggle Word', core.dotCall(require('nvim-toggler').toggle), expr = true },
 }
 
 -- stylua: ignore
@@ -819,21 +793,21 @@ space_key_nmap.u = { --{{{1 +UI
 space_key_nmap.w = { --{{{1 +Window
   name = "+Window",
 
-  d = { "Window split move down",  ":aboveleft sbuffer#<CR><C-w>w" },
-  l = { "Window split move right", ":vert sbuffer#<CR><C-w>w" },
+  d = { "Window split move down",     ":aboveleft sbuffer#<CR><C-w>w" },
+  l = { "Window split move right",    ":vert sbuffer#<CR><C-w>w" },
 
-  s = { "Window split move down",  ":aboveleft sbuffer#<CR><C-w>w" },
-  v = { "Window split vertical",   ":vert sbuffer#<CR><C-w>w" },
-  c = { "Window close",            ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
-  C = { "Window close!",           ":call undoquit#SaveWindowQuitHistory()<CR>:bdelete!<CR>" },
-  g = { "Window gone",             ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
+  s = { "Window split move down",     ":aboveleft sbuffer#<CR><C-w>w" },
+  v = { "Window split vertical",      ":vert sbuffer#<CR><C-w>w" },
+  c = { "Window close",               ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
+  C = { "Window close!",              ":call undoquit#SaveWindowQuitHistory()<CR>:bdelete!<CR>" },
+  g = { "Window gone",                ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
 
-  r = { "Window resize",           ":WinResizerStartResize<CR>" },
-  m = { "Maximum Current window",  ":ZoomToggle<CR>" },
+  r = { "Window resize",              ":WinResizerStartResize<CR>" },
+  m = { "Maximum Current window",     ":ZoomToggle<CR>" },
 
-  u = { "Undoquit Window",         ":Undoquit<CR>" },
-  o = { "Window Only",             "<C-w><C-o>" },
-  q = { "Write and quit",          ":wq<CR>" },
+  u = { "Undoquit Window",            ":Undoquit<CR>" },
+  o = { "Window Only",                "<C-w><C-o>" },
+  q = { "Write and quit",             ":wq<CR>" },
 
   t = { "Move current window to tab", "<c-w>T" },
 
@@ -865,7 +839,7 @@ space_key_nmap.X = { --{{{1 +XXX
 
 space_key_nmap.y = { --{{{1 +Yank/Copy
   name = "+Yank",
-  p = { 'Yank file path',                       ':!cpath %<CR>' },
+  p = { 'Yank file path', ':!cpath %<CR>' },
 }
 -- stylua: ignore end
 

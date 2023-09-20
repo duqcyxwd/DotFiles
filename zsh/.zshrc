@@ -254,6 +254,8 @@ zsh_plugins_config() {
 
   # agkozak/zsh-z
   ZSHZ_CASE=ignore
+  ZSHZ_TILDE=1
+  ZSHZ_COMPLETION=legacy
 
   # zsh-vi-mode
   # The plugin will auto execute this zvm_after_init function
@@ -314,8 +316,9 @@ zsh_plugins_config
   # I am trying to disable sort in fzf-tab but not working.
   # When I use zsh-z, the result is already sort by rank
   # disable sort when completing `git checkout`
+  zstyle ':completion:complete:*:options' sort false
   zstyle ':completion:*:z:*' sort false
-  zstyle ':completion:*:git-checkout:*' sort false
+  zstyle ':completion:*:git-checkout:*' sort true
   zstyle ':completion:complete:*:options' sort false
 
 }

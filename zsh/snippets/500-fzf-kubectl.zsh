@@ -62,6 +62,8 @@ kgsec() { #{{{2
   fi
   kube_secret_preview $SEC
 }
+alias kdsec=kgsec
+alias kgseci-preview=kgsec
 
 # KUBECTL configmap #{{{1
 kgcmi() { #{{{2

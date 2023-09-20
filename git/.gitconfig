@@ -29,4 +29,6 @@
 	cmd = smerge mergetool \"$BASE\" \"$LOCAL\" \"$REMOTE\" -o \"$MERGED\"
 	trustExitCode = true
 [merge]
-	tool = smerge
+        tool = "Sublime Merge"
+[mergetool "Sublime Merge"]
+        cmd = smerge mergetool \"$BASE\" \"$REMOTE\" \"$LOCAL\" -o \"$MERGED\"
