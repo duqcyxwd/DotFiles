@@ -50,12 +50,12 @@ local build_cmp_mapping = function(cmp, luasnip, neogen, has_neogen)
   local map = {
 
     ["<C-k>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }), -- | scroll docs
-    ["<C-j>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }), -- | scroll docs
+    ["<C-j>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),  -- | scroll docs
 
     ["<C-Space>"] = cmp.mapping.complete(),
     ["<C-c>"] = cmp.mapping.abort(),
     ["<C-e>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
-    ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+    ["<CR>"] = cmp.mapping.confirm({ select = true }),  -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 
     ["<Tab>"] = cmp.mapping(next_item, { "i", "s" }),
     ["<s-Tab>"] = cmp.mapping(prev_item, { "i", "s" }),
@@ -82,6 +82,10 @@ end
 
 return {
   {
+    "tzachar/fuzzy.nvim",
+    dependencies = { "nvim-telescope/telescope-fzf-native.nvim" }
+  },
+  {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
     lazy = true,
@@ -90,11 +94,12 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
+      "tzachar/cmp-fuzzy-path",
       "onsails/lspkind-nvim", --        | Add icon for cmp
 
       --  For luasnip users.
-      "L3MON4D3/LuaSnip", --             | Follows lsp protocol
-      "saadparwaiz1/cmp_luasnip", --     |
+      "L3MON4D3/LuaSnip",             --             | Follows lsp protocol
+      "saadparwaiz1/cmp_luasnip",     --     |
       "rafamadriz/friendly-snippets", -- | Snippet collection
     },
     opts = function()
@@ -107,10 +112,11 @@ return {
 
       return {
         sources = cmp.config.sources({
-          { name = 'luasnip', option = { show_autosnippets = true } },
+          { name = 'luasnip',   option = { show_autosnippets = true } },
           { name = "nvim_lsp" },
           { name = "buffer" },
           { name = "path" },
+          { name = 'fuzzy_path' },
         }),
 
         completion = {
@@ -135,35 +141,8 @@ return {
             },
             -- options: 'text', 'text_symbol', 'symbol_text', 'symbol'
             mode = "symbol", -- show only symbol annotations
-            maxwidth = 80, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
-
-            -- The function below will be called before any actual modifications from lspkind
-            -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
+            maxwidth = 80,   -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
             preset = "codicons",
-            -- before = function(entry, vim_item)
-            --   -- Get the full snippet (and only keep first line)
-            --   local word = entry:get_insert_text()
-            --   if entry.completion_item.insertTextFormat == types.lsp.InsertTextFormat.Snippet then
-            --     word = vim.lsp.util.parse_snippet(word)
-            --   end
-            --   word = str.oneline(word)
-
-            --   -- concatenates the string
-            --   -- local max = 50
-            --   -- if string.len(word) >= max then
-            --   -- 	local before = string.sub(word, 1, math.floor((max - 3) / 2))
-            --   -- 	word = before .. "..."
-            --   -- end
-
-            --   if entry.completion_item.insertTextFormat == types.lsp.InsertTextFormat.Snippet
-            --       and string.sub(vim_item.abbr, -1, -1) == "~"
-            --   then
-            --     word = word .. "~"
-            --   end
-            --   vim_item.abbr = word
-
-            --   return vim_item
-            -- end,
             experimental = {
               ghost_text = true,
             },
@@ -229,20 +208,76 @@ return {
         }),
       })
 
+      local cmdline_mapping = {
+          ['<C-Space>'] = {
+            c = function()
+              require('cmp').complete()
+            end,
+          },
+          ['<Tab>'] = {
+            c = function()
+              local cmp = require('cmp')
+              if cmp.visible() then
+                cmp.select_next_item()
+              else
+                cmp.complete()
+              end
+            end,
+          },
+          ['<C-n>'] = {
+            c = function(fallback)
+              local cmp = require('cmp')
+              if cmp.visible() then
+                cmp.select_next_item()
+              else
+                fallback()
+              end
+            end,
+          },
+          ['<C-p>'] = {
+            c = function(fallback)
+              local cmp = require('cmp')
+              if cmp.visible() then
+                cmp.select_prev_item()
+              else
+                fallback()
+              end
+            end,
+          },
+
+          ['<C-e>'] = {
+            c = mapping.confirm({ select = false }),
+          },
+          ['<esc>'] = {
+            c = function(fallback)
+              local cmp = require('cmp')
+              if cmp.visible() then
+                if not require('cmp').abort() then
+                  fallback()
+                end
+              else
+                fallback()
+              end
+            end,
+          },
+        }
+
       -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
       cmp.setup.cmdline("/", {
+        -- mapping = cmp.mapping.preset.cmdline(),
+        mapping = cmdline_mapping,
+        completion = { autocomplete = false },
         sources = {
           { name = "buffer" },
         },
       })
 
       -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
-      cmp.setup.cmdline(":", {
-        sources = cmp.config.sources({
-          { name = "path" },
-        }, {
-          { name = "cmdline" },
-        }),
+      cmp.setup.cmdline(':', {
+        completion = { autocomplete = false },
+        mapping = cmdline_mapping,
+        sources = cmp.config.sources({ { name = 'path' } },
+          { { name = 'cmdline', option = { ignore_cmds = { 'Man', '!' } } } })
       })
     end,
   },

@@ -1,3 +1,7 @@
+local tableFn = require("funcs.table")
+local u = require("funcs.utility")
+require("funcs.global")
+
 local M = {}
 
 M.on_very_lazy = function(fn) -- Call some method with this helper
@@ -9,7 +13,7 @@ M.on_very_lazy = function(fn) -- Call some method with this helper
   })
 end
 
-M.lazy_run_if_has = function (plugin, callback)
+M.lazy_run_if_has = function(plugin, callback)
   if M.has(plugin) then
     callback()
   end
@@ -17,6 +21,23 @@ end
 
 M.has = function(plugin)
   return require("lazy.core.config").spec.plugins[plugin] ~= nil
+end
+
+
+M.get_all_plugins = function()
+  return tableFn.keys(require("lazy.core.config").spec.plugins)
+end
+
+M.fzf_get_plugin = function()
+  require 'fzf-lua'.fzf_exec(require 'funcs.nvim_utility'.get_all_plugins(), {
+    actions = {
+      ['default'] = function(selected)
+        local plug_info = require("lazy.core.config").spec.plugins[selected[1]]
+        -- nvim_print(plug_info)
+        vim.notify(vim.inspect(plug_info))
+      end
+    }
+  })
 end
 
 M.get_current_line = function()
@@ -48,7 +69,6 @@ M.show_all_buffers = function()
 end
 
 M.get_listed_buffer = function()
-  -- vim.fn.getbufinfo({ buflisted = 1 })
   local bufs = vim.fn.getbufinfo({ buflisted = 1 })
   local res = {}
   for _, buf in ipairs(bufs) do
@@ -56,6 +76,17 @@ M.get_listed_buffer = function()
     table.insert(res, buf.bufnr)
   end
   return res
+end
+
+M.get_next_list_buffer = function()
+  local cbufnr = vim.api.nvim_get_current_buf()
+  local bufs = vim.fn.getbufinfo({ buflisted = 1 })
+  for _, buf in ipairs(bufs) do
+    if cbufnr ~= buf.bufnr then
+      return buf.bufnr
+    end
+  end
+  return nil
 end
 
 M.is_last_window = function()
@@ -76,6 +107,23 @@ M.is_last_window = function()
   return is_last_open_window
 end
 
+M.is_in_other_tab = function(bufnr)
+  local tab_buffer_info = require 'scope.core'.cache
+  local tabnr = vim.api.nvim_get_current_tabpage()
+  for tab_id, buf_list in ipairs(tab_buffer_info) do
+    if tab_id ~= tabnr then
+      if u.is_in(bufnr, buf_list) then
+        return true
+      end
+    end
+  end
+  return false
+end
+
+-- nvim_print(vim.fn.getbufinfo(vim.api.nvim_get_current_buf())[1])
+-- nvim_print(vim.api.nvim_list_wins())
+-- lua vim.api.nvim_win_set_buf(1198, 2)
+-- nvim_print(vim.fn.getbufinfo({ buflisted = 1 }))
 
 -- local bufs = vim.fn.getbufinfo({ buflisted = 1 })
 -- local res = {}
@@ -109,27 +157,65 @@ end
 -- Window
 -- nvim_win_get_tabpage({window})
 
-M.close_current_buffer = function() -- A safe method works for tab, buffer, window
+M.smart_buffer_close = function() -- A safe method works for tab, buffer
+  local opts = { close_window_fisrt = false }
   local buflisted = vim.api.nvim_buf_get_option(0, "buflisted")
   if not buflisted then
+    -- Special case that current buffer is a unlisted buffer
+    vim.api.nvim_command('bdelete')
     return
   end
 
   local bufnr = vim.api.nvim_get_current_buf()
+  local nbufnr = M.get_next_list_buffer()
+  local attached_windows = vim.fn.getbufinfo(bufnr)[1].windows
 
-  if #M.get_listed_buffer() > 1 then
-    vim.api.nvim_set_option_value("buflisted", false, { buf = bufnr })
-    vim.cmd("bprevious")
-    return
+  local close_fn = function(buf_nr)
+    if M.is_in_other_tab(bufnr) then
+      vim.api.nvim_set_option_value("buflisted", false, { buf = buf_nr })
+    else
+      vim.api.nvim_buf_delete(buf_nr, { force = false })
+    end
   end
 
-  if #vim.api.nvim_list_tabpages() > 1 then
-    print("Call tabc")
-    vim.api.nvim_command('tabc')
-    return
+  local update_attached_window_buffer = function(buf_nr)
+    for _, win_id in ipairs(attached_windows) do
+      vim.api.nvim_win_set_buf(win_id, buf_nr)
+    end
   end
 
-  vim.api.nvim_command('bdelete')
+  if nbufnr ~= nil then
+    -- When there is another buffer.
+    -- Check if it is last window
+
+    -- Optional, close window if it is not the last attached
+    if #attached_windows > 1 and opts.close_window_fisrt then
+      vim.api.nvim_win_close(0, false)
+      return
+    end
+
+    update_attached_window_buffer(nbufnr)
+    close_fn(bufnr)
+  else
+    -- When there is no another buffer.
+    -- Check last window
+    -- Check last tab
+
+    -- Close window first if exists
+    if #attached_windows > 1 and opts.close_window_fisrt then
+      vim.api.nvim_win_close(0, false)
+      return
+    end
+
+    -- Close current tab if it is not last one
+    if #vim.api.nvim_list_tabpages() > 1 then
+      vim.api.nvim_command('tabc')
+      return
+    end
+
+    close_fn(bufnr)
+  end
+
 end
 
 M.clear = function() -- Clear floating window and searches
@@ -151,7 +237,7 @@ M.clear = function() -- Clear floating window and searches
 
   vim.lsp.buf.clear_references()
   M.lazy_run_if_has("nvim-notify", function() require('notify').dismiss() end)
-  M.lazy_run_if_has("vim-exchange", function() vim.cmd[[ XchangeClear ]] end)
+  M.lazy_run_if_has("vim-exchange", function() vim.cmd [[ XchangeClear ]] end)
 
   if vim.api.nvim_get_namespaces().flash ~= nil then
     vim.api.nvim_buf_clear_namespace(0, vim.api.nvim_get_namespaces().flash, 0, -1)

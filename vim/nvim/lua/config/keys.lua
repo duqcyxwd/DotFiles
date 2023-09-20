@@ -3,6 +3,7 @@ require("nvim_utils")
 local u = require("funcs.utility")
 local brj = require("funcs.bracket_jump")
 local vim_u = require('funcs.nvim_utility')
+local core = require("funcs.nvim_core")
 
 local M = {}
 
@@ -160,7 +161,8 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "K",         ":call Show_documentation()<CR>" },
   { "<CR>",      "za" },
   { "gV",        "<Plug>(VM-Reselect-Last)" },
-
+  { "<C-p>",     ":FzfLua files<CR>" },
+  { "<D-p>",     ":FzfLua files<CR>" },
 
 })
 
@@ -284,6 +286,15 @@ space_key_nmap["`"]       = { 'Toggles the Float Terminal', ':FloatermToggle<CR>
 space_key_nmap[";"]       = { 'BufferLinePick',             ':BufferLinePick<CR>' }
 space_key_nmap["v"]       = { 'Flash Treesitter',           function() require("flash").treesitter() end }
 
+space_key_nmap.a = { --{{{1 +append
+  name = '+append',
+  [","] = {'Toggle Append ,',              ':lua require("chartoggle").toggle(",")<CR>'},
+  [";"] = {'Toggle Append ;',              ':lua require("chartoggle").toggle(";")<CR>'},
+
+    -- M.map('n', options.leader .. key, ':lua require("chartoggle").toggle("' .. key .. '")<CR>', { noremap = true, silent = true })
+}
+
+-- stylua: ignore
 space_key_nmap.b = { --{{{1 +buffer
   name = '+buffer',
 
@@ -334,6 +345,7 @@ space_key_nmap.d = { --{{{1 +Delete window/tab/buffer
   w = { "Delete this window",              ":close<CR>" },
   t = { "Delete this tab",                 ":tabclose<CR>" },
   T = { "Delete this tab and buffer",      ":Bclose<CR>:tabclose<CR>" },
+  c = { "Diff/Check with Saved",           ":require'funcs.nvim_utility'.diff_with_saved<CR>" },
 
 }
 
@@ -354,7 +366,7 @@ space_key_nmap.f = { --{{{1 +File/Format
   d = { "Directory (ranger)",                                ":FloatermNew --name=ranger --disposable ranger<CR>" },
   t = { "[format] Clean trailing space",                     ":Trim<CR>" },
   s = { "Save current file",                                 ":w<CR>" },
-  c = { "Check current buffer with saved",                   vim_u.diff_with_saved },
+  c = { "Check/Diff with Saved",                             ":require'funcs.nvim_utility'.diff_with_saved<CR>" },
   o = { "Search File under cursor",                          ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('n'))<CR>" },
   e = {
     name = "+Edit",
@@ -454,9 +466,14 @@ space_key_nmap.h = { --{{{1 +Help
   k = {
     name = "+Keymap",
 
-    v = { '[visual] Key Maps',            ':VMaps<CR>' },
-    i = { '[insert] Key Maps',            ':IMaps<CR>' },
-    m = { '[normal] Key Maps',            ':FzfLua keymaps<CR>' },
+    -- v = { '[visual] Key Maps',            ':VMaps<CR>' },
+    -- i = { '[insert] Key Maps',            ':IMaps<CR>' },
+    a = { '[all] Key Maps',               ":FzfLua keymaps<CR>" },
+    b = { '[Buffer] Key Maps',            ":FzfLua keymaps<CR>" },
+    i = { '[insert] Key Maps',            ":lua require'fzf-lua'.keymaps({modes = {'i'}})<CR>" },
+    v = { '[visual] Key Maps',            ":lua require'fzf-lua'.keymaps({modes = {'v'}})<CR>" },
+    m = { '[normal] Key Maps',            ":lua require'fzf-lua'.keymaps({modes = {'n'}})<CR>" },
+    -- m = { '[normal] Key Maps',            ':FzfLua keymaps<CR>' },
     d = { 'Debug Key Maps',               ':verbose map' },
     D = { 'Debug Key Maps in new buffer', ':execute "enew| pu=execute(\'verbos map\')"' },
 
@@ -505,13 +522,15 @@ space_key_nmap.L = { --{{{1 +LSP
 }
 
 -- stylua: ignore
-space_key_nmap.L = { --{{{1 +LSP
+space_key_nmap.l = { --{{{1 +LSP
   name = "+LSP",
 
-  S = { 'LSP Stop',    ':LspStop<CR>' },
-  R = { 'LSP Restart', ':LspRestart<CR>' },
-  G = { 'LSP Start',   ':LspStart<CR>' },
-  I = { 'LSP Info',    ':LspInfo<CR>' },
+  d = { 'lsp toggle diagnostics',       '<Cmd>lua vim.diagnostic.toggle()<CR>' },
+  f = { 'lsp toggle diagnostics float', '<Cmd>lua vim.diagnostic.float_toggle()<CR>' },
+  s = { 'LSP Stop',                     ':LspStop<CR>' },
+  r = { 'LSP Restart',                  ':LspRestart<CR>' },
+  g = { 'LSP Start',                    ':LspStart<CR>' },
+  i = { 'LSP Info',                     ':LspInfo<CR>' },
 
 }
 
@@ -558,16 +577,18 @@ space_key_vmap.o = { --{{{1 +Open
 space_key_nmap.p = { --{{{1 +Project/Packages
   name = "+Project/Packages",
 
+
   f = { 'Project files',                   ':FzfLua files<CR>' },
   e = { 'Project files',                   ':FzfLua files<CR>' },
   l = { 'Project List',                    ':SearchSession<CR>' },
 
+  a = { 'Plug all',                        require"funcs.nvim_utility".fzf_get_plugin },
   i = { 'Plug Install',                    ':Lazy install<CR>' },
   u = { 'Plug Update',                     ':Lazy update<CR>' },
   C = { 'Plug Clean',                      ':Lazy clean<CR>' },
   S = { 'Plug Status',                     ':Lazy check<CR>' },
   p = { 'Plug Profile',                    ':Lazy profile<CR>' },
-  h = { 'Plug home',                       ':Lazy home<profileprofileCR>' },
+  h = { 'Plug home',                       ':Lazy home<CR>' },
 
   o = { 'Plugin main page open in Github', vim_u.open_github_plugin },
 
@@ -656,8 +677,8 @@ space_key_vmap.s = { --{{{1 +Search/Source
   p = { 'FZF Live Grep Current Project', "y:lua require('fzf-lua').live_grep({ search = vim.fn.getreg('+'), current_buffer_only = false })<CR>" },
   f = { 'run fag',                       ":<C-U>execute ':FloatermSend FZF_TP_OPTS=\"-p 95\\%\" fag '.GetCurrentWord('v')<CR>" },
 
-  l = { 'Source lua code',               ":luado loadstring(line)()<CR>" },
-  i = { 'Source lua code',               ":luado loadstring('nvim_print(' .. line .. ')')()<CR>" },
+  l = { 'Source selected lua code',      ":luado loadstring(line)()<CR>" },
+  i = { 'Inpsect selected lua code',     ":luado loadstring('nvim_print(' .. line .. ')')()<CR>" },
 
 }
 
@@ -681,7 +702,7 @@ space_key_nmap.t = { --{{{1 +Toggle
 
 
   -- UI
-  h = { 'Toggle left',                             ':NvimTreeFindFileToggle<CR>' },
+  h = { 'Toggle left',                             '<CMD>NvimTreeFindFileToggle<CR>' },
   l = { 'Toggle right',                            ':SymbolsOutline<CR><c-w>h' },
   c = { 'Toggle ChatGPT',                          ':ChatGPT<CR>' },
 
@@ -733,6 +754,8 @@ space_key_nmap.t = { --{{{1 +Toggle
     i = { 'change foldmethod to indent',           ':set foldmethod=indent<CR>:set foldmethod<CR>zv' },
   },
   s = { 'Toggle Flash Search',                     function() require("flash").toggle() end },
+  -- w = { 'Toggle Word',                             function() return core.repeatableCall(require('nvim-toggler').toggle) end, expr = true },
+  w = { 'Toggle Word',                             core.dotCall(require('nvim-toggler').toggle) , expr = true },
 
 }
 
@@ -756,6 +779,12 @@ local settingToggle = function(keymap)
 end
 settingToggle(toggle_keymap)
 
+
+-- stylua: ignore
+space_key_vmap.t = { --{{{1 +Toggle
+  name = "+Toggle",
+  w = { 'Toggle Word',                             core.dotCall(require('nvim-toggler').toggle) , expr = true },
+}
 
 -- stylua: ignore
 

@@ -1,16 +1,17 @@
-local vim = vim
-local api = vim.api
-
 local M = {}
 
 function nvim_print(...)
   if select("#", ...) == 1 then
-    api.nvim_out_write(vim.inspect((...)))
+    vim.api.nvim_out_write(vim.inspect((...)))
   else
-    api.nvim_out_write(vim.inspect {...})
+    vim.api.nvim_out_write(vim.inspect {...})
   end
-  api.nvim_out_write("\n")
+  vim.api.nvim_out_write("\n")
+  -- # Notes: Otherway to show message
+  -- vim.notify(vim.inspect(plug_info))
 end
+
+
 
 function _G.ReloadConfig() -- ReloadConfig {{{1
   local hls_status = vim.v.hlsearch
@@ -81,7 +82,6 @@ function M.join(...)
   return resultTable
 end
 
---default_find_group_pattern -- nvim_print(M.join({ 1, 2, 3 }, { 4, 5, 6 }))
 -- local a = { 1, 2, 3 }
 -- local b = { 1, 2, 3 }
 -- nvim_print(M.join(a, b))
@@ -89,16 +89,6 @@ end
 -- nvim_print(a)
 -- print("-----------")
 -- nvim_print(b)
-
-function GetKeys(maps)
-  -- get keys from a impar map
-  local res = {}
-  for _, entry in pairs(maps) do
-    local c = string.gsub(entry[1], "[%[%]]", "")
-    table.insert(res, c)
-  end
-  return res
-end
 
 function IS_IN(s, list)
   for _, v in ipairs(list) do
@@ -109,11 +99,17 @@ function IS_IN(s, list)
   return false
 end
 
-local tuple_obj = { --{{{2
-  { "k1", "value_1" },
-  { "k2", "value_1" },
-  { "k3", "value_1" },
-}
--- nvim_print(getKeys(tuple_obj))
+
+function M.is_in(s, list)
+  for _, i in ipairs(list) do
+    if s == i then
+      return true
+    end
+  end
+  return false
+end
+
+-- local a = { 1, 2, 3 }
+-- nvim_print(M.is_in (1, a))
 
 return M
