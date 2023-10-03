@@ -2,6 +2,17 @@ require("funcs.global")
 local core = require("funcs.nvim_core")
 local vim_u = require("funcs.nvim_utility")
 
+local digits = function(number)
+    local numberStr = tostring(number)
+    local digitCount = select(2, numberStr:gsub("%d", ""))
+    return digitCount
+end
+local number_of_folded_lines = function()
+   local total_lines = vim.api.nvim_buf_line_count(0)
+  return string.format("%".. digits(total_lines) .."d lines", vim.v.foldend - vim.v.foldstart + 1)
+end
+
+
 local function nvim_tree_on_attach(bufnr)
   local api = require("nvim-tree.api")
 
@@ -19,10 +30,10 @@ end
 
 return {
 
-  -- " Sidebar --------------------------------- | Description
+  -- Section: Sidebar -------------------------- | Description
   { "simrat39/symbols-outline.nvim", cmd = "SymbolsOutline", config = true },
-  { -- "kyazdani42/nvim-tree.lua"--              | A File Explorer For Neovim Written In Lua
-    "kyazdani42/nvim-tree.lua",
+  {
+    "nvim-tree/nvim-tree.lua", --                | A File Explorer For Neovim Written In Lua
     dependencies = {
       "nvim-tree/nvim-web-devicons", --          | optional for icon support
     },
@@ -68,6 +79,10 @@ return {
       },
     },
   },
+  { "nvim-tree/nvim-web-devicons",   lazy = true },
+  'kiyoon/nvim-tree-remote.nvim',--              | Support for  Treemux
+
+  "kshenoy/vim-signature", --                    | A plugin to place, toggle and display marks.
 
 
   { -- "norcalli/nvim-colorizer.lua",            | Show color
@@ -166,93 +181,29 @@ return {
     end
   },
 
-  { -- "Yggdroot/indentLine",
-    "Yggdroot/indentLine",
-    enabled = true,
-    init = function()
-      vim.g.indentLine_char_list = { "           | ", "¦", "┆", "┊" }
-      vim.g.indentLine_leadingSpaceEnabled = 0
-      vim.g.indentLine_enabled = 0
-    end,
-  },
-  { -- "lukas-reineke/indent-blankline.nvim",
-    -- "lukas-reineke/indent-blankline.nvim",
-    -- event = { "BufReadPost", "BufNewFile" },
-    -- init = function()
-    --   vim.g.indent_blankline_viewport_buffer = "20"
-    --   vim.cmd([[highlight IndentBlanklineIndent1 guifg=#E06C75 gui=nocombine]])
-    --   vim.cmd([[highlight IndentBlanklineIndent2 guifg=#E5C07B gui=nocombine]])
-    --   vim.cmd([[highlight IndentBlanklineIndent3 guifg=#98C379 gui=nocombine]])
-    --   vim.cmd([[highlight IndentBlanklineIndent4 guifg=#56B6C2 gui=nocombine]])
-    --   vim.cmd([[highlight IndentBlanklineIndent5 guifg=#61AFEF gui=nocombine]])
-    --   vim.cmd([[highlight IndentBlanklineIndent6 guifg=#C678DD gui=nocombine]])
-    -- end,
-    -- opts = {
-    --   char = "│",
-    --   -- char = "▏",
-    --   filetype_exclude = {
-    --     "help",
-    --     "alpha",
-    --     "dashboard",
-    --     "neo-tree",
-    --     "Trouble",
-    --     "lazy",
-    --     "mason",
-    --     "notify",
-    --     "toggleterm",
-    --     "lazyterm",
-    --   },
-    --   show_trailing_blankline_indent = false,
-    --   show_current_context = false,
-    --   show_current_context_start = false,
-    --   space_char_blankline = " ",
-    --   char_highlight_list = {
-    --     "IndentBlanklineIndent1",
-    --     "IndentBlanklineIndent2",
-    --     "IndentBlanklineIndent3",
-    --     "IndentBlanklineIndent4",
-    --     "IndentBlanklineIndent5",
-    --     "IndentBlanklineIndent6",
-    --   },
-    -- },
-  },
-  { -- "echasnovski/mini.indentscope",
-    -- Active indent guide and indent text objects. When you're browsing
-    -- code, this highlights the current level of indentation, and animates
-    -- the highlighting.
-    "echasnovski/mini.indentscope",
-    version = false, -- wait till new 0.7.0 release to put it back on semver
-    event = { "BufReadPre", "BufNewFile" },
-    opts = {
-      -- symbol = "▏",
-      symbol = "│",
-      options = { try_as_border = true },
-    },
-    init = function()
-      vim.api.nvim_create_autocmd("FileType", {
-        pattern = {
-          "help",
-          "alpha",
-          "dashboard",
-          "neo-tree",
-          "Trouble",
-          "lazy",
-          "mason",
-          "notify",
-          "toggleterm",
-          "lazyterm",
-        },
-        callback = function()
-          vim.b.miniindentscope_disable = true
-        end,
-      })
-    end,
-  },
   { -- "folke/noice.nvim"                        | Provides CMD, Messages provides lsp progress
     "folke/noice.nvim",
     enabled = true,
     event = "VeryLazy",
     opts = {
+      cmdline = {
+        enabled = true, -- enables the Noice cmdline UI
+        view = "cmdline_popup",
+      },
+      views = {
+        cmdline_popup = {
+          -- Clean cmdline pop
+          -- https://github.com/folke/noice.nvim/wiki/Configuration-Recipes#clean-cmdline_popup
+          border = {
+            style = "none",
+            padding = { 1, 2 },
+          },
+          filter_options = {},
+          win_options = {
+            winhighlight = "NormalFloat:NormalFloat,FloatBorder:FloatBorder",
+          },
+        },
+      },
       lsp = {
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
@@ -358,7 +309,7 @@ return {
       },
     },
   },
-  { -- "rcarriga/nvim-notify",                   | A fancy notification manager for NeoVim
+  { -- "rcarriga/nvim-notify",                   | A fancy notification manager for NeoVim, required for noce.nvim
     "rcarriga/nvim-notify",
     enabled = true,
     opts = {
@@ -389,8 +340,8 @@ return {
       end
     end,
   },
-  { -- "stevearc/dressing.nvim", better vim.ui
-    "stevearc/dressing.nvim",
+  {
+    "stevearc/dressing.nvim", --                 | better vim.ui
     enabled = true,
     lazy = true,
     init = function()
@@ -407,8 +358,6 @@ return {
     end,
   },
 
-  -- icons
-  { "nvim-tree/nvim-web-devicons",   lazy = true },
 
   -- ui components
   { "MunifTanjim/nui.nvim",          lazy = true },
@@ -587,8 +536,8 @@ return {
     dependencies = { "nvim-telescope/telescope.nvim" },
     config = true,
   },
-  { -- "folke/persistence.nvim", | persistence session
-    "folke/persistence.nvim",
+  {
+    "folke/persistence.nvim", --                | persistence session
     disable = true,
     event = "BufReadPre",
     opts = {
@@ -602,5 +551,136 @@ return {
     --   { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
     --   { "<leader>qd", function() require("persistence").stop() end,                desc = "Don't Save Current Session" },
     -- },
+  },
+
+  -- No identation for following plugins
+  {
+    "anuvyklack/pretty-fold.nvim", --           | Setup my folding text
+    config = function()
+      require("pretty-fold").setup({
+        process_comment_signs = 'delete',
+        keep_indentation = false,
+        fill_char = '━',
+        sections = {
+          left = {
+            '', function() return string.rep('+', vim.v.foldlevel) end, '', 'content', ''
+          },
+          right = {
+            '┫ ', number_of_folded_lines,
+            ': ', 'percentage', ' ┣━',
+          }
+        }
+      })
+      require("pretty-fold").ft_setup("lua", {
+        keep_indentation = true,
+        process_comment_signs = 'delete',
+        sections = {
+          left = {
+            function (config)
+              local fillChar = config.fill_char
+              local line =  vim.fn.getline(vim.v.foldstart)
+
+              -- Generic
+              line = line:gsub(" = {", " = { ... }", 1)
+              line = line:gsub("{{{%d", "", 1)
+              -- Replace leading -- to space
+              line = line:gsub("^%-%-", "+ ", 1)
+
+
+              -- Add second line if current line is empty
+              if string.match(line, "^%s+{$") then
+                local line2 = vim.fn.getline(vim.v.foldstart + 1)
+                local pattern = "^%s+"
+                line = line .. string.gsub(line2, pattern, " ")
+              end
+
+              -- Fix inline commands with good aligment
+              local commentPattern = "%-%- "
+              if string.match(line, "| ") then
+                -- Add spaces before |
+                line = line:gsub(commentPattern, "", 1)
+                line = line:gsub("| ", "   | ")
+                line = line:gsub(commentPattern, "   ")
+              else
+                line = line:gsub(commentPattern, "")
+              end
+
+              -- line = line:gsub("| ", "  ") -- Hiding Alignment char |
+
+              -- if vim.v.foldlevel > 2 then
+              --   local levelSpace =  string.rep('%s', vim.v.foldlevel - 2)
+              --   local plus =  string.rep('+', vim.v.foldlevel - 2)
+              --   line = line:gsub("^%s+%S", function(match) return match:gsub( levelSpace .. " %S", function(m) return m:gsub(levelSpace .. " ", plus .. " ", 1) end , 1) end)
+              -- end
+
+              -- Hack: Show disabled plugins
+              if string.match(line, "^%s+{") then
+                for l=vim.v.foldstart,vim.v.foldend do
+                  local parseline = vim.fn.getline(l)
+                  if parseline:match("^%s+enabled = false") then
+                    line = line:gsub(",           ", ", [disabled]")
+                    break
+                  end
+                end
+              end
+
+              line = line:gsub("[^%s]%s%s+", function (match) return match:gsub("%s", fillChar) end)
+              line = line:gsub("([^%s])" .. fillChar, "%1 ", 1)
+              return line
+            end,
+            ' '
+
+          },
+          right = {
+            '| ', number_of_folded_lines , ': ', 'percentage', ' |',
+          }
+        },
+        -- fill_char = "-",
+        fill_char = '━',
+        -- fill_char = ' ',
+        add_close_pattern = false, -- true, 'last_line' or false
+      })
+    end,
+  },
+  { -- "Yggdroot/indentLine",
+    "Yggdroot/indentLine",
+    enabled = true,
+    init = function()
+      vim.g.indentLine_char_list = { "|", "¦", "┆", "┊" }
+      vim.g.indentLine_leadingSpaceEnabled = 0
+      vim.g.indentLine_enabled = 0
+    end,
+  },
+  { -- "echasnovski/mini.indentscope",
+    -- Active indent guide and indent text objects. When you're browsing
+    -- code, this highlights the current level of indentation, and animates
+    -- the highlighting.
+    "echasnovski/mini.indentscope",
+    version = false, -- wait till new 0.7.0 release to put it back on semver
+    event = { "BufReadPre", "BufNewFile" },
+    opts = {
+      -- symbol = "▏",
+      symbol = "│",
+      options = { try_as_border = true },
+    },
+    init = function()
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = {
+          "help",
+          "alpha",
+          "dashboard",
+          "neo-tree",
+          "Trouble",
+          "lazy",
+          "mason",
+          "notify",
+          "toggleterm",
+          "lazyterm",
+        },
+        callback = function()
+          vim.b.miniindentscope_disable = true
+        end,
+      })
+    end,
   },
 }

@@ -138,7 +138,6 @@ local build_cmp_mapping = function(cmp, luasnip, neogen, has_neogen)
   return map
 end
 
-
 return {
   {
     "tzachar/fuzzy.nvim",
@@ -146,8 +145,8 @@ return {
   },
   {
     "hrsh7th/nvim-cmp",
-    event = "InsertEnter",
-    lazy = true,
+    -- event = "InsertEnter",
+    lazy = false,
     dependencies = {
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-nvim-lsp",

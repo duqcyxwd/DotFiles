@@ -2,9 +2,10 @@ local core = require("funcs.nvim_core")
 
 return {
   ------------------------------------------------------------------------- |
+  -- Keys mappings
   "folke/which-key.nvim",
-  { -- "jiangmiao/auto-pairs",                                              | Auto pair quote and add space
-    "jiangmiao/auto-pairs",
+  {
+    "jiangmiao/auto-pairs", --                                              | Auto pair quote and add space
     init = function()
       vim.g.AutoPairsMapSpace = 0 --                                        | Disable because it adds space for test('abc')
       core.autogroup({
@@ -37,21 +38,12 @@ return {
       })
     end,
   },
-  "tpope/vim-sleuth", --                                     | Automatically adjusts 'shiftwidth' and 'expandtab'
+  "tpope/vim-sleuth", --                                                    | Automatically adjusts 'shiftwidth' and 'expandtab'
 
-  -- Text Objedt
-  -- Treesitter also provides text object
-  --                                                                        | Cheat sheeti https://github.com/wellle/targets.vim/blob/master/cheatsheet.md
-  { -- "wellle/targets.vim",                                                | Addition Text Object For DEFAULT OPERATOR, Pair/Quote/Separator/Argument/Tag e.g di' or diq, vi', vaq
-    "wellle/targets.vim",
-  },
-  "michaeljsmith/vim-indent-object", --                                     | Indent Text Object, e.g vii, vai
-  -- "machakann/vim-sandwich",       --                                     | Should be replace by vim-surround, sa -> ys, visual -> S
-  -- "tpope/vim-surround",           --                                     | provides mappings to easily delete, change and add such surroundings in pairs, e.g cs"'
-
-  -- Text Objedt Operator
-  {                -- "kylechui/nvim-surround",                                            | Surround Operator, use for normal: ys/ds/cs/ + '"`f visual:S
-    "kylechui/nvim-surround",
+  -- Text Object Operator (d/c/y/x)
+  {
+    "kylechui/nvim-surround", --                                            | Surround Operator, use for normal: ys/ds/cs/ + '"`f visual:S
+    --                                                                      | Replace "tpope/vim-surround"
     version = "*", -- Use for stability; omit to use `main` branch for the latest features
     event = "VeryLazy",
     config = function()
@@ -128,40 +120,23 @@ return {
       })
     end,
   },
-
-  "tommcdo/vim-exchange",  --             | Exchange lines, cx/X/cxx/cxc, works with '.'
-
-  "kshenoy/vim-signature", --                                               | A plugin to place, toggle and display marks.
-  "mbbill/undotree",
-  {                        -- "mg979/vim-visual-multi",                                            | vim multi cursor
-    "mg979/vim-visual-multi",
-    lazy = true,
-    event = "VeryLazy",
-  },
-  { -- "ntpeters/vim-better-whitespace"                                     | Only use for highlighting
-    "ntpeters/vim-better-whitespace",
-    init = function(...)
-      vim.g.better_whitespace_enabled = 1
-      vim.g.strip_whitespace_on_save = 0
-    end,
-  },
-  { -- "cappyzawa/trim.nvim",                                               | Use to auto trim whitespace
-    "cappyzawa/trim.nvim",
-    opts = {
-      ft_blocklist = { "diff", "gitcommit", "unite", "qf", "help", "ctrlsf" },
-      trim_on_write = true,
-    },
-  },
-  "preservim/tagbar",     --                                                | Create tag on fly, used by markdown
+  "tommcdo/vim-exchange",  --                                               | Exchange lines, cx/X/cxx/cxc, works with '.'
   "tpope/vim-commentary", --                                                | Gcc
   "tpope/vim-repeat",
 
-  -- Highlight
+  -- Text Object
+  -- Treesitter also provides text object
+  {
+    "wellle/targets.vim", --                                                | Addition Text Object For DEFAULT OPERATOR, Pair/Quote/Separator/Argument/Tag e.g di' or diq, vi', vaq
+    --                                                                      | Cheat Sheet https://github.com/wellle/targets.vim/blob/master/cheatsheet.md
+  },
+  "michaeljsmith/vim-indent-object", --                                     | Indent Text Object, e.g vii, vai
+
+  -- Highlight for action
   "machakann/vim-highlightedyank", --                                       | Show highlight for yank
   "osyo-manga/vim-over",           --                                       | Preview replace chanage
 
   -- Vim motions, jump, search
-  -- "unblevable/quick-scope", --, {'on': []}                               | Quick highlight for f/F | Not working with Lazy
   { -- "ggandor/lightspeed.nvim",                                           | A motion plugin, f/F
     "ggandor/lightspeed.nvim",
     enabled = false,
@@ -170,8 +145,8 @@ return {
       limit_ft_matches = 10,
     },
   },
-  { -- "folke/flash.nvim",                                                  | Replacement for light speed, support Tree sitter search, e.g f/F/sS, + search / <Space>v
-    "folke/flash.nvim",
+  { "folke/flash.nvim", --                                                  | Replacement for light speed, e.g f/F/sS, + search / <Space>v
+    --                                                                      | support Tree sitter search,
     event = "VeryLazy",
     enabled = true,
     opts = {
@@ -194,29 +169,45 @@ return {
     lazy = true,
     cmd = { "HopVerticalMW", "HopChar1", "HopChar2" },
   },
-
-  -- " Align Text
-  "godlygeek/tabular", --, {'on': 'Tabularize'}
-  "junegunn/vim-easy-align",
-
-  -- " Terminal
-  "kassio/neoterm",        --                                                      | Terminal
-  "voldikss/vim-floaterm", --                                               | #{ on: [ 'FloatermNew', 'FloatermHide', 'FloatermToggle' ] }
-  {                        -- "chrisgrieser/nvim-origami",                                         | Fold with relentless elegance. h/l
-    "chrisgrieser/nvim-origami",
+  {
+    "chrisgrieser/nvim-origami", --                                         | Motion for fold: h/l
     event = "BufReadPost", -- later or on keypress would prevent saving folds
     opts = true,           -- needed even when using default config
   },
+
+  -- Block Text Editor
   {
-    "anuvyklack/pretty-fold.nvim", --                                       | Setup my folding text
-    config = function()
-      require("pretty-fold").setup({})
-      require("pretty-fold").ft_setup("lua", {
-        fill_char = "-",
-        add_close_pattern = false, -- true, 'last_line' or false
-      })
+    "mg979/vim-visual-multi", --                                            | vim multi cursor
+    lazy = true,
+    event = "VeryLazy",
+  },
+  {
+    "junegunn/vim-easy-align" --                                            | ga*,
+  },
+  "godlygeek/tabular", --                                                   | {'on': 'Tabularize'}
+
+  -- Terminal
+  "kassio/neoterm", --                                                      | Terminal
+  "voldikss/vim-floaterm", --                                               | #{ on: [ 'FloatermNew', 'FloatermHide', 'FloatermToggle' ] }
+
+  -- Others
+  {
+    "ntpeters/vim-better-whitespace", --                                    | Only use for highlighting
+    init = function(...)
+      vim.g.better_whitespace_enabled = 1
+      vim.g.strip_whitespace_on_save = 0
     end,
   },
+  {
+    "cappyzawa/trim.nvim", --                                               | Use to auto trim whitespace
+    opts = {
+      ft_blocklist = { "diff", "gitcommit", "unite", "qf", "help", "ctrlsf" },
+      trim_on_write = true,
+    },
+  },
+  "preservim/tagbar",     --                                                | Create tag on fly, used by markdown
+
+  "mbbill/undotree",
 
   {
     'nvim-telescope/telescope-fzf-native.nvim',
@@ -299,5 +290,6 @@ return {
       },
     },
   },
+
 
 }

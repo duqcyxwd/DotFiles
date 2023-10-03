@@ -573,22 +573,27 @@ space_key_vmap.o = { --{{{1 +Open
 }
 
 -- stylua: ignore
-space_key_nmap.p = { --{{{1 +Project/Packages
-  name = "+Project/Packages",
+space_key_nmap.p = { --{{{1 +Project/Plugins
+  name = "+Project/Plugins",
 
 
   f = { 'Project files',                   ':FzfLua files<CR>' },
   e = { 'Project files',                   ':FzfLua files<CR>' },
   l = { 'Project List',                    ':SearchSession<CR>' },
 
-  a = { 'Plug all',                        require"funcs.nvim_utility".fzf_get_plugin },
-  i = { 'Plug Install',                    ':Lazy install<CR>' },
-  u = { 'Plug Update',                     ':Lazy update<CR>' },
-  C = { 'Plug Clean',                      ':Lazy clean<CR>' },
-  S = { 'Plug Status',                     ':Lazy check<CR>' },
-  p = { 'Plug Profile',                    ':Lazy profile<CR>' },
-  h = { 'Plug home',                       ':Lazy home<CR>' },
+  p = {
+    name = "+Packages/Plugins",
+    a = { 'Plug all',                        require"funcs.nvim_utility".fzf_get_plugin },
+    i = { 'Plug Install',                    ':Lazy install<CR>' },
+    u = { 'Plug Update',                     ':Lazy update<CR>' },
+    C = { 'Plug Clean',                      ':Lazy clean<CR>' },
+    S = { 'Plug Status',                     ':Lazy check<CR>' },
+    p = { 'Plug Profile',                    ':Lazy profile<CR>' },
+    h = { 'Plug home',                       ':Lazy home<CR>' },
+  },
 
+
+  h = { 'Plug home',                       ':Lazy home<CR>' },
   o = { 'Plugin main page open in Github', vim_u.open_github_plugin },
 
 }
@@ -732,7 +737,7 @@ space_key_nmap.t = { --{{{1 +Toggle
   o = {
     name = 'Options+',
     v = { 'Toggle vertical indent line',  ':IndentLinesToggle<CR>' },
-    r = { 'Toggle relative line number',  ":lua require'funcs.toggle'.toggle_relative_num()<CR>" },
+    r = { 'Toggle relative line number',  ":lua require'funcs.toggle'.r_number.toggle()<CR>" },
   },
   f = {
     name = 'Fold+',
@@ -783,7 +788,7 @@ space_key_nmap.T = { --{{{1 +Tabs
 
 }
 space_key_nmap.u = { --{{{1 +UI
-  name = "+UI",
+  name = "+UI/Noti/Undo",
   d = { "Dismiss all Notifications", ":lua require('notify').dismiss({ silent = true, pending = true })<CR>" },
   n = { "Viewing History",           ":lua require('telescope').extensions.notify.notify()<CR>" },
   u = { "Undo tree",                 ":UndotreeToggle<CR>" },

@@ -17,22 +17,35 @@ end
 vim.cmd("command! ReloadConfig lua ReloadConfig()")
 
 -- Merge maps
-function M.merge(t1, t2)
-  if type(t2) ~= "table" then
-    return t1
-  end
-  for k, v in pairs(t2) do
-    if type(v) == "table" then
-      if type(t1[k] or false) == "table" then
-        M.merge(t1[k] or {}, t2[k] or {})
-      else
-        t1[k] = v
+M.merge = function(tbl1, tbl2)
+  local is_dict1 = type(tbl1) == 'table' and (not vim.tbl_islist(tbl1) or vim.tbl_isempty(tbl1))
+  local is_dict2 = type(tbl2) == 'table' and (not vim.tbl_islist(tbl2) or vim.tbl_isempty(tbl2))
+  if is_dict1 and is_dict2 then
+    local new_tbl = {}
+    for k, v in pairs(tbl2) do
+      if tbl1[k] ~= M.none then
+        new_tbl[k] = M.merge(tbl1[k], v)
       end
-    else
-      t1[k] = v
     end
+    for k, v in pairs(tbl1) do
+      if tbl2[k] == nil then
+        if v ~= vim.NIL then
+          new_tbl[k] = M.merge(v, {})
+        else
+          new_tbl[k] = nil
+        end
+      end
+    end
+    return new_tbl
   end
-  return t1
+
+  if tbl1 == M.none then
+    return nil
+  elseif tbl1 == nil then
+    return M.merge(tbl2, {})
+  else
+    return tbl1
+  end
 end
 
 -- nvim_print(merge({ a = 10, b = 20 }, { b = 10 }))

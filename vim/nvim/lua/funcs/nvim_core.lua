@@ -76,4 +76,17 @@ function M.dotCall(func)
   end
 end
 
+function M.jumpWrap(key)
+  local count = vim.v.count
+
+  -- If no count is provided, move one line
+  if count == 0 then
+    count = 1
+  end
+  print("CustomVerticalMove " .. count)
+
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("m'", true, false, true), 'n', true)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("" .. count .. key, true, false, true), 'n', true)
+end
+
 return M

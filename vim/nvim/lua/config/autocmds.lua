@@ -86,10 +86,10 @@ local autocmds = {
   },
 
   line_number = {
-    { { "BufEnter", "FocusGained", "WinEnter" }, "*", toggle.relative_num_buffer_hook.enter },
-    { { "BufLeave", "FocusLost", "InsertEnter", "WinLeave" },   "*", toggle.relative_num_buffer_hook.leave },
+    { { "BufEnter", "FocusGained", "InsertLeave", "WinEnter" }, "*", toggle.r_number.enterHook },
+    { { "BufLeave", "FocusLost",   "InsertEnter", "WinLeave" }, "*", toggle.r_number.leaveHook },
     -- { { "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, "*", toggle.relative_num_buffer_hook.enter },
-    -- { { "BufLeave", "FocusLost", "InsertEnter", "CmdlineEnter", "WinLeave" },   "*", toggle.relative_num_buffer_hook.leave },
+    -- { { "BufLeave", "FocusLost",   "InsertEnter", "CmdlineEnter", "WinLeave" }, "*", toggle.relative_num_buffer_hook.leave },
   },
 
   DEV_DEV = {

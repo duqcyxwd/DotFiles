@@ -12,11 +12,19 @@ return {
   { -- 'nguyenvukhang/nvim-toggler',   | Enable custom Text Toggler
     'nguyenvukhang/nvim-toggler',
     config = true,
-    opt = {
+    opts = {
       inverses = {
+        ['true'] = 'false',
+        ['True'] = 'False',
+        ['yes'] = 'no',
+        ['on'] = 'off',
+        ['left'] = 'right',
+        ['up'] = 'down',
+        ['!='] = '==',
+        ['require'] = 'disable',
       },
       remove_default_keybinds = true,
-      remove_default_inverses = false,
+      remove_default_inverses = true,
     }
   }
 }

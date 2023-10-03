@@ -1,9 +1,6 @@
 -- " Setting toggle/Config Functions
 
-local core = require("funcs.nvim_core")
-local u = require('funcs.utility')
-
-M = {}
+local M = {}
 
 M.vim_diff_whitespace = function() --| " [Functions] Vim diff whitespace toggle
   if vim.o.diffopt:find('iwhite', 1, true) then
@@ -47,37 +44,70 @@ M.loop_fold_method = function()
   fn()
 end
 
--- TODO Toggle relative number!
--- local augroup = vim.api.nvim_create_augroup("numbertoggle", {})
-M.toggle_relative_num_state = true
-M.toggle_relative_num = function()
-  M.toggle_relative_num_state = vim.opt.relativenumber
-  local fn = function()
-    if M.toggle_relative_num_state then
-      M.toggle_relative_num_state = false
-      vim.opt.relativenumber = false
-    else
-      M.toggle_relative_num_state = true
-      vim.opt.relativenumber = true
-    end
-  end
-  M.toggle_relative_num = fn
-  fn()
-end
+M.r_number = {
+  state = true,
 
-M.relative_num_buffer_hook = {
-  enter = function()
-    if M.toggle_relative_num_state and vim.o.nu and vim.api.nvim_get_mode().mode ~= "i" then
+  toggle = function()
+    -- Set init state
+    M.r_number.state = vim.opt.relativenumber
+    local fn = function()
+      if M.r_number.state then
+        M.r_number.state = false
+        vim.opt.relativenumber = false
+      else
+        M.r_number.state = true
+        vim.opt.relativenumber = true
+      end
+    end
+    M.r_number.toggle = fn
+    fn()
+  end,
+
+  enterHook = function()
+    if M.r_number.state and vim.o.nu and vim.api.nvim_get_mode().mode ~= "i" then
       vim.opt.relativenumber = true
     end
   end,
-  leave = function()
+
+  leaveHook = function()
     if vim.opt.number then
       vim.opt.relativenumber = false
       vim.cmd "redraw"
     end
-  end
+  end,
+
 }
+
+
+-- M.toggle_relative_num_state = true
+-- M.toggle_relative_num = function()
+--   M.toggle_relative_num_state = vim.opt.relativenumber
+--   local fn = function()
+--     if M.toggle_relative_num_state then
+--       M.toggle_relative_num_state = false
+--       vim.opt.relativenumber = false
+--     else
+--       M.toggle_relative_num_state = true
+--       vim.opt.relativenumber = true
+--     end
+--   end
+--   M.toggle_relative_num = fn
+--   fn()
+-- end
+
+-- M.relative_num_buffer_hook = {
+--   enter = function()
+--     if M.toggle_relative_num_state and vim.o.nu and vim.api.nvim_get_mode().mode ~= "i" then
+--       vim.opt.relativenumber = true
+--     end
+--   end,
+--   leave = function()
+--     if vim.opt.number then
+--       vim.opt.relativenumber = false
+--       vim.cmd "redraw"
+--     end
+--   end
+-- }
 
 
 -- Toggle Project Root
