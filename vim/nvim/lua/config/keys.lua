@@ -4,6 +4,7 @@ local u = require("funcs.utility")
 local brj = require("funcs.bracket_jump")
 local vim_u = require('funcs.nvim_utility')
 local core = require("funcs.nvim_core")
+local lsp_util = require("config.lspconfig-util")
 
 local M = {}
 
@@ -84,6 +85,7 @@ vim.cmd("cnoremap <C-N> <Down>")
 vim.keymap.set({ "i", "c" }, "<C-x><C-r>", function() require("fzf-lua").registers() end, { silent = true, desc = "Fzf Register" })
 
 -- Normal Mode mapping --{{{1
+
 -- -- " j, k          Store relative line number jumps in the jumplist.
 vim.api.nvim_set_keymap('n', 'j', 'v:count ? (v:count > 1 ? "m\'" .. v:count : "") .. "j" : "gj"', { expr = true, noremap = true })
 vim.api.nvim_set_keymap('n', 'k', 'v:count ? (v:count > 1 ? "m\'" .. v:count : "") .. "k" : "gk"', { expr = true, noremap = true })
@@ -110,7 +112,6 @@ set_keymap("n", { noremap = true, silent = true }, {
 
   -- yank/paste clipboard
   { "gy",        '"+y' },
-  { "gp",        '"+p' },
   { "gP",        '"+P' },
   { "gY",        '"+y$' },
 
@@ -150,7 +151,6 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "gl",        "<C-W>l" },
 
   -- Edit
-  { "K",         ":call Show_documentation()<CR>" },
   { "<CR>",      "za" },
   { "gV",        "<Plug>(VM-Reselect-Last)" },
   { "<C-p>",     ":FzfLua files<CR>" },
@@ -275,10 +275,11 @@ space_key_nmap.n = brackets_keymap
 
 -- }}}1
 
--- Leaderkey mapping --{{{1
+-- local leaderkey mapping --{{{1
+lsp_util.lsp_keymap_global()
+
 set_keymap("n", { noremap = true, silent = true }, {
   { "<localleader>k", ":call Show_documentation()<CR>" },
-  { "<localleader>j", vim_u.goto_first_float },
 })
 -- }}}1
 
@@ -348,7 +349,7 @@ space_key_nmap.d = { --{{{1 +Delete window/tab/buffer
   b = { "Delete this buffer",              vim_u.smart_buffer_close },
   w = { "Delete this window",              ":close<CR>" },
   t = { "Delete this tab",                 ":tabclose<CR>" },
-  T = { "Delete this tab and buffer",      ":Bclose<CR>:tabclose<CR>" },
+  T = { "Delete this tab and buffer",      vim_u.smart_buffer_close },
   c = { "Diff/Check with Saved",           ":require'funcs.nvim_utility'.diff_with_saved<CR>" },
 
 }
@@ -524,7 +525,9 @@ space_key_nmap.l = { --{{{1 +LSP
   name = "+LSP",
 
   d = { 'lsp toggle diagnostics',       '<Cmd>lua vim.diagnostic.toggle()<CR>' },
-  f = { 'lsp toggle diagnostics float', '<Cmd>lua vim.diagnostic.float_toggle()<CR>' },
+  f = { 'lsp toggle float hover',       "<Cmd>lua require'config.autocmds'.toggle_diagnostics()<CR>" },
+  l = { 'lsp toggle diagnostics line',  "<Cmd>lua require'funcs.plug'.lsp_lines.toggle()<CR>" },
+
   s = { 'LSP Stop',                     ':LspStop<CR>' },
   r = { 'LSP Restart',                  ':LspRestart<CR>' },
   g = { 'LSP Start',                    ':LspStart<CR>' },
@@ -581,13 +584,18 @@ space_key_nmap.p = { --{{{1 +Project/Plugins
   e = { 'Project files',                   ':FzfLua files<CR>' },
   l = { 'Project List',                    ':SearchSession<CR>' },
 
+  s = { 'Plug Search',                     require'funcs.plug'.fzf.plugins },
+
+
   p = {
     name = "+Packages/Plugins",
-    a = { 'Plug all',                        require"funcs.nvim_utility".fzf_get_plugin },
+    a = { 'Plug all',                        require'funcs.plug'.fzf.plugins },
+    l = { 'Plug list',                       require'funcs.plug'.fzf.get_plugin },
     i = { 'Plug Install',                    ':Lazy install<CR>' },
     u = { 'Plug Update',                     ':Lazy update<CR>' },
-    C = { 'Plug Clean',                      ':Lazy clean<CR>' },
-    S = { 'Plug Status',                     ':Lazy check<CR>' },
+    c = { 'Plug Check',                      ':Lazy check<CR>' },
+    x = { 'Plug Clean',                      ':Lazy clean<CR>' },
+    s = { 'Plug Status',                     ':Lazy check<CR>' },
     p = { 'Plug Profile',                    ':Lazy profile<CR>' },
     h = { 'Plug home',                       ':Lazy home<CR>' },
   },

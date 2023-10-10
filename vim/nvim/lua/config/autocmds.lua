@@ -1,5 +1,6 @@
 local core = require("funcs.nvim_core")
 local toggle = require("funcs.toggle")
+local lsp_util = require("config.lspconfig-util")
 
 -- diagnostic Autocmd
 
@@ -157,14 +158,21 @@ function _G.custom_fold_text()
 end
 
 -- autogroup toggle
-local diagnostics_float_enabled = true
+local diagnostics_float_enabled = false
 local float_toggle_group = {
   DIAGNOSTICS_FLOAT = {
     -- Only show diagnostic when edit complete. This will help me to get clean complete list
-    { "CursorHold", "*", function() require 'lspsaga.diagnostic'.show_line_diagnostics() end },
+    { "CursorHold", "*", vim.lsp.buf.hover },
+    -- { "CursorHold", "*", function() require 'lspsaga.diagnostic'.show_line_diagnostics() end },
+    -- { "CursorHold", "*", "Lspsaga show_line_diagnostics ++unfocus" },
   },
 }
-vim.diagnostic.float_toggle = function()
+if diagnostics_float_enabled then
+  core.autogroup(float_toggle_group)
+end
+M.toggle_diagnostics = function()
+  -- require("lsp_lines").toggle()
+  -- vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
   if diagnostics_float_enabled then
     print("Disable diagnostics float")
     -- core.nvim_create_augroups({ DIAGNOSTICS_FLOAT = {} })
@@ -181,4 +189,12 @@ end
 -- Enable by default
 core.autogroup(autocmds)
 core.autogroup(file_type_autocmds)
-core.autogroup(float_toggle_group)
+
+
+-- Use LspAttach autocommand to only map the following keys
+-- after the language server attaches to the current buffer
+vim.api.nvim_create_autocmd('LspAttach', {
+  group = vim.api.nvim_create_augroup('UserLspConfig', {}),
+  callback = lsp_util.lsp_keymap_buffer })
+
+return M

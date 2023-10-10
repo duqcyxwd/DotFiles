@@ -117,7 +117,7 @@ return {
     event = "VeryLazy",
     dependencies = {
       "nvim-treesitter/nvim-treesitter-context",
-      "nvim-treesitter/playground",
+      -- "nvim-treesitter/playground",
       "nvim-treesitter/nvim-treesitter-textobjects", --         | Regular text objects
       -- { dir = "~/duqcyxwd/nvim-treesitter-textobjects" }, -- | Testing my textobjects for comments
       -- "nvim-treesitter/nvim-treesitter-refactor"

@@ -28,18 +28,6 @@ M.get_all_plugins = function()
   return tableFn.keys(require("lazy.core.config").spec.plugins)
 end
 
-M.fzf_get_plugin = function()
-  require 'fzf-lua'.fzf_exec(require 'funcs.nvim_utility'.get_all_plugins(), {
-    actions = {
-      ['default'] = function(selected)
-        local plug_info = require("lazy.core.config").spec.plugins[selected[1]]
-        -- nvim_print(plug_info)
-        vim.notify(vim.inspect(plug_info))
-      end
-    }
-  })
-end
-
 M.get_current_line = function()
   -- Example: require'funcs.nvim_utility'.get_listed_buffer()
   local current_line = vim.fn.line(".")
@@ -282,7 +270,7 @@ end
 M.open_github_plugin = function()
   -- Get the plugin name and owner/repo from the current line
   local line = vim.fn.getline('.')
-  local pattern = "[a-zA-Z][0-9a-zA-Z|%.%-]+[/][0-9a-zA-Z|%.%-]+"
+  local pattern = "[a-zA-Z][0-9a-zA-Z|%.%-%_]+[/][0-9a-zA-Z|%.%-%_]+"
   local plugin = line:match(pattern)
 
 

@@ -20,71 +20,60 @@ local handlers = {
   ["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, { border = border }),
 }
 
-local lsp_on_attach = function(_, bufnr)
-  local function bmap(...)
-    vim.api.nvim_buf_set_keymap(bufnr, ...)
-  end
-
-  bmap("n", "<localleader>f", "<CMD>lua vim.lsp.buf.format({async = true})<CR>", opts)
-  bmap("n", "<localleader>q", "<CMD>lua vim.diagnostic.setloclist()<CR>", opts)
-
-  -- jump diagnostic, Lspsag is the replacement
-
-  bmap( "n", "[e", "<CMD>Lspsaga diagnostic_jump_next<CR>", opts)
-  bmap( "n", "]e", "<CMD>Lspsaga diagnostic_jump_prev<CR>", opts)
-
-  bmap( "n", "[D", "<Cmd>lua vim.diagnostic.goto_prev({float = true})<CR>", opts)
-  bmap( "n", "]D", "<Cmd>lua vim.diagnostic.goto_next({float = true})<CR>", opts)
-
-  bmap( "n", "[d", "<CMD>Lspsaga diagnostic_jump_next<CR>", opts)
-  bmap( "n", "]d", "<CMD>Lspsaga diagnostic_jump_prev<CR>", opts)
-end
-
-local lsp_on_attach_power = function(_, bufnr)
-  lsp_on_attach(_, bufnr)
-
-  local function bmap(...)
-    vim.api.nvim_buf_set_keymap(bufnr, ...)
-  end
-
-  -- bmap("n", "K", "<CMD>lua vim.lsp.buf.hover()<CR>", opts)
-  bmap("n", "K", "<CMD>lua require('lspsaga.hover').render_hover_doc()<CR>", opts)
-  -- WIP
-  bmap("n", "L", "<CMD>lua require'lspsaga.diagnostic'.show_line_diagnostics()<CR>", opts)
-  bmap("n", "<localleader>K", "<cmd>lua vim.lsp.buf.signature_help()<CR>", opts)
-
-  -- lspsaga config: https://github.com/tami5/lspsaga.nvim/wiki
-
-  bmap("n", "gD", "<CMD>lua vim.lsp.buf.declaration()<CR>", opts)
-  bmap("n", "gd", "<CMD>lua vim.lsp.buf.definition()<CR>", opts)
-
-  -- bmap("n", "gi", "<CMD>lua vim.lsp.buf.implementation()<CR>", opts)
-  -- bmap("n", "gr", "<CMD>lua vim.lsp.buf.references()<CR>", opts)
-
-  -- bmap("n", "<localleader>rn", "<CMD>lua vim.lsp.buf.rename()<CR>", opts)
-  bmap("n", "<localleader>rn", "<CMD>:Lspsaga rename<CR>", opts)
-
-  bmap("n", "<localleader>D", "<CMD>lua vim.lsp.buf.type_definition()<CR>", opts)
-  bmap("n", "<localleader>gD", "<CMD>lua require'lspsaga.provider'.preview_definition()<CR>", opts)
-
-  -- bmap("n", "<localleader>ca", "<CMD>lua vim.lsp.buf.code_action()<CR>", opts)
-  bmap("n", "<localleader>ca", "<cmd>lua require('lspsaga.codeaction').code_action()<CR>", opts)
-  bmap("v", "<localleader>ca", ":<C-U>lua require('lspsaga.codeaction').range_code_action()<CR>", opts)
-
-  bmap("n", "<localleader>wa", "<CMD>lua vim.lsp.buf.add_workspace_folder()<CR>", opts)
-  bmap("n", "<localleader>wr", "<CMD>lua vim.lsp.buf.remove_workspace_folder()<CR>", opts)
-  bmap("n", "<localleader>wl", "<CMD>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>", opts)
-end
-
 local capabilitiesFn = function()
   -- return SR("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
   -- https://github.com/hrsh7th/nvim-cmp
   return SR("cmp_nvim_lsp").default_capabilities()
 end
 
+function M.lsp_keymap_global()
+  -- lsp mapping from lsp-config https://github.com/neovim/nvim-lspconfig
+  -- Global mappings.
+  -- See `:help vim.diagnostic.*` for documentation on any of the below functions
+  vim.keymap.set('n', '<localleader>e', ":lua vim.diagnostic.open_float()<cr>")
+  vim.keymap.set('n', '<localleader>q', ":lua vim.diagnostic.setloclist()<cr>")
+  vim.keymap.set('n', '[d',             ":lua vim.diagnostic.goto_prev()<cr>")
+  vim.keymap.set('n', ']d',             ":lua vim.diagnostic.goto_next()<cr>")
+  vim.keymap.set('n', '[e',             ":Lspsaga diagnostic_jump_next<CR>")
+  vim.keymap.set('n', ']e',             ":Lspsaga diagnostic_jump_prev<CR>")
+end
+
+function M.lsp_keymap_buffer(ev)
+  -- Enable completion triggered by <c-x><c-o>
+  vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
+
+
+  vim.keymap.set('n', '<localleader>wa', vim.lsp.buf.add_workspace_folder,                                        opts)
+  vim.keymap.set('n', '<localleader>wr', vim.lsp.buf.remove_workspace_folder,                                     opts)
+  vim.keymap.set('n', '<localleader>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
+
+  -- Buffer local mappings.
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  local opts = { buffer = ev.buf }
+  vim.keymap.set('n', 'gD',              ":lua vim.lsp.buf.declaration()<cr>",               opts)
+  vim.keymap.set('n', 'gd',              ":lua vim.lsp.buf.definition()<cr>",                opts)
+  vim.keymap.set('n', 'K',               ":lua vim.lsp.buf.hover()<cr>",                     opts)
+  vim.keymap.set('n', 'gr',              ":lua vim.lsp.buf.references()<cr>",                opts)
+  vim.keymap.set('n', 'gi',              ":lua vim.lsp.buf.implementation()<cr>",            opts)
+  vim.keymap.set('n', '<localleader>k',  ":lua vim.lsp.buf.signature_help()<cr>",            opts)
+  vim.keymap.set('n', '<localleader>D',  ":lua vim.lsp.buf.type_definition()<cr>",           opts)
+  vim.keymap.set('n', '<localleader>rn', ":lua vim.lsp.buf.rename()<cr>",                    opts)
+  vim.keymap.set('v', '<localleader>ca', ":lua vim.lsp.buf.code_action()<cr>",               opts)
+  vim.keymap.set('n', '<localleader>f',  function() vim.lsp.buf.format { async = true } end, opts)
+
+
+  -- Other plugins
+  vim.keymap.set('n', 'L',               ":Lspsaga show_line_diagnostics<cr>", opts)
+  vim.keymap.set('n', '<localleader>ca', ":CodeActionMenu<cr>",                opts)
+  vim.keymap.set('n', '<localleader>o',  ":Lspsaga outline<cr>",               opts)
+  vim.keymap.set('n', 'gp',              ":Lspsaga peek_definition<cr>",       opts)
+  vim.keymap.set('n', 'gr',              ":FzfLua lsp_references<cr>",         opts)
+  vim.keymap.set('n', '<localleader>js',  ":FzfLua lsp_document_symbols<cr>",   opts)
+
+
+end
+
 M.handler = handlers
-M.lsp_on_attach = lsp_on_attach
-M.lsp_on_attach_power = lsp_on_attach_power
 M.capabilitiesFn = capabilitiesFn
 M.capabilities = SR("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
 

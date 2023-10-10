@@ -1,6 +1,7 @@
 require("funcs.global")
 local core = require("funcs.nvim_core")
 local vim_u = require("funcs.nvim_utility")
+local api = vim.api
 
 local digits = function(number)
     local numberStr = tostring(number)
@@ -27,6 +28,24 @@ local function nvim_tree_on_attach(bufnr)
   vim.keymap.set("n", "<C-t>", api.tree.change_root_to_parent, opts("Up"))
   vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
 end
+
+local logo = [[
+**********************************************************************
+*       ___          ___          ___          ___          ___      *
+*      /\  \        /\  \        /\  \        /\__\        /|  |     *
+*      \:\  \       \:\  \      /::\  \      /:/  /       |:|  |     *
+*       \:\  \       \:\  \    /:/\:\  \    /:/  /        |:|  |     *
+*   ___ /::\  \  ___ /::\  \  /:/ /::\  \  /:/  /  ___  __|:|  |     *
+*  /\  /:/\:\__\/\  /:/\:\__\/:/_/:/\:\__\/:/__/  /\__\/\ |:|__|____ *
+*  \:\/:/  \/__/\:\/:/  \/__/\:\/:/  \/__/\:\  \ /:/  /\:\/:::::/__/ *
+*   \::/__/      \::/__/      \::/__/      \:\  /:/  /  \::/~~/~     *
+*    \:\  \       \:\  \       \:\  \       \:\/:/  /    \:\~~\      *
+*     \:\__\       \:\__\       \:\__\       \::/  /      \:\__\     *
+*      \/__/        \/__/        \/__/        \/__/        \/__/     *
+* Happy Hacking. Chuan's new vim                                     *
+**********************************************************************
+]]
+
 
 return {
 
@@ -96,6 +115,7 @@ return {
   },
   { -- "nvim-lualine/lualine.nvim",              | Lines at bottom
     "nvim-lualine/lualine.nvim",
+    event = "VeryLazy",
     dependencies = { "arkav/lualine-lsp-progress" },
     config = function()
       -- local statusLineMode = { "mode" } -- Indicate macro
@@ -175,6 +195,7 @@ return {
   { -- "tiagovla/scope.nvim",                    | Add buffer scope to Tabs
     "tiagovla/scope.nvim",
     enabled = true,
+    event = "VeryLazy",
     config = function()
       require("telescope").load_extension("scope")
       require("scope").setup({})
@@ -444,29 +465,13 @@ return {
     end,
   },
 
-  -- Home page and Session
-  { -- "goolord/alpha-nvim",
-    "goolord/alpha-nvim",
+  -- Home page and Session---------------------- | Description
+  {
+    "goolord/alpha-nvim",--                      | Home Page: a fast and fully programmable greeter
     event = "VimEnter",
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = function()
       local dashboard = require("alpha.themes.dashboard")
-      local logo = [[
-       **********************************************************************
-       *       ___          ___          ___          ___          ___      *
-       *      /\  \        /\  \        /\  \        /\__\        /|  |     *
-       *      \:\  \       \:\  \      /::\  \      /:/  /       |:|  |     *
-       *       \:\  \       \:\  \    /:/\:\  \    /:/  /        |:|  |     *
-       *   ___ /::\  \  ___ /::\  \  /:/ /::\  \  /:/  /  ___  __|:|  |     *
-       *  /\  /:/\:\__\/\  /:/\:\__\/:/_/:/\:\__\/:/__/  /\__\/\ |:|__|____ *
-       *  \:\/:/  \/__/\:\/:/  \/__/\:\/:/  \/__/\:\  \ /:/  /\:\/:::::/__/ *
-       *   \::/__/      \::/__/      \::/__/      \:\  /:/  /  \::/~~/~     *
-       *    \:\  \       \:\  \       \:\  \       \:\/:/  /    \:\~~\      *
-       *     \:\__\       \:\__\       \:\__\       \::/  /      \:\__\     *
-       *      \/__/        \/__/        \/__/        \/__/        \/__/     *
-       * Happy Hacking. Chuan's new vim                                     *
-       **********************************************************************
-      ]]
 
       dashboard.section.header.val = vim.split(logo, "\n")
       dashboard.section.buttons.val = {
@@ -516,7 +521,6 @@ return {
   },
   { -- 'rmagatti/auto-session',
     "rmagatti/auto-session",
-    dependencies = { "rmagatti/session-lens", "nvim-telescope/telescope.nvim" },
     config = function()
       require("auto-session").setup {
         log_level = "error",
@@ -526,18 +530,18 @@ return {
         auto_session_create_enabled = true,
         auto_session_root_dir = vim.fn.stdpath("state") .. "/sessions/",
         auto_session_suppress_dirs = { "~/", "~/Downloads", "/", "~/.local/", "~/work_credential/", "/private/" },
-        -- auto_session_allowed_dirs = { "~/gerrit", "~/github", "~/duqcyxwd" },
         auto_session_use_git_branch = false,
       }
     end
   },
-  { -- "rmagatti/session-lens"
-    "rmagatti/session-lens",
+  {
+    "rmagatti/session-lens",--                   | Session switcher for Session Lens extends auto-session through Telescope.nvim
+    cmd = { "SearchSession" },
     dependencies = { "nvim-telescope/telescope.nvim" },
     config = true,
   },
   {
-    "folke/persistence.nvim", --                | persistence session
+    "folke/persistence.nvim", --                 | persistence session
     disable = true,
     event = "BufReadPre",
     opts = {

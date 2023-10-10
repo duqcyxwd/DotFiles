@@ -1,10 +1,8 @@
 require("funcs.global")
 local core = require("funcs.nvim_core")
-local vim_u = require("funcs.nvim_utility")
 local lsp_util = require("config.lspconfig-util")
 
 local diagnosticls = {
-  on_attach = lsp_util.lsp_on_attach,
   filetypes = {
     "css",
     "javascript",
@@ -138,7 +136,6 @@ local diagnosticls = {
 
 local lua_ls = {
   on_attach = function(client, bufnr)
-    lsp_util.lsp_on_attach_power(client, bufnr)
     -- require("lsp-format").on_attach(client, bufnr) -- Enabled format on save
 
     -- local fn = function()
@@ -207,14 +204,16 @@ local servers = {
 }
 
 return {
-  ------------------------------------------------------------------------- | Tesing changes 2
-  { -- "folke/neodev.nvim",                                                 | Automatically configures lua-language-server
-    "folke/neodev.nvim",
+  ------------------------------------------------------------------------- |
+  {
+    "folke/neodev.nvim", --                                                 | Automatically configures lua-language-server
+    event = "VeryLazy",
     opts = {},
   },
   {
-    "neovim/nvim-lspconfig",
+    "neovim/nvim-lspconfig", --                                             | Configs for the Nvim LSP client
     event = { "BufReadPre", "BufNewFile" },
+    -- event = "VeryLazy",
     dependencies = {
       { "folke/neoconf.nvim", cmd = "Neoconf", config = false, dependencies = { "nvim-lspconfig" } },
       { "folke/neodev.nvim",  opts = {} },
@@ -233,18 +232,32 @@ return {
       local lspconfig = SR("lspconfig")
 
       for lsp, setup in pairs(servers) do
-        -- setup.on_attach = lsp_util.lsp_on_attach_power
         setup.capabilities = lsp_util.capabilitiesFn()
         setup.handlers = lsp_util.handlers
         lspconfig[lsp].setup(setup)
       end
     end,
   },
+  {
+    "hinell/lsp-timeout.nvim",
+    event = "VeryLazy",
+    config = function()
+      vim.g["lsp-timeout-config"] = {
+        stopTimeout  = 1000 * 60 * 5, -- wait ms before stopping all LSP servers
+        startTimeout = 1000 * 10,     -- ms before restart
+        silent       = false          -- true to suppress notifications
+      }
+    end,
+    dependencies = { "neovim/nvim-lspconfig" }
+  },
 
   "lukas-reineke/lsp-format.nvim", -- Provide format on save
 
-  {                                -- "tami5/lspsaga.nvim",
-    "tami5/lspsaga.nvim",
+  {
+    "tami5/lspsaga.nvim", --                                                | LSP UI
+    -- Nice wiki:                                                           | https://github.com/kkharji/lspsaga.nvim/wiki
+    name = "old_lspsaga",
+    enabled = false,
     init = function()
       core.nvim_create_augroups({
         lspsagaHover = {
@@ -304,4 +317,92 @@ return {
       })
     end,
   },
+  {
+    'nvimdev/lspsaga.nvim',
+    enabled = true,
+    event = "VeryLazy",
+    config = function()
+      require('lspsaga').setup({
+        ui = {
+          -- code_action = '💡',
+          code_action = ' ',
+        },
+        symbol_in_winbar = {
+          enable = true,
+          dely = 300,
+        },
+        lightbulb = {
+          enable = true,
+          sign = false,
+          virtual_text = true,
+        },
+        diagnostic = {
+          virtual_text = true
+        },
+      })
+    end,
+    dependencies = {
+      enabled = false,
+      'nvim-treesitter/nvim-treesitter', -- optional
+      'nvim-tree/nvim-web-devicons'      -- optional
+    }
+  },
+  {
+    'weilbith/nvim-code-action-menu',
+    enabled = true,
+    lazy = false,
+    cmd = { 'CodeActionMenu' },
+  },
+  {
+    'Wansmer/symbol-usage.nvim', --                                         | Show usage symbol
+    -- Toggle require('symbol-usage').toggle()
+    enabled = true,
+    event = 'BufReadPre', -- need run before LspAttach if you use nvim 0.9. On 0.10 use 'LspAttach'
+    config = function()
+      require('symbol-usage').setup({
+        vt_position = 'end_of_line',
+        ---@type function(symbol: Symbol): string Symbol{ definition = integer|nil, implementation = integer|nil, references = integer|nil }
+        text_format = function(symbol)
+          local fragments = {}
+
+          if symbol.references > 0 then
+            local usage = symbol.references <= 1 and 'usage' or 'usages'
+            local num = symbol.references == 0 and 'no' or symbol.references
+            table.insert(fragments, ('%s %s'):format(num, usage))
+          end
+
+          if symbol.definition then
+            table.insert(fragments, symbol.definition .. ' defs')
+          end
+
+          if symbol.implementation then
+            table.insert(fragments, symbol.implementation .. ' impls')
+          end
+
+          return '  ' .. table.concat(fragments, ', ')
+        end,
+      })
+    end
+  },
+  {
+    'Maan2003/lsp_lines.nvim', --                                           | renders diagnostics using virtual lines on top of the real line of code
+    config = function(opts)
+      require("lsp_lines").setup()
+      vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
+
+      local fns = require("funcs.plug")
+      local enabled = true
+      fns.lsp_lines = {
+        toggle = function()
+          if enabled then
+            vim.diagnostic.config({ virtual_lines = false })
+          else
+            vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
+          end
+          enabled = not enabled
+        end
+      }
+    end,
+  },
+
 }
