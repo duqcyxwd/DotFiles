@@ -14,5 +14,5 @@ __pycache__
 .luarc.json
 testfile/
 .nrepl-port
-vim/nvim/log/startup*
-
+vim/nvim/log/*.log
+vim/nvim/vim-deprecated/

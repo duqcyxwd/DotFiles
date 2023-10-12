@@ -10,6 +10,7 @@ M.dark = function()
   -- Color setting for better white space ExtraWhitespace defined in [[better-whitespace]]
   vim.cmd [[highlight ExtraWhitespace ctermbg=LightYellow guibg=#6272a4 ]]
   vim.cmd [[highlight ExtraWhitespace ctermbg=LightYellow guibg=#6272a4 ]]
+
 end
 M.light = function()
   vim.cmd("colorscheme github_light")
@@ -62,8 +63,8 @@ M.vm_dark()
 -- vim.cmd [[highlight Substitute    guibg=#ff007c guifg=#c8d3f5 cterm=bold term=bold gui=bold]]
 
 
--- Flash highlight
-vim.cmd [[highlight FlashBackdrop guifg=#545c7e]]
+-- Flash default highlight
+-- vim.cmd [[highlight FlashBackdrop guifg=#545c7e]]
 -- vim.cmd [[highlight FlashMatch    guibg=#3e68d7 guifg=#c8d3f5]]
 -- vim.cmd [[highlight FlashCurrent  guibg=#ff966c guifg=#1b1d2b]]
 -- vim.cmd [[highlight FlashLabel    guibg=#ff007c guifg=#c8d3f5 cterm=bold term=bold gui=bold]]

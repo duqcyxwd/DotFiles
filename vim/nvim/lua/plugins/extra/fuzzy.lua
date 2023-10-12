@@ -92,12 +92,17 @@ return {
 
   -- telescope
   {
+    "tzachar/fuzzy.nvim",
+    lazy = true,
+    dependencies = { "nvim-telescope/telescope-fzf-native.nvim" }
+  },
+  {
     'nvim-telescope/telescope-fzf-native.nvim',
     -- TODO CHECK THIS PLUGIN
-    enabled = false,
+    enabled = true,
     lazy = true,
     build = 'make',
-    init = function()
+    config = function()
       -- You dont need to set any of these options. These are the default ones. Only
       -- the loading is important
       require('telescope').setup {
@@ -121,7 +126,6 @@ return {
     commit = vim.fn.has("nvim-0.9.0") == 0 and "057ee0f8783" or nil,
     cmd = "Telescope",
     version = false, -- telescope did only one release, so use HEAD for now
-    config = true,
     opts = {
       extensions = {
         fzf = {
@@ -174,5 +178,9 @@ return {
         },
       },
     },
+    config = function (_, opts)
+      require"telescope".setup(opts)
+      require("telescope").load_extension("scope")
+    end
   },
 }

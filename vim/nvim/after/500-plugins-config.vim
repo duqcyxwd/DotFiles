@@ -1246,30 +1246,6 @@ let g:tagbar_position='left'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => term: neoterm {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:neoterm_shell = 'zsh'
-let g:neoterm_autoscroll = 1
-let g:neoterm_keep_term_open = 1
-let g:neoterm_autoinsert = 0
-let g:neoterm_autojump = 1          "Jump to window
-let g:neoterm_automap_keys = '-tt'
-
-augroup neoterm
-  autocmd!
-  autocmd TermEnter * setlocal scrolloff=0
-  " When I open a terminal buffer, I want it to feel like I'm in the terminal. I
-  " don't want to still be in normal mode.
-  autocmd TermOpen  * startinsert
-  autocmd FileType neoterm nnoremap <buffer> <Esc> :Ttoggle<CR>
-augroup END
-
-
-" Works great with nvr, works through varible $NVIM in its child terminal
-" https://github.com/mhinz/neovim-remote
-
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => term: voldikss/vim-floaterm {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 let g:floaterm_width      = 0.8
@@ -1455,36 +1431,6 @@ if exists('g:plugs["vim-tmux-navigator"]')
 endif
 
 
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" => which-key {{{1
-""""""""""""""""""""""""""""""
-let g:which_key_centered = 0
-" Don't put keygroup at start or at end
-let g:which_key_group_dicts=''
-let g:which_key_floating_opts = { 'row': '0', 'col': '-10', 'height': '+0', 'width': '+10'}
-" See: https://github.com/liuchengxu/vim-which-key#configuration
-
-
-""""""""""""""""""""""""""""""
-" => yaml folds {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Plug 'pedrohdz/vim-yaml-folds'
-
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
-
-" => wesQ3/vim-windowswap {{{1
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:windowswap_map_keys = 0
-
-
-" => winresizer {{{1
-" simeji/winresizer
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:winresizer_start_key = ""
-let g:winresizer_gui_start_key = ""
-let g:winresizer_vert_resize = 2
-let g:winresizer_horiz_resize = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " => 000 Sample {{{1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""

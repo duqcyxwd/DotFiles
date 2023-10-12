@@ -1,5 +1,4 @@
-require("funcs.utility")
-local u = require("funcs.utility")
+local t = require("lua.table")
 
 P = function(thing)
   if select("#", thing) == 1 then
@@ -79,24 +78,12 @@ DR = function(_)
 end
 
 
-local is_in_str = function(s, list)
-  for _, v in ipairs(list) do
-    if string.match(s, v) then
-      return true
-    end
-  end
-  return false
-end
-
 -- Require all modules from folder
 R_FOLD = function(dir, ignore)
   ignore = ignore or {}
   for filename in io.popen('ls -pUqAL "$XDG_CONFIG_HOME/nvim/lua/' .. dir .. '"'):lines() do
     filename = filename:match("^(.*)%.lua$")
-    local is_filter = is_in_str(filename, ignore)
-    if is_filter then
-      -- print("ignore file: " .. filename)
-    end
+    local is_filter = t.contain(ignore, filename)
     if filename and not is_filter then
       RE(dir .. "." .. filename)
     end
@@ -107,7 +94,7 @@ R_VIM_FOLD = function(dir, ignore)
   ignore = ignore or {}
   for path in io.popen('ls -pUqAL "$XDG_CONFIG_HOME/vim/' .. dir .. '"'):lines() do
     local filename = path:match("^(.*)%.vim$")
-    local is_filter = is_in_str(filename, ignore)
+    local is_filter = t.contain(ignore, filename)
     if filename and not is_filter then
       R_VIM("$XDG_CONFIG_HOME/vim/" .. dir .. "/" .. path)
     end
@@ -119,7 +106,7 @@ LAZY_AUTO = function(dir)
   for path in io.popen('ls -pUqAL "$XDG_CONFIG_HOME/nvim/lua/' .. dir .. '"'):lines() do
     local filename = path:match("^(.*)%.lua$")
     if filename then
-      configs = u.join(configs, RE(dir .. "." .. filename))
+      configs = t.join(configs, RE(dir .. "." .. filename))
     end
   end
   return configs

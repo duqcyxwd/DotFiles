@@ -6,6 +6,10 @@ local set_options = function()
   vim.cmd("syntax enable")
   vim.cmd("syntax on")
 
+
+  vim.g.mapleader        = "\\"                                -- | Set leaders before lazy load plugins
+  vim.g.maplocalleader   = "-"
+
   vim.opt.termguicolors  = true
 
   vim.wo.number          = true                                 -- | Set number column
@@ -54,9 +58,10 @@ local set_options = function()
   vim.opt.wrap           = false                                -- | Wrap lines
   vim.opt.wrapscan       = true                                 -- | Do not wrap around when search reaches the end of the file
   vim.opt.foldcolumn     = "0"                                  -- | foldcolumn is an extra column on left of lines to show fold leve. Disable to save space
-  vim.opt.foldmethod     = 'marker'                             -- | Use braces for fold method by default
+  vim.opt.foldmethod     = 'expr'                               -- | Use braces for fold method by default
   vim.opt.foldlevel      = 2                                    -- | Set the fold level to 2, fold all by default
   vim.opt.foldlevelstart = 99                                   -- | Set the start fold level to 99, for no folds closed
+  vim.opt.fillchars:append('foldopen: ,foldsep: ,foldclose:▸')
 
   vim.opt.backspace      = 'eol,start,indent'                   -- | Configure backspace
   vim.opt.whichwrap:append('<,>,h,l')                           -- | Allow specified keys to move the cursor left/right to move to the previous/next line

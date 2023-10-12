@@ -15,7 +15,7 @@ return {
   "tweekmonster/gofmt.vim",
   "zdharma-continuum/zinit-vim-syntax", --               | zinit
   "jparise/vim-graphql",--                               | graphql
-  "othree/xml.vim",
+  { "othree/xml.vim", ft = "xml" },
   "tmux-plugins/vim-tmux", --                            | Vim plugin for .tmux.conf.
   "towolf/vim-helm",       --                            | Helm
 
@@ -29,10 +29,10 @@ return {
       vim.g.vim_markdown_conceal = 1
     end
   },
-  {
-    "masukomi/vim-markdown-folding", --                  | Can fold by header
-    ft = "markdown"
-  },
+  -- {
+  --   "masukomi/vim-markdown-folding", --                  | Can fold by header [VS treesitter one]
+  --   ft = "markdown"
+  -- },
 
   -- " Clojure things {{{1
   -- " ------------------------------------------------------------------------------

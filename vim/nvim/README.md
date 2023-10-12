@@ -19,6 +19,7 @@
 │  ├──  utility.lua
 │  ├──  nvim_core.lua
 │  └──  nvim_utility.lua
+│  └──  plug.lua           | A module shared by all plugins
 ├──  plugins/              | Plugins will be auto load by lazy
 │  ├──  cmp.lua
 │  ├──  editor.lua

@@ -1,41 +1,21 @@
 require("nvim_utils")
 
-local u = require("funcs.utility")
+local t = require("lua.table")
 local brj = require("funcs.bracket_jump")
 local vim_u = require('funcs.nvim_utility')
 local core = require("funcs.nvim_core")
 local lsp_util = require("config.lspconfig-util")
+local wk = require('which-key')
 
 local M = {}
-
-vim.g.mapleader = "\\"
--- vim.g.maplocalleader = ","
-vim.g.maplocalleader = "-"
-
--- init which-key {{{1
--- stylua: ignore start
-local status, wk = pcall(require, "which-key")
-if not status then
-  vim.notify("couldn't load which-key, skipping mappings")
-  return
-end
-
-wk.setup({
-  layout = {
-    height = { min = 15, max = 25 }, -- min and max height of the columns
-    width = { min = 20, max = 50 },  -- min and max width of the columns
-    spacing = 3,                     -- spacing between columns
-    align = "left",                  -- align columns left, center or right
-  }
-})
-
 local space_key_nmap = {}
 local space_key_vmap = {}
+
 
 -- Local Utility functions {{{1
 local function set_keymap(mode, opts, keymaps)
   for _, keymap in ipairs(keymaps) do
-    vim.keymap.set(mode, keymap[1], keymap[2], u.merge(opts, keymap[3]))
+    vim.keymap.set(mode, keymap[1], keymap[2], t.merge(opts, keymap[3]))
     -- https://neovim.io/doc/user/lua-guide.html#lua-guide-mappings-set
     -- vim.keymap.set('n', '<Leader>pl1', require('plugin').action)
     -- Note that this loads the plugin at the time the mapping is defined. If you
@@ -151,7 +131,7 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "gl",        "<C-W>l" },
 
   -- Edit
-  { "<CR>",      "za" },
+  { "<CR>",      "za" }, -- Fold
   { "gV",        "<Plug>(VM-Reselect-Last)" },
   { "<C-p>",     ":FzfLua files<CR>" },
   { "<D-p>",     ":FzfLua files<CR>" },
@@ -173,11 +153,12 @@ set_keymap("v", { noremap = true, silent = true }, {
 })
 
 -- }}}1
--- Buffer/Tab Switch {{{1
+-- <SPACE-> Buffer/Tab Switch {{{1
 -- Map <Space>1..8 to buffers
 -- Map [1..8 to tabs
 for i = 1, 8, 1 do
-  space_key_nmap[tostring(i)] = { "which_key_ignore", "<Cmd>BufferLineGoToBuffer " .. tostring(i) .. "<CR>" }
+  -- space_key_nmap[tostring(i)] = { "which_key_ignore", "<Cmd>BufferLineGoToBuffer " .. tostring(i) .. "<CR>" }
+  space_key_nmap[tostring(i)] = { "which_key_ignore", "<Cmd>LualineBuffersJump " .. tostring(i) .. "<CR>" }
   set_keymap("n", { noremap = true, silent = true }, { { "[" .. tostring(i), tostring(i) .. "gt" } })
   set_keymap("n", { noremap = true, silent = true }, { { "]" .. tostring(i), tostring(i) .. "gt" } })
 end
@@ -256,7 +237,7 @@ local retrieveKeys = function(maps)
   return res
 end
 
-local impar_keys   = u.remove_dups(u.join(default_impair_keys, retrieveKeys(impair_map_config)))
+local impar_keys = t.remove_dups(t.join(default_impair_keys, retrieveKeys(impair_map_config)))
 for _, char in ipairs(impar_keys) do
   brackets_keymap[char] = {
     string.format("Set bracket jump (%s)", char),
@@ -582,15 +563,16 @@ space_key_nmap.p = { --{{{1 +Project/Plugins
 
   f = { 'Project files',                   ':FzfLua files<CR>' },
   e = { 'Project files',                   ':FzfLua files<CR>' },
-  l = { 'Project List',                    ':SearchSession<CR>' },
+  -- l = { 'Project List',                    ':SearchSession<CR>' },
+  l = { 'Project List',                    ":lua require'nvim-possession'.list()<CR>" },
 
-  s = { 'Plug Search',                     require'funcs.plug'.fzf.plugins },
+  s = { 'Plug Search',                     ":lua require'funcs.plug'.fzf.plugins()<CR>" },
 
 
   p = {
     name = "+Packages/Plugins",
-    a = { 'Plug all',                        require'funcs.plug'.fzf.plugins },
-    l = { 'Plug list',                       require'funcs.plug'.fzf.get_plugin },
+    a = { 'Plug all',                        ":lua require'funcs.plug'.fzf.plugins()<CR>" },
+    l = { 'Plug list',                       ":lua require'funcs.plug'.fzf.get_plugin()<CR>" },
     i = { 'Plug Install',                    ':Lazy install<CR>' },
     u = { 'Plug Update',                     ':Lazy update<CR>' },
     c = { 'Plug Check',                      ':Lazy check<CR>' },
@@ -698,10 +680,13 @@ space_key_vmap.s = { --{{{1 +Search/Source
 space_key_nmap.S = { --{{{1 +SESSION
   name = "+SESSION",
 
-  S = { "Session Save",    ":SessionSave<CR>:echom 'Session Save'<CR>" },
-  R = { "Sjssion Restore", ":SessionRestore<CR>:echom 'Session Restore'<CR>" },
-  L = { "Session List",    ":SearchSession<CR>:echom 'Session List'<CR><CR>" },
-  D = { "Session Delete",  ":SessionDelete<CR>:echom 'Session Delete'<CR>" },
+  N = { "Session New",    ":lua require'nvim-possession'.new()<CR>" },
+  S = { "Session Save",    ":lua require'nvim-possession'.update()<CR>" },
+  L = { "Session List",    ":lua require'nvim-possession'.list()<CR>" },
+  -- S = { "Session Save",    ":SessionSave<CR>:echom 'Session Save'<CR>" },
+  -- R = { "Sesion Restore",  ":SessionRestore<CR>:echom 'Session Restore'<CR>" },
+  -- L = { "Session List",    ":SearchSession<CR>:echom 'Session List'<CR><CR>" },
+  -- D = { "Session Delete",  ":SessionDelete<CR>:echom 'Session Delete'<CR>" },
 
   C = { "Session Clean",   ":FloatermSend FZF_TP_OPTS=\"-p 95\\%\" cd $XDG_STATE_HOME/nvim/sessions && ls | fzf_tp | xargs rm -r && popd<CR>" },
 
@@ -795,10 +780,10 @@ space_key_nmap.T = { --{{{1 +Tabs
   n = { 'Tab new',   ':tabnew %<CR>' },
 
 }
-space_key_nmap.u = { --{{{1 +UI
+space_key_nmap.u = { --{{{1 +UI/Noti/Undo
   name = "+UI/Noti/Undo",
   d = { "Dismiss all Notifications", ":lua require('notify').dismiss({ silent = true, pending = true })<CR>" },
-  n = { "Viewing History",           ":lua require('telescope').extensions.notify.notify()<CR>" },
+  n = { "Viewing History",           ":Noice telescope<CR>" },
   u = { "Undo tree",                 ":UndotreeToggle<CR>" },
 }
 
@@ -815,7 +800,6 @@ space_key_nmap.w = { --{{{1 +Window
   C = { "Window close!",              ":call undoquit#SaveWindowQuitHistory()<CR>:bdelete!<CR>" },
   g = { "Window gone",                ":call undoquit#SaveWindowQuitHistory()<CR>:close<CR>" },
 
-  r = { "Window resize",              ":WinResizerStartResize<CR>" },
   m = { "Maximum Current window",     ":ZoomToggle<CR>" },
 
   u = { "Undoquit Window",            ":Undoquit<CR>" },

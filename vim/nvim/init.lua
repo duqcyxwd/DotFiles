@@ -1,4 +1,4 @@
-require("funcs.global")
+require("lua.global")
 
 vim.g.verbosefile = vim.fn.stdpath('cache') .. '/nvim/nvim.log'
 vim.g.verbose = 0
@@ -11,7 +11,6 @@ end
 
 R("config.options")
 R("config.lazy")
-R("config.keys")
 -- TODO Lazy load on event
 R("config.color")
 -- TODO Lazy load on event

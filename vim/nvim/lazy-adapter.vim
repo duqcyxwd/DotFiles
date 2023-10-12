@@ -9,7 +9,9 @@ function! s:LazyLoadPlugs(timer) abort  " {{{1
   endfor
 
   " silent! VMTheme neon
-  silent! edit!
+
+  " Reload current file
+  " silent! edit!
 
 endfunction
 " }}}1

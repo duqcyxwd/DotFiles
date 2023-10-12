@@ -10,8 +10,6 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 
-vim.g.mapleader = "\\" -- Make sure to set `mapleader` before lazy so your mappings are correct
-
 -- Using LazyVim to load plugsin
 require("lazy").setup({
   spec = {
@@ -36,7 +34,7 @@ require("lazy").setup({
       -- disable some rtp plugins
       disabled_plugins = {
         "gzip",
-        -- "matchit",
+        "matchit",        -- Replaced by andymass/vim-matchup
         -- "matchparen",
         -- "netrwPlugin",
         "tarPlugin",

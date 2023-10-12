@@ -1,16 +1,16 @@
-require("funcs.global")
+require("lua.global")
 local core = require("funcs.nvim_core")
 local vim_u = require("funcs.nvim_utility")
 local api = vim.api
 
-local digits = function(number)
+local number_of_folded_lines = function()
+  local digits = function(number)
     local numberStr = tostring(number)
     local digitCount = select(2, numberStr:gsub("%d", ""))
     return digitCount
-end
-local number_of_folded_lines = function()
-   local total_lines = vim.api.nvim_buf_line_count(0)
-  return string.format("%".. digits(total_lines) .."d lines", vim.v.foldend - vim.v.foldstart + 1)
+  end
+  local total_lines = vim.api.nvim_buf_line_count(0)
+  return string.format("%" .. digits(total_lines) .. "d lines", vim.v.foldend - vim.v.foldstart + 1)
 end
 
 
@@ -50,9 +50,47 @@ local logo = [[
 return {
 
   -- Section: Sidebar -------------------------- | Description
-  { "simrat39/symbols-outline.nvim", cmd = "SymbolsOutline", config = true },
   {
-    "nvim-tree/nvim-tree.lua", --                | A File Explorer For Neovim Written In Lua
+    "simrat39/symbols-outline.nvim",
+    cmd = "SymbolsOutline",
+    opts = {
+      auto_preview = false,
+      auto_close = true,
+      symbols = {
+        File          = { icon = ' ', hl = "@text.uri" },
+        Module        = { icon = ' ', hl = "@namespace" },
+        Namespace     = { icon = ' ', hl = "@namespace" },
+        Package       = { icon = ' ', hl = "@namespace" },
+        Class         = { icon = ' ', hl = "@type" },
+        Method        = { icon = ' ', hl = "@method" },
+        Property      = { icon = ' ', hl = "@method" },
+        Field         = { icon = ' ', hl = "@field" },
+        Constructor   = { icon = ' ', hl = "@constructor" },
+        Enum          = { icon = ' ', hl = "@type" },
+        Interface     = { icon = ' ', hl = "@type" },
+        Function      = { icon = '󰡱 ', hl = "@function" },
+        Variable      = { icon = ' ', hl = "@constant" },
+        Constant      = { icon = ' ', hl = "@constant" },
+        String        = { icon = '󰅳 ', hl = "@string" },
+        Number        = { icon = '󰎠 ', hl = "@number" },
+        Boolean       = { icon = ' ', hl = "@boolean" },
+        Array         = { icon = '󰅨 ', hl = "@constant" },
+        Object        = { icon = ' ', hl = "@type" },
+        Key           = { icon = ' ', hl = "@type" },
+        Null          = { icon = '󰟢 ', hl = "@type" },
+        EnumMember    = { icon = ' ', hl = "@field" },
+        Struct        = { icon = ' ', hl = "@type" },
+        Event         = { icon = ' ', hl = "@type" },
+        Operator      = { icon = ' ', hl = "@operator" },
+        TypeParameter = { icon = ' ', hl = "@parameter" },
+        Component     = { icon = '+ ', hl = "@function" },
+        Fragment      = { icon = '+ ', hl = "@constant" },
+      },
+    },
+    config = true
+  },
+  {
+    "nvim-tree/nvim-tree.lua",       --          | A File Explorer For Neovim Written In Lua
     dependencies = {
       "nvim-tree/nvim-web-devicons", --          | optional for icon support
     },
@@ -98,10 +136,16 @@ return {
       },
     },
   },
-  { "nvim-tree/nvim-web-devicons",   lazy = true },
-  'kiyoon/nvim-tree-remote.nvim',--              | Support for  Treemux
-
-  "kshenoy/vim-signature", --                    | A plugin to place, toggle and display marks.
+  {
+    "nvim-tree/nvim-web-devicons",
+    lazy = true
+  },
+  {
+    'kiyoon/nvim-tree-remote.nvim' --            | Support for Treemux
+  },
+  {
+    "kshenoy/vim-signature" --                   | A plugin to place, toggle and display marks.
+  },
 
 
   { -- "norcalli/nvim-colorizer.lua",            | Show color
@@ -115,19 +159,10 @@ return {
   },
   { -- "nvim-lualine/lualine.nvim",              | Lines at bottom
     "nvim-lualine/lualine.nvim",
+    enabled = true,
     event = "VeryLazy",
     dependencies = { "arkav/lualine-lsp-progress" },
     config = function()
-      -- local statusLineMode = { "mode" } -- Indicate macro
-      -- if vim_u.has("noice.nvim") then
-      --   -- TODO Check if this works
-      --   local mode_indicator = {
-      --     require("noice").api.statusline.mode.get,
-      --     cond = require("noice").api.statusline.mode.has,
-      --     -- color = { fg = "#ff9e64" },
-      --   }
-      --   statusLineMode = { mode_indicator, "mode" }
-      -- end
       R("lualine").setup({
         options = {
           icons_enabled = true,
@@ -141,29 +176,58 @@ return {
           modified_icon = "+ ", -- change the default modified icon
         },
         sections = {
-          lualine_a = { "mode" },
-          lualine_b = { "branch", "diff", "diagnostics" },
-          lualine_c = { "filename" },
-          lualine_x = { "lazy" },
-          lualine_y = { "encoding", "fileformat", "filetype" },
-          lualine_z = { "progress", "location" },
+          lualine_a = {
+            {
+              require("noice").api.statusline.mode.get,
+              cond = require("noice").api.statusline.mode.has,
+              color = { bg = "#ff9e64" },
+            },
+            "mode"
+          },
+          lualine_b = {
+            {
+              require("nvim-possession").status,
+              cond = function()
+                return require("nvim-possession").status() ~= nil
+              end,
+            },
+            "branch" },
+          lualine_c = { "filename", "diff", "diagnostics" },
+          lualine_x = { "lazy", "encoding", "fileformat", "filetype" },
+          lualine_y = { "searchcount", "location", },
+          lualine_z = { "progress", },
         },
         inactive_sections = {
           lualine_a = {},
           lualine_b = {},
-          lualine_c = { "filename" },
+          lualine_c = { "buffers", },
           lualine_x = {},
           lualine_y = {},
           lualine_z = { "progress" },
         },
-        tabline = {},
+        tabline = {
+          lualine_a = { {
+            'buffers',
+            mode = 2,               -- 2: Shows buffer name + buffer index
+            symbols = {
+              modified = ' ●',    -- Text to show when the buffer is modified
+              alternate_file = '#', -- Text to show to identify the alternate file
+            },
+          } },
+          lualine_b = {},
+          lualine_c = {},
+          lualine_x = {},
+          lualine_y = {},
+          lualine_z = { 'tabs' }
+        },
         extensions = {},
       })
     end,
   },
-  { -- "akinsho/bufferline.nvim",   --           | Show top tab/buffer lines
-    "akinsho/bufferline.nvim",
-    enabled = true,
+  {
+    "akinsho/bufferline.nvim", --                | Show top tab/buffer lines [WIP Deprecated]
+    -- I'm thinking about replace it with just lualine
+    enabled = false,
     main = "bufferline",
     config = function()
       R("bufferline").setup({
@@ -192,19 +256,33 @@ return {
     end,
   },
 
-  { -- "tiagovla/scope.nvim",                    | Add buffer scope to Tabs
-    "tiagovla/scope.nvim",
+  {
+    "tiagovla/scope.nvim", --                    | Add buffer scope to Tabs
     enabled = true,
     event = "VeryLazy",
     config = function()
-      require("telescope").load_extension("scope")
       require("scope").setup({})
     end
   },
 
-  { -- "folke/noice.nvim"                        | Provides CMD, Messages provides lsp progress
-    "folke/noice.nvim",
+  {
+    "MunifTanjim/nui.nvim", --                   | Ui components
+    lazy = true
+  },
+  {
+    "folke/noice.nvim", --                       | Provides CMD, Messages provides lsp progress
     enabled = true,
+    notes = {
+      -- :Noice or :Noice history shows the message history
+      -- :Noice last shows the last message in a popup
+      -- :Noice dismiss dismiss all visible messages
+      -- :Noice errors shows the error messages in a split. Last errors on top
+      -- :Noice disable disables Noice
+      -- :Noice enable enables Noice
+      -- :Noice stats shows debugging stats
+      -- :Noice telescope opens message history in Telescope
+      -- NoiceDisable/NoiceEnable
+    },
     event = "VeryLazy",
     opts = {
       cmdline = {
@@ -232,29 +310,35 @@ return {
           ["cmp.entry.get_documentation"] = true,
         },
       },
+      messages = {
+        -- NOTE: If you enable messages, then the cmdline is enabled automatically.
+        -- This is a current Neovim limitation.
+        enabled = true,            -- enables the Noice messages UI
+        view = "notify",           -- default view for messages
+        view_error = "mini",       -- view for errors
+        view_warn = "mini",        -- view for warnings
+        view_history = "messages", -- view for :messages
+        view_search = "mini",      -- view for search count messages. Set to `false` to disable
+      },
       routes = {
         {
-          -- Allow indicator for @
-          view = "mini",
+          -- Skip indicator for @
           filter = { event = "msg_showmode" },
-          format = {
-            align = "left"
-          },
+          opt = { skip = true },
         },
-
+        -- { filter = { event = "msg_show", kind = "search_count" }, view = "mini", },
         {
-          filter = { event = "msg_show", kind = "search_count" },
+          filter = { event = "msg_show", any = { { find = "E490" }, { find = "E486" }, } },
           view = "mini",
-          opts = { skip = false },
+        },
+        {
+          filter = { event = "msg_show", any = { { find = "search hit BOTTOM, continuing at TOP" }, } },
+          opt = { skip = true },
         },
         {
           filter = {
             event = "msg_show",
-            any = {
-              { find = "%d+L, %d+B" },
-              { find = "; after #%d+" },
-              { find = "; before #%d+" },
-            },
+            any = { { find = "%d+L, %d+B" }, { find = "; after #%d+" }, { find = "; before #%d+" }, },
           },
           view = "mini",
         },
@@ -330,9 +414,12 @@ return {
       },
     },
   },
-  { -- "rcarriga/nvim-notify",                   | A fancy notification manager for NeoVim, required for noce.nvim
-    "rcarriga/nvim-notify",
+  {
+    "rcarriga/nvim-notify", --                   | A fancy notification manager for NeoVim, required for noice.nvim
+    -- require("notify")("My super important message")
+    -- :Telescope notify
     enabled = true,
+    event = "VeryLazy",
     opts = {
       fps = 30,
       render = "default",
@@ -353,9 +440,9 @@ return {
         }
       })
       -- when noice is not enabled, install notify on VeryLazy
-      local Util = require("funcs.nvim_utility")
-      if not Util.has("noice.nvim") then
-        Util.on_very_lazy(function()
+      local u = require("funcs.nvim_utility")
+      if not u.has("noice.nvim") then
+        u.on_very_lazy(function()
           vim.notify = require("notify")
         end)
       end
@@ -365,6 +452,7 @@ return {
     "stevearc/dressing.nvim", --                 | better vim.ui
     enabled = true,
     lazy = true,
+    event = "VeryLazy",
     init = function()
       ---@diagnostic disable-next-line: duplicate-set-field
       vim.ui.select = function(...)
@@ -380,12 +468,16 @@ return {
   },
 
 
-  -- ui components
-  { "MunifTanjim/nui.nvim",          lazy = true },
 
   -- Zen
-  { "junegunn/limelight.vim",        cmd = "Limelight" },
-  { "junegunn/goyo.vim",             cmd = "Goyo" },
+  {
+    "junegunn/limelight.vim",
+    cmd = "Limelight"
+  },
+  {
+    "junegunn/goyo.vim",
+    cmd = "Goyo"
+  },
   { -- "folke/twilight.nvim",
     "folke/twilight.nvim",
     -- Dims inactive portions build on tree sitter
@@ -465,9 +557,9 @@ return {
     end,
   },
 
-  -- Home page and Session---------------------- | Description
+  -- Home page and Session ---------------------- | Description
   {
-    "goolord/alpha-nvim",--                      | Home Page: a fast and fully programmable greeter
+    "goolord/alpha-nvim", --                      | Home Page: a fast and fully programmable greeter
     event = "VimEnter",
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = function()
@@ -478,9 +570,10 @@ return {
         dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
         dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
         dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
-        dashboard.button("c", " " .. " Config", ":e $MYVIMRC <CR>"),
-        dashboard.button("R", " " .. " Restore Session in current directory", [[:SessionRestore<cr>]]),
-        dashboard.button("s", " " .. " Sessions", [[:SearchSession<cr>]]),
+        dashboard.button("R", " " .. " Restore Dir Session", [[<cmd>lua require("persistence").load()<cr>]]),
+        dashboard.button("L", " " .. " Last Session", [[<cmd>lua require("persistence").load({ last = true })<cr>]]),
+        dashboard.button("s", " " .. " Sessions", [[<cmd>lua require("nvim-possession").list()<cr>]]),
+        -- dashboard.button("s", " " .. " Sessions", [[:SearchSession<cr>]]),
         dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
         dashboard.button("q", " " .. " Quit", ":qa<CR>"),
       }
@@ -519,36 +612,63 @@ return {
       })
     end,
   },
-  { -- 'rmagatti/auto-session',
-    "rmagatti/auto-session",
-    config = function()
-      require("auto-session").setup {
-        log_level = "error",
-        auto_restore_enabled = false,
-        auto_save_enabled = true,
-        auto_session_enable_last_session = vim.loop.cwd() == vim.loop.os_homedir(),
-        auto_session_create_enabled = true,
-        auto_session_root_dir = vim.fn.stdpath("state") .. "/sessions/",
-        auto_session_suppress_dirs = { "~/", "~/Downloads", "/", "~/.local/", "~/work_credential/", "/private/" },
-        auto_session_use_git_branch = false,
-      }
-    end
-  },
+
   {
-    "rmagatti/session-lens",--                   | Session switcher for Session Lens extends auto-session through Telescope.nvim
+    "rmagatti/session-lens", --                   | Session switcher for Session Lens extends auto-session through Telescope.nvim
+    enabled = false,
     cmd = { "SearchSession" },
-    dependencies = { "nvim-telescope/telescope.nvim" },
+    dependencies = { 'rmagatti/auto-session', 'nvim-telescope/telescope.nvim' },
     config = true,
   },
   {
-    "folke/persistence.nvim", --                 | persistence session
-    disable = true,
-    event = "BufReadPre",
+    "gennaro-tedesco/nvim-possession", --         | Session switcher, support auto save and lua status bar
+    enabled = true,
+    -- Switch session didn't work verywell
+    -- require("nvim-possession").new()
+    dependencies = {
+      -- Disabled dependencies to speed up startup.
+      -- "ibhagwan/fzf-lua",
+      "tiagovla/scope.nvim",
+    },
     opts = {
-      dir = vim.fn.stdpath("state") .. "/sessions/",
-      options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" }
+      autoload = true, -- default false
+      autosave = true,
+      autoswitch = {
+        enable = true,   -- whether to enable autoswitch
+        exclude_ft = {}, -- list of filetypes to exclude from autoswitch
+      },
+      save_hook = function()
+        vim.cmd([[ScopeSaveState]]) -- Scope.nvim saving
+      end,
+      post_hook = function()
+        vim.cmd([[ScopeLoadState]]) -- Scope.nvim loading
+      end,
+      sessions = {
+        sessions_path = vim.fn.stdpath("state") .. "/possession-sessions/",
+      },
+      fzf_winopts = {
+        -- any valid fzf-lua winopts options, for instance
+        width = 0.5,
+        preview = {
+          vertical = "right:30%"
+        }
+      }
     },
     config = true,
+    init = function() end,
+  },
+  {
+    "folke/persistence.nvim", --                  | Automatically create/save session based on dir, keep last Session
+    enabled = true,
+    event = "BufReadPre",
+    opts = {
+      dir = vim.fn.stdpath("state") .. "/persistence-sessions/",
+      options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" }
+    },
+    -- config = true,
+    config = function(_, opts)
+      require "persistence".setup(opts)
+    end,
     -- stylua: ignore
     -- keys = {
     --   { "<leader>qs", function() require("persistence").load() end,                desc = "Restore Session" },
@@ -556,10 +676,29 @@ return {
     --   { "<leader>qd", function() require("persistence").stop() end,                desc = "Don't Save Current Session" },
     -- },
   },
+  {
+    "rmagatti/auto-session", --                   | Replaced by simple nvim-possession
+    --  SessionManage: name session based on dir
+    enabled = false,
+    config = function()
+      require("auto-session").setup {
+        log_level = "error",
+        -- auto_session_enabled = true,
+        -- auto_session_create_enabled = true,
+        -- auto_restore_enabled = false,
+        -- auto_save_enabled = true,
+        -- auto_session_enable_last_session = vim.loop.cwd() == vim.loop.os_homedir(),
+        auto_session_root_dir = vim.fn.stdpath("state") .. "/sessions/",
+        -- auto_session_suppress_dirs = { "~/", "~/Downloads", "/", "~/.local/", "~/work_credential/", "/private/" },
+        -- auto_session_use_git_branch = false,
+      }
+    end
+  },
 
   -- No identation for following plugins
   {
-    "anuvyklack/pretty-fold.nvim", --           | Setup my folding text
+    "anuvyklack/pretty-fold.nvim", --             | Setup my folding text
+    event = 'BufReadPost',
     config = function()
       require("pretty-fold").setup({
         process_comment_signs = 'delete',
@@ -567,81 +706,130 @@ return {
         fill_char = '━',
         sections = {
           left = {
-            '', function() return string.rep('+', vim.v.foldlevel) end, '', 'content', ''
+            '', function() return string.rep('+', vim.v.foldlevel) end, '', 'content', '┣'
           },
           right = {
-            '┫ ', number_of_folded_lines,
-            ': ', 'percentage', ' ┣━',
+            '┫ ', number_of_folded_lines, ': ', 'percentage', ' ┣━',
           }
         }
       })
-      require("pretty-fold").ft_setup("lua", {
+      require("pretty-fold").ft_setup("json", {
         keep_indentation = true,
         process_comment_signs = 'delete',
         sections = {
           left = {
-            function (config)
+            function(config)
               local fillChar = config.fill_char
-              local line =  vim.fn.getline(vim.v.foldstart)
+              local line = vim.fn.getline(vim.v.foldstart)
 
               -- Generic
-              line = line:gsub(" = {", " = { ... }", 1)
-              line = line:gsub("{{{%d", "", 1)
-              -- Replace leading -- to space
-              line = line:gsub("^%-%-", "+ ", 1)
+              line = line:gsub(" = {$", " = { .. }", 1)
 
-
-              -- Add second line if current line is empty
+              -- Add second line if current line is {
               if string.match(line, "^%s+{$") then
-                local line2 = vim.fn.getline(vim.v.foldstart + 1)
-                local pattern = "^%s+"
-                line = line .. string.gsub(line2, pattern, " ")
+                local extra_content = string.gsub(vim.fn.getline(vim.v.foldstart + 1), "^%s+", " ")
+                line = line .. extra_content .. " .. }"
               end
 
-              -- Fix inline commands with good aligment
-              local commentPattern = "%-%- "
-              if string.match(line, "| ") then
-                -- Add spaces before |
-                line = line:gsub(commentPattern, "", 1)
-                line = line:gsub("| ", "   | ")
-                line = line:gsub(commentPattern, "   ")
-              else
-                line = line:gsub(commentPattern, "")
-              end
-
-              -- line = line:gsub("| ", "  ") -- Hiding Alignment char |
-
-              -- if vim.v.foldlevel > 2 then
-              --   local levelSpace =  string.rep('%s', vim.v.foldlevel - 2)
-              --   local plus =  string.rep('+', vim.v.foldlevel - 2)
-              --   line = line:gsub("^%s+%S", function(match) return match:gsub( levelSpace .. " %S", function(m) return m:gsub(levelSpace .. " ", plus .. " ", 1) end , 1) end)
-              -- end
-
-              -- Hack: Show disabled plugins
-              if string.match(line, "^%s+{") then
-                for l=vim.v.foldstart,vim.v.foldend do
-                  local parseline = vim.fn.getline(l)
-                  if parseline:match("^%s+enabled = false") then
-                    line = line:gsub(",           ", ", [disabled]")
-                    break
-                  end
-                end
-              end
-
-              line = line:gsub("[^%s]%s%s+", function (match) return match:gsub("%s", fillChar) end)
-              line = line:gsub("([^%s])" .. fillChar, "%1 ", 1)
+              line = line:gsub("[^%s]%s%s+", function(match) return match:gsub("%s", fillChar) end)
               return line
             end,
             ' '
 
           },
           right = {
-            '| ', number_of_folded_lines , ': ', 'percentage', ' |',
+            '▏ ', number_of_folded_lines, ': ', 'percentage', ' ▕',
           }
         },
-        -- fill_char = "-",
         fill_char = '━',
-        -- fill_char = ' ',
+        add_close_pattern = false, -- true, 'last_line' or false
+      })
+
+      require("pretty-fold").ft_setup("lua", {
+        keep_indentation = true,
+        process_comment_signs = 'delete',
+        sections = {
+          left = {
+            function(config)
+              local fillChar = config.fill_char
+              local line = vim.fn.getline(vim.v.foldstart)
+
+              if vim.o.foldmethod == 'expr' then
+                line = line:gsub(" = {", " = { .. }", 1)
+              else
+                line = line:gsub(" = {", "    ", 1)
+              end
+
+
+              -- Add second line if current line is {
+              if string.match(line, "^%s+{$") then
+                local extra_content = string.gsub(vim.fn.getline(vim.v.foldstart + 1), "^%s+", " ")
+                line = line:gsub(",$", " ") .. extra_content
+              end
+
+
+              local commentPattern = "%-%- "
+              local startBracketPattern = "^(%s+){ "
+              local commentFound, bracketFound
+              line, commentFound = line:gsub(commentPattern, "", 1)
+              line, bracketFound = line:gsub(startBracketPattern, "%1", 1)
+
+              -- Fix inline commands with good aligment
+              if string.match(line, "| ") then
+                -- Add spaces before |
+                if commentFound then
+                  line = line:gsub("| ", "   | ")
+                end
+                if bracketFound then
+                  line = line:gsub("| ", "  | ")
+                end
+                -- line = line:gsub("| ", "┫ ")
+                line = line:gsub("| ", "▕ ")
+              end
+
+              -- Remove extra
+              -- line = line:gsub("| ", "  ") -- Hiding Alignment char |
+              line = line:gsub("{{{%d", "", 1)
+              line = line:gsub(commentPattern, "")
+              line = line:gsub("%s+$", " ", 1)
+              if string.match(line, "┫ ") then
+                line = line .. ' ┣'
+              end
+
+              -- Hack: Show disabled plugins
+              if string.match(vim.fn.getline(vim.v.foldstart), "^%s+{") then
+                for l = vim.v.foldstart, vim.v.foldend do
+                  local parseline = vim.fn.getline(l)
+                  if parseline:match("^%s+enabled = false") then
+                    line = line:gsub(",           ", " [disabled] ")
+                    break
+                  end
+                end
+              end
+
+              if vim.o.foldmethod == 'expr' then
+                -- replace space with fill char in middle
+                -- line = line:gsub("[^%s]%s%s+", function(match) return match:gsub("%s", fillChar) end)
+                -- line = line:gsub("[^%s]%s%s+", function(match) return match:gsub("%s", '━') end)
+                line = line:gsub("([^%s])" .. fillChar, "%1 ", 1)
+
+                -- line = line:gsub(", ", " ", 1)
+                line = line:gsub(", ", "  ", 1)
+                line = line:gsub(",$", " ", 1)
+              end
+
+              return line
+            end,
+            ''
+
+          },
+          right = {
+            -- '┫ ', number_of_folded_lines, ': ', 'percentage', ' |',
+            '▕ ', number_of_folded_lines, ': ', 'percentage', '▕ ',
+          }
+        },
+        -- fill_char = '━',
+        fill_char = ' ',
         add_close_pattern = false, -- true, 'last_line' or false
       })
     end,
@@ -660,13 +848,30 @@ return {
     -- code, this highlights the current level of indentation, and animates
     -- the highlighting.
     "echasnovski/mini.indentscope",
-    version = false, -- wait till new 0.7.0 release to put it back on semver
+    version = '*',
     event = { "BufReadPre", "BufNewFile" },
-    opts = {
-      -- symbol = "▏",
-      symbol = "│",
-      options = { try_as_border = true },
-    },
+    config = function ()
+      local mini = require('mini.indentscope')
+      mini.setup({
+        draw = {
+          delay = 100,
+          -- animation = require('mini.indentscope').gen_animation.none(),
+        },
+        symbol = "│",
+        -- Module mappings. Use `''` (empty string) to disable one.
+        mappings = {
+          -- Textobjects
+          object_scope = 'ii',
+          object_scope_with_border = 'ai',
+
+          -- Motions (jump to respective border line; if not present - body line)
+          goto_top = '[i',
+          goto_bottom = ']i',
+        },
+        options = { try_as_border = true },
+      })
+
+    end,
     init = function()
       vim.api.nvim_create_autocmd("FileType", {
         pattern = {

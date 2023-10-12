@@ -1,4 +1,4 @@
-require("funcs.global")
+require("lua.global")
 
 local my_cmp_default_mapping = function(...)
   local cmp = require('cmp')
@@ -139,10 +139,11 @@ local build_cmp_mapping = function(cmp, luasnip, neogen, has_neogen)
 end
 
 return {
-  {
-    "tzachar/fuzzy.nvim",
-    dependencies = { "nvim-telescope/telescope-fzf-native.nvim" }
-  },
+  -- Disabled for performance issue
+  -- {
+  --   "tzachar/cmp-fuzzy-path",
+  --   dependencies = { 'tzachar/fuzzy.nvim' }
+  -- },
   {
     "hrsh7th/nvim-cmp",
     event = "InsertEnter",
@@ -152,7 +153,7 @@ return {
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-path",
       "hrsh7th/cmp-cmdline",
-      "tzachar/cmp-fuzzy-path",
+      -- "tzachar/cmp-fuzzy-path",
       "onsails/lspkind-nvim", --        | Add icon for cmp
 
       --  For luasnip users.

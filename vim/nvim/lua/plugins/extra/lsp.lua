@@ -1,4 +1,4 @@
-require("funcs.global")
+require("lua.global")
 local core = require("funcs.nvim_core")
 local lsp_util = require("config.lspconfig-util")
 
@@ -7,8 +7,8 @@ local diagnosticls = {
     "css",
     "javascript",
     "javascriptreact",
-    "less",
-    "markdown",
+    -- "less",
+    -- "markdown",
     "pandoc",
     "sh",
     "typescript",
@@ -187,6 +187,7 @@ local servers = {
 
   diagnosticls = diagnosticls,
   lua_ls = lua_ls,
+  jsonls = {}
 
   -- efm = {
   --   init_options = {documentFormatting = true},
@@ -240,7 +241,7 @@ return {
   },
   {
     "hinell/lsp-timeout.nvim",
-    event = "VeryLazy",
+    event = 'LspAttach',
     config = function()
       vim.g["lsp-timeout-config"] = {
         stopTimeout  = 1000 * 60 * 5, -- wait ms before stopping all LSP servers
@@ -251,7 +252,7 @@ return {
     dependencies = { "neovim/nvim-lspconfig" }
   },
 
-  "lukas-reineke/lsp-format.nvim", -- Provide format on save
+  -- "lukas-reineke/lsp-format.nvim", -- Provide format on save
 
   {
     "tami5/lspsaga.nvim", --                                                | LSP UI
@@ -320,12 +321,36 @@ return {
   {
     'nvimdev/lspsaga.nvim',
     enabled = true,
-    event = "VeryLazy",
+    event = 'LspAttach',
     config = function()
       require('lspsaga').setup({
         ui = {
-          -- code_action = '💡',
-          code_action = ' ',
+          code_action = ' ',
+          kind = {
+            Namespace = { ' ', 'Include' },
+            Package = { ' ', 'Label' },
+            Class = { ' ', 'Include' },
+            Method = { ' ', 'Function' },
+            Property = { ' ', '@property' },
+            Field = { ' ', '@field' },
+            Enum = { ' ', '@number' },
+            Interface = { ' ', 'Type' },
+            Function = { '󰡱 ', 'Function' },
+            Variable = { ' ', '@variable' },
+            Constant = { ' ', 'Constant' },
+            String = { '󰅳 ', 'String' },
+            Number = { '󰎠 ', 'Number' },
+            Boolean = { ' ', 'Boolean' },
+            Array = { '󰅨 ', 'Type' },
+            Object = { ' ', 'Type' },
+            Key = { ' ', 'Constant' },
+            Null = { '󰟢 ', 'Constant' },
+            EnumMember = { ' ', 'Number' },
+            Struct = { ' ', 'Type' },
+            Event = { ' ', 'Constant' },
+            Operator = { ' ', 'Operator' },
+            TypeParameter = { ' ', 'Type' },
+          },
         },
         symbol_in_winbar = {
           enable = true,
@@ -350,20 +375,21 @@ return {
   {
     'weilbith/nvim-code-action-menu',
     enabled = true,
-    lazy = false,
+    lazy = true,
     cmd = { 'CodeActionMenu' },
   },
   {
     'Wansmer/symbol-usage.nvim', --                                         | Show usage symbol
-    -- Toggle require('symbol-usage').toggle()
     enabled = true,
-    event = 'BufReadPre', -- need run before LspAttach if you use nvim 0.9. On 0.10 use 'LspAttach'
+    event = 'LspAttach',
     config = function()
       require('symbol-usage').setup({
         vt_position = 'end_of_line',
-        ---@type function(symbol: Symbol): string Symbol{ definition = integer|nil, implementation = integer|nil, references = integer|nil }
         text_format = function(symbol)
           local fragments = {}
+
+          -- Modified so only show usages if it is used
+          -- Modified so that usages are only displayed if they are actually being used.
 
           if symbol.references > 0 then
             local usage = symbol.references <= 1 and 'usage' or 'usages'
@@ -386,7 +412,9 @@ return {
   },
   {
     'Maan2003/lsp_lines.nvim', --                                           | renders diagnostics using virtual lines on top of the real line of code
-    config = function(opts)
+    event = 'LspAttach',
+    lazy = true,
+    config = function()
       require("lsp_lines").setup()
       vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
 

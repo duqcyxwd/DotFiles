@@ -1,6 +1,6 @@
-local tableFn = require("funcs.table")
-local u = require("funcs.utility")
-require("funcs.global")
+require("lua.global")
+local tableFn = require("lua.table")
+local u = require("lua.utility")
 
 local M = {}
 
@@ -23,6 +23,8 @@ M.has = function(plugin)
   return require("lazy.core.config").spec.plugins[plugin] ~= nil
 end
 
+
+-- Editor
 
 M.get_all_plugins = function()
   return tableFn.keys(require("lazy.core.config").spec.plugins)
@@ -77,6 +79,8 @@ M.get_next_list_buffer = function()
   return nil
 end
 
+-- Buffer/Windows
+
 M.is_last_window = function()
   -- require'funcs.nvim_utility'.is_last_window()
   -- Get a list of all open windows
@@ -100,7 +104,7 @@ M.is_in_other_tab = function(bufnr)
   local tabnr = vim.api.nvim_get_current_tabpage()
   for tab_id, buf_list in ipairs(tab_buffer_info) do
     if tab_id ~= tabnr then
-      if u.is_in(bufnr, buf_list) then
+      if tableFn.contain(buf_list, bufnr) then
         return true
       end
     end
@@ -246,6 +250,8 @@ M.goto_first_float = function()
   end
 end
 
+-- Others
+
 M.diff_with_saved = function() -- | Diff current buffer with saved file
   -- Save the current filetype
   local filetype = vim.bo.filetype
@@ -289,7 +295,7 @@ M.show_buffer_info = function()
 
   -- Print buffer information
   -- print("Current session: " .. get_current_session())
-  print("Latest session: " .. require 'auto-session'.get_latest_session())
+  -- print("Latest session: " .. require 'auto-session'.get_latest_session())
   print("Project Path:    " .. vim.fn.getcwd())
   print("Current file:    " .. vim.fn.expand("%:p"))
 end

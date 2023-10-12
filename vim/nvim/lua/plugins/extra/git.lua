@@ -1,9 +1,10 @@
-require("funcs.global")
+require("lua.global")
 local gitsigns = {
   "lewis6991/gitsigns.nvim",
   config = true,
   opt = function()
     return {
+
       -- stylua: ignore
       signs          = {
         add          = { hl = "GitSignsAdd",    text = "│", numhl = "GitSignsAddNr",    linehl = "GitSignsAddLn"    },

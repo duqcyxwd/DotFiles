@@ -1,5 +1,4 @@
 local M = {}
-local opts = { noremap = true, silent = true }
 
 -- UI Customization
 -- https://github.com/neovim/nvim-lspconfig/wiki/UI-customization
@@ -42,14 +41,14 @@ function M.lsp_keymap_buffer(ev)
   -- Enable completion triggered by <c-x><c-o>
   vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
+  -- Buffer local mappings.
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  local opts = { buffer = ev.buf, noremap = true, silent = true }
 
   vim.keymap.set('n', '<localleader>wa', vim.lsp.buf.add_workspace_folder,                                        opts)
   vim.keymap.set('n', '<localleader>wr', vim.lsp.buf.remove_workspace_folder,                                     opts)
   vim.keymap.set('n', '<localleader>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
 
-  -- Buffer local mappings.
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  local opts = { buffer = ev.buf }
   vim.keymap.set('n', 'gD',              ":lua vim.lsp.buf.declaration()<cr>",               opts)
   vim.keymap.set('n', 'gd',              ":lua vim.lsp.buf.definition()<cr>",                opts)
   vim.keymap.set('n', 'K',               ":lua vim.lsp.buf.hover()<cr>",                     opts)

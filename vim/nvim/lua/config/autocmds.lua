@@ -81,10 +81,6 @@ local autocmds = {
     { "BufEnter", "*.zsh",      'let @g=":w\\<CR>:sp |terminal %\\<CR>"' },
   },
 
-  markdown = {
-    { "FileType", "markdown", "setlocal foldmethod=expr conceallevel=2 foldtext=foldtext()" },
-    { "FileType", "markdown", markdown_key_map },
-  },
 
   line_number = {
     { { "BufEnter", "FocusGained", "InsertLeave", "WinEnter" }, "*", toggle.r_number.enterHook },
@@ -132,6 +128,9 @@ local file_type_autocmds = {
     { "FileType",    "sagahover",     "nnoremap <buffer> <Esc> :q<CR>" },
     { "FileType",    "startify",      "DisableWhitespace" },
     { "FileType",    "vim",           "setlocal foldmethod=marker" },
+    -- { "FileType",    "markdown",      "setlocal foldmethod=expr conceallevel=2 foldtext=foldtext()" },
+    { "FileType",    "markdown",      "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr conceallevel=2" },
+    { "FileType",    "markdown",      markdown_key_map },
   },
 }
 
@@ -195,6 +194,7 @@ core.autogroup(file_type_autocmds)
 -- after the language server attaches to the current buffer
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
-  callback = lsp_util.lsp_keymap_buffer })
+  callback = lsp_util.lsp_keymap_buffer
+})
 
 return M
