@@ -1,33 +1,9 @@
 require("lua.global")
--- 'nvim-treesitter/nvim-treesitter-refactor'
-local refactor = {
-  highlight_definitions = {
-    enable = true,
-    -- Set to false if you have an `updatetime` of ~100.
-    clear_on_cursor_move = true,
-  },
-  highlight_current_scope = { enable = false },
-  navigation = {
-    enable = false,
-    keymaps = {
-      -- goto_definition = "gnd",
-      -- list_definitions = "gnD",
-      -- list_definitions_toc = "gO",
-      -- goto_next_usage = "<a-*>",
-      -- goto_previous_usage = "<a-#>",
-    },
-  },
-  smart_rename = {
-    enable = true,
-    keymaps = {
-      -- smart_rename = "grr",
-    },
-  },
-}
--- local textobjects =
+
 local ts_plug_lazy_config = function(_, opts)
-  IfHasModule('nvim-treesitter.configs', function(ts)
+  IfHasModule(opts.plug, function(ts)
     ts.setup(opts)
+    return ts
   end)
 end
 
@@ -62,9 +38,9 @@ return {
           additional_vim_regex_highlighting = { "python" },
         },
         incremental_selection = { enable = true },
-        -- pairs = pairs,
-        -- textobjects = textobjects,
-        refactor = refactor,
+        matchup = {
+          enable = true,
+        },
       })
       -- WIP Not sure if I need treesitter for bash and zsh
       local ft_to_lang = require('nvim-treesitter.parsers').ft_to_lang
@@ -75,22 +51,6 @@ return {
         return ft_to_lang(ft)
       end
     end,
-  },
-  {
-    'andymass/vim-matchup',
-    event = 'BufReadPost',
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    -- Need to load at BufReadPost
-    init = function()
-      vim.g.matchup_surround_enabled = 1
-      vim.g.matchup_matchparen_offscreen = { method = 'popup', highlight = 'TreeSitterContext' }
-    end,
-    opts = {
-      matchup = {
-        enable = true,
-      },
-    },
-    config = ts_plug_lazy_config,
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
@@ -114,69 +74,23 @@ return {
     end,
   },
   {
-    "nvim-treesitter/nvim-treesitter-textobjects", --         | Regular text objects
-    -- { dir = "~/duqcyxwd/nvim-treesitter-textobjects" }, -- | Testing my textobjects for comments
-    event = 'VeryLazy',
-    dependencies = { "nvim-treesitter/nvim-treesitter" },
-    opts = {
-      textobjects = {
-        swap = {
-          enable = true,
-          swap_next = {
-            ["]A"] = "@list.inner",
-            ["]a"] = "@parameter.inner",
-          },
-          swap_previous = {
-            ["[A"] = "@list.inner",
-            ["[a"] = "@parameter.inner",
-          },
-        },
-        select = {
-          enable = true,
-
-          -- Automatically jump forward to textobj, similar to targets.vim
-          lookahead = true,
-
-          keymaps = {
-            -- You can use the capture groups defined in textobjects.scm
-            ["il"] = "@parameter.inner",
-            ["al"] = "@parameter.outer",
-            ["af"] = "@function.outer",
-            ["if"] = "@function.inner",
-            ["ac"] = "@comment.outer",
-            ["ic"] = "@comment.inner",
-          },
-        },
-        move = {
-          enable = true,
-          set_jumps = true,
-          -- whether to set jumps in the jumplist
-          -- goto_next_start = {
-          --   ["]m"] = "@function.outer",
-          --   ["]]"] = "@class.outer",
-          -- },
-          -- goto_next_end = {
-          --   ["]M"] = "@function.outer",
-          --   ["]["] = "@class.outer",
-          -- },
-          -- goto_previous_start = {
-          --   ["[m"] = "@function.outer",
-          --   ["[["] = "@class.outer",
-          -- },
-          -- goto_previous_end = {
-          --   ["[M"] = "@function.outer",
-          --   ["[]"] = "@class.outer",
-          -- },
-        },
-      }
-    },
-    config = ts_plug_lazy_config,
+    'andymass/vim-matchup',
+    lazy = false,
+    -- Disable lazy load for matchup will increase loading time by 100ms, this weird
+    -- This plugin doesn't work lazy load as well, it works with BufReadPost but add 1000ms loading time when open a file
+    enabled = true,
+    init = function()
+      vim.g.matchup_surround_enabled = 1
+      vim.g.matchup_matchparen_offscreen = { method = 'popup', highlight = 'TreeSitterContext' }
+    end,
+    config = false
   },
   {
     "nvim-treesitter/playground",
     cmd = { "TSPlaygroundToggle" },
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {
+      plug = "nvim-treesitter.configs",
       playground = {
         enable = false,
         disable = {},
@@ -197,7 +111,7 @@ return {
       }
     },
 
-    config = ts_plug_lazy_config,
+    config = SetupAsync,
   },
   {
     'theHamsta/nvim-treesitter-pairs', --                     | Create your own pair objects using tree-sitter queries!
@@ -205,6 +119,7 @@ return {
     event = 'VeryLazy',
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {
+      plug = "nvim-treesitter.configs",
       pairs = {
         enable = true,
         disable = {},
@@ -225,7 +140,7 @@ return {
       },
     },
 
-    config = ts_plug_lazy_config,
+    config = SetupAsync,
   },
   {
     "nvim-treesitter/nvim-treesitter-refactor",
@@ -233,6 +148,7 @@ return {
     event = 'VeryLazy',
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {
+      plug = "nvim-treesitter.configs",
       refactor = {
         highlight_definitions = {
           enable = true,
@@ -259,7 +175,7 @@ return {
       },
     },
 
-    config = ts_plug_lazy_config,
+    config = SetupAsync,
   },
 
 }

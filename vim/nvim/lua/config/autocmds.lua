@@ -7,14 +7,14 @@ local lsp_util = require("config.lspconfig-util")
 local M = {}
 
 vim.o.updatetime = 250
-vim.cmd([[ autocmd! ColorScheme * highlight NormalFloat guibg=#1f2335]])
-vim.cmd([[ autocmd! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335]])
+vim.cmd([[ autocmd! ColorScheme * highlight NormalFloat guibg=#1f2335 ]])
+vim.cmd([[ autocmd! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335 ]])
+vim.cmd [[ autocmd! ColorScheme * highlight Comment cterm=italic gui=italic ]]
 
 
 vim.cmd [[let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"]]
 vim.cmd [[let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"]]
 
-vim.cmd [[autocmd ColorScheme * highlight Comment cterm=italic gui=italic]]
 
 local markdown_key_map = function()
   vim.cmd([[
@@ -131,6 +131,7 @@ local file_type_autocmds = {
     -- { "FileType",    "markdown",      "setlocal foldmethod=expr conceallevel=2 foldtext=foldtext()" },
     { "FileType",    "markdown",      "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr conceallevel=2" },
     { "FileType",    "markdown",      markdown_key_map },
+    { "FileType",    "zsh",           "setlocal foldmethod=marker" },
   },
 }
 
@@ -170,16 +171,12 @@ if diagnostics_float_enabled then
   core.autogroup(float_toggle_group)
 end
 M.toggle_diagnostics = function()
-  -- require("lsp_lines").toggle()
-  -- vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
   if diagnostics_float_enabled then
     print("Disable diagnostics float")
-    -- core.nvim_create_augroups({ DIAGNOSTICS_FLOAT = {} })
     core.autogroup({ DIAGNOSTICS_FLOAT = {} })
     diagnostics_float_enabled = false
   else
     print("Enable diagnostics float")
-    -- core.nvim_create_augroups(float_toggle_group)
     core.autogroup(float_toggle_group)
     diagnostics_float_enabled = true
   end

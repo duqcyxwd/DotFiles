@@ -416,20 +416,24 @@ return {
     lazy = true,
     config = function()
       require("lsp_lines").setup()
-      vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
 
-      local fns = require("funcs.plug")
-      local enabled = true
-      fns.lsp_lines = {
-        toggle = function()
-          if enabled then
-            vim.diagnostic.config({ virtual_lines = false })
-          else
-            vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
-          end
-          enabled = not enabled
+      local m = { enabled = false }
+
+      m.run = function (flag)
+        if flag then
+          vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
+        else
+          vim.diagnostic.config({ virtual_lines = false })
         end
-      }
+      end
+
+      m.toggle = function()
+          m.run(m.enabled)
+          m.enabled = not m.enabled
+        end
+
+      m.run(m.enabled)
+      require("funcs.plug").lsp_lines = m
     end,
   },
 

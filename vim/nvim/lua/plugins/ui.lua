@@ -178,8 +178,8 @@ return {
         sections = {
           lualine_a = {
             {
-              require("noice").api.statusline.mode.get,
-              cond = require("noice").api.statusline.mode.has,
+              require("noice").api.status.mode.get,
+              cond = require("noice").api.status.mode.has,
               color = { bg = "#ff9e64" },
             },
             "mode"
@@ -193,7 +193,13 @@ return {
             },
             "branch" },
           lualine_c = { "filename", "diff", "diagnostics" },
-          lualine_x = { "lazy", "encoding", "fileformat", "filetype" },
+          lualine_x = {
+            {
+              require("noice").api.status.command.get,
+              cond = require("noice").api.status.command.has,
+              color = { fg = "#ff9e64" },
+            },
+            "lazy", "encoding", "fileformat", "filetype" },
           lualine_y = { "searchcount", "location", },
           lualine_z = { "progress", },
         },
@@ -221,6 +227,9 @@ return {
           lualine_z = { 'tabs' }
         },
         extensions = {},
+        status = {
+
+        },
       })
     end,
   },
@@ -323,7 +332,7 @@ return {
       routes = {
         {
           -- Skip indicator for @
-          filter = { event = "msg_showmode" },
+          filter = { event = "msg_showmode", },
           opt = { skip = true },
         },
         -- { filter = { event = "msg_show", kind = "search_count" }, view = "mini", },
@@ -341,6 +350,12 @@ return {
             any = { { find = "%d+L, %d+B" }, { find = "; after #%d+" }, { find = "; before #%d+" }, },
           },
           view = "mini",
+        },
+      },
+      status = {
+        mode = {
+          event = "msg_showmode",
+          any = { { find = "recording" } },
         },
       },
       presets = {

@@ -54,6 +54,13 @@ IfHasModule = function(plugin_name, callback, default)
   end
 end
 
+SetupAsync = function(_, opts)
+  IfHasModule(opts.plug, function(module)
+    module.setup(opts)
+    return module
+  end)
+end
+
 local empty_module = {
   load = function(_) end,
   setup = function(_) end,

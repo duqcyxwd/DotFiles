@@ -5,12 +5,15 @@ local M = {}
 M.dark = function()
   -- Hack: Call colorscheme twice to get correct color
   vim.cmd("colorscheme dracula")
-  vim.cmd("colorscheme dracula")
+  -- Disable it, check if I can reproduce this issue
+  -- vim.cmd("colorscheme dracula")
 
   -- Color setting for better white space ExtraWhitespace defined in [[better-whitespace]]
   vim.cmd [[highlight ExtraWhitespace ctermbg=LightYellow guibg=#6272a4 ]]
   vim.cmd [[highlight ExtraWhitespace ctermbg=LightYellow guibg=#6272a4 ]]
 
+  vim.cmd [[highlight CursorLineNR cterm=underline ctermfg=11 guifg=#F1FA8C guibg=#424450 ]]
+  -- vim.cmd [[highlight CursorLineSign guibg=#424450]]
 end
 M.light = function()
   vim.cmd("colorscheme github_light")

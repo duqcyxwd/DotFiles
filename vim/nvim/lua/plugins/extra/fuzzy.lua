@@ -23,8 +23,8 @@ return {
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
       require("fzf-lua").setup({
-        "fzf-tmux",
-        fzf_tmux_opts = { ["-p"] = "80%,90%" },
+        "fzf-tp",
+        -- fzf_tmux_opts = { ["-p"] = "80%,90%" },
         winopts = {
           border = { " ", " ", " ", " ", " ", " ", " ", " " },
           preview = { default = "bat" },

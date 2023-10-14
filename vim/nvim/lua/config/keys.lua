@@ -331,7 +331,7 @@ space_key_nmap.d = { --{{{1 +Delete window/tab/buffer
   w = { "Delete this window",              ":close<CR>" },
   t = { "Delete this tab",                 ":tabclose<CR>" },
   T = { "Delete this tab and buffer",      vim_u.smart_buffer_close },
-  c = { "Diff/Check with Saved",           ":require'funcs.nvim_utility'.diff_with_saved<CR>" },
+  c = { "Diff/Check with Saved",           "lua :require'funcs.nvim_utility'.diff_with_saved()<CR>" },
 
 }
 
@@ -351,7 +351,7 @@ space_key_nmap.f = { --{{{1 +File/Format
   d = { "Directory (ranger)",                                ":FloatermNew --name=ranger --disposable ranger<CR>" },
   t = { "[format] Clean trailing space",                     ":Trim<CR>" },
   s = { "Save current file",                                 ":w<CR>" },
-  c = { "Check/Diff with Saved",                             ":require'funcs.nvim_utility'.diff_with_saved<CR>" },
+  c = { "Check/Diff with Saved",                             ":require'funcs.nvim_utility'.diff_with_saved()<CR>" },
   o = { "Search File under cursor",                          ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('n'))<CR>" },
   e = {
     name = "+Edit",
