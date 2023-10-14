@@ -14,7 +14,7 @@ __fzfcmd() {
     echo "fzf-tmux $FZF_TP_OPTS_NEW -- "
 }
 
-if [ "$IS_FZF_TP" -eq "1" ]; then
+if [ "$IS_FZF_TP" -eq "1" ] && [ -n "$TMUX" ]; then
     $(__fzfcmd) "$@"
 else
     fzf "$@"

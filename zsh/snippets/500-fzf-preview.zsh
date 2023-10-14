@@ -39,19 +39,12 @@ ls_fuzzy_preview() {
     -q "$searchTerm" \
     );
   do
-    local searchTerm=$(head -1 <<< "$out"| tail -1)
-    local key=$(head -2 <<< "$out"| tail -1)
-    local multiInput=$(echo "$out" | tail +3 | tr '\n' ' ')
+
+    local searchTerm=$(echo "$out" | awk 'NR==1')
+    local key=$(echo "$out" | awk 'NR==2')
+    local multiInput=$(echo "$out" | awk 'NR>2' | tr '\n' ' ')
     local lastEntry=$(echo "$out"| tail -1)
 
-    # echo $out
-    # echo "\ninput: " $multiInput
-    # echo "key: " $key
-    # echo "searchT: " $searchTerm
-    # echo "lastEntry: " $lastEntry
-    #
-    # shift change preview
-    # alt change directory, I think I should remove alt from here
 
     if [[ "$key" == 'alt-left' ]]; then
       pushd +0 1>/dev/null;

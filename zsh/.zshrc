@@ -125,9 +125,6 @@ zinit_load() {
   ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
   source "${ZINIT_HOME}/zinit.zsh"
 
-  # Load zinit completion
-  autoload -Uz _zinit
-  (( ${+_comps} )) && _comps[zinit]=_zinit
 
 
   # This solves problem in Catalina
@@ -142,10 +139,11 @@ zinit_load() {
     zinit light-mode for \
             atinit"ZVM_LAZY_KEYBINDINGS=false" \
               jeffreytse/zsh-vi-mode \
+            atload"[[ -f $ZDOTDIR/.p10k.zsh ]] && source $ZDOTDIR/.p10k.zsh" \
               romkatv/powerlevel10k \
-            id-as"p10k-theme" \
-            atinit"[[ -f $ZDOTDIR/.p10k.zsh ]] && source $ZDOTDIR/.p10k.zsh" \
-                zdharma-continuum/null
+              zdharma-continuum/null
+
+
   }
 
   # Stage 2 Lazy load Plugins {{{2
@@ -168,11 +166,15 @@ zinit_load() {
       OMZ::plugins/git/git.plugin.zsh \
       OMZ::plugins/autojump/autojump.plugin.zsh
 
+    # NOTE: completion for zinit self is not working based on documentation. Need manually load it.
+    # Load zinit completion
+    # autoload -Uz _zinit
+    # (( ${+_comps} )) && _comps[zinit]=_zinit
 
     zinit wait lucid silent light-mode for \
+      as'completion' is-snippet 'https://raw.githubusercontent.com/zdharma-continuum/zinit/main/_zinit' \
       blockf atpull'zinit creinstall -q .'  zsh-users/zsh-completions
 
-      # as'completion' is-snippet 'https://raw.githubusercontent.com/zdharma-continuum/zinit/main/_zinit' \
 
     zinit wait silent light-mode for \
       ~/duqcyxwd/kube-int
@@ -214,13 +216,15 @@ zinit_load() {
       Tarrasch/zsh-functional \
       agkozak/zsh-z \
       djui/alias-tips \
-      wfxr/forgit \
+      ~/duqcyxwd/forgit \
       zpm-zsh/template \
       OMZ::plugins/brew/brew.plugin.zsh \
       OMZ::plugins/multipass/multipass.plugin.zsh \
       OMZ::plugins/git-extras/git-extras.plugin.zsh \
       OMZ::plugins/iterm2/iterm2.plugin.zsh \
       OMZ::plugins/systemd/systemd.plugin.zsh
+
+    # wfxr/forgit \
 
     # zinit ice wait="0" atload'bindkey.zsh' silent;
     # zinit light zpm-zsh/empty
@@ -236,7 +240,8 @@ zinit_load() {
   zstyle 'zle:exchange' highlight 'fg=26,bg=195'
 
 
-  zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'source ~/.zshrc-local.sh; zicompinit; zicdreplay;' silent;
+  # zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'source ~/.zshrc-local.sh; zicompinit; zicdreplay;' silent;
+  zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'zicompinit; zicdreplay;' silent;
   zinit light zpm-zsh/empty
 
   # zinit self-update updates zinit
@@ -255,7 +260,9 @@ zsh_plugins_config() {
   # agkozak/zsh-z
   ZSHZ_CASE=ignore
   ZSHZ_TILDE=1
-  ZSHZ_COMPLETION=legacy
+  ZSHZ_COMPLETION=frecent
+  ZSHZ_EXCLUDE_DIRS+=( ~/.local/nvim/ ~/Download/ ~/.local ~/.cache ~/.config/nvim)
+  ZSHZ_DATA="$XDG_DATA_HOME/.z"
 
   # zsh-vi-mode
   # The plugin will auto execute this zvm_after_init function
@@ -275,19 +282,6 @@ zsh_plugins_config() {
 
 # }}}1
 
-# Quick Dirty config before lazy loading 1{{{
-# Add some quick dirty useful alias so I can use them before they are loaded
-
-{
-    if [ $commands[nvim] ]; then
-      alias vim='nvim'
-      alias vi='nvim'
-      alias vir='usr/bin/vi'
-    fi
-}
-alias gst='git status'
-[[ $commands[exa] ]] && alias la="exa -lbFa"
-# }}}
 
 zinit_load
 zsh_plugins_config
@@ -333,4 +327,19 @@ unsetopt LIST_BEEP
 
 # }}}
 
+# Quick Dirty config before lazy loading 1{{{
+# Add some quick dirty useful alias so I can use them before they are loaded
+
+{
+    if [ $commands[nvim] ]; then
+      alias vim='nvim'
+      alias vi='nvim'
+      alias vir='usr/bin/vi'
+    fi
+}
+alias gst='git status'
+[[ $commands[exa] ]] && alias la="exa -lbFa"
+# }}}
+
+source ~/.zshrc-local.sh
 mlog "zshrc loaded"

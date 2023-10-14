@@ -1,15 +1,6 @@
 #!/usr/bin/env bash
 # if [ ! "$#" -gt 0 ]; then echo "[info] input is empty"; exit 1; fi
 
-FZF_FAG_BIND_OPTS=" \
-  --bind=\"ctrl-space:execute(bat --style=numbers --color=always --paging always --highlight-line {2} {1} | LESS='-R +{2}' less)\"
-  --bind=\"ctrl-o:execute(echo {} | cut -d ':' -f1 | xargs fzf-exec )\"
-  --bind=\"ctrl-v:abort+execute( nvim {1} +{2} )\"
-  --bind=\"ctrl-r:execute-silent( nvr {1} +{2})\"
-  --bind=\"ctrl-y:execute-silent(echo {1} | tr-newline | pbcopy )\"
-  --header \"ctrl-o:fzfexec, ctrl-y:pbcopy, ctrl-r:nvim_remote, ctrl-v:nvim\"
-"
-
 # Parsing ag flags
 FLAGS=""
 while :; do
@@ -44,7 +35,6 @@ AG_PROMPT="1. ripgrep> "
 FZF_PROMPT="2. fzf> "
 # INITIAL_QUERY="${@: 1}"
 IFS=: read -ra selected < <(
-  FZF_DEFAULT_OPTS="$FZF_DEFAULT_OPTS $FZF_FAG_BIND_OPTS" \
   FZF_DEFAULT_COMMAND="$AG_PREFIX \"$*\"" \
   fzf_tp --history="$XDG_CACHE_HOME/fag/fag_history" --disabled --query "$*" \
       --bind "change:reload:sleep 0.3; $AG_PREFIX {q} || true" \

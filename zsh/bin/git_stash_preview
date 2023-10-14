@@ -3,4 +3,4 @@
 # git stash show --stat --color=always $1
 git show --stat --color=always $@
 echo ""
-git stash show --color=always --ext-diff $@
+git stash show --include-untracked --color=always --ext-diff $@

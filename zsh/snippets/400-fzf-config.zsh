@@ -30,6 +30,8 @@ __fzf_config() {
     --bind='ctrl-s:toggle-sort'
     --bind='ctrl-w:toggle-preview-wrap'
 
+    --bind=\"ctrl-y:execute-silent(echo {} | tr-newline | pbcopy )\"
+
     --bind='change:top'
     --bind 'ctrl-p:up'
     --bind 'ctrl-n:down'
@@ -37,7 +39,7 @@ __fzf_config() {
     --bind 'down:next-history'
 
     --bind 'ctrl-\\:toggle-preview'
-    --bind '?:change-preview-window(right,75%|down,50%,border-top|down,84%,border-top|hidden|)'
+    --bind '?:change-preview-window(down,50%,border-top|down,84%,border-top|right,75%|hidden|)'
     "
     # Notes: In tmux with vim, ctrl-kjhl is used....
     # Need to find other better keyding
@@ -62,15 +64,15 @@ __fzf_config() {
     # }}}3
   # FZF Theme {{{1
 
-    export FZF_COLOR_SCHEMA_BORDER="--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344'"
+    export FZF_COLOR_SCHEMA_BORDER="--color 'fg:#bbccdd,fg+:#ddeeff,bg:#334455,preview-bg:#223344"
 
 
     # Dracula Theme
-    local __FZF_COLOR_SCHEMA_DRACULA='
+    local __FZF_COLOR_SCHEMA_DRACULA="
     --color=dark
     --color=fg:-1,bg:-1,hl:#5fff87,fg+:-1,bg+:-1,hl+:#ffaf5f
     --color=info:#af87ff,prompt:#5fff87,pointer:#ff87d7,marker:#ff87d7,spinner:#ff87d7
-    '
+    "
 
     # Theme Ayu Mirage
     local __FZF_COLOR_SCHEMA_AYU='
@@ -87,20 +89,26 @@ __fzf_config() {
 
     # FZF Theme }}}
   # FZF Default Config {{{1
-    # export FZF_MY_OPTS="--reverse --ansi --multi --exit-0 --cycle --height 80% --preview-window border-left"
-    export FZF_MY_OPTS="--reverse --scroll-off=999 --ansi --multi --cycle --height 80% --preview-window border-left --history=$XDG_CACHE_HOME/fzf/fzf_history"
+    export FZF_MY_OPTS="
+    --multi
+    --cycle
+    --reverse
+    --scroll-off=999
+    --ansi
+    --history=$XDG_CACHE_HOME/fzf/fzf_history
+
+    --height 80%
+    --preview-window border-left
+
+    "
 
     # FZF Default options
     export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_DRACULA "
     # export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_AYU"
     # export FZF_DEFAULT_OPTS="$FZF_MY_OPTS $FZF_MY_KEYBINDING $__FZF_COLOR_SCHEMA_NORD"
 
-    # Following options are only used by fzf default zsh widget
+    # Use my fzf_tp to control fzf tmux pop
     export FZF_TMUX=0
-    # export FZF_TMUX_OPTS="-p 80% "
-    # export FZF_TMUX_HEIGHT=80%        #Aslo been used by fzf-tab
-
-
     export FZF_TP=1
 
     # FZF C-f (file name completions)
