@@ -1,7 +1,5 @@
 require("lua.global")
 local core = require("funcs.nvim_core")
-local vim_u = require("funcs.nvim_utility")
-local api = vim.api
 
 local number_of_folded_lines = function()
   local digits = function(number)
@@ -161,8 +159,44 @@ return {
     "nvim-lualine/lualine.nvim",
     enabled = true,
     event = "VeryLazy",
+    -- lazy = false,
     dependencies = { "arkav/lualine-lsp-progress" },
     config = function()
+      local mode = {}
+      local command = {}
+      local session = {}
+      local empty_session = {
+        function () end,
+        cond = function () return false end
+      }
+      IfHasModule(
+        "noice", function ()
+          mode = {
+            require("noice").api.status.mode.get,
+            cond = require("noice").api.status.mode.has,
+            color = { bg = "#ff9e64" },
+          }
+          command = {
+            require("noice").api.status.command.get,
+            cond = require("noice").api.status.command.has,
+            color = { fg = "#ff9e64" },
+          }
+        end,
+        function ()
+          mode = empty_session
+          command = empty_session
+        end
+        )
+      IfHasModule(
+        "nvim-possession", function ()
+          session = {
+            require("nvim-possession").status,
+            cond = function()
+              return require("nvim-possession").status() ~= nil
+            end,
+          }
+        end,
+        function () session = empty_session end)
       R("lualine").setup({
         options = {
           icons_enabled = true,
@@ -174,31 +208,21 @@ return {
 
           show_bufnr = true,    -- this appends [bufnr] to buffer section,
           modified_icon = "+ ", -- change the default modified icon
+          refresh = {
+            statusline = 4000,
+            tabline = 1000,
+          }
         },
         sections = {
           lualine_a = {
-            {
-              require("noice").api.status.mode.get,
-              cond = require("noice").api.status.mode.has,
-              color = { bg = "#ff9e64" },
-            },
+            mode,
             "mode"
           },
           lualine_b = {
-            {
-              require("nvim-possession").status,
-              cond = function()
-                return require("nvim-possession").status() ~= nil
-              end,
-            },
             "branch" },
           lualine_c = { "filename", "diff", "diagnostics" },
           lualine_x = {
-            {
-              require("noice").api.status.command.get,
-              cond = require("noice").api.status.command.has,
-              color = { fg = "#ff9e64" },
-            },
+            command,
             "lazy", "encoding", "fileformat", "filetype" },
           lualine_y = { "searchcount", "location", },
           lualine_z = { "progress", },
@@ -212,24 +236,23 @@ return {
           lualine_z = { "progress" },
         },
         tabline = {
+          lualine_y = {
+            session,
+          },
           lualine_a = { {
             'buffers',
             mode = 2,               -- 2: Shows buffer name + buffer index
             symbols = {
               modified = ' ●',    -- Text to show when the buffer is modified
-              alternate_file = '#', -- Text to show to identify the alternate file
+              alternate_file = '', -- Text to show to identify the alternate file
             },
           } },
-          lualine_b = {},
           lualine_c = {},
           lualine_x = {},
-          lualine_y = {},
+          lualine_b = {},
           lualine_z = { 'tabs' }
         },
         extensions = {},
-        status = {
-
-        },
       })
     end,
   },
@@ -265,14 +288,6 @@ return {
     end,
   },
 
-  {
-    "tiagovla/scope.nvim", --                    | Add buffer scope to Tabs
-    enabled = true,
-    event = "VeryLazy",
-    config = function()
-      require("scope").setup({})
-    end
-  },
 
   {
     "MunifTanjim/nui.nvim", --                   | Ui components
@@ -575,6 +590,7 @@ return {
   -- Home page and Session ---------------------- | Description
   {
     "goolord/alpha-nvim", --                      | Home Page: a fast and fully programmable greeter
+    enabled = true,
     event = "VimEnter",
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = function()
@@ -582,15 +598,14 @@ return {
 
       dashboard.section.header.val = vim.split(logo, "\n")
       dashboard.section.buttons.val = {
-        dashboard.button("f", " " .. " Find file", ":Telescope find_files <CR>"),
-        dashboard.button("n", " " .. " New file", ":ene <BAR> startinsert <CR>"),
-        dashboard.button("r", " " .. " Recent files", ":Telescope oldfiles <CR>"),
-        dashboard.button("R", " " .. " Restore Dir Session", [[<cmd>lua require("persistence").load()<cr>]]),
-        dashboard.button("L", " " .. " Last Session", [[<cmd>lua require("persistence").load({ last = true })<cr>]]),
-        dashboard.button("s", " " .. " Sessions", [[<cmd>lua require("nvim-possession").list()<cr>]]),
-        -- dashboard.button("s", " " .. " Sessions", [[:SearchSession<cr>]]),
-        dashboard.button("l", "󰒲 " .. " Lazy", ":Lazy<CR>"),
-        dashboard.button("q", " " .. " Quit", ":qa<CR>"),
+        dashboard.button("f",    " " .. " Find file",           ":Telescope find_files <CR>"),
+        dashboard.button("n",    " " .. " New file",            ":ene <BAR> startinsert <CR>"),
+        dashboard.button("r",    " " .. " Recent files",        ":Telescope oldfiles <CR>"),
+        dashboard.button("R",    " " .. " Restore Dir Session", [[<cmd>lua require("nvim-possession").autoload()<cr>]]),
+        dashboard.button("L",    " " .. " Last Session",        [[<cmd>lua require("nvim-possession").load_last()<cr>]]),
+        dashboard.button("s",    " " .. " Sessions",            [[<cmd>lua require("nvim-possession").list()<cr>]]),
+        dashboard.button("l",    "󰒲 " .. " Lazy",                ":Lazy<CR>"),
+        dashboard.button("q",    " " .. " Quit",                ":qa<CR>"),
       }
       for _, button in ipairs(dashboard.section.buttons.val) do
         button.opts.hl = "AlphaButtons"
@@ -636,65 +651,54 @@ return {
     config = true,
   },
   {
-    "gennaro-tedesco/nvim-possession", --         | Session switcher, support auto save and lua status bar
+    dir = "~/duqcyxwd/nvim-possession", --        | Session switcher, support auto save and lua status bar
+    -- "gennaro-tedesco/nvim-possession", --      | Session switcher, support auto save and lua status bar
     enabled = true,
-    -- Switch session didn't work verywell
-    -- require("nvim-possession").new()
+    event = "VeryLazy",
+    lazy = true,
     dependencies = {
-      -- Disabled dependencies to speed up startup.
-      -- "ibhagwan/fzf-lua",
+      "ibhagwan/fzf-lua",
       "tiagovla/scope.nvim",
     },
     opts = {
-      autoload = true, -- default false
+      autoload = false, -- Not working with lualine, create double status lines
       autosave = true,
       autoswitch = {
         enable = true,   -- whether to enable autoswitch
         exclude_ft = {}, -- list of filetypes to exclude from autoswitch
       },
       save_hook = function()
-        vim.cmd([[ScopeSaveState]]) -- Scope.nvim saving
+        vim.cmd([[ScopeSaveState]]) -- Scope.nvim saving Data is stored in vim.g.ScopeState
       end,
       post_hook = function()
         vim.cmd([[ScopeLoadState]]) -- Scope.nvim loading
       end,
       sessions = {
         sessions_path = vim.fn.stdpath("state") .. "/possession-sessions/",
+        sessions_icon = " "
       },
-      fzf_winopts = {
-        -- any valid fzf-lua winopts options, for instance
-        width = 0.5,
-        preview = {
-          vertical = "right:30%"
-        }
-      }
+      fzf_winopts = {}
     },
     config = true,
     init = function() end,
   },
   {
     "folke/persistence.nvim", --                  | Automatically create/save session based on dir, keep last Session
-    enabled = true,
+    enabled = false,
     event = "BufReadPre",
     opts = {
       dir = vim.fn.stdpath("state") .. "/persistence-sessions/",
       options = { "buffers", "curdir", "tabpages", "winsize", "help", "globals", "skiprtp" }
     },
-    -- config = true,
     config = function(_, opts)
       require "persistence".setup(opts)
     end,
-    -- stylua: ignore
-    -- keys = {
-    --   { "<leader>qs", function() require("persistence").load() end,                desc = "Restore Session" },
-    --   { "<leader>ql", function() require("persistence").load({ last = true }) end, desc = "Restore Last Session" },
-    --   { "<leader>qd", function() require("persistence").stop() end,                desc = "Don't Save Current Session" },
-    -- },
   },
   {
     "rmagatti/auto-session", --                   | Replaced by simple nvim-possession
     --  SessionManage: name session based on dir
     enabled = false,
+    lazy = false,
     config = function()
       require("auto-session").setup {
         log_level = "error",
@@ -707,6 +711,15 @@ return {
         -- auto_session_suppress_dirs = { "~/", "~/Downloads", "/", "~/.local/", "~/work_credential/", "/private/" },
         -- auto_session_use_git_branch = false,
       }
+    end
+  },
+
+  {
+    "tiagovla/scope.nvim", --                    | Add buffer scope to Tabs
+    enabled = true,
+    event = "VeryLazy",
+    config = function()
+      require("scope").setup({})
     end
   },
 
@@ -833,6 +846,9 @@ return {
                 line = line:gsub(",$", " ", 1)
               end
 
+              -- Replace tab to space for better alignment
+              line = line:gsub("\t", string.rep(" ", vim.o.tabstop))
+
               return line
             end,
             ''
@@ -843,8 +859,8 @@ return {
             '▕ ', number_of_folded_lines, ': ', 'percentage', '▕ ',
           }
         },
-        -- fill_char = '━',
-        fill_char = ' ',
+        fill_char = '-',
+        -- fill_char = ' ',
         add_close_pattern = false, -- true, 'last_line' or false
       })
     end,

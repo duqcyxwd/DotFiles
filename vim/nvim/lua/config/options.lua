@@ -53,7 +53,7 @@ local set_options = function()
   vim.opt.shiftwidth     = 2                                    -- | 1 tab == 2 spaces
   vim.opt.smarttab       = true                                 -- | Be smart when using tabs
   vim.opt.expandtab      = true                                 -- | Use spaces instead of tabs
-  vim.opt.tabstop        = 2                                    -- | Set tabstop and softtabstop to 2vim.opt.softtabstop = 2
+  vim.opt.tabstop        = 2                                    -- | Set tabstop and softtabstop to 2 vim.opt.softtabstop = 2
   vim.opt.textwidth      = 0                                    -- | Disable auto break line
   vim.opt.wrap           = false                                -- | Wrap lines
   vim.opt.wrapscan       = true                                 -- | Do not wrap around when search reaches the end of the file
@@ -76,8 +76,10 @@ local set_options = function()
   }
 
   vim.opt.list           = false                                -- | Disable invisible characters display by default
-  vim.opt.sessionoptions = 'curdir,folds,tabpages,winpos'       -- | Update session settings
-  vim.opt.viewoptions    = 'cursor,folds'
+  vim.opt.sessionoptions = 'tabpages,buffers,globals,curdir,winpos'
+                                                                -- | Data stored in Session
+                                                                -- | Scope is storing state in vim.g.ScopeState
+  vim.opt.viewoptions    = 'cursor,folds'                       -- | view of buffer
   vim.opt.completeopt    = 'menu,menuone,noselect'              -- | Required by nvim-cmp (code completion plugin)
   vim.opt.jumpoptions:append('stack')                           -- | Change jump behavior like browser style stack
 

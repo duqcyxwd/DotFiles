@@ -180,7 +180,9 @@ return {
     },
     config = function (_, opts)
       require"telescope".setup(opts)
-      require("telescope").load_extension("scope")
+      IfHasModule("scope", function ()
+        require("telescope").load_extension("scope")
+      end )
     end
   },
 }

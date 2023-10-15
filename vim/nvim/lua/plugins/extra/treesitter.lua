@@ -13,7 +13,9 @@ return {
   {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    event = "VeryLazy",
+    -- Change to BufReadPost to make sure fold is working when loading a vim session, WIP
+    -- event = "VeryLazy",
+    event = "BufReadPost",
     dependencies = {
       -- "nvim-treesitter/nvim-treesitter-refactor"
     },

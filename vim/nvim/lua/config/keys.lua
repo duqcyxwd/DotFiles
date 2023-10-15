@@ -557,15 +557,15 @@ space_key_vmap.o = { --{{{1 +Open
 }
 
 -- stylua: ignore
-space_key_nmap.p = { --{{{1 +Project/Plugins
+space_key_nmap.p = { --{{{1 +Project
   name = "+Project/Plugins",
 
 
   f = { 'Project files',                   ':FzfLua files<CR>' },
-  e = { 'Project files',                   ':FzfLua files<CR>' },
-  -- l = { 'Project List',                    ':SearchSession<CR>' },
+
   l = { 'Project List',                    ":lua require'nvim-possession'.list()<CR>" },
 
+  -- or plug jump
   s = { 'Plug Search',                     ":lua require'funcs.plug'.fzf.plugins()<CR>" },
 
 
@@ -585,6 +585,20 @@ space_key_nmap.p = { --{{{1 +Project/Plugins
 
   h = { 'Plug home',                       ':Lazy home<CR>' },
   o = { 'Plugin main page open in Github', vim_u.open_github_plugin },
+
+}
+space_key_nmap.P = { --{{{1 +Plugins
+  name = "+Plugins",
+  A = { 'Plug all',                        ":lua require'funcs.plug'.fzf.plugins()<CR>" },
+  L = { 'Plug list',                       ":lua require'funcs.plug'.fzf.get_plugin()<CR>" },
+  I = { 'Plug Install',                    ':Lazy install<CR>' },
+  U = { 'Plug Update',                     ':Lazy update<CR>' },
+  C = { 'Plug Check',                      ':Lazy check<CR>' },
+  X = { 'Plug Clean',                      ':Lazy clean<CR>' },
+  S = { 'Plug Status',                     ':Lazy check<CR>' },
+  P = { 'Plug Profile',                    ':Lazy profile<CR>' },
+  H = { 'Plug home',                       ':Lazy home<CR>' },
+  J = { 'Plug Jump',                       ":lua require'funcs.plug'.fzf.plugins()<CR>" },
 
 }
 

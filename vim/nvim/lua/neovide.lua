@@ -93,4 +93,5 @@ end
 M.set_font_size(fontsize)
 M.set_transparency(transparency)
 M.int_keymapping()
+
 return M
