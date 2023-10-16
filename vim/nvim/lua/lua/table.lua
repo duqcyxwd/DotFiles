@@ -77,36 +77,53 @@ local join_test = function ()
 end
 
 -- Deep merge
-M.merge = function(tbl1, tbl2)
-  local is_dict1 = type(tbl1) == 'table' and (not vim.tbl_islist(tbl1) or vim.tbl_isempty(tbl1))
-  local is_dict2 = type(tbl2) == 'table' and (not vim.tbl_islist(tbl2) or vim.tbl_isempty(tbl2))
-  if is_dict1 and is_dict2 then
-    local new_tbl = {}
-    for k, v in pairs(tbl2) do
-      if tbl1[k] ~= M.none then
-        new_tbl[k] = M.merge(tbl1[k], v)
-      end
+function M.merge(t1, t2)
+  if not t1 and not t2 then return {} end
+  if not t1 then return t2 end
+  if not t2 then return t1 end
+  for k, v in pairs(t2) do
+    if type(v) == "table" and type(t1[k]) == "table" then
+      M.merge(t1[k], v)
+    else
+      t1[k] = v
     end
-    for k, v in pairs(tbl1) do
-      if tbl2[k] == nil then
-        if v ~= vim.NIL then
-          new_tbl[k] = M.merge(v, {})
-        else
-          new_tbl[k] = nil
-        end
-      end
-    end
-    return new_tbl
   end
-
-  if tbl1 == M.none then
-    return nil
-  elseif tbl1 == nil then
-    return M.merge(tbl2, {})
-  else
-    return tbl1
-  end
+  return t1
 end
--- nvim_print(merge({ a = 10, b = 20 }, { b = 10 }))
+
+-- nvim_print(M.merge({ a = 10, b = 20 }, { b = 10 }))
+-- nvim_print(M.merge({ a = 10, b = 20 }, nil))
+-- nvim_print(M.merge({ a = 10, b = 20 }, { b = 10, c = 101 }))
+
+function M.deep_copy(orig)
+  local orig_type = type(orig)
+  local copy
+  if orig_type == 'table' then
+    copy = {}
+    for orig_key, orig_value in next, orig, nil do
+      copy[M.deep_copy(orig_key)] = M.deep_copy(orig_value)
+    end
+    setmetatable(copy, M.deep_copy(getmetatable(orig)))
+  else   -- number, string, boolean, etc
+    copy = orig
+  end
+  return copy
+end
+
+function M.deep_clone_merge(t1, t2)
+  if not t1 and not t2 then return {} end
+  if not t1 then return M.deep_copy(t2) end
+  if not t2 then return M.deep_copy(t1) end
+
+  local merged = M.deep_copy(t1)
+  for k, v in pairs(t2) do
+    if type(v) == "table" and type(merged[k]) == "table" then
+      merged[k] = M.deep_clone_merge(merged[k], v)
+    else
+      merged[k] = M.deep_copy(v)
+    end
+  end
+  return merged
+end
 
 return M

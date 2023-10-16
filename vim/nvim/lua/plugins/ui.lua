@@ -11,7 +11,6 @@ local number_of_folded_lines = function()
   return string.format("%" .. digits(total_lines) .. "d lines", vim.v.foldend - vim.v.foldstart + 1)
 end
 
-
 local function nvim_tree_on_attach(bufnr)
   local api = require("nvim-tree.api")
 
@@ -27,22 +26,80 @@ local function nvim_tree_on_attach(bufnr)
   vim.keymap.set("n", "?", api.tree.toggle_help, opts("Help"))
 end
 
-local logo = [[
-**********************************************************************
-*       ___          ___          ___          ___          ___      *
-*      /\  \        /\  \        /\  \        /\__\        /|  |     *
-*      \:\  \       \:\  \      /::\  \      /:/  /       |:|  |     *
-*       \:\  \       \:\  \    /:/\:\  \    /:/  /        |:|  |     *
-*   ___ /::\  \  ___ /::\  \  /:/ /::\  \  /:/  /  ___  __|:|  |     *
-*  /\  /:/\:\__\/\  /:/\:\__\/:/_/:/\:\__\/:/__/  /\__\/\ |:|__|____ *
-*  \:\/:/  \/__/\:\/:/  \/__/\:\/:/  \/__/\:\  \ /:/  /\:\/:::::/__/ *
-*   \::/__/      \::/__/      \::/__/      \:\  /:/  /  \::/~~/~     *
-*    \:\  \       \:\  \       \:\  \       \:\/:/  /    \:\~~\      *
-*     \:\__\       \:\__\       \:\__\       \::/  /      \:\__\     *
-*      \/__/        \/__/        \/__/        \/__/        \/__/     *
-* Happy Hacking. Chuan's new vim                                     *
-**********************************************************************
+local logo2 = [[
+┌────────────────────────────────────────────────────────────────────┐
+│       ___          ___          ___          ___          ___      │
+│      /\  \        /\  \        /\  \        /\__\        /|  |     │
+│      \:\  \       \:\  \      /::\  \      /:/  /       |:|  |     │
+│       \:\  \       \:\  \    /:/\:\  \    /:/  /        |:|  |     │
+│   ___ /::\  \  ___ /::\  \  /:/ /::\  \  /:/  /  ___  __|:|  |     │
+│  /\  /:/\:\__\/\  /:/\:\__\/:/_/:/\:\__\/:/__/  /\__\/\ |:|__|____ │
+│  \:\/:/  \/__/\:\/:/  \/__/\:\/:/  \/__/\:\  \ /:/  /\:\/:::::/__/ │
+│   \::/__/      \::/__/      \::/__/      \:\  /:/  /  \::/~~/~     │
+│    \:\  \       \:\  \       \:\  \       \:\/:/  /    \:\~~\      │
+│     \:\__\       \:\__\       \:\__\       \::/  /      \:\__\     │
+│      \/__/        \/__/        \/__/        \/__/        \/__/     │
+│                                                                    │
+│ Happy Hacking. Chuan's new vim                                     │
+└────────────────────────────────────────────────────────────────────┘
 ]]
+
+local logo4 = [[
+
+  ██████  ██████ ██████  ██████ ██████████████ ██████████████ ██████  ████████
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░░░░░░░░░██ ██░░░░░░░░░░██ ██░░██  ██░░░░██
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██████░░██ ██░░██████████ ██░░██  ██░░████
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░██         ██░░██  ██░░██
+  ██░░██████░░██ ██░░██████░░██ ██░░██████░░██ ██░░██         ██░░██████░░██
+  ██░░░░░░░░░░██ ██░░░░░░░░░░██ ██░░░░░░░░░░██ ██░░██         ██░░░░░░░░░░██
+  ██░░██████░░██ ██░░██████░░██ ██░░██████░░██ ██░░██         ██░░██████░░██
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░██         ██░░██  ██░░██
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░██████████ ██░░██  ██░░████
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░░░░░░░░░██ ██░░██  ██░░░░██
+  ██████  ██████ ██████  ██████ ██████  ██████ ██████████████ ██████  ████████
+
+
+                                                            ▄▄   ▐█
+                                                ▄▄▄   ▄██▄  █▀   █ ▄
+                                              ▄██▀█▌ ██▄▄  ▐█▀▄ ▐█▀
+                                             ▐█▀▀▌   ▄▀▌ ▌ █ ▌  ▌ ▌
+      Happy Hacking. Chuan's new VIM         ▌▀▄ ▐  ▀▄ ▐▄ ▐▄▐▄ ▐▄ ▐▄
+
+]]
+
+local logo = [[
+  ██████  ██████ ██████  ██████ ██████████████ ██████████████ ██████  ████████
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░░░░░░░░░██ ██░░░░░░░░░░██ ██░░██  ██░░░░██
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██████░░██ ██░░██████████ ██░░██  ██░░████
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░██         ██░░██  ██░░██
+  ██░░██████░░██ ██░░██████░░██ ██░░██████░░██ ██░░██         ██░░██████░░██
+  ██░░░░░░░░░░██ ██░░░░░░░░░░██ ██░░░░░░░░░░██ ██░░██         ██░░░░░░░░░░██
+  ██░░██████░░██ ██░░██████░░██ ██░░██████░░██ ██░░██         ██░░██████░░██
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░██         ██░░██  ██░░██
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░██████████ ██░░██  ██░░████
+  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░░░░░░░░░██ ██░░██  ██░░░░██
+  ██████  ██████ ██████  ██████ ██████  ██████ ██████████████ ██████  ████████
+
+
+                                                ▄▄   ▐█                ▄▀█▀█▀▄
+                                    ▄▄▄   ▄██▄  █▀   █ ▄              ▀▀▀▀▀▀▀▀▀
+                                  ▄██▀█▌ ██▄▄  ▐█▀▄ ▐█▀               ▄ ░░░░░▄
+                                  █▀▀▌   ▄▀▌ ▌ █ ▌  ▌ ▌     █  ▄ ▄   ▐▌▌░░░░░▌▌
+  Happy Hacking. Chuan's new VIM  ▀▄ ▐  ▀▄ ▐▄ ▐▄▐▄ ▐▄ ▐▄ ▌▄█▐▌▐█▐▐▌█▌█▌█░░░░░▌▌
+]]
+
+
+
+local header = {
+  [[                                                                   ]],
+  [[      ████ ██████           █████      ██                    ]],
+  [[     ███████████             █████                            ]],
+  [[     █████████ ███████████████████ ███   ███████████  ]],
+  [[    █████████  ███    █████████████ █████ ██████████████  ]],
+  [[   █████████ ██████████ █████████ █████ █████ ████ █████  ]],
+  [[ ███████████ ███    ███ █████████ █████ █████ ████ █████ ]],
+  [[██████  █████████████████████ ████ █████ █████ ████ ██████]],
+}
 
 
 return {
@@ -133,6 +190,7 @@ return {
         custom = {},
       },
     },
+    config = true,
   },
   {
     "nvim-tree/nvim-web-devicons",
@@ -594,27 +652,33 @@ return {
     event = "VimEnter",
     dependencies = { 'nvim-tree/nvim-web-devicons' },
     opts = function()
+
       local dashboard = require("alpha.themes.dashboard")
+
+      -- Terminal header
+      -- dashboard.section.terminal.command = "~/duqcyxwd/DotFiles/testfile/superman.bash | sed 's/[[:space:]]*$//'"
+      -- dashboard.section.terminal.opts = { width = 40, height = 60, }
 
       dashboard.section.header.val = vim.split(logo, "\n")
       dashboard.section.buttons.val = {
-        dashboard.button("f",    " " .. " Find file",           ":Telescope find_files <CR>"),
-        dashboard.button("n",    " " .. " New file",            ":ene <BAR> startinsert <CR>"),
-        dashboard.button("r",    " " .. " Recent files",        ":Telescope oldfiles <CR>"),
-        dashboard.button("R",    " " .. " Restore Dir Session", [[<cmd>lua require("nvim-possession").autoload()<cr>]]),
-        dashboard.button("L",    " " .. " Last Session",        [[<cmd>lua require("nvim-possession").load_last()<cr>]]),
-        dashboard.button("s",    " " .. " Sessions",            [[<cmd>lua require("nvim-possession").list()<cr>]]),
-        dashboard.button("l",    "󰒲 " .. " Lazy",                ":Lazy<CR>"),
+        dashboard.button("f",    " " .. " Find file",           ":FzfLua files <CR>"),
+        dashboard.button("n",    " " .. " New file",            ":ene <BAR> startinsert <CR>"),
+        dashboard.button("h",    " " .. " History files",       ":FzfLua oldfiles <CR>"),
+        dashboard.button("r",    " " .. " Restore Dir Session", [[<cmd>lua require("nvim-possession").autoload()<cr>]]),
+        dashboard.button("l",    "󰦛 " .. " Last Session",        [[<cmd>lua require("nvim-possession").load_last()<cr>]]),
+        dashboard.button("s",    " " .. " Sessions",            [[<cmd>lua require("nvim-possession").list()<cr>]]),
+        dashboard.button("L",    "󰒲 " .. " Lazy",                ":Lazy<CR>"),
         dashboard.button("q",    " " .. " Quit",                ":qa<CR>"),
       }
+
       for _, button in ipairs(dashboard.section.buttons.val) do
-        button.opts.hl = "AlphaButtons"
-        button.opts.hl_shortcut = "AlphaShortcut"
+        button.opts.hl = ""
+        button.opts.hl_shortcut = ""
       end
-      dashboard.section.header.opts.hl = "AlphaHeader"
-      dashboard.section.buttons.opts.hl = "AlphaButtons"
-      dashboard.section.footer.opts.hl = "AlphaFooter"
+
+      dashboard.section.header.opts.hl = "NONE"
       dashboard.opts.layout[1].val = 8
+
       return dashboard
     end,
     config = function(_, dashboard)
@@ -628,7 +692,6 @@ return {
           end,
         })
       end
-
       require("alpha").setup(dashboard.opts)
 
       vim.api.nvim_create_autocmd("User", {
@@ -675,7 +738,8 @@ return {
       end,
       sessions = {
         sessions_path = vim.fn.stdpath("state") .. "/possession-sessions/",
-        sessions_icon = " "
+        sessions_icon = " ",
+        sessions_prompt = "hi",
       },
       fzf_winopts = {}
     },
@@ -730,11 +794,12 @@ return {
     config = function()
       require("pretty-fold").setup({
         process_comment_signs = 'delete',
-        keep_indentation = false,
+        keep_indentation = true,
         fill_char = '━',
         sections = {
           left = {
-            '', function() return string.rep('+', vim.v.foldlevel) end, '', 'content', '┣'
+            -- '', function() return string.rep('+', vim.v.foldlevel) end, '', 'content', '┣'
+            'content', '┣'
           },
           right = {
             '┫ ', number_of_folded_lines, ': ', 'percentage', ' ┣━',
@@ -859,8 +924,9 @@ return {
             '▕ ', number_of_folded_lines, ': ', 'percentage', '▕ ',
           }
         },
-        fill_char = '-',
-        -- fill_char = ' ',
+        -- fill_char = '-',
+        -- fill_char = '━',
+        fill_char = ' ',
         add_close_pattern = false, -- true, 'last_line' or false
       })
     end,
@@ -904,6 +970,16 @@ return {
 
     end,
     init = function()
+
+      local m = { enabled = false }
+
+      m.toggle = function()
+          m.enabled = not m.enabled
+          vim.g.miniindentscope_disable = m.enabled
+        end
+
+      require("funcs.plug").indentscope = m
+
       vim.api.nvim_create_autocmd("FileType", {
         pattern = {
           "help",

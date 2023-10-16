@@ -15,7 +15,7 @@ local space_key_vmap = {}
 -- Local Utility functions {{{1
 local function set_keymap(mode, opts, keymaps)
   for _, keymap in ipairs(keymaps) do
-    vim.keymap.set(mode, keymap[1], keymap[2], t.merge(opts, keymap[3]))
+    vim.keymap.set(mode, keymap[1], keymap[2], t.deep_clone_merge(opts, keymap[3]))
     -- https://neovim.io/doc/user/lua-guide.html#lua-guide-mappings-set
     -- vim.keymap.set('n', '<Leader>pl1', require('plugin').action)
     -- Note that this loads the plugin at the time the mapping is defined. If you
@@ -80,23 +80,23 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "Q",         "@q" },
 
   -- vim.keymap is supported in latest neovim
-  -- vim.keymap.set("n", "<Esc>", clear, { desc = "clear" })
-  -- vim.keymap.set("n", "<Right>", brj.next, { desc = "next (])" })
-  -- vim.keymap.set("n", "<Left>", brj.prev, { desc = "prev ([)" })
   { "<Left>",    ':lua R("funcs.bracket_jump").prev()<CR>' },
   { "<Right>",   ':lua R("funcs.bracket_jump").next()<CR>' },
   { "<Esc>",     vim_u.clear },
-
-  -- yank to end of line
-  -- { "Y", "y$" },
 
   -- yank/paste clipboard
   { "gy",        '"+y' },
   { "gP",        '"+P' },
   { "gY",        '"+y$' },
 
-  { "gf",        vim_u.goto_first_float },
+  { "gf",        vim_u.goto_first_float,                   { desc = "Go to first float window" } },
   { "ga",        '<Plug>(EasyAlign)',                      { desc = "Easy Align!" } },
+  { "gd",  function () require'nvim-treesitter-refactor.navigation'.goto_definition_lsp_fallback(vim.api.nvim_get_current_buf()) end, { desc = "Go to definition" } },
+  { "gD",  function () require'nvim-treesitter-refactor.navigation'.list_definitions(vim.api.nvim_get_current_buf()) end,             { desc = "List of definitions in current buffer" } },
+  { "gO",  function () require'nvim-treesitter-refactor.navigation'.list_definitions_toc(vim.api.nvim_get_current_buf()) end,         { desc = "list_definitions_toc" } },
+  { "grn", function () require'nvim-treesitter-refactor.smart_rename'.smart_rename(vim.api.nvim_get_current_buf()) end,               { desc = "Smart rename" } },
+
+
 
   -- { 'gs',        ':Gitsigns stage_hunk<CR>' },
   { 'gV',        '<Plug>(VM-Reselect-Last)',               { noremap = false } },
@@ -117,7 +117,17 @@ set_keymap("n", { noremap = true, silent = true }, {
   -- {'<Left>', ':cprevious<CR>'},
   -- {'<Right>', ':cnext<CR>'},
 
+  -- Quick replace
+  -- Mark current selection as search and making change, can be repeate by 'n' and .
   { "cg*",       "*Ncgn" },
+
+  -- Go to next search and call dot
+  -- /\V: Begin a search with "very no magic" mode.
+  -- <C-r>": Insert the content of the unnamed register into the search.
+  -- <CR>: Press enter to execute the search.
+  -- cgn: Change the next instance of the search pattern.
+  -- <C-a>: In insert mode, <C-a> inserts the text that was last inserted during the current or previous edit.
+  -- <Esc>: Exit insert mode and return to normal mode.
   { "g.",        [[/\V<C-r>"<CR>cgn<C-a><Esc>]] },
 
   -- Not wokring yet, need to reload this file to work
@@ -145,10 +155,26 @@ set_keymap("v", { noremap = true, silent = true }, {
   { "9",         "c()<Esc>hp" },
   { "J",         ":move '<+1<CR>gv-gv" },
   { "K",         ":move '<-2<CR>gv-gv" },
-  { "<C-Space>", ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>" },
+  { "<C-Space>", ":lua require'nvim-treesitter.incremental_selection'.scope_incremental()<CR>" },
   { "-",         ":lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>" },
   { "v",         ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>" },
-  { "p",         'p:let @+=@0<CR>:let @"=@0<CR>' },
+
+  -- vim.opt.clipboard      = "unnamedplus"                        -- | Use system clipboard
+  -- yank -> 0 " + *
+  -- copied -> * +
+  -- PASTE is using * first
+  -- visual select and paste -> " + * .
+  --
+  -- Treat unnamed, and plus as default register so when I paste to overwrite, I want keep my unnamed register
+  -- Treating 'unnamed' and 'plus' as the default register.
+  -- Smart paste, paste to overwrite current selection and go to next select. Works with '.'
+  { "P",        '"zy:let @0=@+<CR>:let @/=@Z<CR>cgn<C-R>0<ESC>:let @+=@0<CR>:let @"=@0<CR>nvgn'},
+  -- Paste without overwrite register
+  { "p",        '"zy:let @0=@+<CR>:let @/=@Z<CR>cgn<C-R>0<ESC>:let @+=@0<CR>:let @"=@0<CR>'},
+  -- Notes:
+  -- :let @0=@+<CR>               | Always update last yank content to clipboard
+  -- :let @+=@0<CR>:let @"=@0<CR> | Restore clipboard from last yank after modification
+
   { "ga",        '<Plug>(EasyAlign)' },
 })
 
@@ -566,13 +592,14 @@ space_key_nmap.p = { --{{{1 +Project
   l = { 'Project List',                    ":lua require'nvim-possession'.list()<CR>" },
 
   -- or plug jump
-  s = { 'Plug Search',                     ":lua require'funcs.plug'.fzf.plugins()<CR>" },
+  s = { 'Plug Search',                     ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
+  S = { 'Plug Search',                     ":lua require'funcs.plug'.fzf.fn()<CR>" },
 
 
   p = {
     name = "+Packages/Plugins",
-    a = { 'Plug all',                        ":lua require'funcs.plug'.fzf.plugins()<CR>" },
-    l = { 'Plug list',                       ":lua require'funcs.plug'.fzf.get_plugin()<CR>" },
+    a = { 'Plug all',                        ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
+    l = { 'Plug list',                       ":lua require'funcs.plug'.fzf.plugin_detail()<CR>" },
     i = { 'Plug Install',                    ':Lazy install<CR>' },
     u = { 'Plug Update',                     ':Lazy update<CR>' },
     c = { 'Plug Check',                      ':Lazy check<CR>' },
@@ -589,8 +616,8 @@ space_key_nmap.p = { --{{{1 +Project
 }
 space_key_nmap.P = { --{{{1 +Plugins
   name = "+Plugins",
-  A = { 'Plug all',                        ":lua require'funcs.plug'.fzf.plugins()<CR>" },
-  L = { 'Plug list',                       ":lua require'funcs.plug'.fzf.get_plugin()<CR>" },
+  A = { 'Plug all',                        ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
+  L = { 'Plug list',                       ":lua require'funcs.plug'.fzf.plugin_detail()<CR>" },
   I = { 'Plug Install',                    ':Lazy install<CR>' },
   U = { 'Plug Update',                     ':Lazy update<CR>' },
   C = { 'Plug Check',                      ':Lazy check<CR>' },
@@ -694,15 +721,15 @@ space_key_vmap.s = { --{{{1 +Search/Source
 space_key_nmap.S = { --{{{1 +SESSION
   name = "+SESSION",
 
-  N = { "Session New",    ":lua require'nvim-possession'.new()<CR>" },
-  S = { "Session Save",    ":lua require'nvim-possession'.update()<CR>" },
-  L = { "Session List",    ":lua require'nvim-possession'.list()<CR>" },
-  -- S = { "Session Save",    ":SessionSave<CR>:echom 'Session Save'<CR>" },
-  -- R = { "Sesion Restore",  ":SessionRestore<CR>:echom 'Session Restore'<CR>" },
-  -- L = { "Session List",    ":SearchSession<CR>:echom 'Session List'<CR><CR>" },
-  -- D = { "Session Delete",  ":SessionDelete<CR>:echom 'Session Delete'<CR>" },
+  N = { "Session New",          ":lua require'nvim-possession'.new()<CR>" },
+  S = { "Session Save(Update)", ":lua require'nvim-possession'.update()<CR>" },
+  L = { "Session List",         ":lua require'nvim-possession'.list()<CR>" },
+  -- S = { "Session Save",      ":SessionSave<CR>:echom 'Session Save'<CR>" },
+  -- R = { "Sesion Restore",    ":SessionRestore<CR>:echom 'Session Restore'<CR>" },
+  -- L = { "Session List",      ":SearchSession<CR>:echom 'Session List'<CR><CR>" },
+  -- D = { "Session Delete",    ":SessionDelete<CR>:echom 'Session Delete'<CR>" },
 
-  C = { "Session Clean",   ":FloatermSend FZF_TP_OPTS=\"-p 95\\%\" cd $XDG_STATE_HOME/nvim/sessions && ls | fzf_tp | xargs rm -r && popd<CR>" },
+  C = { "Session Clean",        ":FloatermSend FZF_TP_OPTS=\"-p 95\\%\" cd $XDG_STATE_HOME/nvim/sessions && ls | fzf_tp | xargs rm -r && popd<CR>" },
 
 }
 
@@ -744,6 +771,8 @@ space_key_nmap.t = { --{{{1 +Toggle
   o = {
     name = 'Options+',
     v = { 'Toggle vertical indent line',  ':IndentLinesToggle<CR>' },
+    V = { 'Toggle mini indent scope',     ':lua require("funcs.plug").indentscope.toggle()<CR>' },
+
     r = { 'Toggle relative line number',  ":lua require'funcs.toggle'.r_number.toggle()<CR>" },
   },
   f = {

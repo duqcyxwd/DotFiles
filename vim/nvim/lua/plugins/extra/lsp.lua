@@ -354,7 +354,7 @@ return {
         },
         symbol_in_winbar = {
           enable = true,
-          dely = 300,
+          dely = 1000,
         },
         lightbulb = {
           enable = true,
@@ -411,7 +411,7 @@ return {
     end
   },
   {
-    'Maan2003/lsp_lines.nvim', --                                           | renders diagnostics using virtual lines on top of the real line of code
+    "Maan2003/lsp_lines.nvim", --                                           | renders diagnostics using virtual lines on top of the real line of code
     event = 'LspAttach',
     lazy = true,
     config = function()
@@ -428,8 +428,8 @@ return {
       end
 
       m.toggle = function()
-          m.run(m.enabled)
           m.enabled = not m.enabled
+          m.run(m.enabled)
         end
 
       m.run(m.enabled)

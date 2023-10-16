@@ -36,7 +36,7 @@ local autocmds = {
   default = {
 
     -- Large file loading: disable syntax for large file and syntax can be turn on by syntax on
-    -- { "BufReadPre", "*", 'if getfsize(expand("%")) > 150000 | syn off | set foldmethod=manual | set noswapfile | echom "XXX Large file detected" | endif' },
+    { "BufReadPre", "*", 'if getfsize(expand("%")) > 150000 | syn off | set foldmethod=manual noswapfile nonumber norelativenumber  | echom "XXX Large file detected" | endif' },
 
     -- https://stackoverflow.com/questions/178257/how-to-avoid-syntax-highlighting-for-large-files-in-vim
     -- autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | endif

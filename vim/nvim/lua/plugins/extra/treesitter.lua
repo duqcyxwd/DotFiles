@@ -39,7 +39,15 @@ return {
           disable = { "markdown", "json", "zsh", "bash", "yaml" },
           additional_vim_regex_highlighting = { "python" },
         },
-        incremental_selection = { enable = true },
+        incremental_selection = {
+          enable = true,
+          keymaps = {
+            init_selection = false, -- set to `false` to disable one of the mappings
+            node_incremental = false,
+            scope_incremental = false,
+            node_decremental = false,
+          },
+        },
         matchup = {
           enable = true,
         },
@@ -161,17 +169,17 @@ return {
         navigation = {
           enable = true,
           keymaps = {
-            goto_definition = "gnd",
-            list_definitions = "gnD",
-            list_definitions_toc = "gO",
-            -- goto_next_usage = "<a-*>",
-            -- goto_previous_usage = "<a-#>",
+            goto_definition = false,
+            list_definitions = false,
+            list_definitions_toc = false,
+            goto_next_usage = false,
+            goto_previous_usage = false,
           },
         },
         smart_rename = {
           enable = true,
           keymaps = {
-            smart_rename = "grr",
+            smart_rename = false,
           },
         },
       },

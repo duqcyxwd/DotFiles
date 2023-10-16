@@ -1,3 +1,5 @@
+local t = require("lua.table")
+local vim_u = require 'funcs.nvim_utility'
 return {
   -- Fzf
   { -- "/usr/local/opt/fzf"        | Use the fzf installed by brew, Provide FZF command
@@ -22,9 +24,10 @@ return {
     event = "VeryLazy",
     dependencies = { "nvim-tree/nvim-web-devicons" },
     config = function()
-      require("fzf-lua").setup({
+      local fzf_lua = require("fzf-lua")
+      fzf_lua.setup({
         "fzf-tp",
-        -- fzf_tmux_opts = { ["-p"] = "80%,90%" },
+        fzf_opts = { ["--preview-window"] = "down,70%,border-top" },
         winopts = {
           border = { " ", " ", " ", " ", " ", " ", " ", " " },
           preview = { default = "bat" },
@@ -37,43 +40,23 @@ return {
             config = nil,      -- nil uses $BAT_CONFIG_PATH
           },
         },
-        keymap = {
-          builtin = {
-            ["?"] = "toggle-preview",
-            ["<C-j>"] = "preview-page-down",
-            ["<C-k>"] = "preview-page-up",
-            ["<C-w>"] = "toggle-preview-wrap",
-          },
-        },
+        keymap = { builtin = {}, },
       })
 
+      local defaults = require'fzf-lua.defaults'.defaults
+      local plugsin_fzf_opts = t.deep_clone_merge(defaults.grep, {
+        actions = fzf_lua.defaults.actions.files,
+        prompt = "Plugins> " })
+
       local fzf_plugins = function ()
-
-        local fzf_lua = require'fzf-lua'
-        local core = require "fzf-lua.core"
-
-        local opts = {}
-        opts.prompt = "Plugins> "
-        opts.git_icons = true
-        opts.file_icons = true
-        opts.color_icons = true
-        opts.actions = fzf_lua.defaults.actions.files
-        opts.previewer = "builtin"
-        opts.fn_transform = function(x)
-          return fzf_lua.make_entry.file(x, opts)
-        end
-        opts = core.set_fzf_field_index(opts)
-
-        -- rg --column --line-number --no-heading --color=always --smart-case --max-columns=4096 -e 'xx'
-        fzf_lua.fzf_exec("rg --column --line-number --no-heading --color=always --smart-case --max-columns=4096 --type lua -e \"[\\\"][A-Za-z-.]+/[A-Za-z-.]+[\\\"]\"", opts)
-
-        -- We can use our new function on any folder or
-        -- with any other fzf-lua options ('winopts', etc)
-        -- require("funcs.customFns").live_grep({})
+        -- rg --column --line-number --no-heading --color=always --smart-case --max-columns=4096 --type lua -e "[\"][A-Za-z-.0-9._-~]+/[A-Za-z0-9._-~]+[\"]" |
+        -- fzf_lua.fzf_exec("rg --column --line-number --no-heading --color=always --smart-case --max-columns=4096 --type lua -e \"[\\\"][A-Za-z0-9._\\-]+/[A-Za-z0-9._\\-]+[\\\"]\" -e \"dir =\"", g)
+        fzf_lua.fzf_exec("rg --column --line-number --no-heading --color=always --smart-case --max-columns=4096 --type lua -e \"[\\\"][A-Za-z0-9._\\-]+/[A-Za-z0-9._\\-]+[\\\"]\" -e \"dir =\"", plugsin_fzf_opts)
       end
 
+
       local get_plugin = function()
-        require 'fzf-lua'.fzf_exec(require 'funcs.nvim_utility'.get_all_plugins(), {
+        require 'fzf-lua'.fzf_exec(vim_u.get_all_plugins(), {
           actions = {
             ['default'] = function(selected)
               local plug_info = require("lazy.core.config").spec.plugins[selected[1]]
@@ -83,9 +66,10 @@ return {
           }
         })
       end
+
       require("funcs.plug").fzf = {
-        plugins = fzf_plugins,
-        get_plugin = get_plugin,
+        jump_to_plugin = fzf_plugins,
+        plugin_detail = get_plugin,
       }
     end,
   },

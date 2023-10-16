@@ -198,7 +198,7 @@ return {
     enabled = false,
   },
   {
-    "nvim-treesitter/nvim-treesitter-textobjects", --       | Regular text objects
+    "nvim-treesitter/nvim-treesitter-textobjects", --       | Treesitter text objects
     -- { dir = "~/duqcyxwd/nvim-treesitter-textobjects" }, Testing my textobjects for comments
 
     enabled = true,
@@ -237,10 +237,10 @@ return {
           enable = true,
           set_jumps = true,
           -- whether to set jumps in the jumplist
-          -- goto_next_start = {
-          --   ["]m"] = "@function.outer",
-          --   ["]]"] = "@class.outer",
-          -- },
+          goto_next_start = {
+            -- ["]f"] = "@function.outer",
+            -- ["]]"] = "@class.outer",
+          },
           -- goto_next_end = {
           --   ["]M"] = "@function.outer",
           --   ["]["] = "@class.outer",
@@ -314,6 +314,7 @@ return {
   {
     "chrisgrieser/nvim-origami", --                         | Motion for fold: h/l
     event = "BufReadPost",       -- later or on keypress would prevent saving folds
+    enabled = true,
     opts = {
       pauseFoldsOnSearch = false,
     },
