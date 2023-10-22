@@ -23,7 +23,8 @@ return {
   {
     "plasticboy/vim-markdown", --                        | A better markdown syntax plugin than vimwiki
     --                                                   |  vim-markdown's color is better but it is slow
-    ft = "markdown",
+    enabled = true,
+    ft = { "markdown", "ChatGPTMD" },
     config = function()
       vim.g.vim_markdown_folding_disabled = 1
       vim.g.vim_markdown_conceal = 1

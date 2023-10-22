@@ -38,17 +38,86 @@ M.get_current_line = function()
 end
 
 M.get_visual_select = function()
-  -- This method can be replace with luado:
-  -- e.g: :luado print(line)
-  -- Get the starting and ending positions of the visual selection
-  local start_pos = vim.fn.getpos("'<")
-  local end_pos = vim.fn.getpos("'>")
 
   -- Extract the selected text
   local selected_text = vim.fn.getline(start_pos[2], end_pos[2])
 
-  -- Print or use the selected text as needed
-  return table.concat(selected_text, "\n")
+  local mode = vim.fn.mode()
+  if mode == 'v' or mode == 'V' then
+    -- In Visual model, '< and '> kept last visual position
+    -- print("V mode")
+    local a_orig = vim.fn.getreg('z')
+    vim.cmd([[silent! normal! "zygv]])
+    local text = vim.fn.getreg('z')
+    vim.fn.setreg('z', a_orig)
+    return text
+  end
+
+  local _, start_line, start_col, _ = unpack(vim.fn.getpos("'<"))
+  local _, end_line, end_col, _ = unpack(vim.fn.getpos("'>"))
+  local lines
+  if end_col > 1000 then
+    -- NVIM bug, when V mode is used, end_col is 2147483647
+    lines = vim.api.nvim_buf_get_lines(0, start_line - 1, end_line, false)
+  else
+    lines = vim.api.nvim_buf_get_text(0, start_line - 1, start_col - 1, end_line - 1, end_col, {})
+  end
+
+  -- print(start_line .. " " .. start_col .. " " .. end_line .. " " .. end_col)
+  local text = table.concat(lines, "\n")
+  -- print(text)
+  return text
+end
+
+M.escape_next_line = function(input_str)
+    return string.gsub(input_str, "\n", "\\n")
+end
+
+M.restore_register = function()
+  local last = vim.fn.getreg("0")
+  vim.fn.setreg('+', last)
+  vim.fn.setreg('"', last)
+end
+
+M.sync_copy_to_last = function()
+  local last = vim.fn.getreg("+")
+  vim.fn.setreg('0', last)
+end
+
+M.visual_replace_and_search_next = function()
+  -- implement   -- { "P",        '"zy:let @0=@+<CR>:let @/=@Z<CR>cgn<C-R>0<ESC>:let @+=@0<CR>:let @"=@0<CR>'},
+  -- Notes:
+  -- :let @0=@+<CR>               | Always update last yank content to clipboard
+  -- :let @+=@0<CR>:let @"=@0<CR> | Restore clipboard from last yank after modification
+
+  local s = M.escape_next_line(vim_u.get_visual_select())
+  vim.fn.setreg('/', '\\V' .. s)
+
+  local mode = vim.fn.mode()
+  if mode == 'v' or mode == 'V' then
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<ESC>", true, false, true), 'n', true)
+  end
+
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("cgn<C-R>0<ESC>", true, false, true), 'n', true)
+
+end
+
+M.visual_replace_and_select_next = function()
+  -- vim.opt.clipboard      = "unnamedplus"                        -- | Use system clipboard
+  -- yank -> 0 " + *
+  -- copied -> * +
+  -- PASTE is using * first
+  -- visual select and paste -> " + * .
+  -- After cgn " + * . is update
+  --
+  -- Treat unnamed, and plus as default register so when I paste to overwrite, I want keep my unnamed register
+  -- Treating 'unnamed' and 'plus' as the default register.
+  -- Smart paste, paste to overwrite current selection and go to next select. Works with '.'
+  -- Notes: not work when multiple lines is selected
+  -- { "P",        '"zy:let @0=@+<CR>:let @/=@Z<CR>cgn<C-R>0<ESC>:let @+=@0<CR>:let @"=@0<CR>nvgn'},
+  -- implement   -- { "P",        '"zy:let @0=@+<CR>:let @/=@Z<CR>cgn<C-R>0<ESC>:let @+=@0<CR>:let @"=@0<CR>nvgn'},
+  M.visual_replace_and_search_next()
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("nvgn", true, false, true), 'n', true)
 end
 
 M.show_all_buffers = function()

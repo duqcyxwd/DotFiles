@@ -77,6 +77,7 @@ local join_test = function ()
 end
 
 -- Deep merge
+-- Merge t2 into t1
 function M.merge(t1, t2)
   if not t1 and not t2 then return {} end
   if not t1 then return t2 end

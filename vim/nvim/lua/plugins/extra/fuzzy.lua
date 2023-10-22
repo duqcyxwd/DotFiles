@@ -60,7 +60,6 @@ return {
           actions = {
             ['default'] = function(selected)
               local plug_info = require("lazy.core.config").spec.plugins[selected[1]]
-              -- nvim_print(plug_info)
               vim.notify(vim.inspect(plug_info))
             end
           }

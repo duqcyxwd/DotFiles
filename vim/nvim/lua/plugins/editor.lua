@@ -54,6 +54,12 @@ return {
       })
     end,
   },
+  {
+    'windwp/nvim-autopairs',--                              | Replacement for auto-pairs
+    event = { "VeryLazy" },
+    opts = {}, -- this is equalent to setup({}) function
+    config = true
+  },
   "tpope/vim-sleuth", --                                    | Automatically adjusts 'shiftwidth' and 'expandtab'
 
   -- Text Object Operator (d/c/y/x)
@@ -81,10 +87,10 @@ return {
             add = { "( ", " )" },
           },
           ["{"] = {
-            add = { "{", "}" },
+            add = { "{ ", " }" },
           },
           ["}"] = {
-            add = { "{ ", " }" },
+            add = { "{", "}" },
           },
           ["<"] = {
             add = { "<", ">" },
@@ -93,10 +99,10 @@ return {
             add = { "< ", " >" },
           },
           ["["] = {
-            add = { "[", "]" },
+            add = { "[ ", " ]" },
           },
           ["]"] = {
-            add = { "[ ", " ]" },
+            add = { "[", "]" },
           },
           ["'"] = {
             add = { "'", "'" },

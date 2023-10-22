@@ -417,20 +417,21 @@ return {
     config = function()
       require("lsp_lines").setup()
 
-      local m = { enabled = false }
-
-      m.run = function (flag)
-        if flag then
-          vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
-        else
-          vim.diagnostic.config({ virtual_lines = false })
-        end
-      end
-
-      m.toggle = function()
-          m.enabled = not m.enabled
-          m.run(m.enabled)
-        end
+      local m = {
+        enabled = false,
+        config = function (self, flag)
+          if flag or self.enabled then
+            vim.diagnostic.config({ virtual_lines = { only_current_line = true } })
+          else
+            vim.diagnostic.config({ virtual_lines = false })
+          end
+        end,
+        toggle = function(self)
+          self.enabled = not self.enabled
+          self:config()
+        end,
+        setup = function (self) self:config() end
+      }
 
       m.run(m.enabled)
       require("funcs.plug").lsp_lines = m

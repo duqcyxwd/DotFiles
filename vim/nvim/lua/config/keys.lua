@@ -11,7 +11,6 @@ local M = {}
 local space_key_nmap = {}
 local space_key_vmap = {}
 
-
 -- Local Utility functions {{{1
 local function set_keymap(mode, opts, keymaps)
   for _, keymap in ipairs(keymaps) do
@@ -62,13 +61,16 @@ vim.cmd("cnoremap <C-K> <C-U>")
 vim.cmd("cnoremap <C-P> <Up>")
 vim.cmd("cnoremap <C-N> <Down>")
 
-vim.keymap.set({ "i", "c" }, "<C-x><C-r>", function() require("fzf-lua").registers() end, { silent = true, desc = "Fzf Register" })
+vim.keymap.set({ "i" }, "<C-x><C-r>", function() require("fzf-lua").registers() end,
+  { silent = true, desc = "Fzf Register" })
 
 -- Normal Mode mapping --{{{1
 
 -- -- " j, k          Store relative line number jumps in the jumplist.
-vim.api.nvim_set_keymap('n', 'j', 'v:count ? (v:count > 1 ? "m\'" .. v:count : "") .. "j" : "gj"', { expr = true, noremap = true })
-vim.api.nvim_set_keymap('n', 'k', 'v:count ? (v:count > 1 ? "m\'" .. v:count : "") .. "k" : "gk"', { expr = true, noremap = true })
+vim.api.nvim_set_keymap('n', 'j', 'v:count ? (v:count > 1 ? "m\'" .. v:count : "") .. "j" : "gj"',
+  { expr = true, noremap = true })
+vim.api.nvim_set_keymap('n', 'k', 'v:count ? (v:count > 1 ? "m\'" .. v:count : "") .. "k" : "gk"',
+  { expr = true, noremap = true })
 
 -- vim.api.nvim_set_keymap('n', '<C-f>', ':lua require"funcs.nvim_core".jumpWrap("<c-f>")', { expr = true, noremap = true })
 
@@ -88,18 +90,29 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "gy",        '"+y' },
   { "gP",        '"+P' },
   { "gY",        '"+y$' },
-
-  { "gf",        vim_u.goto_first_float,                   { desc = "Go to first float window" } },
-  { "ga",        '<Plug>(EasyAlign)',                      { desc = "Easy Align!" } },
-  { "gd",  function () require'nvim-treesitter-refactor.navigation'.goto_definition_lsp_fallback(vim.api.nvim_get_current_buf()) end, { desc = "Go to definition" } },
-  { "gD",  function () require'nvim-treesitter-refactor.navigation'.list_definitions(vim.api.nvim_get_current_buf()) end,             { desc = "List of definitions in current buffer" } },
-  { "gO",  function () require'nvim-treesitter-refactor.navigation'.list_definitions_toc(vim.api.nvim_get_current_buf()) end,         { desc = "list_definitions_toc" } },
-  { "grn", function () require'nvim-treesitter-refactor.smart_rename'.smart_rename(vim.api.nvim_get_current_buf()) end,               { desc = "Smart rename" } },
+  { "gf",        vim_u.goto_first_float,                                                                                                    { desc =
+  "Go to first float window" } },
+  { "ga",        '<Plug>(EasyAlign)',                                                                                                       { desc =
+  "Easy Align!" } },
+  { "gd",
+                   function() require 'nvim-treesitter-refactor.navigation'.goto_definition_lsp_fallback(vim.api
+      .nvim_get_current_buf()) end,                                                                                                         { desc =
+  "Go to definition" } },
+  { "gD",        function() require 'nvim-treesitter-refactor.navigation'.list_definitions(vim.api.nvim_get_current_buf()) end,
+                                                                                                                                              { desc =
+    "List of definitions in current buffer" } },
+  { "gO",
+                   function() require 'nvim-treesitter-refactor.navigation'.list_definitions_toc(vim.api
+      .nvim_get_current_buf()) end,                                                                                                         { desc =
+  "list_definitions_toc" } },
+  { "grn",       function() require 'nvim-treesitter-refactor.smart_rename'.smart_rename(vim.api.nvim_get_current_buf()) end,
+                                                                                                                                              { desc =
+    "Smart rename" } },
 
 
 
   -- { 'gs',        ':Gitsigns stage_hunk<CR>' },
-  { 'gV',        '<Plug>(VM-Reselect-Last)',               { noremap = false } },
+  { 'gV',        '<Plug>(VM-Reselect-Last)',                                                                                                { noremap = false } },
 
 
   -- -- source config
@@ -131,8 +144,8 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "g.",        [[/\V<C-r>"<CR>cgn<C-a><Esc>]] },
 
   -- Not wokring yet, need to reload this file to work
-  { "<C-f>",     "<cmd>lua require'funcs.nvim_core'.jumpWrap('<c-f>')<CR>"},
-  { "<C-b>",     "<cmd>lua require'funcs.nvim_core'.jumpWrap('<c-b>')<CR>"},
+  { "<C-f>",     "<cmd>lua require'funcs.nvim_core'.jumpWrap('<c-f>')<CR>" },
+  { "<C-b>",     "<cmd>lua require'funcs.nvim_core'.jumpWrap('<c-b>')<CR>" },
 
   -- window
   { "gj",        "<C-W>j" },
@@ -151,6 +164,8 @@ set_keymap("n", { noremap = true, silent = true }, {
 
 -- Visual Mode mapping --{{{1
 
+
+
 set_keymap("v", { noremap = true, silent = true }, {
   { "9",         "c()<Esc>hp" },
   { "J",         ":move '<+1<CR>gv-gv" },
@@ -158,25 +173,16 @@ set_keymap("v", { noremap = true, silent = true }, {
   { "<C-Space>", ":lua require'nvim-treesitter.incremental_selection'.scope_incremental()<CR>" },
   { "-",         ":lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>" },
   { "v",         ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>" },
+  { "P",         vim_u.visual_replace_and_select_next },
+  { "p",         vim_u.visual_replace_and_search_next },
+  { "gp",        function() vim_u.visual_replace_and_search_next(true) end },
 
-  -- vim.opt.clipboard      = "unnamedplus"                        -- | Use system clipboard
-  -- yank -> 0 " + *
-  -- copied -> * +
-  -- PASTE is using * first
-  -- visual select and paste -> " + * .
-  --
-  -- Treat unnamed, and plus as default register so when I paste to overwrite, I want keep my unnamed register
-  -- Treating 'unnamed' and 'plus' as the default register.
-  -- Smart paste, paste to overwrite current selection and go to next select. Works with '.'
-  { "P",        '"zy:let @0=@+<CR>:let @/=@Z<CR>cgn<C-R>0<ESC>:let @+=@0<CR>:let @"=@0<CR>nvgn'},
-  -- Paste without overwrite register
-  { "p",        '"zy:let @0=@+<CR>:let @/=@Z<CR>cgn<C-R>0<ESC>:let @+=@0<CR>:let @"=@0<CR>'},
-  -- Notes:
-  -- :let @0=@+<CR>               | Always update last yank content to clipboard
-  -- :let @+=@0<CR>:let @"=@0<CR> | Restore clipboard from last yank after modification
+  { "*",         vim_u.visual_to_search },
+  { "#",         function() vim_u.visual_to_search({ revert = true }) end },
 
   { "ga",        '<Plug>(EasyAlign)' },
 })
+
 
 -- }}}1
 -- <SPACE-> Buffer/Tab Switch {{{1
@@ -302,8 +308,11 @@ space_key_nmap["v"]       = { 'Flash Treesitter',           function() require("
 
 space_key_nmap.a = { --{{{1 +append
   name = '+append',
-  [","] = { 'Toggle Append ,', ':lua require("chartoggle").toggle(",")<CR>' },
-  [";"] = { 'Toggle Append ;', ':lua require("chartoggle").toggle(";")<CR>' },
+  -- [","] = { 'Toggle Append ,', ':lua require("chartoggle").toggle(",")<CR>' },
+  -- [";"] = { 'Toggle Append ;', ':lua require("chartoggle").toggle(";")<CR>' },
+
+  [","] = { 'Toggle Append ,', core.dotCall(require("chartoggle").toggle, ','), expr = true },
+  [";"] = { 'Toggle Append ,', core.dotCall(require("chartoggle").toggle, ';'), expr = true },
 }
 
 -- stylua: ignore
@@ -330,9 +339,9 @@ space_key_nmap.b = { --{{{1 +buffer
 space_key_nmap.c = { --{{{1 +COC/Change/CD
   name = "+COC/Change",
 
-  R = { "Help tag",                ":<C-u>CocList extensions<CR>" },
+  -- R = { "Help tag",             ":<C-u>CocList extensions<CR>" },
   e = { "Coc Explorer",            ":CocCommand explorer<CR>" },
-  c = { "Commands",                ":<C-u>CocList commands<CR>" },
+  -- c = { "Commands",             ":<C-u>CocList commands<CR>" },
   -- l = { "List",                 ":CocList<CR>" },
   i = { "Info",                    ":CocInfo<CR>" },
   E = { "extensions",              ":<C-u>CocList extensions<CR>" },
@@ -345,6 +354,46 @@ space_key_nmap.c = { --{{{1 +COC/Change/CD
   d = { "CD local dir",            ":tcd %:p:h<CR>" },
   t = { "CD local dir for Tab",    ":tcd %:p:h<CR>" },
   l = { "CD local dir for Buffer", ":lcd %:p:h<CR>" },
+
+  c = {
+    name = "ChatGPT",
+    c = { "<cmd>ChatGPT<CR>",                              "ChatGPT" },
+    e = { "<cmd>ChatGPTEditWithInstruction<CR>",           "Edit with instruction", mode = { "n", "v" } },
+    g = { "<cmd>ChatGPTRun grammar_correction<CR>",        "Grammar Correction", mode = { "n", "v" } },
+    t = { "<cmd>ChatGPTRun translate<CR>",                 "Translate", mode = { "n", "v" } },
+    k = { "<cmd>ChatGPTRun keywords<CR>",                  "Keywords", mode = { "n", "v" } },
+    d = { ":ChatGPTRun docstring<CR>",                     "Docstring", mode = { "n", "v" } },
+    a = { "<cmd>ChatGPTRun add_tests<CR>",                 "Add Tests", mode = { "n", "v" } },
+    o = { "<cmd>ChatGPTRun optimize_code<CR>",             "Optimize Code", mode = { "n", "v" } },
+    s = { "<cmd>ChatGPTRun summarize<CR>",                 "Summarize", mode = { "n", "v" } },
+    f = { "<cmd>ChatGPTRun fix_bugs<CR>",                  "Fix Bugs", mode = { "n", "v" } },
+    x = { "<cmd>ChatGPTRun explain_code<CR>",              "Explain Code", mode = { "n", "v" } },
+    r = { "<cmd>ChatGPTRun roxygen_edit<CR>",              "Roxygen Edit", mode = { "n", "v" } },
+    l = { "<cmd>ChatGPTRun code_readability_analysis<CR>", "Code Readability Analysis", mode = { "n", "v" } },
+  },
+
+}
+
+-- stylua: ignore
+space_key_vmap.c = { --{{{1 +COC/Change/CD
+  name = "+ChatGPT",
+  c = {
+    name = "ChatGPT",
+
+    e = { "Edit with instruction",     "<cmd>ChatGPTEditWithInstruction<CR>",           },
+    g = { "Grammar Correction",        "<cmd>ChatGPTRun grammar_correction<CR>",        },
+    t = { "Translate",                 "<cmd>ChatGPTRun translate<CR>",                 },
+    k = { "Keywords",                  "<cmd>ChatGPTRun keywords<CR>",                  },
+    d = { "Docstring",                 "<cmd>ChatGPTRun docstring<CR>",                 },
+    a = { "Add Tests",                 "<cmd>ChatGPTRun add_tests<CR>",                 },
+    o = { "Optimize Code",             "<cmd>ChatGPTRun optimize_code<CR>",             },
+    s = { "Summarize",                 "<cmd>ChatGPTRun summarize<CR>",                 },
+    f = { "Fix Bugs",                  "<cmd>ChatGPTRun fix_bugs<CR>",                  },
+    x = { "Explain Code",              "<cmd>ChatGPTRun explain_code<CR>",              },
+    r = { "Roxygen Edit",              "<cmd>ChatGPTRun roxygen_edit<CR>",              },
+    l = { "Code Readability Analysis", "<cmd>ChatGPTRun code_readability_analysis<CR>", },
+
+  },
 
 }
 
@@ -364,25 +413,26 @@ space_key_nmap.d = { --{{{1 +Delete window/tab/buffer
 -- stylua: ignore
 space_key_nmap.e = { --{{{1 +EDIT/Explorer
   name = "+EDIT/Explorer",
-  t = { "open current buffer in tab", ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:lua require('funcs.nvim_utility').smart_buffer_close()<CR>:tabnext<CR>" },
+  t = { "open current buffer in tab",
+    ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:lua require('funcs.nvim_utility').smart_buffer_close()<CR>:tabnext<CR>" },
 }
 
 -- stylua: ignore
 space_key_nmap.f = { --{{{1 +File/Format
   name = "+File/Format",
 
-  S = { "Save all files",                                    ":wa<CR>!" },
-  r = { "Open Recent files",                                 ":FzfLua oldfiles<CR>" },
-  f = { "Open File under current directory",                 ":lua require'fzf-lua'.files({ cwd=vim.fn.expand('%:p:h') })<CR>" },
-  d = { "Directory (ranger)",                                ":FloatermNew --name=ranger --disposable ranger<CR>" },
-  t = { "[format] Clean trailing space",                     ":Trim<CR>" },
-  s = { "Save current file",                                 ":w<CR>" },
-  c = { "Check/Diff with Saved",                             ":require'funcs.nvim_utility'.diff_with_saved()<CR>" },
-  o = { "Search File under cursor",                          ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('n'))<CR>" },
+  S = { "Save all files", ":wa<CR>!" },
+  r = { "Open Recent files", ":FzfLua oldfiles<CR>" },
+  f = { "Open File under current directory", ":lua require'fzf-lua'.files({ cwd=vim.fn.expand('%:p:h') })<CR>" },
+  d = { "Directory (ranger)", ":FloatermNew --name=ranger --disposable ranger<CR>" },
+  t = { "[format] Clean trailing space", ":Trim<CR>" },
+  s = { "Save current file", ":w<CR>" },
+  c = { "Check/Diff with Saved", ":require'funcs.nvim_utility'.diff_with_saved()<CR>" },
+  o = { "Search File under cursor", ":<C-U>execute ':MyFzfFiles' SafeFzfQuery(GetCurrentWord('n'))<CR>" },
   e = {
     name = "+Edit",
 
-    d = { "FzfLua Open Dotfile",                             ":lua require'fzf-lua'.files({ cwd='lua' })<CR>" },
+    d = { "FzfLua Open Dotfile", ":lua require'fzf-lua'.files({ cwd='lua' })<CR>" },
     a = { ":e! ~/.config/vim/lua/config/autocmds.lua<CR>" },
     c = { ":e! ~/.config/vim/lua/config/color.lua<CR>" },
     e = { ":mkview<CR>:e!<CR>:loadview<CR>" },
@@ -531,14 +581,14 @@ space_key_nmap.L = { --{{{1 +LSP
 space_key_nmap.l = { --{{{1 +LSP
   name = "+LSP",
 
-  d = { 'lsp toggle diagnostics',       '<Cmd>lua vim.diagnostic.toggle()<CR>' },
-  f = { 'lsp toggle float hover',       "<Cmd>lua require'config.autocmds'.toggle_diagnostics()<CR>" },
-  l = { 'lsp toggle diagnostics line',  "<Cmd>lua require'funcs.plug'.lsp_lines.toggle()<CR>" },
+  d = { 'lsp toggle diagnostics',      '<Cmd>lua vim.diagnostic.toggle()<CR>' },
+  f = { 'lsp toggle float hover',      "<Cmd>lua require'config.autocmds'.toggle_diagnostics()<CR>" },
+  l = { 'lsp toggle diagnostics line', "<Cmd>lua require'funcs.plug'.lsp_lines:toggle()<CR>" },
 
-  s = { 'LSP Stop',                     ':LspStop<CR>' },
-  r = { 'LSP Restart',                  ':LspRestart<CR>' },
-  g = { 'LSP Start',                    ':LspStart<CR>' },
-  i = { 'LSP Info',                     ':LspInfo<CR>' },
+  s = { 'LSP Stop',                    ':LspStop<CR>' },
+  r = { 'LSP Restart',                 ':LspRestart<CR>' },
+  g = { 'LSP Start',                   ':LspStart<CR>' },
+  i = { 'LSP Info',                    ':LspInfo<CR>' },
 
 }
 
@@ -553,17 +603,18 @@ space_key_nmap.m = { --{{{1 +Move
 space_key_nmap.o = { --{{{1 +Open
   name = "+Open",
 
-  T = { "Open buffer in new Tab and close window", ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:close<CR>:tabnext<CR>" },
-  l = { "Open Link",                               "<Plug>(openbrowser-smart-search)" },
-  o = { "Open Open",                               "<Plug>(openbrowser-smart-search)" },
-  p = { "Open Plugin in Github",                   ":call OpenGithubPlugin()<CR>" },
-  s = { "Open smart",                              "<Plug>(openbrowser-smart-search)" },
-  t = { "Open buffer in new Tab",                  ":tabedit %<CR>" },
+  T = { "Open buffer in new Tab and close window",
+    ":tabedit %<CR>:tabprev<CR>:call undoquit#SaveWindowQuitHistory()<CR>:close<CR>:tabnext<CR>" },
+  l = { "Open Link", "<Plug>(openbrowser-smart-search)" },
+  o = { "Open Open", "<Plug>(openbrowser-smart-search)" },
+  p = { "Open Plugin in Github", ":call OpenGithubPlugin()<CR>" },
+  s = { "Open smart", "<Plug>(openbrowser-smart-search)" },
+  t = { "Open buffer in new Tab", ":tabedit %<CR>" },
 
   g = {
     name = "Open Git",
-    l = { "Open git link",                         ":GBrowse<CR>" },
-    s = { "Search and open in Github ",            ":OpenBrowserSmartSearch -github <C-R><C-W><CR>" },
+    l = { "Open git link", ":GBrowse<CR>" },
+    s = { "Search and open in Github ", ":OpenBrowserSmartSearch -github <C-R><C-W><CR>" },
   },
 
 }
@@ -598,15 +649,15 @@ space_key_nmap.p = { --{{{1 +Project
 
   p = {
     name = "+Packages/Plugins",
-    a = { 'Plug all',                        ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
-    l = { 'Plug list',                       ":lua require'funcs.plug'.fzf.plugin_detail()<CR>" },
-    i = { 'Plug Install',                    ':Lazy install<CR>' },
-    u = { 'Plug Update',                     ':Lazy update<CR>' },
-    c = { 'Plug Check',                      ':Lazy check<CR>' },
-    x = { 'Plug Clean',                      ':Lazy clean<CR>' },
-    s = { 'Plug Status',                     ':Lazy check<CR>' },
-    p = { 'Plug Profile',                    ':Lazy profile<CR>' },
-    h = { 'Plug home',                       ':Lazy home<CR>' },
+    a = { 'Plug all',                      ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
+    l = { 'Plug list',                     ":lua require'funcs.plug'.fzf.plugin_detail()<CR>" },
+    i = { 'Plug Install',                  ':Lazy install<CR>' },
+    u = { 'Plug Update',                   ':Lazy update<CR>' },
+    c = { 'Plug Check',                    ':Lazy check<CR>' },
+    x = { 'Plug Clean',                    ':Lazy clean<CR>' },
+    s = { 'Plug Status',                   ':Lazy check<CR>' },
+    p = { 'Plug Profile',                  ':Lazy profile<CR>' },
+    h = { 'Plug home',                     ':Lazy home<CR>' },
   },
 
 
@@ -616,16 +667,16 @@ space_key_nmap.p = { --{{{1 +Project
 }
 space_key_nmap.P = { --{{{1 +Plugins
   name = "+Plugins",
-  A = { 'Plug all',                        ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
-  L = { 'Plug list',                       ":lua require'funcs.plug'.fzf.plugin_detail()<CR>" },
-  I = { 'Plug Install',                    ':Lazy install<CR>' },
-  U = { 'Plug Update',                     ':Lazy update<CR>' },
-  C = { 'Plug Check',                      ':Lazy check<CR>' },
-  X = { 'Plug Clean',                      ':Lazy clean<CR>' },
-  S = { 'Plug Status',                     ':Lazy check<CR>' },
-  P = { 'Plug Profile',                    ':Lazy profile<CR>' },
-  H = { 'Plug home',                       ':Lazy home<CR>' },
-  J = { 'Plug Jump',                       ":lua require'funcs.plug'.fzf.plugins()<CR>" },
+  A = { 'Plug all',     ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
+  L = { 'Plug list',    ":lua require'funcs.plug'.fzf.plugin_detail()<CR>" },
+  I = { 'Plug Install', ':Lazy install<CR>' },
+  U = { 'Plug Update',  ':Lazy update<CR>' },
+  C = { 'Plug Check',   ':Lazy check<CR>' },
+  X = { 'Plug Clean',   ':Lazy clean<CR>' },
+  S = { 'Plug Status',  ':Lazy check<CR>' },
+  P = { 'Plug Profile', ':Lazy profile<CR>' },
+  H = { 'Plug home',    ':Lazy home<CR>' },
+  J = { 'Plug Jump',    ":lua require'funcs.plug'.fzf.plugins()<CR>" },
 
 }
 
@@ -696,6 +747,8 @@ space_key_nmap.s = { --{{{1 +Search/Source
 
   e = { 'Source current file!',                     ':so %<CR>' },
   v = { 'Source vimrc',                             ':so $XDG_CONFIG_HOME/nvim/init.vim<CR>' },
+  n = { 'Source nvim init.lua',                     ':so $XDG_CONFIG_HOME/nvim/init.lua<CR>' },
+  u = { 'Source nvim init.lua',                     ':so $XDG_CONFIG_HOME/nvim/lua/reload.lua<CR>' },
 
   l = { 'Source lua code',                          ":lua loadstring( require'funcs.nvim_utility'.get_current_line())()<CR>" },
   i = { 'Inspec lua code result',                   ":lua loadstring('nvim_print(' .. require'funcs.nvim_utility'.get_current_line() .. ')')()<CR>" },
@@ -745,7 +798,7 @@ space_key_nmap.t = { --{{{1 +Toggle
   M = { 'Color: FZF Schema',              ':FzfLua colorschemes<CR>' },
 
   s = { 'Toggle Flash Search',            function() require("flash").toggle() end },
-  w = { 'Toggle Word',                    core.dotCall(require('nvim-toggler').toggle), expr = true },
+  w = { 'Toggle Word',                    core.dotCall(require('nvim-toggler').toggle), expr = true},
 
   a = {
     name = 'auto+',

@@ -168,54 +168,5 @@ M.toggle_set_root_scope = function()
   fn()
 end
 
--- local default_find_group_pattern = { '.git/' }
--- local local_find_group_pattern = { '.vimroot', '.svn/', '.hg/', '.bzr/', 'Rakefile', 'pom.xml', 'project.clj', '*.csproj', '*.sln', }
-
--- -- Manul set_root method
--- -- Array of file names indicating root directory. Modify to your liking.
--- local set_root_patterns = u.join(default_find_group_pattern, local_find_group_pattern)
-
-
--- M.set_root = function()
---   -- Get directory path to start search from
---   local path = vim.api.nvim_buf_get_name(0)
---   if path == '' then return end
---   path = vim.fs.dirname(path)
-
---   -- -- TODO Add cache with different pattern
---   -- -- Try cache and resort to searching upward for root directory
---   -- local root = root_cache[path]
---   -- if root == nil then
---   --   local root_file = vim.fs.find(set_root_patterns, { path = path, upward = true })[1]
---   --   if root_file == nil then return end
---   --   root = vim.fs.dirname(root_file)
---   --   root_cache[path] = root
---   -- end
-
---   -- Work without cache
---   local root_file = vim.fs.find(set_root_patterns, { path = path, upward = true })[1]
---   if root_file == nil then return end
---   local root = vim.fs.dirname(root_file)
-
---   -- Set current directory
---   vim.fn.chdir(root)
---   print("Set root path: " .. vim.fn.getcwd())
--- end
-
--- local root_scope_flat = true
--- function M.toggle_set_root_scope()
---   vim.opt.autochdir = false
---   if root_scope_flat then
---     vim_root = false
---     set_root_patterns = default_find_group_pattern
---   else
---     root_scope_flat = true
---     set_root_patterns = u.join(default_find_group_pattern, local_find_group_pattern)
---   end
---   M.set_root()
--- end
-
--- local root_augroup = vim.api.nvim_create_augroup('MyAutoRoot', {})
--- vim.api.nvim_create_autocmd('BufEnter', { group = root_augroup, callback = set_root })
 
 return M
