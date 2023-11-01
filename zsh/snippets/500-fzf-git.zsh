@@ -176,7 +176,7 @@
     }
 
 }
-# FZF: GIT stash {{{1
+# FZF: GIT STASH {{{1
 # --------------------------------------------------------------------------
 {
 
@@ -185,7 +185,7 @@
     '
 
     # Still can't drop this method since I needed it fro gstaai
-    FZF_GIT_STASH_OPTS="$FZF_GIT_DEFAULT_OPTS FORGIT_STASH_FZF_OPTS"
+    FZF_GIT_STASH_OPTS="$FZF_GIT_DEFAULT_OPTS $FORGIT_STASH_FZF_OPTS"
     git_stash_list_interactive() {
       # ctrl-d for drop stash
       __in_git || return 1

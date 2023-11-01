@@ -59,6 +59,7 @@ zshaddhistory() { # {{{1
 
   # Modified from https://mollifier.hatenablog.com/entry/20090
   # Not necessary, Most of them will be cleanup by zsh
+  # #line is number of char in that command
   # -ge 4 > Have more than 4 chars
   if [[ ${#line} -ge 4
           && ${cmd} != ("")

@@ -18,6 +18,13 @@
     ],
     "description": "Nice print"
   },
+  "nvim inspect": {
+    "prefix": "vi",
+    "body": [
+      "vim.inspect(${1})"
+    ],
+    "description": "Nice print"
+  },
   "custom_require": {
     "prefix": "reqR",
     "body": ["R(\"${1:module}\")"],
@@ -27,5 +34,40 @@
     "prefix": "reqs",
     "body": ["SR(\"${1:module}\")"],
     "description": "Require module"
+  },
+  "Add enabled": {
+    "prefix": "en",
+    "body": ["enabled = false,"]
+  },
+  "Add new plugins": {
+    "prefix": "nplug",
+    "body": [
+      "  {",
+      "    \"$1\", -- | Sample plug",
+      "    enabled = true,",
+      "    lazy = true,",
+      "    event = { \"VeryLazy\", \"BufReadPre\", \"BufNewFile\" },",
+      "    opts = {},",
+      "    config = function (_, opts)",
+      "      require'$2'.setup(opts)",
+      "      IfHasModule('scope', function ()",
+      "        require('telescope').load_extension('scope')",
+      "      end )",
+      "    end",
+      "  }"
+
+    ]
+  },
+  "nvim_utility modeul": {
+    "prefix": "nu",
+    "body": ["local nu = require('funcs.nvim_utility')"]
+  },
+  "core module": {
+    "prefix": "core",
+    "body": ["local nu = require('funcs.nvim_utility')"]
+  },
+  "lua table module": {
+    "prefix": "t",
+    "body": ["local nu = require('lua/table')"]
   }
 }

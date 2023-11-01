@@ -155,6 +155,7 @@ zinit_load() {
     # The order to load plug is important below
     zinit wait lucid light-mode for \
       Aloxaf/fzf-tab \
+      Freed-Wu/fzf-tab-source \
       unixorn/fzf-zsh-plugin \
       duqcyxwd/history-search-multi-word \
       atinit"zicompinit; zicdreplay"  duqcyxwd/fast-syntax-highlighting \
@@ -240,8 +241,8 @@ zinit_load() {
   zstyle 'zle:exchange' highlight 'fg=26,bg=195'
 
 
-  # zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'source ~/.zshrc-local.sh; zicompinit; zicdreplay;' silent;
-  zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'zicompinit; zicdreplay;' silent;
+  zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'source ~/.zshrc-comp.sh; zicompinit; zicdreplay;' silent;
+  # zinit ice wait="$ZINIT_PLUGIN_DELAY" atload'zicompinit; zicdreplay;' silent;
   zinit light zpm-zsh/empty
 
   # zinit self-update updates zinit
@@ -300,10 +301,12 @@ zsh_plugins_config
   zstyle ':fzf-tab:*' fzf-command ftb-tmux-popup
   zstyle ':fzf-tab:*' popup-smart-tab no
 
-  zstyle ':fzf-tab:complete:cd:*' fzf-preview 'exa -1 --color=always $realpath'
+  zstyle ':fzf-tab:sources' config-directory ~/.local/zinit/plugins/Freed-Wu---fzf-tab-source/sources
+
+  zstyle ':fzf-tab:complete:cd:*' fzf-preview '/usr/local/bin/exa -1 --color=always $realpath'
   zstyle ':fzf-tab:complete:cd:*' fzf-command
 
-  zstyle ':fzf-tab:complete:__enhancd::cd:*' fzf-preview 'exa -1 --color=always $realpath'
+  zstyle ':fzf-tab:complete:__enhancd::cd:*' fzf-preview '/usr/local/bin/exa -1 --color=always $realpath'
   zstyle ':fzf-tab:complete:__enhancd::cd:*' fzf-command
 
 
@@ -312,6 +315,7 @@ zsh_plugins_config
   # disable sort when completing `git checkout`
   zstyle ':completion:complete:*:options' sort false
   zstyle ':completion:*:z:*' sort false
+  zstyle ':completion:*:zshz:*' sort false
   zstyle ':completion:*:git-checkout:*' sort true
   zstyle ':completion:complete:*:options' sort false
 

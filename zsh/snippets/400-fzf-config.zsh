@@ -15,24 +15,24 @@ __fzf_config() {
     --bind 'btab:up'
 
 
-    --bind='ctrl-k:preview-half-page-up'
-    --bind='ctrl-j:preview-half-page-down'
+    --bind 'ctrl-k:preview-half-page-up'
+    --bind 'ctrl-j:preview-half-page-down'
 
-    --bind='alt-up:preview-half-page-up'
-    --bind='alt-down:preview-half-page-down'
+    --bind 'alt-up:preview-half-page-up'
+    --bind 'alt-down:preview-half-page-down'
 
     --bind 'ctrl-h:backward-char'
     --bind 'ctrl-l:forward-char'
 
-    --bind='ctrl-b:half-page-up'
-    --bind='ctrl-f:half-page-down'
+    --bind 'ctrl-b:half-page-up'
+    --bind 'ctrl-f:half-page-down'
 
-    --bind='ctrl-s:toggle-sort'
-    --bind='ctrl-w:toggle-preview-wrap'
+    --bind 'ctrl-s:toggle-sort'
+    --bind 'ctrl-w:toggle-preview-wrap'
 
-    --bind=\"ctrl-y:execute-silent(echo {} | tr-newline | pbcopy )\"
+    --bind \"ctrl-y:execute-silent(echo {} | tr-newline | pbcopy )\"
 
-    --bind='change:top'
+    --bind 'change:top'
     --bind 'ctrl-p:up'
     --bind 'ctrl-n:down'
     --bind 'up:previous-history'
@@ -40,6 +40,7 @@ __fzf_config() {
 
     --bind 'ctrl-\\:toggle-preview'
     --bind '?:change-preview-window(down,50%,border-top|down,84%,border-top|right,75%|hidden|)'
+
     "
     # Notes: In tmux with vim, ctrl-kjhl is used....
     # Need to find other better keyding
@@ -88,6 +89,8 @@ __fzf_config() {
     '
 
     # FZF Theme }}}
+    #  Notes: Don't add default preview command. It might break other application like fzf-tab
+    # --preview '/usr/local/bin/bat --color=always {}'
   # FZF Default Config {{{1
     export FZF_MY_OPTS="
     --multi

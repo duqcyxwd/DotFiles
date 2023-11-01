@@ -231,9 +231,10 @@ alias gcom="ee 'git checkout master && git merge origin/master --ff-only'"
 # Git Open {{{2
 alias gopen=gitopen
 alias gitopen_raw=/usr/local/bin/gitopen
-function gitopenc() { ee "/usr/local/bin/gitopen -b $(get_current_branch) $@" }
+function gitopen()  { /usr/local/bin/gitopen $(git rev-parse HEAD) --path $@ }
+function gitopenc() { /usr/local/bin/gitopen $(git rev-parse HEAD) --path $@ }
+function gitopenb() { ee "/usr/local/bin/gitopen -b $(get_current_branch) $@" }
 function gitopend() { /usr/local/bin/gitopen $@ :develop }
-function gitopeng() { /usr/local/bin/gitopen $(git rev-parse HEAD) --path $@ }
 function gitopenm() { /usr/local/bin/gitopen $@ :master }
 
 
