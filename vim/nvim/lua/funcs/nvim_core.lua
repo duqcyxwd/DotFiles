@@ -63,13 +63,18 @@ end
 -- https://gist.github.com/kylechui/a5c1258cd2d86755f97b10fc921315c3
 -- nvim_surround https://github.com/kylechui/nvim-surround/blob/7b8a295a27038715bc87c01277d82c294b690e6d/lua/nvim-surround/cache.lua#L12
 M.lastFnRef = function () end
+M.lastFnArgs = nil
 
 function M.runLastFn()
-  M.lastFnRef()
+  M.lastFnRef(M.lastFnArgs)
 end
 
-function M.dotCall(func)
+-- Exmaple mapping
+--   ["."] = { 'Toggle Append .', core.dotCall(vim_u.toggle_char, '.'), expr = true },
+-- func wrapper so that I can use dot to repeat it
+function M.dotCall(func, args)
   return function()
+    M.lastFnArgs = args
     M.lastFnRef = func
     vim.go.operatorfunc = "v:lua.require'funcs.nvim_core'.runLastFn"
     return "g@l"

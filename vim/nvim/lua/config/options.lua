@@ -80,7 +80,7 @@ local set_options = function()
                                                                 -- | Data stored in Session
                                                                 -- | Scope is storing state in vim.g.ScopeState
   vim.opt.viewoptions    = 'cursor,folds'                       -- | view of buffer
-  vim.opt.completeopt    = 'menu,menuone,noselect'              -- | Required by nvim-cmp (code completion plugin)
+  -- vim.opt.completeopt    = 'menu,menuone,noselect'              -- | Required by nvim-cmp (code completion plugin)
   vim.opt.jumpoptions:append('stack')                           -- | Change jump behavior like browser style stack
 
 
@@ -88,7 +88,7 @@ local set_options = function()
                                                                 -- Turn persistent undo on
   vim.opt.undofile       = true                                 -- | Save undos after the file closes
   vim.opt.undodir        = vim.fn.stdpath('data') .. '/undodir' -- | Set the undo directory to $XDG_DATA_HOME/nvim-undodir
-  vim.opt.undolevels     = 2000                                 -- | Set the maximum number of undos to 2000
+  vim.opt.undolevels     = 800                                  -- | Set the maximum number of undos to 2000
   vim.opt.undoreload     = 20000                                -- | Set the number of lines to save for undo to 20000
 
                                                                 -- Set the wildignore option to ignore certain file patterns

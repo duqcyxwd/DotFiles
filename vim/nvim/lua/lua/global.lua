@@ -13,6 +13,10 @@ P = function(thing)
   return thing
 end
 
+PI = function (thing)
+  vim.notify(vim.inspect(thing))
+end
+
 local modules = {}
 
 UnloadModules = function()

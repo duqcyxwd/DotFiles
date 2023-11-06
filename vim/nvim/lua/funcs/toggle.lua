@@ -79,37 +79,6 @@ M.r_number = {
 }
 
 
--- M.toggle_relative_num_state = true
--- M.toggle_relative_num = function()
---   M.toggle_relative_num_state = vim.opt.relativenumber
---   local fn = function()
---     if M.toggle_relative_num_state then
---       M.toggle_relative_num_state = false
---       vim.opt.relativenumber = false
---     else
---       M.toggle_relative_num_state = true
---       vim.opt.relativenumber = true
---     end
---   end
---   M.toggle_relative_num = fn
---   fn()
--- end
-
--- M.relative_num_buffer_hook = {
---   enter = function()
---     if M.toggle_relative_num_state and vim.o.nu and vim.api.nvim_get_mode().mode ~= "i" then
---       vim.opt.relativenumber = true
---     end
---   end,
---   leave = function()
---     if vim.opt.number then
---       vim.opt.relativenumber = false
---       vim.cmd "redraw"
---     end
---   end
--- }
-
-
 -- Toggle Project Root
 RootPattern = {
   default = { '.git/' },

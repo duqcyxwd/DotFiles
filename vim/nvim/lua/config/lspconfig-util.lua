@@ -52,7 +52,7 @@ function M.lsp_keymap_buffer(ev)
   -- vim.keymap.set('n', 'gD',              ":lua vim.lsp.buf.declaration()<cr>",               opts)
   -- vim.keymap.set('n', 'gd',              ":lua vim.lsp.buf.definition()<cr>",                opts)
   vim.keymap.set('n', 'K',               ":lua vim.lsp.buf.hover()<cr>",                     opts)
-  vim.keymap.set('n', 'grr',              ":lua vim.lsp.buf.references()<cr>",                opts)
+  vim.keymap.set('n', 'grr',             ":lua vim.lsp.buf.references()<cr>",                opts)
   vim.keymap.set('n', 'gi',              ":lua vim.lsp.buf.implementation()<cr>",            opts)
   vim.keymap.set('n', '<localleader>k',  ":lua vim.lsp.buf.signature_help()<cr>",            opts)
   vim.keymap.set('n', '<localleader>D',  ":lua vim.lsp.buf.type_definition()<cr>",           opts)
@@ -67,7 +67,7 @@ function M.lsp_keymap_buffer(ev)
   vim.keymap.set('n', '<localleader>o',  ":Lspsaga outline<cr>",               opts)
   vim.keymap.set('n', 'gp',              ":Lspsaga peek_definition<cr>",       opts)
   vim.keymap.set('n', 'gr',              ":FzfLua lsp_references<cr>",         opts)
-  vim.keymap.set('n', '<localleader>js',  ":FzfLua lsp_document_symbols<cr>",   opts)
+  vim.keymap.set('n', '<localleader>js', ":FzfLua lsp_document_symbols<cr>",   opts)
 
 
 end

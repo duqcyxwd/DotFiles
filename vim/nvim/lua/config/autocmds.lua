@@ -32,16 +32,47 @@ local markdown_key_map = function()
   ]])
 end
 
+local large_file_hook = function ()
+    local threshold = 150000  -- default value of 150KB if not provided
+
+    local filename = vim.fn.expand("%")
+    local filesize = vim.fn.getfsize(filename)
+
+    if filesize > threshold then
+        -- Disable syntax highlighting
+        -- Keep syntax, it is still working
+        -- vim.cmd('syn off')
+
+        -- Adjust settings for performance
+        vim.o.swapfile = false
+        vim.o.number = true
+        vim.o.relativenumber = false
+        vim.o.foldmethod = 'manual'
+        vim.o.foldenable = false
+
+        -- Notify the user
+        vim.b.miniindentscope_disable = true
+
+        vim.api.nvim_out_write("XXX [LUA] Update config for large file\n")
+
+        require'funcs.toggle'.r_number.state = false
+    end
+
+end
+
 local autocmds = {
   default = {
 
+    -- setlocal didn't work for BufReadPre?
     -- Large file loading: disable syntax for large file and syntax can be turn on by syntax on
-    { "BufReadPre", "*", 'if getfsize(expand("%")) > 150000 | syn off | set foldmethod=manual noswapfile nonumber norelativenumber  | echom "XXX Large file detected" | endif' },
+    { "BufReadPre", "*", 'if getfsize(expand("%")) > 150000 | echom "XXX Large file detected" | endif' },
+    -- { "BufReadPre", "*", 'if getfsize(expand("%")) > 150000 | syn off | setlocal foldmethod=manual noswapfile nonumber norelativenumber nofoldenable | endif' },
+    { "BufReadPre", "*", 'if getfsize(expand("%")) > 150000 | setlocal eventignore+=CursorHoldI,CursorMovedI,CursorMoved,CursorHold | endif' },
 
-    -- https://stackoverflow.com/questions/178257/how-to-avoid-syntax-highlighting-for-large-files-in-vim
-    -- autocmd BufWinEnter * if line2byte(line("$") + 1) > 1000000 | syntax clear | endif
-    -- autocmd BufReadPre * if getfsize(expand("%")) > 10000000 | syntax off | endif
+    -- Large than 15M = 15000000
+    -- { "FileType", "*", 'if getfsize(expand("%")) > 1500000 | set ft= | endif' },
 
+    { "BufReadPre", "*", large_file_hook },
   },
 
   buffer_view = {
@@ -85,8 +116,6 @@ local autocmds = {
   line_number = {
     { { "BufEnter", "FocusGained", "InsertLeave", "WinEnter" }, "*", toggle.r_number.enterHook },
     { { "BufLeave", "FocusLost",   "InsertEnter", "WinLeave" }, "*", toggle.r_number.leaveHook },
-    -- { { "BufEnter", "FocusGained", "InsertLeave", "CmdlineLeave", "WinEnter" }, "*", toggle.relative_num_buffer_hook.enter },
-    -- { { "BufLeave", "FocusLost",   "InsertEnter", "CmdlineEnter", "WinLeave" }, "*", toggle.relative_num_buffer_hook.leave },
   },
 
   DEV_DEV = {
@@ -130,7 +159,9 @@ local file_type_autocmds = {
     { "FileType",    "vim",           "setlocal foldmethod=marker" },
     -- { "FileType",    "markdown",      "setlocal foldmethod=expr conceallevel=2 foldtext=foldtext()" },
     { "FileType",    "markdown",      "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr conceallevel=2" },
-    { "FileType",    "markdown",      markdown_key_map },
+
+    -- { "FileType",    "markdown",      markdown_key_map },
+    { "FileType",    "ChatGPTMD",     "set syntax=markdown" },
     { "FileType",    "zsh",           "setlocal foldmethod=marker" },
   },
 }

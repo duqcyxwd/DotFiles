@@ -1,6 +1,5 @@
 require("lua.global")
 local tableFn = require("lua.table")
-local u = require("lua.utility")
 
 local M = {}
 
@@ -24,11 +23,81 @@ M.has = function(plugin)
 end
 
 
--- Editor
+M.get_all_plugins_config_table = function()
+
+  local function load_lua_modules_and_merge(folder_path)
+    local big_table = {}
+    -- Use Vim's glob function to get all the .lua files recursively
+    local files = vim.fn.glob(folder_path .. '/**/*.lua', true, true)
+    for _, file in ipairs(files) do
+      local module_path = file:sub(#folder_path, -5):gsub('/', '.')
+      local loaded_module = require(module_path)
+      if type(loaded_module) == "table" then
+        big_table = tableFn.join(big_table, loaded_module)
+      else
+        print("Warning: Module " .. module_path .. " did not return a table")
+      end
+    end
+    return big_table
+  end
+
+  local function convertToKeyedTable(tbl)
+    -- Creates a new table using the first item of each sub-table as a key
+    local result = {}
+    for _, v in ipairs(tbl) do
+      if type(v) == "string" then
+        result[v] = { v }
+      else
+        local key = v[1]
+        if type(key) == "string" then
+          result[key] = v
+        end
+      end
+    end
+    return result
+  end
+
+  -- Example usage
+  local merged_table = load_lua_modules_and_merge('$XDG_CONFIG_HOME/nvim/lua/plugins')
+  return convertToKeyedTable(merged_table)
+end
+
+-- This will introduce 10 - 15ms delay
+local plugins_config = {}
+local is_inited = false
+M.init = function()
+  M.plugins_config = M.get_all_plugins_config_table()
+  is_inited = true
+end
+
+M.get_plugin_config = function (plug)
+  return plugins_config[plug]
+end
+
+M.enabled = function (plug)
+  if not is_inited then
+    return true
+  end
+  local config = plugins_config[plug]
+  if config == nil then
+    return false
+  end
+  if config.enabled == nil or config.enabled == false then
+    return false
+  end
+  return true
+end
 
 M.get_all_plugins = function()
   return tableFn.keys(require("lazy.core.config").spec.plugins)
 end
+
+M.get_plugin = function (plug)
+  local plug_info = require("lazy.core.config").spec.plugins[plug]
+  vim.notify(vim.inspect(plug_info))
+end
+
+-- Editor
 
 M.get_current_line = function()
   -- Example: require'funcs.nvim_utility'.get_listed_buffer()
@@ -39,8 +108,6 @@ end
 
 M.get_visual_select = function()
 
-  -- Extract the selected text
-  local selected_text = vim.fn.getline(start_pos[2], end_pos[2])
 
   local mode = vim.fn.mode()
   if mode == 'v' or mode == 'V' then
@@ -84,13 +151,56 @@ M.sync_copy_to_last = function()
   vim.fn.setreg('0', last)
 end
 
-M.visual_replace_and_search_next = function()
-  -- implement   -- { "P",        '"zy:let @0=@+<CR>:let @/=@Z<CR>cgn<C-R>0<ESC>:let @+=@0<CR>:let @"=@0<CR>'},
-  -- Notes:
-  -- :let @0=@+<CR>               | Always update last yank content to clipboard
-  -- :let @+=@0<CR>:let @"=@0<CR> | Restore clipboard from last yank after modification
+M.visual_to_search = function (opts)
 
-  local s = M.escape_next_line(vim_u.get_visual_select())
+  opts = tableFn.merge({ revert = false }, opts)
+  local mode = vim.fn.mode()
+  if mode == 'v' or mode == 'V' then
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<ESC>", true, false, true), 'n', true)
+  end
+
+  local s = M.escape_next_line(M.get_visual_select())
+  vim.fn.setreg('/', '\\V' .. s)
+  if not opts.revert then
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("/<CR>", true, false, true), 'n', true)
+  else
+    local start_pos = vim.fn.getpos("'<")
+    vim.api.nvim_win_set_cursor(0, {start_pos[2], start_pos[3]-1})
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("?<CR>", true, false, true), 'n', true)
+  end
+
+end
+
+M.visual_replace_and_search_next = function(clipboard)
+  -- How it works
+  -- Register update with option vim.opt.clipboard = "unnamedplus"
+  --   1. yank -> 0 " + *
+  --   2. copied -> * +
+  -- p in normal mode will paste
+  -- p in visual mode will
+  --   if clipboard is true, update last register 0 to clipboard
+  --   1. Set visual select to current search
+  --   2. Exit to normal mode
+  --   3. Change next match, 'cgn' with data in register 0
+  --   3.1 Limitation: After cgn " + * . is update, so I have to use register 0, no * or +. This works with dot
+  -- Notes:
+  --   Tried to use other register to keep data, not working because I can't update that register with dot
+  --
+  -- old implement   -- { "P",        '"zy:let @0=@+<CR>:let @/=@Z<CR>cgn<C-R>0<ESC>:let @+=@0<CR>:let @"=@0<CR>'},
+  --   1. :let @0=@+<CR>               | Always update last yank content to clipboard
+  --   2. :let @+=@0<CR>:let @"=@0<CR> | Restore clipboard from last yank after modification
+  --
+  -- Work flow limitation
+  -- When copy from other place, use gp to paste and update the register
+  clipboard = clipboard or false
+
+  if clipboard then
+    local last = vim.fn.getreg("+")
+    vim.fn.setreg('0', last)
+  end
+
+
+  local s = M.escape_next_line(M.get_visual_select())
   vim.fn.setreg('/', '\\V' .. s)
 
   local mode = vim.fn.mode()
@@ -103,19 +213,7 @@ M.visual_replace_and_search_next = function()
 end
 
 M.visual_replace_and_select_next = function()
-  -- vim.opt.clipboard      = "unnamedplus"                        -- | Use system clipboard
-  -- yank -> 0 " + *
-  -- copied -> * +
-  -- PASTE is using * first
-  -- visual select and paste -> " + * .
-  -- After cgn " + * . is update
-  --
-  -- Treat unnamed, and plus as default register so when I paste to overwrite, I want keep my unnamed register
-  -- Treating 'unnamed' and 'plus' as the default register.
-  -- Smart paste, paste to overwrite current selection and go to next select. Works with '.'
-  -- Notes: not work when multiple lines is selected
-  -- { "P",        '"zy:let @0=@+<CR>:let @/=@Z<CR>cgn<C-R>0<ESC>:let @+=@0<CR>:let @"=@0<CR>nvgn'},
-  -- implement   -- { "P",        '"zy:let @0=@+<CR>:let @/=@Z<CR>cgn<C-R>0<ESC>:let @+=@0<CR>:let @"=@0<CR>nvgn'},
+  -- nvgn select next match
   M.visual_replace_and_search_next()
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("nvgn", true, false, true), 'n', true)
 end
@@ -146,6 +244,20 @@ M.get_next_list_buffer = function()
     end
   end
   return nil
+end
+
+M.toggle_char = function (char)
+  local delimiters = { ',', ';', '.', '!', ':' }
+  local line = vim.api.nvim_get_current_line()
+  local last_char = line:sub(-1)
+
+  if last_char == char then
+    return vim.api.nvim_set_current_line(line:sub(1, #line - 1))
+  elseif vim.tbl_contains(delimiters, last_char) then
+    return vim.api.nvim_set_current_line(line:sub(1, #line - 1) .. char)
+  else
+    return vim.api.nvim_set_current_line(line .. char)
+  end
 end
 
 -- Buffer/Windows

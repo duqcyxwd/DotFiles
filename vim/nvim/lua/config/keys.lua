@@ -90,28 +90,15 @@ set_keymap("n", { noremap = true, silent = true }, {
   { "gy",        '"+y' },
   { "gP",        '"+P' },
   { "gY",        '"+y$' },
-  { "gf",        vim_u.goto_first_float,                                                                                                    { desc =
-  "Go to first float window" } },
-  { "ga",        '<Plug>(EasyAlign)',                                                                                                       { desc =
-  "Easy Align!" } },
-  { "gd",
-                   function() require 'nvim-treesitter-refactor.navigation'.goto_definition_lsp_fallback(vim.api
-      .nvim_get_current_buf()) end,                                                                                                         { desc =
-  "Go to definition" } },
-  { "gD",        function() require 'nvim-treesitter-refactor.navigation'.list_definitions(vim.api.nvim_get_current_buf()) end,
-                                                                                                                                              { desc =
-    "List of definitions in current buffer" } },
-  { "gO",
-                   function() require 'nvim-treesitter-refactor.navigation'.list_definitions_toc(vim.api
-      .nvim_get_current_buf()) end,                                                                                                         { desc =
-  "list_definitions_toc" } },
-  { "grn",       function() require 'nvim-treesitter-refactor.smart_rename'.smart_rename(vim.api.nvim_get_current_buf()) end,
-                                                                                                                                              { desc =
-    "Smart rename" } },
+
+  { "gf",  vim_u.goto_first_float,                                                                                                    { desc = "Go to first float window" } },
+  { "ga",  '<Plug>(EasyAlign)',                                                                                                       { desc = "Easy Align!" } },
+  { "gd",  function() require 'nvim-treesitter-refactor.navigation'.goto_definition_lsp_fallback(vim.api.nvim_get_current_buf()) end, { desc = "Go to definition" } },
+  { "gD",  function() require 'nvim-treesitter-refactor.navigation'.list_definitions(vim.api.nvim_get_current_buf()) end,             { desc = "List of definitions in current buffer" } },
+  { "gO",  function() require 'nvim-treesitter-refactor.navigation'.list_definitions_toc(vim.api.nvim_get_current_buf()) end,         { desc = "list_definitions_toc" } },
+  { "grn", function() require 'nvim-treesitter-refactor.smart_rename'.smart_rename(vim.api.nvim_get_current_buf()) end,               { desc = "Smart rename" } },
 
 
-
-  -- { 'gs',        ':Gitsigns stage_hunk<CR>' },
   { 'gV',        '<Plug>(VM-Reselect-Last)',                                                                                                { noremap = false } },
 
 
@@ -306,13 +293,14 @@ space_key_nmap["`"]       = { 'Toggles the Float Terminal', ':FloatermToggle<CR>
 space_key_nmap[";"]       = { 'BufferLinePick',             ':BufferLinePick<CR>' }
 space_key_nmap["v"]       = { 'Flash Treesitter',           function() require("flash").treesitter() end }
 
+-- stylua: ignore
 space_key_nmap.a = { --{{{1 +append
   name = '+append',
-  -- [","] = { 'Toggle Append ,', ':lua require("chartoggle").toggle(",")<CR>' },
-  -- [";"] = { 'Toggle Append ;', ':lua require("chartoggle").toggle(";")<CR>' },
 
-  [","] = { 'Toggle Append ,', core.dotCall(require("chartoggle").toggle, ','), expr = true },
-  [";"] = { 'Toggle Append ,', core.dotCall(require("chartoggle").toggle, ';'), expr = true },
+  [","] = { 'Toggle Append ,', core.dotCall(vim_u.toggle_char, ','), expr = true },
+  [";"] = { 'Toggle Append ,', core.dotCall(vim_u.toggle_char, ';'), expr = true },
+  ["."] = { 'Toggle Append .', core.dotCall(vim_u.toggle_char, '.'), expr = true },
+
 }
 
 -- stylua: ignore
