@@ -43,6 +43,7 @@ return {
   },
   {
     "desdic/agrolens.nvim",
+    enabled = false,
     event = "VeryLazy",
     -- :Telescope agrolens query=functions buffers=all
     dependencies = { "nvim-telescope/telescope.nvim" },
@@ -57,7 +58,7 @@ return {
   "kiyoon/tmuxsend.vim",
   {
     'yaocccc/nvim-foldsign',
-    enabled = true,
+    enabled = false,
     event = 'CursorHold',
     config = function ()
       require('nvim-foldsign').setup({
@@ -108,6 +109,6 @@ return {
       vim.keymap.set('n', '<c-h>', require('tree-climber').highlight_node, keyopts)
     end
 
-  }
+  },
 
 }

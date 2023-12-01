@@ -2,15 +2,20 @@ local t = require("funcs.toggle")
 
 return {
   "chrisbra/unicode.vim",
-  "szw/vim-dict",                   -- | A dict client :Dict Hello
-  "tpope/vim-eunuch",               -- | UNIX shell commands
-  "norcalli/nvim_utils",            -- | Nvim utils functions
-  "christoomey/vim-tmux-navigator", -- | Quickly switch vim split with tmux panel.
+  "szw/vim-dict",                     -- | A dict client :Dict Hello
+  "tpope/vim-eunuch",                 -- | UNIX shell commands
+  "norcalli/nvim_utils",              -- | Nvim utils functions
+  {
+    "christoomey/vim-tmux-navigator", -- | Quickly switch vim split with tmux panel.
+    config = function ()
+      vim.g.tmux_navigator_no_mappings=1
+    end
+
+  },
   "tyru/open-browser.vim",
   "luckasRanarison/nvim-devdocs",
-  'saifulapm/chartoggle.nvim', --      | Toogle end comma(,), semicolon(;)
-  { -- 'nguyenvukhang/nvim-toggler',   | Enable custom Text Toggler
-    'nguyenvukhang/nvim-toggler',
+  {
+    "nguyenvukhang/nvim-toggler",     -- | Enable custom Text Toggler
     config = true,
     opts = {
       inverses = {

@@ -182,7 +182,10 @@ M.visual_replace_and_search_next = function(clipboard)
   --   1. Set visual select to current search
   --   2. Exit to normal mode
   --   3. Change next match, 'cgn' with data in register 0
-  --   3.1 Limitation: After cgn " + * . is update, so I have to use register 0, no * or +. This works with dot
+  -- p in visual mode limitation: I can't script to directly paste from clipboard register (register * or +),
+  --   work around is add a flag in this function.
+  --   To support dot, need to use register 0 (not clipboard register, because they are updated after replace).
+  --   I can manually restore it orignal content but it is not working for dot
   -- Notes:
   --   Tried to use other register to keep data, not working because I can't update that register with dot
   --

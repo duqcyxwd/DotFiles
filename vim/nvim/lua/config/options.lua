@@ -7,7 +7,7 @@ local set_options = function()
   vim.cmd("syntax on")
 
 
-  vim.g.mapleader        = "\\"                                -- | Set leaders before lazy load plugins
+  vim.g.mapleader        = "\\"                                 -- | Set leaders before lazy load plugins
   vim.g.maplocalleader   = "-"
 
   vim.opt.termguicolors  = true
@@ -80,7 +80,7 @@ local set_options = function()
                                                                 -- | Data stored in Session
                                                                 -- | Scope is storing state in vim.g.ScopeState
   vim.opt.viewoptions    = 'cursor,folds'                       -- | view of buffer
-  -- vim.opt.completeopt    = 'menu,menuone,noselect'              -- | Required by nvim-cmp (code completion plugin)
+                                                                -- vim.opt.completeopt    = 'menu,menuone,noselect'              -- | Required by nvim-cmp (code completion plugin)
   vim.opt.jumpoptions:append('stack')                           -- | Change jump behavior like browser style stack
 
 

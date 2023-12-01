@@ -27,7 +27,7 @@ return {
       local fzf_lua = require("fzf-lua")
       fzf_lua.setup({
         "fzf-tp",
-        fzf_opts = { ["--preview-window"] = "down,70%,border-top" },
+        fzf_opts = { ["--preview-window"] = "down,70%,border-top,nohidden" },
         winopts = {
           border = { " ", " ", " ", " ", " ", " ", " ", " " },
           preview = { default = "bat" },
@@ -49,19 +49,18 @@ return {
 
       -- Custom fzf plug fn config
 
-      local defaults = require'fzf-lua.defaults'.defaults
-      local plugsin_fzf_opts = t.deep_clone_merge(defaults.grep, {
-        actions = fzf_lua.defaults.actions.files,
-        prompt = "Plugins> " })
+      local jump_to_plugin = function ()
+        local defaults = require'fzf-lua.defaults'.defaults
+        local plugsin_fzf_opts = t.deep_clone_merge(defaults.grep, {
+          actions = fzf_lua.defaults.actions.files,
+          prompt = "Plugins> " })
 
-      local fzf_plugins = function ()
-        -- rg --column --line-number --no-heading --color=always --smart-case --max-columns=4096 --type lua -e "[\"][A-Za-z-.0-9._-~]+/[A-Za-z0-9._-~]+[\"]" |
-        -- fzf_lua.fzf_exec("rg --column --line-number --no-heading --color=always --smart-case --max-columns=4096 --type lua -e \"[\\\"][A-Za-z0-9._\\-]+/[A-Za-z0-9._\\-]+[\\\"]\" -e \"dir =\"", g)
-        fzf_lua.fzf_exec("rg --column --line-number --no-heading --color=always --smart-case --max-columns=4096 --type lua -e \"[\\\"][A-Za-z0-9._\\-]+/[A-Za-z0-9._\\-]+[\\\"]\" -e \"dir =\"", plugsin_fzf_opts)
+        -- local vimrootPath = "$XDG_CONFIG_HOME/vim/lua/plugins/**.lua"
+        -- fzf_lua.fzf_exec("rg --column --line-number --no-heading --color=always --smart-case --max-columns=4096 --type lua -e \"[\\\"'][A-Za-z0-9._\\-]+/[A-Za-z0-9._\\-]+[\\\"']\" -e \"dir =\" " .. vimrootPath, plugsin_fzf_opts)
+        fzf_lua.fzf_exec("rg --column --line-number --no-heading --color=always --smart-case --max-columns=4096 --type lua -e \"[\\\"'][A-Za-z0-9._\\-]+/[A-Za-z0-9._\\-]+[\\\"']\" -e \"dir =\" ", plugsin_fzf_opts)
       end
 
-
-      local get_plugin = function()
+      local plugin_detail = function()
         require 'fzf-lua'.fzf_exec(vim_u.get_all_plugins(), {
           actions = {
             ['default'] = function(selected)
@@ -73,8 +72,8 @@ return {
       end
 
       require("funcs.plug").fzf = {
-        jump_to_plugin = fzf_plugins,
-        plugin_detail = get_plugin,
+        jump_to_plugin = jump_to_plugin,
+        plugin_detail = plugin_detail,
       }
     end,
   },
@@ -112,6 +111,8 @@ return {
   },
   { -- "nvim-telescope/telescope.nvim",
     "nvim-telescope/telescope.nvim",
+    -- enabled = vim_u.enabled("nvim-treesitter/nvim-treesitter"),
+    enabled = true,
     commit = vim.fn.has("nvim-0.9.0") == 0 and "057ee0f8783" or nil,
     cmd = "Telescope",
     version = false, -- telescope did only one release, so use HEAD for now

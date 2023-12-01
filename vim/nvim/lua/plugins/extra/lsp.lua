@@ -1,6 +1,8 @@
 require("lua.global")
 local core = require("funcs.nvim_core")
 local lsp_util = require("config.lspconfig-util")
+local plugfn = require("funcs.plug")
+local vim_u = require('funcs.nvim_utility')
 
 local diagnosticls = {
   filetypes = {
@@ -208,11 +210,14 @@ return {
   ------------------------------------------------------------------------- |
   {
     "folke/neodev.nvim", --                                                 | Automatically configures lua-language-server
+    -- enabled = vim_u.enabled("neovim/nvim-lspconfig"),
     event = "VeryLazy",
+    dependencies = { { "neovim/nvim-lspconfig" } },
     opts = {},
   },
   {
     "neovim/nvim-lspconfig", --                                             | Configs for the Nvim LSP client
+    enabled = true,
     event = { "BufReadPre", "BufNewFile" },
     -- event = "VeryLazy",
     dependencies = {
@@ -242,6 +247,7 @@ return {
   {
     "hinell/lsp-timeout.nvim",
     event = 'LspAttach',
+    -- enabled = vim_u.enabled("neovim/nvim-lspconfig"),
     config = function()
       vim.g["lsp-timeout-config"] = {
         stopTimeout  = 1000 * 60 * 5, -- wait ms before stopping all LSP servers
@@ -320,7 +326,7 @@ return {
   },
   {
     'nvimdev/lspsaga.nvim',
-    enabled = true,
+    -- enabled = vim_u.enabled("neovim/nvim-lspconfig"),
     event = 'LspAttach',
     config = function()
       require('lspsaga').setup({
@@ -353,7 +359,7 @@ return {
           },
         },
         symbol_in_winbar = {
-          enable = true,
+          enable = false,
           dely = 1000,
         },
         lightbulb = {
@@ -374,13 +380,13 @@ return {
   },
   {
     'weilbith/nvim-code-action-menu',
-    enabled = true,
+    -- enabled = vim_u.enabled("neovim/nvim-lspconfig"),
     lazy = true,
     cmd = { 'CodeActionMenu' },
   },
   {
     'Wansmer/symbol-usage.nvim', --                                         | Show usage symbol
-    enabled = true,
+    -- enabled = vim_u.enabled("neovim/nvim-lspconfig"),
     event = 'LspAttach',
     config = function()
       require('symbol-usage').setup({
@@ -412,12 +418,12 @@ return {
   },
   {
     "Maan2003/lsp_lines.nvim", --                                           | renders diagnostics using virtual lines on top of the real line of code
+    -- enabled = vim_u.enabled("neovim/nvim-lspconfig"),
     event = 'LspAttach',
     lazy = true,
     config = function()
       require("lsp_lines").setup()
-
-      local m = {
+      plugfn.lsp_lines = {
         enabled = false,
         config = function (self, flag)
           if flag or self.enabled then
@@ -433,8 +439,7 @@ return {
         setup = function (self) self:config() end
       }
 
-      m.run(m.enabled)
-      require("funcs.plug").lsp_lines = m
+      plugfn.lsp_lines:setup()
     end,
   },
 

@@ -6,15 +6,6 @@ local lsp_util = require("config.lspconfig-util")
 
 local M = {}
 
-vim.o.updatetime = 250
-vim.cmd([[ autocmd! ColorScheme * highlight NormalFloat guibg=#1f2335 ]])
-vim.cmd([[ autocmd! ColorScheme * highlight FloatBorder guifg=white guibg=#1f2335 ]])
-vim.cmd [[ autocmd! ColorScheme * highlight Comment cterm=italic gui=italic ]]
-
-
-vim.cmd [[let &t_8f="\<Esc>[38;2;%lu;%lu;%lum"]]
-vim.cmd [[let &t_8b="\<Esc>[48;2;%lu;%lu;%lum"]]
-
 
 local markdown_key_map = function()
   vim.cmd([[
@@ -152,6 +143,7 @@ local file_type_autocmds = {
     { "FileType",    "fugitiveblame", "nmap <buffer> q gq" },
     { "FileType",    "git",           "nmap <buffer> q :bd<CR>" },
     { "FileType",    "json",          "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
+    { "FileType",    "go",            "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr" },
     { "FileType",    "lua",           "setlocal foldexpr=nvim_treesitter#foldexpr() foldmethod=expr tabstop=2 softtabstop=2 shiftwidth=2" },
     { "FileType",    "robot",         "setlocal foldmethod=indent" },
     { "FileType",    "sagahover",     "nnoremap <buffer> <Esc> :q<CR>" },

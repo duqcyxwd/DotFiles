@@ -22,7 +22,7 @@ let g:ale_fix_on_save = 1
 let g:ale_linters = {'clojure': [], 'sh': []}
 " I've read that goimports is basically just like gofmt, plus it organizes your
 " imports and removes ones you aren't using. So, I prefer goimports over gofmt.
-let g:ale_fixers = {'go': ['goimports']}
+let g:ale_fixers = {'go': ['gofmt']}
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -186,7 +186,7 @@ let g:go_highlight_build_constraints = 1
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " I've read that goimports is basically just like gofmt, plus it organizes your
 " imports and removes ones you aren't using. So, I prefer goimports over gofmt.
-let g:gofmt_exe = 'goimports'
+let g:gofmt_exe = '/usr/local/bin/gofmt'
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -1399,7 +1399,7 @@ augroup END
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-" => vim-tmux-navigator {{{1
+" => christoomey/vim-tmux-navigator {{{1
 """"""""""""""""""""""""""""""
 " Quickly switch vim split with tmux panel. However, the C-\ is used for tmux
 " prefix key, and <C-j> and <C-k> is used for scrolling in fzf preview panel or

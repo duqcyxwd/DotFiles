@@ -179,8 +179,10 @@ return {
         }),
 
         completion = {
-          completeopt = "menu,menuone,noinsert",
-          autocomplete = false,
+          -- completions on typing https://github.com/hrsh7th/nvim-cmp/discussions/1392
+          keyword_length = 2,
+          -- completeopt = "menu,menuone,noinsert",
+          -- autocomplete = false,
         },
         snippet = {
           expand = function(args)
@@ -251,11 +253,12 @@ return {
 
       cmp.setup(opts)
 
-      require("luasnip.loaders.from_vscode").load()                                                --                                                | Load friendly-snippets
-      require("luasnip.loaders.from_vscode").load({ paths = { "~/duqcyxwd/DotFiles/snippets/" } }) -- | Load snippets from my-snippets folder
-      require("luasnip.loaders.from_snipmate").load({
+      require("luasnip.loaders.from_vscode").lazy_load()                                                --                                                | Load friendly-snippets
+      -- https://github.com/rafamadriz/friendly-snippets/blob/main/snippets/lua/lua.json
+      require("luasnip.loaders.from_vscode").lazy_load({ paths = { "~/duqcyxwd/DotFiles/snippets/" } }) -- | Load snippets from my-snippets folder
+      require("luasnip.loaders.from_snipmate").lazy_load({
         paths = { "~/github/vim-snippets/snippets/" },
-        include = { "c", "vim", "lua" },
+        include = { "c", "vim" },
       })
 
       -- Set configuration for specific filetype.

@@ -44,29 +44,6 @@ local logo2 = [[
 └────────────────────────────────────────────────────────────────────┘
 ]]
 
-local logo4 = [[
-
-  ██████  ██████ ██████  ██████ ██████████████ ██████████████ ██████  ████████
-  ██░░██  ██░░██ ██░░██  ██░░██ ██░░░░░░░░░░██ ██░░░░░░░░░░██ ██░░██  ██░░░░██
-  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██████░░██ ██░░██████████ ██░░██  ██░░████
-  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░██         ██░░██  ██░░██
-  ██░░██████░░██ ██░░██████░░██ ██░░██████░░██ ██░░██         ██░░██████░░██
-  ██░░░░░░░░░░██ ██░░░░░░░░░░██ ██░░░░░░░░░░██ ██░░██         ██░░░░░░░░░░██
-  ██░░██████░░██ ██░░██████░░██ ██░░██████░░██ ██░░██         ██░░██████░░██
-  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░██         ██░░██  ██░░██
-  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░██████████ ██░░██  ██░░████
-  ██░░██  ██░░██ ██░░██  ██░░██ ██░░██  ██░░██ ██░░░░░░░░░░██ ██░░██  ██░░░░██
-  ██████  ██████ ██████  ██████ ██████  ██████ ██████████████ ██████  ████████
-
-
-                                                            ▄▄   ▐█
-                                                ▄▄▄   ▄██▄  █▀   █ ▄
-                                              ▄██▀█▌ ██▄▄  ▐█▀▄ ▐█▀
-                                             ▐█▀▀▌   ▄▀▌ ▌ █ ▌  ▌ ▌
-      Happy Hacking. Chuan's new VIM         ▌▀▄ ▐  ▀▄ ▐▄ ▐▄▐▄ ▐▄ ▐▄
-
-]]
-
 local logo = [[
   ██████  ██████ ██████  ██████ ██████████████ ██████████████ ██████  ████████
   ██░░██  ██░░██ ██░░██  ██░░██ ██░░░░░░░░░░██ ██░░░░░░░░░░██ ██░░██  ██░░░░██
@@ -790,16 +767,25 @@ return {
   -- No identation for following plugins
   {
     "anuvyklack/pretty-fold.nvim", --             | Setup my folding text
+    -- Notes: The default folding will add indentation based on level of folding, good for plain script, shell or markdown
+    -- For language that already have identation, such as lua, json, maybe python, we can use pretty-fold clean format
     event = 'BufReadPost',
+    enabled = true,
     config = function()
+      -- require("pretty-fold").setup({})
+      -- Optiona 1, Clean comment and add + at beginning
+      -- Optiona 2, Do not comment and have clean string
+      -- Optiona 3, WIP
       require("pretty-fold").setup({
-        process_comment_signs = 'delete',
-        keep_indentation = true,
+        process_comment_signs = "delete",
+        keep_indentation = false,
         fill_char = '━',
         sections = {
           left = {
             -- '', function() return string.rep('+', vim.v.foldlevel) end, '', 'content', '┣'
-            'content', '┣'
+            -- '+ ', function() return string.rep(' ', vim.v.foldlevel) end, '', 'content', '┣'
+            '', function() return string.rep('+', vim.v.foldlevel) end, ' ━━', 'content', '┣'
+            -- 'content', '┣'
           },
           right = {
             '┫ ', number_of_folded_lines, ': ', 'percentage', ' ┣━',
@@ -837,7 +823,6 @@ return {
         fill_char = '━',
         add_close_pattern = false, -- true, 'last_line' or false
       })
-
       require("pretty-fold").ft_setup("lua", {
         keep_indentation = true,
         process_comment_signs = 'delete',

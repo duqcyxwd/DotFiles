@@ -624,45 +624,40 @@ space_key_nmap.p = { --{{{1 +Project
   name = "+Project/Plugins",
 
 
-  f = { 'Project files',                   ':FzfLua files<CR>' },
-
-  l = { 'Project List',                    ":lua require'nvim-possession'.list()<CR>" },
-
-  -- or plug jump
-  s = { 'Plug Search',                     ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
-  S = { 'Plug Search',                     ":lua require'funcs.plug'.fzf.fn()<CR>" },
-
+  f = { 'Project files',                     ':FzfLua files<CR>' },
+  l = { 'Project List',                      ":lua require'nvim-possession'.list()<CR>" },
 
   p = {
-    name = "+Packages/Plugins",
-    a = { 'Plug all',                      ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
-    l = { 'Plug list',                     ":lua require'funcs.plug'.fzf.plugin_detail()<CR>" },
-    i = { 'Plug Install',                  ':Lazy install<CR>' },
-    u = { 'Plug Update',                   ':Lazy update<CR>' },
-    c = { 'Plug Check',                    ':Lazy check<CR>' },
-    x = { 'Plug Clean',                    ':Lazy clean<CR>' },
-    s = { 'Plug Status',                   ':Lazy check<CR>' },
-    p = { 'Plug Profile',                  ':Lazy profile<CR>' },
-    h = { 'Plug home',                     ':Lazy home<CR>' },
+    name = "+Plugins",
+    a = { 'Plug all',                        ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
+    c = { 'Plug Check',                      ':Lazy check<CR>' },
+    h = { 'Plug Home',                       ':Lazy home<CR>' },
+    i = { 'Plug Install',                    ':Lazy install<CR>' },
+    l = { 'Plug List',                       ":lua require'funcs.plug'.fzf.plugin_detail()<CR>" },
+    s = { 'Plug Search',                     ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
+    p = { 'Plug Profile',                    ':Lazy profile<CR>' },
+    u = { 'Plug Update',                     ':Lazy update<CR>' },
+    x = { 'Plug Clean',                      ':Lazy clean<CR>' },
+    o = { 'Plugin main page open in Github', vim_u.open_github_plugin },
   },
 
 
-  h = { 'Plug home',                       ':Lazy home<CR>' },
-  o = { 'Plugin main page open in Github', vim_u.open_github_plugin },
+  -- WIP Remove
+  o = { 'Plugin main page open in Github',   vim_u.open_github_plugin },
 
 }
 space_key_nmap.P = { --{{{1 +Plugins
   name = "+Plugins",
-  A = { 'Plug all',     ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
-  L = { 'Plug list',    ":lua require'funcs.plug'.fzf.plugin_detail()<CR>" },
-  I = { 'Plug Install', ':Lazy install<CR>' },
-  U = { 'Plug Update',  ':Lazy update<CR>' },
-  C = { 'Plug Check',   ':Lazy check<CR>' },
-  X = { 'Plug Clean',   ':Lazy clean<CR>' },
-  S = { 'Plug Status',  ':Lazy check<CR>' },
-  P = { 'Plug Profile', ':Lazy profile<CR>' },
-  H = { 'Plug home',    ':Lazy home<CR>' },
-  J = { 'Plug Jump',    ":lua require'funcs.plug'.fzf.plugins()<CR>" },
+  A = { 'Plug all',                        ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
+  C = { 'Plug Check',                      ':Lazy check<CR>' },
+  H = { 'Plug Home',                       ':Lazy home<CR>' },
+  I = { 'Plug Install',                    ':Lazy install<CR>' },
+  L = { 'Plug List',                       ":lua require'funcs.plug'.fzf.plugin_detail()<CR>" },
+  S = { 'Plug Search',                     ":lua require'funcs.plug'.fzf.jump_to_plugin()<CR>" },
+  P = { 'Plug Profile',                    ':Lazy profile<CR>' },
+  U = { 'Plug Update',                     ':Lazy update<CR>' },
+  X = { 'Plug Clean',                      ':Lazy clean<CR>' },
+  O = { 'Plugin main page open in Github', vim_u.open_github_plugin },
 
 }
 

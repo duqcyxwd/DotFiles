@@ -1,5 +1,6 @@
 require("lua.global")
 local core = require("funcs.nvim_core")
+local vim_u = require('funcs.nvim_utility')
 
 return {
   -- Section: Keys mappings -------------------------       | Description
@@ -62,10 +63,13 @@ return {
   },
   "tpope/vim-sleuth", --                                    | Automatically adjusts 'shiftwidth' and 'expandtab'
 
+  -- vim: {Operator}{motion/textobject}
   -- Text Object Operator (d/c/y/x)
+  -- :help operator
   {
-    "kylechui/nvim-surround", --                            | Surround Operator, use for normal: ys/ds/cs/ + '"`f visual:S
+    "kylechui/nvim-surround", --                            | Surround Operator: {ys/ds/cs} TextObject: ai*{a/b/B/r/q/s} | Visual:S
     --                                                      | Replace "tpope/vim-surround"
+    --                                                      | Replace "machakann/vim-sandwich" saiw -> ysiw
     version = "*",            -- Use for stability; omit to use `main` branch for the latest features
     event = "VeryLazy",
     config = function()
@@ -77,7 +81,7 @@ return {
           ["B"] = "}",
           ["r"] = "]",
           ["q"] = { '"', "'", "`" },
-          ["s"] = { " ", "}", "]", ")", ">", '"', "'", "`" },
+          ["s"] = { " ", "}", "]", ")", ">", '"', "'", "`" }, -- | s is used as scope??
         },
         surrounds = {
           ["("] = {
@@ -87,22 +91,22 @@ return {
             add = { "( ", " )" },
           },
           ["{"] = {
-            add = { "{ ", " }" },
-          },
-          ["}"] = {
             add = { "{", "}" },
           },
-          ["<"] = {
-            add = { "<", ">" },
+          ["}"] = {
+            add = { "{ ", " }" },
           },
-          [">"] = {
+          ["<"] = {
             add = { "< ", " >" },
           },
+          [">"] = {
+            add = { "<", ">" },
+          },
           ["["] = {
-            add = { "[ ", " ]" },
+            add = { "[", "]" },
           },
           ["]"] = {
-            add = { "[", "]" },
+            add = { "[ ", " ]" },
           },
           ["'"] = {
             add = { "'", "'" },
@@ -142,11 +146,10 @@ return {
       })
     end,
   },
-  "tommcdo/vim-exchange", --                                | Exchange lines, cx/X/cxx/cxc, works with '.'
+  "tommcdo/vim-exchange", --                                | Exchange Operator: {cx/X/cxx/cxc}, works with '.'
   "tpope/vim-commentary", --                                | Gcc
   "tpope/vim-repeat",
 
-  -- Text Object
   -- Treesitter also provides text object
   {
     "wellle/targets.vim", --                                | Addition Text Object For DEFAULT OPERATOR,
@@ -199,15 +202,14 @@ return {
     }
   },
   {
-    "michaeljsmith/vim-indent-object", --                   | Indent Text Object, e.g vii, vai
+    "michaeljsmith/vim-indent-object", --                   | Indent TextObject: {ii/ai}
     -- Replaced by mini.indentscope
     enabled = false,
   },
   {
-    "nvim-treesitter/nvim-treesitter-textobjects", --       | Treesitter text objects
+    "nvim-treesitter/nvim-treesitter-textobjects", --       | Treesitter TextObject: {il/al/af/if/ac/ic/as}, Action {[a/[A}
     -- { dir = "~/duqcyxwd/nvim-treesitter-textobjects" }, Testing my textobjects for comments
-
-    enabled = true,
+    -- enabled = vim_u.enabled("nvim-treesitter/nvim-treesitter"),
     event = 'VeryLazy',
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {
@@ -216,17 +218,15 @@ return {
         swap = {
           enable = true,
           swap_next = {
-            ["]A"] = "@list.inner",
             ["]a"] = "@parameter.inner",
           },
           swap_previous = {
-            ["[A"] = "@list.inner",
             ["[a"] = "@parameter.inner",
           },
         },
         select = {
           enable = true,
-          -- Automatically jump forward to textobj, similar to targets.vim
+          -- Automatically jump forward to textobj, similar to targets.vim,
           lookahead = true,
           keymaps = {
             -- You can use the capture groups defined in textobjects.scm
@@ -237,7 +237,7 @@ return {
             ["ac"] = "@comment.outer",
             ["ic"] = "@comment.inner",
             ["as"] = { query = "@scope", query_group = "locals", desc = "Select language scope" },
-          },
+          }
         },
         move = {
           enable = true,
@@ -292,7 +292,15 @@ return {
           -- You can always toggle when searching with `require("flash").toggle()`
           enabled = false,
           highlight = { backdrop = false },
-          jump = { history = true, register = true, nohlsearch = true },
+          jump = {
+            history = true,
+            register = true,
+            nohlsearch = true ,
+            remote_op = { -- use yr for remote copy, disable motion, since it conficts with vim surround
+              restore = true,
+              motion = nil,
+            },
+          },
           search = {
             -- `forward` will be automatically set to the search direction
             -- `mode` is always set to `search`
@@ -318,7 +326,7 @@ return {
     cmd = { "HopVerticalMW", "HopChar1", "HopChar2" },
   },
   {
-    "chrisgrieser/nvim-origami", --                         | Motion for fold: h/l
+    "chrisgrieser/nvim-origami", --                         | Improve h/l when fold
     event = "BufReadPost",       -- later or on keypress would prevent saving folds
     enabled = true,
     opts = {
@@ -334,9 +342,9 @@ return {
     event = "VeryLazy",
   },
   {
-    "junegunn/vim-easy-align" --                            | ga*,
+    "junegunn/vim-easy-align" --                            | Align text: Operator {ga}
   },
-  "godlygeek/tabular",        --                            | {'on': 'Tabularize'}
+  "godlygeek/tabular",        --                            | { 'on': 'Tabularize'}
 
   -- Terminal
   {

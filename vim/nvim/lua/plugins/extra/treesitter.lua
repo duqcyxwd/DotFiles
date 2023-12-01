@@ -1,4 +1,6 @@
 require("lua.global")
+local vim_u = require('funcs.nvim_utility')
+local t = require('lua/table')
 
 local ts_plug_lazy_config = function(_, opts)
   IfHasModule(opts.plug, function(ts)
@@ -7,18 +9,18 @@ local ts_plug_lazy_config = function(_, opts)
   end)
 end
 
-
 return {
+  --'theHamsta/nvim-treesitter-pairs'
+  -- "nvim-treesitter/nvim-treesitter-refactor"
+
   -- " Tree sitter
   {
     "nvim-treesitter/nvim-treesitter",
+    enabled = true,
     build = ":TSUpdate",
     -- Change to BufReadPost to make sure fold is working when loading a vim session, WIP
     -- event = "VeryLazy",
     event = "BufReadPost",
-    dependencies = {
-      -- "nvim-treesitter/nvim-treesitter-refactor"
-    },
     config = function()
       require("nvim-treesitter.configs").setup({
         ensure_installed = { "c", "lua", "rust" },
@@ -35,8 +37,19 @@ return {
             ["enable"] = "Identifier",
             ["XXX"] = "Identifier",
           },
-          -- I don't like the highlight of markdown, and json
-          disable = { "markdown", "json", "zsh", "bash", "yaml" },
+          disable2 = { "markdown", "json", "zsh", "bash", "yaml" },
+          disable = function(lang, buf)
+            local highlight_disable = { "markdown", "json", "zsh", "bash", "yaml" }
+            if t.contain(highlight_disable, lang) then
+              return true
+            end
+
+            local max_filesize = 1024 * 1024 -- 1MB
+            local ok, stats = pcall(vim.loop.fs_stat, vim.api.nvim_buf_get_name(buf))
+            if ok and stats and stats.size > max_filesize then
+              return true
+            end
+          end,
           additional_vim_regex_highlighting = { "python" },
         },
         incremental_selection = {
@@ -64,6 +77,7 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter-context",
+    enabled = vim_u.enabled("nvim-treesitter/nvim-treesitter"),
     event = 'VeryLazy',
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     config = function()
@@ -86,9 +100,9 @@ return {
   {
     'andymass/vim-matchup',
     lazy = false,
+    enabled = vim_u.enabled("nvim-treesitter/nvim-treesitter"),
     -- Disable lazy load for matchup will increase loading time by 100ms, this weird
     -- This plugin doesn't work lazy load as well, it works with BufReadPost but add 1000ms loading time when open a file
-    enabled = true,
     init = function()
       vim.g.matchup_surround_enabled = 1
       vim.g.matchup_matchparen_offscreen = { method = 'popup', highlight = 'TreeSitterContext' }
@@ -120,12 +134,12 @@ return {
         },
       }
     },
-
     config = SetupAsync,
   },
   {
     'theHamsta/nvim-treesitter-pairs', --                     | Create your own pair objects using tree-sitter queries!
-    enabled = false,
+    enabled = vim_u.enabled("nvim-treesitter/nvim-treesitter"),
+    -- enabled = false,
     event = 'VeryLazy',
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {
@@ -154,7 +168,8 @@ return {
   },
   {
     "nvim-treesitter/nvim-treesitter-refactor",
-    enabled = true,
+    enabled = vim_u.enabled("nvim-treesitter/nvim-treesitter"),
+    -- enabled = false,
     event = 'VeryLazy',
     dependencies = { "nvim-treesitter/nvim-treesitter" },
     opts = {
