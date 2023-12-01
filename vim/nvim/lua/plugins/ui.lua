@@ -756,7 +756,7 @@ return {
   },
 
   {
-    "tiagovla/scope.nvim", --                    | Add buffer scope to Tabs
+    "tiagovla/scope.nvim", --                     | Add buffer scope to Tabs
     enabled = true,
     event = "VeryLazy",
     config = function()
@@ -773,9 +773,10 @@ return {
     enabled = true,
     config = function()
       -- require("pretty-fold").setup({})
-      -- Optiona 1, Clean comment and add + at beginning
-      -- Optiona 2, Do not comment and have clean string
-      -- Optiona 3, WIP
+      -- Options for default folding
+      -- Option 1, Clean comment and add + at beginning
+      -- Option 2, Do not comment and have clean string
+      -- Option 3, WIP
       require("pretty-fold").setup({
         process_comment_signs = "delete",
         keep_indentation = false,
@@ -801,13 +802,33 @@ return {
               local fillChar = config.fill_char
               local line = vim.fn.getline(vim.v.foldstart)
 
-              -- Generic
-              line = line:gsub(" = {$", " = { .. }", 1)
+              -- Add Key information {
+              if string.match(line, "{$") then
+                local next_line = vim.fn.getline(vim.v.foldstart + 1)
+                local extra_content = string.gsub(next_line, "^%s+", " ")
 
-              -- Add second line if current line is {
-              if string.match(line, "^%s+{$") then
-                local extra_content = string.gsub(vim.fn.getline(vim.v.foldstart + 1), "^%s+", " ")
+                -- Hack, if there is name/id/key in its content, use it
+                local leading_spaces = string.match(next_line, "^%s+")
+                for l = vim.v.foldstart, vim.v.foldend do
+                  local parseline = vim.fn.getline(l)
+                  if string.match(parseline, leading_spaces .. "%s") then
+                    -- Only match line with same identation as first child
+                    goto continue
+                  end
+
+                  if string.match(parseline, "^%s*['\"].*id['\"]:") or string.match(parseline, "^%s*['\"].*name['\"]:") or string.match(parseline, "^%s*['\"].*key['\"]:")then
+                    extra_content = string.gsub(parseline, "^%s+", " ")
+                    break
+                  end
+                  ::continue::
+                end
+
                 line = line .. extra_content .. " .. }"
+
+              end
+
+              if string.match(line, "%[$") then
+                line = line .. " .. ]"
               end
 
               line = line:gsub("[^%s]%s%s+", function(match) return match:gsub("%s", fillChar) end)
@@ -876,12 +897,25 @@ return {
 
               -- Hack: Show disabled plugins
               if string.match(vim.fn.getline(vim.v.foldstart), "^%s+{") then
+
+                local next_line = vim.fn.getline(vim.v.foldstart + 1)
+                local leading_spaces = string.match(next_line, "^%s+")
+
                 for l = vim.v.foldstart, vim.v.foldend do
                   local parseline = vim.fn.getline(l)
+                  if string.match(parseline, leading_spaces .. "%s") then
+                    -- Only match line with same identation as first child
+                    goto continue
+                  end
                   if parseline:match("^%s+enabled = false") then
-                    line = line:gsub(",           ", " [disabled] ")
+                    if line:match(",$") then
+                      line = line:gsub(",", " [disabled] ")
+                    else
+                      line = line:gsub(",           ", " [disabled] ")
+                    end
                     break
                   end
+                  ::continue::
                 end
               end
 
@@ -898,6 +932,12 @@ return {
 
               -- Replace tab to space for better alignment
               line = line:gsub("\t", string.rep(" ", vim.o.tabstop))
+
+
+              -- Last minute fix
+              if string.match(line, "{$") then
+                line = line .. " .. }"
+              end
 
               return line
             end,
