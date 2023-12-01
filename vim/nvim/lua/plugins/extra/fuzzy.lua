@@ -40,8 +40,14 @@ return {
             config = nil,      -- nil uses $BAT_CONFIG_PATH
           },
         },
+        grep = {
+          -- Enable search for hidden file
+          rg_opts = "--column --line-number --hidden --no-heading --color=always --smart-case --max-columns=4096 -e",
+        },
         keymap = { builtin = {}, },
       })
+
+      -- Custom fzf plug fn config
 
       local defaults = require'fzf-lua.defaults'.defaults
       local plugsin_fzf_opts = t.deep_clone_merge(defaults.grep, {

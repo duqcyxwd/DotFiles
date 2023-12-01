@@ -151,8 +151,6 @@ set_keymap("n", { noremap = true, silent = true }, {
 
 -- Visual Mode mapping --{{{1
 
-
-
 set_keymap("v", { noremap = true, silent = true }, {
   { "9",         "c()<Esc>hp" },
   { "J",         ":move '<+1<CR>gv-gv" },
@@ -161,8 +159,8 @@ set_keymap("v", { noremap = true, silent = true }, {
   { "-",         ":lua require'nvim-treesitter.incremental_selection'.node_decremental()<CR>" },
   { "v",         ":lua require'nvim-treesitter.incremental_selection'.node_incremental()<CR>" },
   { "P",         vim_u.visual_replace_and_select_next },
-  { "p",         vim_u.visual_replace_and_search_next },
-  { "gp",        function() vim_u.visual_replace_and_search_next(true) end },
+  { "gp",        vim_u.visual_replace_and_search_next }, -- If paste from clipbaord, use gp instead
+  { "p",         function() vim_u.visual_replace_and_search_next(true) end },
 
   { "*",         vim_u.visual_to_search },
   { "#",         function() vim_u.visual_to_search({ revert = true }) end },

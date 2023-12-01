@@ -187,8 +187,8 @@ colors:
   # Colors2 (Dracula)
   # Source: https://github.com/dracula/alacritty/blob/50afeef999f5e97543f91015ae8fb941996c326b/dracula.yml
   primary:
-    background: '0x282a36'
-    foreground: '0xf8f8f2'
+    background: '#282a36'
+    foreground: '#f8f8f2'
   cursor:
     text: CellBackground
     cursor: CellForeground
@@ -209,39 +209,39 @@ colors:
     background: None
   selection:
     text: CellForeground
-    background: '0x44475a'
+    background: '#44475a'
   normal:
-    black:   '0x000000'
-    red:     '0xff5555'
-    green:   '0x50fa7b'
-    yellow:  '0xf1fa8c'
-    blue:    '0xbd93f9'
-    magenta: '0xff79c6'
-    cyan:    '0x8be9fd'
-    white:   '0xbfbfbf'
+    black:   '#000000'
+    red:     '#ff5555'
+    green:   '#50fa7b'
+    yellow:  '#f1fa8c'
+    blue:    '#bd93f9'
+    magenta: '#ff79c6'
+    cyan:    '#8be9fd'
+    white:   '#bfbfbf'
   bright:
-    black:   '0x4d4d4d'
-    red:     '0xff6e67'
-    green:   '0x5af78e'
-    yellow:  '0xf4f99d'
-    blue:    '0xcaa9fa'
-    magenta: '0xff92d0'
-    cyan:    '0x9aedfe'
-    white:   '0xe6e6e6'
+    black:   '#4d4d4d'
+    red:     '#ff6e67'
+    green:   '#5af78e'
+    yellow:  '#f4f99d'
+    blue:    '#caa9fa'
+    magenta: '#ff92d0'
+    cyan:    '#9aedfe'
+    white:   '#e6e6e6'
   dim:
-    black:   '0x14151b'
-    red:     '0xff2222'
-    green:   '0x1ef956'
-    yellow:  '0xebf85b'
-    blue:    '0x4d5b86'
-    magenta: '0xff46b0'
-    cyan:    '0x59dffc'
-    white:   '0xe6e6d1'
+    black:   '#14151b'
+    red:     '#ff2222'
+    green:   '#1ef956'
+    yellow:  '#ebf85b'
+    blue:    '#4d5b86'
+    magenta: '#ff46b0'
+    cyan:    '#59dffc'
+    white:   '#e6e6d1'
 
 
   footbar:
-    background: '0x282a36'
-    foreground: '0xf8f8f2'
+    background: '#282a36'
+    foreground: '#f8f8f2'
 
   # # Colors (Tokyo Night)
   # # Colors (Tokyo Night)
@@ -841,13 +841,16 @@ key_bindings:
   # Full Screen
   # - { key: F,              mods: Command|Control,            action: ToggleFullscreen      }
   - { key: Return,         mods: Command,                     action: ToggleSimpleFullscreen}
+  - { key: N,              mods: Command|Control,             action: SpawnNewInstance       }
   - { key: N,              mods: Command|Shift,               action: SpawnNewInstance       }
 
   # Iterm Style Tmux Panel management, Tmux prefix: ^a
   # Use xxd -psd to find out chars
   - { key: P,              mods: Command,                     chars: "\x10"                  } # Map C-p
-  - { key: T,              mods: Command,                     chars: "\x01\x6e"              } # Map to C-a n
+  - { key: B,              mods: Command,                     chars: "\x01\x02"              } # Map to C-a b
+  - { key: G,              mods: Command,                     chars: "\x01\x64"              } # Map to C-a d
   - { key: N,              mods: Command,                     chars: "\x01\x6e"              } # Map to C-a n
+  - { key: T,              mods: Command,                     chars: "\x01\x74"              } # Map to C-a t
   - { key: W,              mods: Command,                     chars: "\x01\x78"              } # Map to C-a x
   - { key: D,              mods: Command,                     chars: "\x01\x76"              } # Map to C-a v
   - { key: D,              mods: Command|Shift,               chars: "\x01\x73"              } # Map to C-a s
@@ -855,8 +858,10 @@ key_bindings:
   - { key: LBracket,       mods: Command,                     chars: "\x01\x4f"              } # Map to C-a O
   - { key: K,              mods: Command,                     chars: "\x01\x0b"              } # Map to C-a C-k
   - { key: L,              mods: Command,                     chars: "\x01\x0c"              } # Map to C-a C-l
-  - { key: Left,           mods: Command,                     chars: "\x01\x10"              } # Map to C-a C-p
-  - { key: Right,          mods: Command,                     chars: "\x01\x0e"              } # Map to C-a C-n
+  - { key: Up,             mods: Command,                     chars: "\x01\x1b\x5b\x41"      } # Map to C-a Up
+  - { key: Down,           mods: Command,                     chars: "\x01\x1b\x5b\x42"      } # Map to C-a Down
+  - { key: Left,           mods: Command,                     chars: "\x01\x1b\x5b\x44"      } # Map to C-a Left
+  - { key: Right,          mods: Command,                     chars: "\x01\x1b\x5b\x43"      } # Map to C-a Right
   - { key: Key1,           mods: Command,                     chars: "\x01\x31"              } # Map to C-a 1
   - { key: Key2,           mods: Command,                     chars: "\x01\x32"              } # Map to C-a 2
   - { key: Key3,           mods: Command,                     chars: "\x01\x33"              } # Map to C-a 3
@@ -866,6 +871,11 @@ key_bindings:
   - { key: Key7,           mods: Command,                     chars: "\x01\x37"              } # Map to C-a 7
   - { key: Key8,           mods: Command,                     chars: "\x01\x38"              } # Map to C-a 8
   - { key: Key9,           mods: Command,                     chars: "\x01\x39"              } # Map to C-a 9
+  - { key: Key0,           mods: Command,                     chars: "\x01\x30"              } # Map to C-a 0
+
+
+  - { key: I,              mods: Command,                     chars: "\x01\x39"              } # Map to C-a 9
+  - { key: O,              mods: Command,                     chars: "\x01\x30"              } # Map to C-a 0
 
 # If `true`, bold text is drawn using the bright color variants.
 draw_bold_text_with_bright_colors: false
